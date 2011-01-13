@@ -1,5 +1,5 @@
 from django.contrib import admin
-from basic.events.models import *
+from events.models import *
 
 
 class EventTimeInline(admin.StackedInline):

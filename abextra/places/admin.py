@@ -1,5 +1,5 @@
 from django.contrib import admin
-from basic.places.models import *
+from places.models import *
 
 
 class PlaceTypeAdmin(admin.ModelAdmin):
