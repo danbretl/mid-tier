@@ -1,5 +1,11 @@
 # Django settings for abextra project.
 
+# try to load local.settings used to override common settings
+try:
+    from settings_local import *
+except ImportError:
+    print u'File settings_local.py is not found. Continuing with production settings.'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -9,14 +15,15 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DB_HOST = DB_HOST or 'localhost'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'abexmid',                      # Or path to database file if using sqlite3.
-        'USER': 'abex_dev',                      # Not used with sqlite3.
+        'USER': 'abex_dev',                     # Not used with sqlite3.
         'PASSWORD': 'abex113',                  # Not used with sqlite3.
-        'HOST': 'testsv.abextratech.com',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'HOST': DB_HOST,                        # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
     }
 }
 
@@ -92,5 +99,6 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'south',
+    'south',                        # migrations managements
+    'registration',                 # user registration app
 )
