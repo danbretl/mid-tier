@@ -102,4 +102,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south',                        # migrations managements
     'registration',                 # user registration app
+    
+    'events',
+    'places',
 )
