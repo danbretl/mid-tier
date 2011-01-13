@@ -15,14 +15,15 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_HOST = DB_HOST or 'localhost'
+DB_USER = DB_USER or 'abex_dev'
+DB_PASSWD = DB_PASSWD or 'abex113'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'abexmid',                      # Or path to database file if using sqlite3.
-        'USER': 'abex_dev',                     # Not used with sqlite3.
-        'PASSWORD': 'abex113',                  # Not used with sqlite3.
-        'HOST': DB_HOST,                        # Set to empty string for localhost. Not used with sqlite3.
+        'USER': DB_USER,                        # Not used with sqlite3.
+        'PASSWORD': DB_PASSWD,                  # Not used with sqlite3.
+        'HOST': 'localhost',                        # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
     }
 }

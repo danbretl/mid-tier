@@ -1,1 +1,2 @@
-DB_HOST = 'testsv.abextratech.com'
+DB_USER = 'root'
+DB_PASSWD = 'bj200ex'
