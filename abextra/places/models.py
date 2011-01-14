@@ -61,6 +61,7 @@ class Point(models.Model):
         return u'%s' % self.address
 
 
+# TODO don't need:  prefix, nickname
 class Place(models.Model):
     """Place model."""
     STATUS_CHOICES = (

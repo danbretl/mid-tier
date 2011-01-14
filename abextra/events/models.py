@@ -9,7 +9,7 @@ from places.models import Place
 
 class Event(models.Model):
     """Event model"""
-    xid = models.CharField(max_length=200)
+    xid = models.CharField(_('external id'), max_length=200, blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
     place = models.ForeignKey(Place, blank=True, null=True)

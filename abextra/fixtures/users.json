@@ -1,0 +1,44 @@
+[{
+    "pk": 1,
+    "model": "auth.group",
+    "fields": {
+        "name": "test_read",
+        "permissions": []
+    }
+},
+{
+    "pk": 1,
+    "model": "auth.user",
+    "fields": {
+        "username": "abexuper",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": true,
+        "is_staff": true,
+        "last_login": "2011-01-13 15:58:10",
+        "groups": [],
+        "user_permissions": [],
+        "password": "sha1$cec49$e26e688b40bc3bbcb6ef9aa19c44d342aef2bef3",
+        "email": "pkatsev@abextratech.com",
+        "date_joined": "2011-01-13 15:57:06"
+    }
+},
+{
+    "pk": 2,
+    "model": "auth.user",
+    "fields": {
+        "username": "tester_api",
+        "first_name": "",
+        "last_name": "",
+        "is_active": true,
+        "is_superuser": false,
+        "is_staff": false,
+        "last_login": "2011-01-14 10:32:09",
+        "groups": [1],
+        "user_permissions": [],
+        "password": "sha1$2f23b$d924636d4b3b954f049fea105e5b14d77cd15293",
+        "email": "",
+        "date_joined": "2011-01-14 10:32:09"
+    }
+}]

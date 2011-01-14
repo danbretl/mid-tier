@@ -1,0 +1,35 @@
+[{
+    "pk": 1,
+    "model": "events.event",
+    "fields": {
+        "submitted_by": 1,
+        "xid": "",
+        "description": "James Weidman-p, Esperanza Spalding-b, Otis Brown III-d, Matt Wilson-d",
+        "title": "JOE LOVANO \"US FIVE\"",
+        "created": "2011-01-14 10:26:37",
+        "modified": "2011-01-14 10:26:37",
+        "place": 1,
+        "one_off_place": "",
+        "slug": "joe-lovano-us-five"
+    }
+},
+{
+    "pk": 1,
+    "model": "events.eventtime",
+    "fields": {
+        "start": "2011-01-11 20:00:00",
+        "end": "2011-01-11 22:00:00",
+        "event": 1,
+        "is_all_day": false
+    }
+},
+{
+    "pk": 2,
+    "model": "events.eventtime",
+    "fields": {
+        "start": "2011-01-11 22:00:00",
+        "end": "2011-01-12 00:00:00",
+        "event": 1,
+        "is_all_day": false
+    }
+}]

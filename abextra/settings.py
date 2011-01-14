@@ -98,11 +98,10 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    # 'django.contrib.admindocs',   # admin documentation
     'south',                        # migrations managements
     'registration',                 # user registration app
-    
+    'piston',                       # api assistance
     'events',
     'places',
 )
