@@ -6,6 +6,16 @@ class EventTimeInline(admin.StackedInline):
     model = EventTime
     fk = 'event'
 
+class SubcategoriesInline(admin.StackedInline):
+    model = Category
+    fk = 'parent'
+
+class CategoryAdmin(admin.ModelAdmin):
+    model = Category
+    inlines = [
+        SubcategoriesInline
+    ]
+
 
 class EventAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
@@ -14,3 +24,4 @@ class EventAdmin(admin.ModelAdmin):
         EventTimeInline
     ]
 admin.site.register(Event, EventAdmin)
+admin.site.register(Category, CategoryAdmin)

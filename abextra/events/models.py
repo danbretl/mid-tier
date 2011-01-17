@@ -59,3 +59,16 @@ class EventTime(models.Model):
             'slug': self.event.slug,
             'event_id': self.event.id
         })
+
+class Category(models.Model):
+    """Category model"""
+    title = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', related_name='subcategories', blank=True, null=True)
+    is_associative = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = _('categories')
+        db_table = 'categories'
+
+    def __unicode__(self):
+        return u'%s' % self.title
