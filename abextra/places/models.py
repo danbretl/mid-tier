@@ -11,7 +11,6 @@ class PlaceType(models.Model):
     class Meta:
         verbose_name = _('place type')
         verbose_name_plural = _('place types')
-        db_table = 'place_types'
 
     def __unicode__(self):
         return u'%s' % self.title
@@ -30,7 +29,6 @@ class City(models.Model):
     class Meta:
         verbose_name = _('city')
         verbose_name_plural = _('cities')
-        db_table = 'place_cities'
         unique_together = (('city', 'state',),)
         ordering = ('state', 'city',)
 
@@ -54,7 +52,6 @@ class Point(models.Model):
     class Meta:
         verbose_name = _('point')
         verbose_name_plural = _('points')
-        db_table = 'place_points'
         ordering = ('address',)
 
     def __unicode__(self):
@@ -86,7 +83,6 @@ class Place(models.Model):
     class Meta:
         verbose_name = _('place')
         verbose_name_plural = _('places')
-        db_table = 'places'
         ordering = ('title',)
 
     def __unicode__(self):
