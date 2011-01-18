@@ -19,29 +19,6 @@ class Category(models.Model):
     def __unicode__(self):
         return u'%s' % self.title
 
-class ScrapedEvent(models.Model):
-    """Directly from the scrape db"""
-    internalid = models.IntegerField(primary_key=True, db_column='InternalID') # Field name made lowercase.
-    title = models.CharField(max_length=600, db_column='Title', blank=True) # Field name made lowercase.
-    externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) # Field name made lowercase.
-    eventdate = models.DateField(null=True, db_column='EventDate', blank=True) # Field name made lowercase.
-    starttime = models.DateTimeField(db_column='StartTime') # Field name made lowercase.
-    endtime = models.DateTimeField(db_column='EndTime') # Field name made lowercase.
-    description = models.CharField(max_length=9000, db_column='Description', blank=True) # Field name made lowercase.
-    url = models.CharField(max_length=600, db_column='URL', blank=True) # Field name made lowercase.
-    imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) # Field name made lowercase.
-    videourl = models.CharField(max_length=600, db_column='VideoURL', blank=True) # Field name made lowercase.
-    location = models.CharField(max_length=600, db_column='Location', blank=True) # Field name made lowercase.
-    email = models.CharField(max_length=150, db_column='Email', blank=True) # Field name made lowercase.
-    phone = models.CharField(max_length=45, db_column='Phone', blank=True) # Field name made lowercase.
-    eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) # Field name made lowercase.
-    eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) # Field name made lowercase.
-
-    # categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
-
-    class Meta:
-        db_table = u'scraped_events_vw'
-
 class Event(models.Model):
     """Event model"""
     xid = models.CharField(_('external id'), max_length=200, blank=True)
@@ -53,6 +30,9 @@ class Event(models.Model):
     submitted_by = models.ForeignKey(User, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+    url = models.URLField(verify_exists=False, max_length=300)
+    image_url = models.URLField(verify_exists=False, max_length=300, blank=True)
+    video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
 
     class Meta:
@@ -93,3 +73,33 @@ class EventTime(models.Model):
             'slug': self.event.slug,
             'event_id': self.event.id
         })
+
+
+class ScrapedEvent(models.Model):
+    """Works with the sraped events view"""
+    internalid = models.IntegerField(primary_key=True, db_column='InternalID') # Field name made lowercase.
+    title = models.CharField(max_length=600, db_column='Title', blank=True) # Field name made lowercase.
+    externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) # Field name made lowercase.
+    eventdate = models.DateField(null=True, db_column='EventDate', blank=True) # Field name made lowercase.
+    starttime = models.DateTimeField(db_column='StartTime') # Field name made lowercase.
+    endtime = models.DateTimeField(db_column='EndTime') # Field name made lowercase.
+    description = models.CharField(max_length=9000, db_column='Description', blank=True) # Field name made lowercase.
+    url = models.CharField(max_length=600, db_column='URL', blank=True) # Field name made lowercase.
+    imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) # Field name made lowercase.
+    videourl = models.CharField(max_length=600, db_column='VideoURL', blank=True) # Field name made lowercase.
+    location = models.CharField(max_length=600, db_column='Location', blank=True) # Field name made lowercase.
+    email = models.CharField(max_length=150, db_column='Email', blank=True) # Field name made lowercase.
+    phone = models.CharField(max_length=45, db_column='Phone', blank=True) # Field name made lowercase.
+    eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) # Field name made lowercase.
+    eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) # Field name made lowercase.
+
+    # categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
+
+    class Meta:
+        db_table = u'scraped_events_vw'
+
+    def __unicode__(self):
+        return u'%s' % self.title
+
+    def to_event(self):
+        pass
