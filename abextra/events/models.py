@@ -74,7 +74,8 @@ class EventTime(models.Model):
             'event_id': self.event.id
         })
 
-
+from places.models import Place, Point, City
+import datetime
 class ScrapedEvent(models.Model):
     """Works with the sraped events view"""
     internalid = models.IntegerField(primary_key=True, db_column='InternalID') # Field name made lowercase.
@@ -101,5 +102,27 @@ class ScrapedEvent(models.Model):
     def __unicode__(self):
         return u'%s' % self.title
 
-    def to_event(self):
-        pass
+    def to_event(self, save=True):
+        e = Event()
+        e.xid = self.externalid
+        e.title = self.title
+        e.slug = '-'.join(self.title.lower().split())
+        e.one_off_place = self.location
+        e.description = self.description or ''
+        # e.submitted_by = models.ForeignKey(User, blank=True, null=True)
+        e.created = models.DateTimeField(auto_now_add=True)
+        e.modified = models.DateTimeField(auto_now=True)
+        e.url = self.url or 'http://abextratech.com/eventure/'
+        e.image_url = self.imageurl or ''
+        e.video_url = self.videourl or ''
+        if save:
+            e.save()
+
+        et = EventTime()
+        et.event = e
+        et.start = datetime.datetime.combine(self.eventdate, datetime.time())
+        et.end = datetime.datetime.combine(self.eventdate, datetime.time())
+        if save:
+            et.save()
+
+        return e
