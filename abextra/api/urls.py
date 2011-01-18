@@ -8,8 +8,10 @@ from api.handlers import EventHandler
 auth = HttpBasicAuthentication()
 ad = { 'authentication': auth }
 
+event_resource = Resource(handler=EventHandler)
 # event_resource = Resource(handler=EventHandler, **ad)
-event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
+# event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
+# event_resource = Resource(handler=EventHandler, **ad)
 # event_resource = Resource(handler=EventHandler)
 
 urlpatterns = patterns('piston.authentication',

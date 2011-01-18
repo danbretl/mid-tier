@@ -37,7 +37,7 @@ class ScrapedEvent(models.Model):
     eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) # Field name made lowercase.
     eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) # Field name made lowercase.
 
-    categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
+    # categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
 
     class Meta:
         db_table = u'scraped_events_vw'

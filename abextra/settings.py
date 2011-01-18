@@ -15,8 +15,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_USER = DB_USER or 'abex_dev'
-DB_PASSWD = DB_PASSWD or 'abex113'
+DB_USER = 'abex_dev'
+DB_PASSWD = 'abex113'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.

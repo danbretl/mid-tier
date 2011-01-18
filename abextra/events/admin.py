@@ -26,7 +26,8 @@ class EventAdmin(admin.ModelAdmin):
     ]
 
 class ScrapedEventAdmin(admin.ModelAdmin):
-    filter_horizontal = ('categories',)
+    pass
+    # filter_horizontal = ('categories',)
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Event, EventAdmin)
