@@ -75,15 +75,16 @@ class EventTime(models.Model):
         })
 
 from places.models import Place, Point, City
-import datetime
+import datetime, re
+rg=re.compile(r'[a-z]*')
 class ScrapedEvent(models.Model):
     """Works with the sraped events view"""
-    internalid = models.IntegerField(primary_key=True, db_column='InternalID') # Field name made lowercase.
+    internalid = models.IntegerField(db_column='InternalID', primary_key=True) # Field name made lowercase.
     title = models.CharField(max_length=600, db_column='Title', blank=True) # Field name made lowercase.
     externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) # Field name made lowercase.
     eventdate = models.DateField(null=True, db_column='EventDate', blank=True) # Field name made lowercase.
-    starttime = models.DateTimeField(db_column='StartTime') # Field name made lowercase.
-    endtime = models.DateTimeField(db_column='EndTime') # Field name made lowercase.
+    starttime = models.TextField(db_column='StartTime') # Field name made lowercase. This field type is a guess.
+    endtime = models.TextField(db_column='EndTime') # Field name made lowercase. This field type is a guess.
     description = models.CharField(max_length=9000, db_column='Description', blank=True) # Field name made lowercase.
     url = models.CharField(max_length=600, db_column='URL', blank=True) # Field name made lowercase.
     imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) # Field name made lowercase.
@@ -93,8 +94,7 @@ class ScrapedEvent(models.Model):
     phone = models.CharField(max_length=45, db_column='Phone', blank=True) # Field name made lowercase.
     eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) # Field name made lowercase.
     eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) # Field name made lowercase.
-
-    # categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
+    cost = models.IntegerField(null=True, db_column='Cost', blank=True) # Field name made lowercase.
 
     class Meta:
         db_table = u'scraped_events_vw'
@@ -102,27 +102,27 @@ class ScrapedEvent(models.Model):
     def __unicode__(self):
         return u'%s' % self.title
 
+    def slugify(self):
+        return '-'.join(p for p in rg.findall(self.title.lower()) if p)[:50]
+
     def to_event(self, save=True):
         e = Event()
-        e.xid = self.externalid
+        e.xid = self.internalid
         e.title = self.title
-        e.slug = '-'.join(self.title.lower().split())
-        e.one_off_place = self.location
+        e.slug = self.slugify()
+        e.one_off_place = self.location or ''
         e.description = self.description or ''
         # e.submitted_by = models.ForeignKey(User, blank=True, null=True)
-        e.created = models.DateTimeField(auto_now_add=True)
-        e.modified = models.DateTimeField(auto_now=True)
         e.url = self.url or 'http://abextratech.com/eventure/'
         e.image_url = self.imageurl or ''
         e.video_url = self.videourl or ''
-        if save:
-            e.save()
+        if save: e.save()
 
-        et = EventTime()
-        et.event = e
-        et.start = datetime.datetime.combine(self.eventdate, datetime.time())
-        et.end = datetime.datetime.combine(self.eventdate, datetime.time())
-        if save:
-            et.save()
+        if self.eventdate:
+            et = EventTime()
+            et.event = e
+            et.start = datetime.datetime.combine(self.eventdate, self.starttime)
+            et.end = datetime.datetime.combine(self.eventdate, self.endtime)
+            if save: et.save()
 
         return e
