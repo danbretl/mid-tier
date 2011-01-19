@@ -11,4 +11,4 @@ class EventHandler(BaseHandler):
         otherwise a subset.
         """
         m = Event.objects
-        return m.filter(pk=event_id) if event_id else m.all()
+        return m.filter(pk=event_id) if event_id else m.all()[:20]
