@@ -3,6 +3,7 @@ from events.models import *
 
 
 class SubcategoriesInline(admin.TabularInline):
+    """Inline forms for subcategories"""
     model = Category
     fk = 'parent'
 
@@ -15,20 +16,24 @@ class CategoryAdmin(admin.ModelAdmin):
     ]
 
 class EventTimeInline(admin.StackedInline):
+    """Inline forms for event times"""
     model = EventTime
     fk = 'event'
 
 class EventCategorizer(admin.ModelAdmin):
+    """A skinny version of EventAdmin used for categorization parties"""
     search_fields = ('title',)
-    fields = ('title', 'description', 'one_off_place', 'url', 'image_url', 'video_url', 'categories')
+    fields = ('title', 'description', 'categories', 'one_off_place', 'url', 'image_url', 'video_url')
+    readonly_fields = ('title', 'description','one_off_place', 'url', 'image_url', 'video_url')
     list_display = ('title', 'place', 'created')
     list_filter = ('one_off_place',)
     filter_horizontal = ('categories',)
 
 class EventAdmin(admin.ModelAdmin):
+    """A full version of event administration form"""
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('categories',)
-    list_display = ('title', 'place', 'created')
+    list_display = ('title', 'place', 'created', 'cat_titles')
     list_filter = ('one_off_place',)
     inlines = [
         EventTimeInline

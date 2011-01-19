@@ -35,6 +35,10 @@ class Event(models.Model):
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
 
+    @property
+    def cat_titles(self):
+        return ', '.join(e.title for e in self.categories.all())
+
     class Meta:
         verbose_name = _('event')
         verbose_name_plural = _('events')
