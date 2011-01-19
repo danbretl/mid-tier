@@ -26,7 +26,7 @@ class EventCategorizer(admin.ModelAdmin):
     fields = ('title', 'description', 'categories', 'one_off_place', 'url', 'image_url', 'video_url')
     readonly_fields = ('title', 'description','one_off_place', 'url', 'image_url', 'video_url')
     list_display = ('title', 'place', 'created')
-    list_filter = ('one_off_place',)
+    list_filter = ('one_off_place', 'image_url')
     filter_horizontal = ('categories',)
 
 class EventAdmin(admin.ModelAdmin):

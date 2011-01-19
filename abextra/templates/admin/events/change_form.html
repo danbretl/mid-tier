@@ -28,9 +28,12 @@
     django.jQuery(function() {
         var url_p = django.jQuery('div.form-row.url').find('p');
         var link_html = '<a href="'+ url_p.html() + '">' + url_p.html() + '</a>';
-        // alert(link_html);
         url_p.replaceWith(link_html);
-    })
+
+        var img_url_p = django.jQuery('div.form-row.image_url').find('p');
+        var img_html = '<img src="'+ img_url_p.html() + '" height="15%" width="15%"/>';
+        img_url_p.replaceWith(img_html);
+    });
 </script>
 {% if change %}{% if not is_popup %}
   <ul class="object-tools"><li><a href="history/" class="historylink">{% trans "History" %}</a></li>
