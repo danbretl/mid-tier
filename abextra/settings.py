@@ -114,4 +114,5 @@ INSTALLED_APPS = (
     'piston',                       # api assistance
     'events',
     'places',
+    'behavior',
 )
