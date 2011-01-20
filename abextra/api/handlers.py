@@ -54,5 +54,5 @@ class EventActionHandler(BaseHandler):
     # @validate(EventActionForm)
     def create(self, request):
         print 'tada'
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         return rc.CREATED

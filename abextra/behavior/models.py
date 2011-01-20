@@ -14,12 +14,18 @@ class EventAction(models.Model):
     event = models.ForeignKey(Event)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
 
+    def __unicode__(self):
+        return "%s | %s | %s" % (self.user, self.event, self.action)
+
 class EventActionAggregate(models.Model):
     """Helps store/retreive precomputed user_category_action aggregates."""
     user = models.ForeignKey(User)
     category = models.ForeignKey(Category)
-    g = models.IntegerField(default=0)
-    v = models.IntegerField(default=0)
-    i = models.IntegerField(default=0)
-    x = models.IntegerField(default=0)
-    c = models.FloatField(default=0.0)
+    g = models.IntegerField(default=0, null=False)
+    v = models.IntegerField(default=0, null=False)
+    i = models.IntegerField(default=0, null=False)
+    x = models.IntegerField(default=0, null=False)
+    c = models.FloatField(default=0.0, null=False)
+
+    def __unicode__(self):
+        return "%s | %s" % (self.user, self.category)

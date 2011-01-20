@@ -1,19 +1,20 @@
 from django.contrib import admin
 from events.models import *
 
-
 class SubcategoriesInline(admin.TabularInline):
     """Inline forms for subcategories"""
     model = Category
     fk = 'parent'
 
 class CategoryAdmin(admin.ModelAdmin):
+    """Admin for categories"""
     search_fields = ('title',)
     # filter_horizontal = ('title',)
     list_display = ('title', 'parent', 'is_associative')
     inlines = [
         SubcategoriesInline
     ]
+admin.site.register(Category, CategoryAdmin)
 
 class EventTimeInline(admin.StackedInline):
     """Inline forms for event times"""
@@ -38,12 +39,8 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [
         EventTimeInline
     ]
+admin.site.register(Event, EventCategorizer)
 
 class ScrapedEventAdmin(admin.ModelAdmin):
     list_display = ('title',)
     # filter_horizontal = ('categories',)
-
-admin.site.register(Category, CategoryAdmin)
-# admin.site.register(Event, EventAdmin)
-admin.site.register(Event, EventCategorizer)
-# admin.site.register(ScrapedEvent, ScrapedEventAdmin)

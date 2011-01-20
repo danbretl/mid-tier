@@ -83,22 +83,22 @@ import datetime, re
 rg=re.compile(r'[a-z]*')
 class ScrapedEvent(models.Model):
     """Works with the sraped events view"""
-    internalid = models.IntegerField(db_column='InternalID', primary_key=True) # Field name made lowercase.
-    title = models.CharField(max_length=600, db_column='Title', blank=True) # Field name made lowercase.
-    externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) # Field name made lowercase.
-    eventdate = models.DateField(null=True, db_column='EventDate', blank=True) # Field name made lowercase.
-    starttime = models.TextField(db_column='StartTime') # Field name made lowercase. This field type is a guess.
-    endtime = models.TextField(db_column='EndTime') # Field name made lowercase. This field type is a guess.
-    description = models.CharField(max_length=9000, db_column='Description', blank=True) # Field name made lowercase.
-    url = models.CharField(max_length=600, db_column='URL', blank=True) # Field name made lowercase.
-    imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) # Field name made lowercase.
-    videourl = models.CharField(max_length=600, db_column='VideoURL', blank=True) # Field name made lowercase.
-    location = models.CharField(max_length=600, db_column='Location', blank=True) # Field name made lowercase.
-    email = models.CharField(max_length=150, db_column='Email', blank=True) # Field name made lowercase.
-    phone = models.CharField(max_length=45, db_column='Phone', blank=True) # Field name made lowercase.
-    eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) # Field name made lowercase.
-    eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) # Field name made lowercase.
-    cost = models.IntegerField(null=True, db_column='Cost', blank=True) # Field name made lowercase.
+    internalid = models.IntegerField(db_column='InternalID', primary_key=True) 
+    title = models.CharField(max_length=600, db_column='Title', blank=True) 
+    externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) 
+    eventdate = models.DateField(null=True, db_column='EventDate', blank=True) 
+    starttime = models.TextField(db_column='StartTime') # This field type is a guess.
+    endtime = models.TextField(db_column='EndTime') # This field type is a guess.
+    description = models.CharField(max_length=9000, db_column='Description', blank=True) 
+    url = models.CharField(max_length=600, db_column='URL', blank=True) 
+    imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) 
+    videourl = models.CharField(max_length=600, db_column='VideoURL', blank=True) 
+    location = models.CharField(max_length=600, db_column='Location', blank=True) 
+    email = models.CharField(max_length=150, db_column='Email', blank=True) 
+    phone = models.CharField(max_length=45, db_column='Phone', blank=True) 
+    eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) 
+    eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) 
+    cost = models.IntegerField(null=True, db_column='Cost', blank=True) 
 
     class Meta:
         db_table = u'scraped_events_vw'
