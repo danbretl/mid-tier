@@ -9,7 +9,7 @@ auth = HttpBasicAuthentication()
 ad = { 'authentication': auth }
 
 events = Resource(handler=EventHandler, **ad)
-event_actions = Resource(handler=EventActionHandler)
+event_actions = Resource(handler=EventActionHandler, **ad)
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
 
 urlpatterns = patterns('piston.authentication',
@@ -23,5 +23,5 @@ urlpatterns += patterns('',
     url(r'^events(/(?P<event_id>[^/]+))?/$', events),  # TODO should prolly remove pre-prod -- testing only
 
     url(r'^actions/$', event_actions),
-    url(r'^actions/(?P<event_id>[^/]+)/$', event_actions),
+    # url(r'^actions/(?P<event_id>[^/]+)/$', event_actions),
 )

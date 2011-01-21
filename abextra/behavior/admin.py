@@ -7,6 +7,6 @@ class EventActionAdmin(admin.ModelAdmin):
 admin.site.register(EventAction, EventActionAdmin)
 
 class EventActionAggregateAdmin(admin.ModelAdmin):
-    list_display = ('user', 'category', 'g', 'v', 'i', 'x', 'c')
-    fields = ('user', 'category', 'g', 'v', 'i', 'x', 'c')
+    list_display = ('user', 'category', 'g', 'v', 'i', 'x')
+    fields = ('user', 'category', 'g', 'v', 'i', 'x')
 admin.site.register(EventActionAggregate, EventActionAggregateAdmin)

@@ -12,6 +12,7 @@ class Category(models.Model):
     title = models.CharField(max_length=100)
     parent = models.ForeignKey('self', related_name='subcategories', blank=True, null=True)
     is_associative = models.BooleanField(default=True)
+    association_coefficient = models.FloatField(default=0)
 
     class Meta:
         verbose_name_plural = _('categories')
@@ -99,9 +100,11 @@ class ScrapedEvent(models.Model):
     eventhighlight = models.CharField(max_length=150, db_column='EventHighlight', blank=True) 
     eventorganizer = models.CharField(max_length=150, db_column='EventOrganizer', blank=True) 
     cost = models.IntegerField(null=True, db_column='Cost', blank=True) 
+    last_modified = models.DateTimeField(db_column='Last_Modified')
 
     class Meta:
         db_table = u'scraped_events_vw'
+        managed = False
 
     def __unicode__(self):
         return u'%s' % self.title

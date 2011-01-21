@@ -25,7 +25,6 @@ class EventActionAggregate(models.Model):
     v = models.IntegerField(default=0, null=False)
     i = models.IntegerField(default=0, null=False)
     x = models.IntegerField(default=0, null=False)
-    c = models.FloatField(default=0.0, null=False)
 
     def __unicode__(self):
         return "%s | %s" % (self.user, self.category)
