@@ -1,3 +1,11 @@
+# try to load local.settings used to override common settings
+try:
+    import settings_local
+except ImportError:
+    settings_local = None
+    print u'File settings_local.py is not found. Continuing with production settings.'
+
+
 # Django settings for abextra project.
 
 DEBUG = True
@@ -9,15 +17,8 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-DB_USER = 'abex_dev'
-DB_PASSWD = 'abex113'
-
-# try to load local.settings used to override common settings
-try:
-    from settings_local import *
-except ImportError:
-    print u'File settings_local.py is not found. Continuing with production settings.'
-
+DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
+DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.

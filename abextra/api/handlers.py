@@ -1,9 +1,9 @@
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
-#########
-# Event #
-#########
+##########
+# Events #
+##########
 from events.models import Event
 
 class EventHandler(BaseHandler):
@@ -23,15 +23,10 @@ class EventHandler(BaseHandler):
         m = Event.objects
         return m.filter(pk=event_id) if event_id else m.all()[:20]
 
-###############
-# EventAction #
-###############
-from django import forms
+############
+# Behavior #
+############
 from behavior.models import EventAction
-
-class EventActionForm(forms.ModelForm):
-    class Meta:
-        model = EventAction
 
 class EventActionHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
@@ -52,6 +47,7 @@ class EventActionHandler(BaseHandler):
         return response
 
     # @validate(EventActionForm)
+    # @require_extended
     def create(self, request):
         print 'tada'
         # import ipdb; ipdb.set_trace()
