@@ -21,14 +21,17 @@ def create_eventaction(request):
 
     data=dict(request.POST.iteritems())
     data.update(user=request.user.id)
-    try:
-        event_action = EventAction.objects.get(user=data['user'], event=data['event'])
-        f = EventActionForm(data=data, instance=event_action)
-    except EventAction.DoesNotExist:
-        f = EventActionForm(data=data)
 
+    f = EventActionForm(data=data)
     if f.is_valid():
-        f.save()
+        inst = f.instance
+        try:
+            event_action = EventAction.objects.get(user=inst.user, event=inst.event)
+        except EventAction.DoesNotExist:
+            event_action = inst
+        else:
+            event_action.action = inst.action
+        event_action.save()
         return rc.CREATED
     else:
         return rc.BAD_REQUEST
