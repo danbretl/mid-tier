@@ -9,7 +9,7 @@ from events.models import Event
 class EventHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = Event
-    fields = ('title', 'description', 'url', 'image_url', 'video_url', 'one_off_place',
+    fields = ('id', 'title', 'description', 'url', 'image_url', 'video_url', 'one_off_place',
         ('event_times', ('id', 'start_date', 'start_time', 'end_date', 'end_time', 'is_all_day')),
         ('categories', ('id', 'title')),
         ('place', ('title', 'description', 'url', 'email', 'phone', ('point', ('latitude','longitute')))),
