@@ -1,4 +1,4 @@
-import datetime
+import datetime, re
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -51,8 +51,10 @@ class Event(models.Model):
 class EventTime(models.Model):
     """EventTime model"""
     event = models.ForeignKey(Event, related_name='event_times')
-    start = models.DateTimeField()
-    end = models.DateTimeField(blank=True, null=True)
+    start_date = models.DateField()
+    start_time = models.TimeField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    end_time = models.TimeField(blank=True, null=True)
     is_all_day = models.BooleanField(default=False)
 
     class Meta:
@@ -69,18 +71,7 @@ class EventTime(models.Model):
     def __unicode__(self):
         return u'%s' % self.event.title
 
-    @permalink
-    def get_absolute_url(self):
-        return ('event_detail', None, {
-            'year': self.start.year,
-            'month': self.start.strftime('%b').lower(),
-            'day': self.start.day,
-            'slug': self.event.slug,
-            'event_id': self.event.id
-        })
 
-from places.models import Place, Point, City
-import datetime, re
 rg=re.compile(r'[a-z]*')
 class ScrapedEvent(models.Model):
     """Works with the sraped events view"""
@@ -88,8 +79,8 @@ class ScrapedEvent(models.Model):
     title = models.CharField(max_length=600, db_column='Title', blank=True) 
     externalid = models.CharField(max_length=90, db_column='ExternalID', blank=True) 
     eventdate = models.DateField(null=True, db_column='EventDate', blank=True) 
-    starttime = models.TextField(db_column='StartTime') # This field type is a guess.
-    endtime = models.TextField(db_column='EndTime') # This field type is a guess.
+    starttime = models.TimeField(db_column='StartTime')
+    endtime = models.TimeField(db_column='EndTime')
     description = models.CharField(max_length=9000, db_column='Description', blank=True) 
     url = models.CharField(max_length=600, db_column='URL', blank=True) 
     imageurl = models.CharField(max_length=600, db_column='ImageURL', blank=True) 
@@ -109,14 +100,15 @@ class ScrapedEvent(models.Model):
     def __unicode__(self):
         return u'%s' % self.title
 
-    def slugify(self):
+    @property
+    def slug(self):
         return '-'.join(p for p in rg.findall(self.title.lower()) if p)[:50]
 
     def to_event(self, save=True):
         e = Event()
         e.xid = self.internalid
         e.title = self.title
-        e.slug = self.slugify()
+        e.slug = self.slug
         e.one_off_place = self.location or ''
         e.description = self.description or ''
         # e.submitted_by = models.ForeignKey(User, blank=True, null=True)

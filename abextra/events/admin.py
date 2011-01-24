@@ -29,9 +29,11 @@ class EventCategorizer(admin.ModelAdmin):
     list_display = ('title', 'place', 'created')
     list_filter = ('one_off_place', 'image_url')
     filter_horizontal = ('categories',)
+admin.site.register(Event, EventCategorizer)
 
 class EventAdmin(admin.ModelAdmin):
     """A full version of event administration form"""
+    search_fields = ('title',)
     prepopulated_fields = {'slug': ('title',)}
     filter_horizontal = ('categories',)
     list_display = ('title', 'place', 'created', 'cat_titles')
@@ -39,7 +41,7 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [
         EventTimeInline
     ]
-admin.site.register(Event, EventCategorizer)
+# admin.site.register(Event, EventAdmin)
 
 class ScrapedEventAdmin(admin.ModelAdmin):
     list_display = ('title',)
