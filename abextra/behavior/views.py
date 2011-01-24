@@ -22,6 +22,11 @@ def create_eventaction(request):
     data=dict(request.POST.iteritems())
     data.update(user=request.user.id)
 
+    # the forms are case sensitive
+    action = data.get('action')
+    if action:
+        data['action'] = action.upper()
+
     f = EventActionForm(data=data)
     if f.is_valid():
         inst = f.instance
