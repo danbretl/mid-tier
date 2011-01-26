@@ -116,4 +116,6 @@ INSTALLED_APPS = (
     'events',
     'places',
     'behavior',
+    'learning',
+    'import',
 )
