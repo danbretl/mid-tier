@@ -47,6 +47,9 @@ class Event(models.Model):
     def __unicode__(self):
         return self.title
 
+class Occurrence(models.Model):
+    """Models a particular occurance of an event"""
+    pass
 
 class EventTime(models.Model):
     """EventTime model"""

@@ -40,3 +40,11 @@ def create_eventaction(request):
         return rc.CREATED
     else:
         return rc.BAD_REQUEST
+
+@require_auth
+def reset_behavior(request):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    return rc.ALL_OK
+        
