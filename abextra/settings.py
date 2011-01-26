@@ -1,3 +1,5 @@
+# Django settings for abextra project.
+
 # try to load local.settings used to override common settings
 try:
     import settings_local
@@ -5,16 +7,9 @@ except ImportError:
     settings_local = None
     print u'File settings_local.py is not found. Continuing with production settings.'
 
-
-# Django settings for abextra project.
-
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 ADMINS = (
     ('Pavel Katsev', 'pkatsev@abextratech.com'),
 )
-
 MANAGERS = ADMINS
 
 DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
@@ -113,9 +108,33 @@ INSTALLED_APPS = (
     'south',                        # migrations managements
     'registration',                 # user registration app
     'piston',                       # api assistance
-    'events',
-    'places',
-    'behavior',
-    'learning',
-    'import',
+    'events',                       # ABEX events
+    'places',                       # ABEX places | helps normalize places
+    'behavior',                     # ABEX behavior | user actions
+    'learning',                     # ABEX machine learning | recommendations
+    'import',                       # ABEX data preprocessing | scrape->django
 )
+
+#########################
+######### DEBUG #########
+#########################
+
+# assume that if local settings are present, that we're in dev debug mode
+# TODO clearly needs refactoring, this belongs directly in the settings_local
+DEBUG = bool(settings_local)
+TEMPLATE_DEBUG = DEBUG
+if settings_local:
+    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INSTALLED_APPS += ('debug_toolbar',)
+    NTERNAL_IPS = ('127.0.0.1',)
+    DEBUG_TOOLBAR_PANELS = (
+        # 'debug_toolbar.panels.version.VersionDebugPanel',
+        # 'debug_toolbar.panels.timer.TimerDebugPanel',
+        # 'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
+        # 'debug_toolbar.panels.headers.HeaderDebugPanel',
+        # 'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
+        # 'debug_toolbar.panels.template.TemplateDebugPanel',
+        # 'debug_toolbar.panels.sql.SQLDebugPanel',
+        # 'debug_toolbar.panels.signals.SignalDebugPanel',
+        # 'debug_toolbar.panels.logger.LoggingPanel',
+    )
