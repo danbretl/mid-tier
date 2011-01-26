@@ -22,11 +22,6 @@ class Event(models.Model):
     xid = models.CharField(_('external id'), max_length=200, blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
-
-    #TODO remove
-    place = models.ForeignKey(Place, blank=True, null=True)
-    one_off_place = models.CharField(max_length=200, blank=True)
-
     description = models.TextField(blank=True)
     submitted_by = models.ForeignKey(User, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -56,10 +51,7 @@ class Occurrence(models.Model):
 
 class EventTime(models.Model):
     """EventTime model"""
-    #TODO remove
-    event = models.ForeignKey(Event, related_name='event_times')
-
-    occurrence = models.ForeignKey(Occurrence, blank=True, null=True)  # TODO remove nullability
+    occurrence = models.ForeignKey(Occurrence)
     start_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
