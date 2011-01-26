@@ -14,13 +14,14 @@ MANAGERS = ADMINS
 
 DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
 DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
+DB_HOST = getattr(settings_local, 'DB_HOST', 'localhost')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'abexmid',                      # Or path to database file if using sqlite3.
         'USER': DB_USER,                        # Not used with sqlite3.
         'PASSWORD': DB_PASSWD,                  # Not used with sqlite3.
-        'HOST': 'localhost',                    # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': DB_HOST,                    # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
     },
     # 'scrape': {
