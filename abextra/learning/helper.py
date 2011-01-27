@@ -1,44 +1,29 @@
-import MySQLdb
+from events.models import Category
+from behavior.models import EventActionAggregate
 import random
-
-try:
-    conn = MySQLdb.connect(host = "testsv.abextratech.com",
-                           user = "abex_dev",
-                           passwd = "abex113",
-                           db = "abexmid")
-    cursor = conn.cursor()
-except MySQLdb.Error, e:
-    print "Error %d: %s" % (e.args[0],e.args[1])
-    sys.exit(1)
 
 
 # this could also be converted into an arbitrary depth tree    
-def Get_SubTree(cid):
-    results = Get_Children(cid)
+def Get_SubTree(cid=None):
+    results = get_children(cid)
     const = [Get_SubTree(x) for x in results]    
     if len(const)==0:    
         return (cid,[])
     else:
         return (cid,const)
 
-def Get_Children(cid="NULL"):
-    if cid!="NULL":
-        query = ("select id from abexmid.events_category where parent_id = %s")
-        cursor.execute(query,[cid])
-    else:
-        query = ("select id from abexmid.events_category where parent_id is NULL")        
-        cursor.execute(query)
-    return [row[0] for row in cursor.fetchall()]
+def get_children(category = None):
+    return Category.objects.filter(parent__exact=category)
 
 
 def generateRandomCategories(numCategories=50):
-    query = "select id from events_category order by RAND() limit %s"
-    cursor.execute(query,[numCategories])
-    return [row[0] for row in cursor.fetchall()]
+    #query = "select id from events_category order by RAND() limit %s"
+    return Category.objects.order_by('?')[:numCategories]
 
-def insertBehavior(user, category, G, V, I, X):
-    query="Insert into behavior_eventactionaggregate (user_id,category_id, g, v, i, x) Values (%s,%s,%s,%s,%s,%s)"
-    cursor.execute(query,[user, category, G, V, I ,X])
+def insertBehavior(userID, category, G, V, I, X):
+    #query="Insert into behavior_eventactionaggregate (user_id,category_id, g, v, i, x) Values (%s,%s,%s,%s,%s,%s)"
+    EventActionAggregate.objects.create(user_id=userID,category_id=category, g=G, v=V, i=I,x=X)
+
 
 def genMeanDev():
     mean = int(random.gauss(20,10))
@@ -49,7 +34,7 @@ def genMeanDev():
 
 def randomPopulateBehaviorDB(numUsers=100,numCategories=50):
     count=0
-    cursor.execute("truncate behavior_eventactionaggregate",list())
+
     while count<numUsers:
         categories = generateRandomCategories(numCategories)
         for category in categories:
@@ -88,8 +73,8 @@ def Child_Scores_Combinator(scores):
     return (sum([x[0] for x in scores]),sum([x[1] for x in scores]),sum([x[2] for x in scores]), sum([x[3] for x in scores]))
 
 def Get_Node_Val(uid,cid):
-    query = """select g,v,i,x
-             from abexmid.behavior_eventactionaggregate
-             where user_id = %s and category_id = %s """
-    cursor.execute(query,[uid,cid])
-    return cursor.fetchone()
+    try: 
+        e = EventActionAggregate.objects.values_list('g','v','i','x').get(user=uid,category=cid)
+    except:
+        return None
+    return  e

@@ -14,8 +14,8 @@ import helper
 # Output: Ordered list of EventIDs
 
 
-def TrivialAlgorithm(UserID, CategoryID="NULL", N = 20):
-    rootNodes = helper.Get_Children(CategoryID)
+def TrivialAlgorithm(UserID, CategoryID=None, N = 20):
+    rootNodes = helper.get_children(CategoryID)
     Category_Scores = [(category,User_Category_Score(UserID,category))for category in rootNodes if User_Category_Score(UserID,category)]
     #print "Category_Scores: ", Category_Scores
     TotalScore = sum ([x[1] for x in Category_Scores])
@@ -34,7 +34,6 @@ def SummaryScore(Sample_Distribution):
             dict[x]=1
     return dict
 
-
 #def trivial_Algorithm(UserID, N = 20):
 #    distribution = get_distribution(uid)        #distribution is a list of (CategoryID,score) where score is between 0 and 1
                                                 #The sum of all scores in the tuple adds up to 1
@@ -52,7 +51,6 @@ def User_Category_Score(uid,cid):
     if score: 
         return scoreFunction(score)
     return None
-
 
 def SampleDistribution(distribution,trials):
     # convert into a cumulative distribution
