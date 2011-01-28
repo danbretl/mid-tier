@@ -16,6 +16,9 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = _('categories')
 
+    def __unicode__(self):
+        return u'%s' % self.title
+
 
 class Event(models.Model):
     """Event model"""
