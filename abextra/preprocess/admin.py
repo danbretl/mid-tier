@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import ScrapedEvent
+from preprocess.models import ScrapedEvent
 
 class ScrapedEventAdmin(admin.ModelAdmin):
     list_display = ('title',)

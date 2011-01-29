@@ -17,22 +17,29 @@ DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
 DB_HOST = getattr(settings_local, 'DB_HOST', 'localhost')
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'abexmid',                      # Or path to database file if using sqlite3.
-        'USER': DB_USER,                        # Not used with sqlite3.
-        'PASSWORD': DB_PASSWD,                  # Not used with sqlite3.
-        'HOST': DB_HOST,                    # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'abexmid',
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWD,
+        'HOST': DB_HOST,                        # Set to empty string for localhost.
+        'PORT': '',                             # Set to empty string for default.
     },
-    # 'scrape': {
-    #     'ENGINE': 'django.db.backends.mysql',   # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-    #     'NAME': 'scrape',                       # Or path to database file if using sqlite3.
-    #     'USER': 'abex_dev',                        # Not used with sqlite3.
-    #     'PASSWORD': 'abex113',                  # Not used with sqlite3.
-    #     'HOST': 'testsv.abextratech.com',                    # Set to empty string for localhost. Not used with sqlite3.
-    #     'PORT': '',                             # Set to empty string for default. Not used with sqlite3.
-    # }
+    'scrape': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'scrape_alchemy',
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWD,
+        'HOST': DB_HOST,                        # Set to empty string for localhost.
+        'PORT': '',                             # Set to empty string for default.
+    }
 }
+
+# FIXME this router breakes tests during fixture loading, don't really need it right now
+# custom db routers
+# DATABASE_ROUTERS = ['preprocess.utils.PreprocessRouter']
+
+# don't run south migrations to setup test dbs
+SOUTH_TESTS_MIGRATE = False
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -113,7 +120,7 @@ INSTALLED_APPS = (
     'places',                       # ABEX places | helps normalize places
     'behavior',                     # ABEX behavior | user actions
     'learning',                     # ABEX machine learning | recommendations
-    'import',                       # ABEX data preprocessing | scrape->django
+    'preprocess',                       # ABEX data preprocessing | scrape->django
 )
 
 #########################
@@ -139,3 +146,9 @@ if settings_local:
         # 'debug_toolbar.panels.signals.SignalDebugPanel',
         # 'debug_toolbar.panels.logger.LoggingPanel',
     )
+
+import os
+PROJECT_ROOT = os.path.dirname(__file__)
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_ROOT,'fixtures'),
+)
