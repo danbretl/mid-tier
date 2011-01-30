@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from events.models import Category
-from behavior.models import EventActionAggregate
-from behavior.utils import update_aggregate_behavior
+from events.models import Category, Event
+from behavior.models import EventAction, EventActionAggregate
 
 
 class EventActionAggregateTest(TestCase):
@@ -45,8 +44,24 @@ class EventActionAggregateTest(TestCase):
         self.aggr.delete()
 
 
-# class UpdateAggregateBehaviorTest(TestCase):
-#     fixtures = ['auth.json', 'categories.json']
-# 
-#     def setUp(self):
-#         user = User.objects.get(username='tester_api')
+class UpdateAggregateBehaviorSignalTest(TestCase):
+    fixtures = ['auth.json', 'categories.json', 'events.json']
+
+    def setUp(self):
+        user = User.objects.get(username='tester_api')
+        event = Event.objects.get(id=1)
+        # categorize events with with the first four cats
+        categories = Category.objects.filter(id__in=(1,2,3,4))
+        for category in categories:
+            event.categories.add(category)
+        # setup some existing aggregates
+        for category in categories[:2]:
+            EventActionAggregate(user=user, category=category, g=1).save()
+        self.user = user
+        self.categories = categories
+        self.event = event
+
+    def test_update(self):
+        EventAction(user=self.user, event=self.event, action='X').save()
+        user_aggregates = EventActionAggregate.objects.filter(user=self.user)
+        self.assertEqual(len(user_aggregates), 4)

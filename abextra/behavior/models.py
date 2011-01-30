@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 from events.models import Event, Category
 
 class EventAction(models.Model):
@@ -35,3 +36,36 @@ class EventActionAggregate(models.Model):
         if commit:
             self.save()
         return self
+
+# ---- signals ----
+
+# FIXME too naive doesn't decrease counts for updated event actions
+# FIXME needs to be much more optimized
+# FIXME indexes on `action aggregate`{user_id, category_id}
+# FIXME eager event / category relateds, see .select
+# FIXME refactor for a bulk update
+def update_aggregate_behavior_sig_hangler(sender, instance, **kwargs):
+    """
+    Increases the aggregate count for a particular user's event action.
+    Since, an event has multiple categories, we must update all aggregates
+    accordingly.
+    """
+    event_action = instance
+    event_categories = set(event_action.event.categories.all())
+    aggregates = EventActionAggregate.objects.filter(
+        user=event_action.user,
+        category__in=event_categories
+    )
+    # process existing aggregates
+    for aggregate in aggregates:
+        event_categories.remove(aggregate.category)
+        aggregate.update_action_count(event_action.action, commit=True)
+
+    # process new aggregates (remaining in event categories)
+    for category in event_categories:
+        aggregate = EventActionAggregate(
+            user=event_action.user,
+            category=category
+        ).update_action_count(event_action.action, commit=True)
+
+post_save.connect(update_aggregate_behavior_sig_hangler, sender=EventAction)

@@ -46,6 +46,4 @@ def create_eventaction(request):
 def reset_behavior(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-
     return rc.ALL_OK
-        
