@@ -13,10 +13,10 @@ class EventHandler(BaseHandler):
     model = Event
     fields = ('id', 'title', 'description', 'url', 'image_url', 'video_url',
         ('occurrences', ('id', 'place', 'one_off_place',
-		('event_times', ('id', 'start_date', 'start_time', 'end_date', 'end_time', 'is_all_day')),
-		('place', ('id', 'title', 'unit', 'phone', 'url', 'email', 'description', 'created',
-			('point', ('id', 'latitude', 'longitude', 'address', 'zip', 'country',
-				('city', ('id', 'city', 'state'))))))
+        ('event_times', ('id', 'start_date', 'start_time', 'end_date', 'end_time', 'is_all_day')),
+        ('place', ('id', 'title', 'unit', 'phone', 'url', 'email', 'description', 'created',
+            ('point', ('id', 'latitude', 'longitude', 'address', 'zip', 'country',
+                ('city', ('id', 'city', 'state'))))))
         )),
         ('categories', ('id', 'title')),
         ('place', ('title', 'description', 'url', 'email', 'phone', ('point', ('latitude','longitute')))),
@@ -27,12 +27,18 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given,
         otherwise a subset.
         """
+        m = Event.objects
 
         # FIXME this should not live here
         recommended_categories = ml.recommend_categories(request.user)
+        # FIXME brute force
+        events = []
+        for category in recommended_categories:
+            event = m.filter(categories__exact=1).order_by('?')[:1][0]
+            events.append(event)
 
-        m = Event.objects
-        return m.filter(pk=event_id) if event_id else m.all()[:20]
+        return m.filter(pk=event_id) if event_id else events
+        # return m.filter(pk=event_id) if event_id else m.all()[:20]
 
 ############
 # Behavior #
