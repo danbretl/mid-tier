@@ -7,6 +7,7 @@
 import numpy
 import random
 import helper
+from events.models import Category
 
 def recommend_categories(user):
     return tree_walk_algorithm(user)
@@ -21,14 +22,17 @@ def tree_walk_algorithm(user, category=None, N = 20):
         N is the number of events to return and has a default of 20
     Output: Ordered list of EventIDs
     """
-    rootNodes = helper.get_children(category)
+   
     Category_Scores = get_category_score(user,category)
-    #print "Category_Scores: ", Category_Scores
-    TotalScore = sum ([x[1] for x in Category_Scores]) + .0001
-    Normalized_Scores = [(x[0],x[1]*1.0/TotalScore) for x in Category_Scores]
+    TotalScore = sum ([x[1] for x in Category_Scores])
+    if TotalScore!=0:
+        Normalized_Scores = [(x[0],x[1]*1.0/TotalScore) for x in Category_Scores]
+    else:
+        size = len(Category_Scores) 
+        Normalized_Scores = [(x[0],1.0/size) for x in Category_Scores]
     #Flattened_Distribution = flatten(Normalized_Scores)
-    Flattened_Distribution = Normalized_Scores
-    return SampleDistribution(Flattened_Distribution, N)
+    #print "Normalized Scores: ", Normalized_Scores
+    return SampleDistribution(Normalized_Scores, N)
 
 def SummaryScore(Sample_Distribution):
     dict = {}
@@ -38,6 +42,35 @@ def SummaryScore(Sample_Distribution):
         except:
             dict[x]=1
     return dict
+
+def normalize(lst):
+    """normalize all values so they add up to 1"""
+    s = float(sum(lst))
+    if s!=0:
+        return [e / s for e in lst]
+    else:
+        return [1/len(lst) for e in lst]
+
+def decrease(x, d):
+    """decrease d by a factor that is smaller
+    and smaller the greater the difference is"""
+    # limit
+    if x == 0:
+        return d
+    return d * (1 - math.exp(-d/x))
+
+def flatten_expo(x, lst):
+    """remove part of the distance towards the mean"""
+    m = sum(lst) / float(len(lst)) # mean
+    
+    newlst = []
+    for e in lst:
+        if e > m:
+            newlst.append(m+decrease(x, e-m))
+        else:
+            newlst.append(m-decrease(x, m-e))
+    return normalize(newlst)
+
 
 #def trivial_Algorithm(UserID, N = 20):
 #    distribution = get_distribution(uid)        #distribution is a list of (CategoryID,score) where score is between 0 and 1
@@ -87,6 +120,12 @@ def parent_child_score_combinator(parent_category_score,category_scores):
     simple_constant = 0.5 / number_of_siblings
     # print "Parent Category Score: ", parent_category_score
     # print "Child category scores: ", category_scores
-    score = sum([x[1] for x in category_scores])
-    return [(parent_category_score[0],parent_category_score[1] + score)] + category_scores
+    score = sum([x[1] for x in category_scores]) * simple_constant
+    try:
+        association_coefficient = Category.objects.get(id=parent_category_score[0])
+    except:
+        association_coefficient = 0
+    c_s = [(parent_category_score[0],parent_category_score[1] + score)] + category_scores
+    return zip([x[0] for x in c_s],flatten_expo(association_coefficient,[x[1] for x in c_s]))
+
 

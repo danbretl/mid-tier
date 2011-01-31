@@ -27,6 +27,10 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given,
         otherwise a subset.
         """
+
+        # FIXME this should not live here
+        recommended_categories = ml.recommend_categories(request.user)
+
         m = Event.objects
 
         # FIXME this should not live here
