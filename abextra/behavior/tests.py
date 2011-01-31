@@ -54,14 +54,39 @@ class UpdateAggregateBehaviorSignalTest(TestCase):
         categories = Category.objects.filter(id__in=(1,2,3,4))
         for category in categories:
             event.categories.add(category)
-        # setup some existing aggregates
-        for category in categories[:2]:
-            EventActionAggregate(user=user, category=category, g=1).save()
         self.user = user
         self.categories = categories
         self.event = event
 
-    def test_update(self):
-        EventAction(user=self.user, event=self.event, action='X').save()
-        user_aggregates = EventActionAggregate.objects.filter(user=self.user)
-        self.assertEqual(len(user_aggregates), 4)
+    def test_update_with_existing(self):
+        """
+        User has preexisting aggregates which should be properly handled.
+        If event action is `fresh`, do a simple +1 count for the categories.
+        If event action is a `change` of action, do a -1 count for the old action
+        and +1 for the new action.
+        """
+        # setup some existing aggregates
+        for category in self.categories[:2]:
+            EventActionAggregate(user=self.user, category=category, i=1).save()
+
+        # insert a new event action
+        EventAction(user=self.user, event=self.event, action='I').save()
+
+        # make some assertions
+        user_agg_qs_base = EventActionAggregate.objects.filter(user=self.user)
+        user_agg_qs_exist = user_agg_qs_base.filter(category__in=self.categories[:2])
+        user_agg_qs_fresh = user_agg_qs_base.filter(category__in=self.categories[2:])
+
+        self.assertEqual(user_agg_qs_base.count(), 4)
+        self.assertEqual(user_agg_qs_exist.filter(g=0, v=0, i=2, x=0).count(), 2)
+        self.assertEqual(user_agg_qs_fresh.filter(g=0, v=0, i=1, x=0).count(), 2)
+
+        # update the same event
+        event_action = EventAction.objects.get(user=self.user, event=self.event)
+        event_action.action = 'X'
+        event_action.save()
+
+        # make some assertions
+        self.assertEqual(user_agg_qs_base.count(), 4)
+        self.assertEqual(user_agg_qs_exist.filter(g=0, v=0, i=1, x=1).count(), 2)
+        self.assertEqual(user_agg_qs_fresh.filter(g=0, v=0, i=0, x=1).count(), 2)
