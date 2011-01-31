@@ -8,20 +8,28 @@ import numpy
 import random
 import helper
 
-# All algorithms follow this same fundamental structure
-# Input: UserID as input 
-#        N is the number of events to return and has a default of 20
-# Output: Ordered list of EventIDs
-def tree_walk__algorithm(UserID, CategoryID=None, N = 20):
-    rootNodes = helper.get_children(CategoryID)
-    Category_Scores = get_category_score(UserID,CategoryID)
+def recommend_categories(user):
+    return tree_walk_algorithm(user)
+
+def recommend_categories_only_subchildren(user, category):
+    return tree_walk_algorithm(user, category)
+
+def tree_walk_algorithm(user, category=None, N = 20):
+    """
+    All algorithms follow this same fundamental structure
+        Input: UserID as input 
+        N is the number of events to return and has a default of 20
+    Output: Ordered list of EventIDs
+    """
+    rootNodes = helper.get_children(category)
+    Category_Scores = get_category_score(user,category)
     #print "Category_Scores: ", Category_Scores
-    TotalScore = sum ([x[1] for x in Category_Scores])
+    TotalScore = sum ([x[1] for x in Category_Scores]) + .0001
     Normalized_Scores = [(x[0],x[1]*1.0/TotalScore) for x in Category_Scores]
     #Flattened_Distribution = flatten(Normalized_Scores)
     Flattened_Distribution = Normalized_Scores
     return SampleDistribution(Flattened_Distribution, N)
-    
+
 def SummaryScore(Sample_Distribution):
     dict = {}
     for x in Sample_Distribution:
@@ -76,10 +84,9 @@ def get_category_score(uid,cid):
 
 def parent_child_score_combinator(parent_category_score,category_scores):
     number_of_siblings = len(category_scores)
-    simple_constant = 0.5 / number_of_siblings 
-    print "Parent Category Score: ", parent_category_score
-    print "Child category scores: ", category_scores
+    simple_constant = 0.5 / number_of_siblings
+    # print "Parent Category Score: ", parent_category_score
+    # print "Child category scores: ", category_scores
     score = sum([x[1] for x in category_scores])
     return [(parent_category_score[0],parent_category_score[1] + score)] + category_scores
-
 

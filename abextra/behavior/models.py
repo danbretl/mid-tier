@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import pre_save
 from events.models import Event, Category
 
 class EventAction(models.Model):
@@ -82,4 +82,5 @@ def update_aggregate_behavior_sig_hangler(sender, instance, **kwargs):
             category=category
         ).update_action_count(event_action.action, commit=True)
 
+# FIXME pre_save is more fragile than post_save, but we need to grab the old action
 pre_save.connect(update_aggregate_behavior_sig_hangler, sender=EventAction)

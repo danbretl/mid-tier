@@ -1,6 +1,8 @@
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
+from learning import ml
+
 ##########
 # Events #
 ##########
@@ -25,6 +27,10 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given,
         otherwise a subset.
         """
+
+        # FIXME this should not live here
+        recommended_categories = ml.recommend_categories(request.user)
+
         m = Event.objects
         return m.filter(pk=event_id) if event_id else m.all()[:20]
 
