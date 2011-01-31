@@ -4,6 +4,7 @@ from piston.utils import rc
 
 from behavior.models import EventAction
 from behavior.forms import EventActionForm
+from behavior.utils import update_aggregate_behavior
 
 def require_auth(func):
     """Decorator for requiring authentication."""
@@ -45,6 +46,4 @@ def create_eventaction(request):
 def reset_behavior(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-
     return rc.ALL_OK
-        

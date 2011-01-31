@@ -10,8 +10,11 @@ class EventHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
     model = Event
     fields = ('id', 'title', 'description', 'url', 'image_url', 'video_url',
-        ('occurrences', ('id', 'one_off_place', (
-                'event_times', ('id', 'start_date', 'start_time', 'end_date', 'end_time', 'is_all_day'))
+        ('occurrences', ('id', 'place', 'one_off_place',
+		('event_times', ('id', 'start_date', 'start_time', 'end_date', 'end_time', 'is_all_day')),
+		('place', ('id', 'title', 'unit', 'phone', 'url', 'email', 'description', 'created',
+			('point', ('id', 'latitude', 'longitude', 'address', 'zip', 'country',
+				('city', ('id', 'city', 'state'))))))
         )),
         ('categories', ('id', 'title')),
         ('place', ('title', 'description', 'url', 'email', 'phone', ('point', ('latitude','longitute')))),

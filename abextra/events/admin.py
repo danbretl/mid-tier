@@ -16,25 +16,34 @@ class CategoryAdmin(admin.ModelAdmin):
     ]
 admin.site.register(Category, CategoryAdmin)
 
-# class EventTimeInline(admin.StackedInline):
-#     """Inline forms for event times"""
-#     model = EventTime
-#     fk = 'occurrence'
-# 
-# class OccurrenceInline(admin.StackedInline):
-#     model = Occurrence
-#     fk = 'event'
-# 
-# class EventCategorizer(admin.ModelAdmin):
-#     """A skinny version of EventAdmin used for categorization parties"""
-#     search_fields = ('title',)
-#     fields = ('title', 'description', 'categories', 'url', 'image_url', 'video_url')
-#     readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')
-#     list_display = ('title', 'place', 'created')
-#     list_filter = ('image_url')
-#     filter_horizontal = ('categories',)
-# admin.site.register(Event, EventCategorizer)
-# 
+# FIXME currently, django does not support nested inlines http://code.djangoproject.com/ticket/9025
+class EventTimeInline(admin.StackedInline):
+    """Inline forms for event times"""
+    model = EventTime
+    fk = 'occurrence'
+
+class OccurrenceInline(admin.StackedInline):
+    model = Occurrence
+    fk = 'event'
+    fields = ('one_off_place',)
+    readonly_fields = ('one_off_place',)
+    inlines = [
+        EventTimeInline
+    ]
+
+class EventCategorizer(admin.ModelAdmin):
+    """A skinny version of EventAdmin used for categorization parties"""
+    search_fields = ('title',)
+    fields = ('title', 'description', 'categories', 'url', 'image_url', 'video_url')
+    readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')
+    list_display = ('title', 'created')
+    list_filter = ('image_url',)
+    filter_horizontal = ('categories',)
+    inlines = [
+        OccurrenceInline
+    ]
+admin.site.register(Event, EventCategorizer)
+
 # class EventAdmin(admin.ModelAdmin):
 #     """A full version of event administration form"""
 #     search_fields = ('title',)
@@ -46,7 +55,3 @@ admin.site.register(Category, CategoryAdmin)
 #         EventTimeInline
 #     ]
 # # admin.site.register(Event, EventAdmin)
-# 
-# class ScrapedEventAdmin(admin.ModelAdmin):
-#     list_display = ('title',)
-#     # filter_horizontal = ('categories',)

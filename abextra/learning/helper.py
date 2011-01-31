@@ -4,13 +4,16 @@ import random
 
 
 # this could also be converted into an arbitrary depth tree    
-def Get_SubTree(cid=None):
+def get_subTree(cid=None):
     results = get_children(cid)
-    const = [Get_SubTree(x) for x in results]    
-    if len(const)==0:    
-        return (cid,[])
+    const = [b for a in [get_subTree(x) for x in results] for b in a if a]    
+    if len(const)==0: 
+        return [cid]
     else:
-        return (cid,const)
+        if cid:
+            return [cid] + const
+        else:
+            return const
 
 def get_children(category = None):
     return Category.objects.filter(parent__exact=category)
@@ -53,26 +56,8 @@ def randomPopulateBehaviorDB(numUsers=100,numCategories=50):
             insertBehavior(count,category,G,V,I,X)
         count=count+1
 
-    
-def CategoryDistribution(uid):
-    categories=Get_Children()
-    print [(y,Get_SubTree_Score(uid,y)) for y in Get_Children()]
 
-# Combine scores for children
-# Combine scores for node + children
-def Get_SubTree_Score(uid,cid):
-    children = Get_Children(cid)
-    if len(children) == 0 : return Get_Node_Val(uid,cid)
-    else: return Parent_Child_Score_Combinator(Get_Node_Val(uid,cid), [Get_SubTree_Score(uid,x) for x in Get_Children(cid)])
-
-def Parent_Child_Score_Combinator(score,scores):
-    return Child_Scores_Combinator(scores + [score])
-
-def Child_Scores_Combinator(scores):
-    scores = [score for score in scores if score]          # filter out none type scores
-    return (sum([x[0] for x in scores]),sum([x[1] for x in scores]),sum([x[2] for x in scores]), sum([x[3] for x in scores]))
-
-def Get_Node_Val(uid,cid):
+def get_node_val(uid,cid):
     try: 
         e = EventActionAggregate.objects.values_list('g','v','i','x').get(user=uid,category=cid)
     except:
