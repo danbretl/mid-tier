@@ -6,11 +6,11 @@ import random
 # this could also be converted into an arbitrary depth tree    
 def Get_SubTree(cid=None):
     results = get_children(cid)
-    const = [Get_SubTree(x) for x in results]    
+    const = [b for a in [Get_SubTree(x) for x in results] for b in a if a]    
     if len(const)==0:    
-        return (cid,[])
+        return [cid]
     else:
-        return (cid,const)
+        return [cid] + const
 
 def get_children(category = None):
     return Category.objects.filter(parent__exact=category)
