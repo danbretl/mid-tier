@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_delete
 from events.models import Event, Category
 
 class EventAction(models.Model):
@@ -43,7 +43,7 @@ class EventActionAggregate(models.Model):
 # FIXME indexes on `action aggregate`{user_id, category_id}
 # FIXME eager event / category related fields, see .defer
 # FIXME refactor for a bulk update
-def update_aggregate_behavior_sig_hangler(sender, instance, **kwargs):
+def update_aggregate_on_event_action_save(sender, instance, **kwargs):
     """
     Increases the aggregate count for a particular user's event action.
     Since, an event has multiple categories, we must update all aggregates
@@ -83,4 +83,16 @@ def update_aggregate_behavior_sig_hangler(sender, instance, **kwargs):
         ).update_action_count(event_action.action, commit=True)
 
 # FIXME pre_save is more fragile than post_save, but we need to grab the old action
-pre_save.connect(update_aggregate_behavior_sig_hangler, sender=EventAction)
+pre_save.connect(update_aggregate_on_event_action_save, sender=EventAction)
+
+# def update_aggregate_on_event_action_delete(sender, instance, **kwargs):
+#     """Decreases aggregates after a deletion of event action."""
+#     event_action = instance
+#     aggregates = EventActionAggregate.objects.filter(
+#         user=event_action.user,
+#         category__in=event_action.event.categories.all()
+#     )
+#     for aggregate in aggregates:
+#         aggregate.delete()
+# 
+# post_delete.connect(update_aggregate_on_event_action_delete, sender=EventAction)

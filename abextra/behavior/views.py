@@ -4,6 +4,7 @@ from piston.utils import rc
 
 from behavior.models import EventAction
 from behavior.forms import EventActionForm
+from behavior.utils import reset_user_behavior
 
 def require_auth(func):
     """Decorator for requiring authentication."""
@@ -41,8 +42,15 @@ def create_eventaction(request):
     else:
         return rc.BAD_REQUEST
 
+# FIXME this is a very dangerous request handler
+# FIXME perhaps we should make it a post or something :: just for an impression of 
 @require_auth
 def reset_behavior(request):
+    """
+    Resets behavior by clearing all user's event actions and hence action
+    aggregates.
+    """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
+    reset_user_behavior(request.user)
     return rc.ALL_OK

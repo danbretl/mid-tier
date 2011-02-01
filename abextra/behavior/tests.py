@@ -90,3 +90,10 @@ class UpdateAggregateBehaviorSignalTest(TestCase):
         self.assertEqual(user_agg_qs_base.count(), 4)
         self.assertEqual(user_agg_qs_exist.filter(g=0, v=0, i=1, x=1).count(), 2)
         self.assertEqual(user_agg_qs_fresh.filter(g=0, v=0, i=0, x=1).count(), 2)
+
+    # def test_delete_user_action(self):
+    #     event_action = EventAction(user=self.user, event=self.event, action='G')
+    #     event_action.save()
+    #     event_action.delete()
+    #     self.assertEqual(EventActionAggregate.objects.filter(user=self.user).count(), 0)
+
