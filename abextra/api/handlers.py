@@ -1,7 +1,7 @@
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
-from learning import ml
+# from learning import ml
 
 ##########
 # Events #
@@ -76,27 +76,23 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given,
         otherwise a subset.
         """
-
-        # FIXME this should not live here
-        recommended_categories = ml.recommend_categories(request.user)
-
         m = Event.objects
 
-        # FIXME this should not live here
-        recommended_categories = ml.recommend_categories(request.user)
-        # FIXME brute force
-        events = set()
-        for category in recommended_categories:
-            event = m.filter(categories__exact=1).order_by('?')[:1][0]
-            events.add(event)
-
-        # TODO make sure to not send Xed events - check event actions
-        # FIXME make more efficient
-        actions_x = EventAction.objects.filter(user=request.user, event__in=events, action='X')
-        removed_events = set((a.event for a in actions_x))
-
-        return m.filter(pk=event_id) if event_id else list(events - removed_events)
-        # return m.filter(pk=event_id) if event_id else m.all()[:20]
+        # # FIXME this should not live here
+        # recommended_categories = ml.recommend_categories(request.user)
+        # # FIXME brute force
+        # events = set()
+        # for category in recommended_categories:
+        #     event = m.filter(categories__exact=1).order_by('?')[:1][0]
+        #     events.add(event)
+        # 
+        # # TODO make sure to not send Xed events - check event actions
+        # # FIXME make more efficient
+        # actions_x = EventAction.objects.filter(user=request.user, event__in=events, action='X')
+        # removed_events = set((a.event for a in actions_x))
+        # 
+        # return m.filter(pk=event_id) if event_id else list(events - removed_events)
+        return m.filter(pk=event_id) if event_id else m.all()[:20]
 
 ############
 # Behavior #
