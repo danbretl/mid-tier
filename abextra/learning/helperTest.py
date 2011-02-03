@@ -15,3 +15,4 @@ from CategoryTree import CategoryTree
 a = CategoryTree(1)
 print "Tree for user 1:", a
 print "Type of a: ", type(a)
+

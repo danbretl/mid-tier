@@ -9,6 +9,7 @@ import random
 import helper
 import settings
 from events.models import Category
+import CategoryTree
 
 def recommend_categories(user):
     return tree_walk_algorithm(user)
@@ -16,14 +17,13 @@ def recommend_categories(user):
 def recommend_categories_only_subchildren(user, category):
     return tree_walk_algorithm(user, category)
 
-def tree_walk_algorithm(user, category=None, N = 20):
+def score_algorithm(user, category=None, N = 20):
     """
     All algorithms follow this same fundamental structure
         Input: User as input 
         N is the number of events to return and has a default of 20
     Output: Ordered list of EventIDs
     """
-   
     Category_Scores = get_category_score(user,category)
     TotalScore = sum ([x[1] for x in Category_Scores])
     if TotalScore!=0:
@@ -34,6 +34,11 @@ def tree_walk_algorithm(user, category=None, N = 20):
     #Flattened_Distribution = flatten(Normalized_Scores)
     #print "Normalized Scores: ", Normalized_Scores
     return SampleDistribution(Normalized_Scores, N)
+
+
+def tree_walk_algorithm(user,category=None, N=20):
+    tree = CategoryTree(user)
+
 
 def SummaryScore(Sample_Distribution):
     dict = {}
@@ -117,3 +122,29 @@ def propagator(parent_category_score,category_scores):
     return zip([x[0] for x in c_s],flatten_expo(association_coefficient,[x[1] for x in c_s]))
 
 
+
+
+def normalize(user_CategoryTree):
+    
+
+def probabilistic_walk(user_CategoryTree,key="score",parent_score=1.0):
+    probability = "probabilistic_walk"
+
+    scores = user_CategoryTree.get_key_value(key)
+    for tree in user_CategoryTree.get_children():
+        scores+ = tree.get_key_value(key)
+    
+    count = len(user_CategoryTree.get_children()) + 1
+        
+    if scores = 0:
+        user_CategoryTree.insert_key_value(probability,parent_score/count)
+        for tree in user_CategoryTree.get_children():
+            tree.insert_key_value(probability,parent_score/count)
+    else:
+        user_CategoryTree.insert_key_value(probability,parent_score*user_CategoryTree.get_key_value(key)/count)
+        for tree in user_CategoryTree.get_children():
+            tree.insert_key_value(probability,parent_score *tree.get_key_value(key)/scores)
+
+    for tree in user_Category.get_children(key):
+        probabilistic_walk(tree,key,tree.get_key_value(probability)/scores)
+    
