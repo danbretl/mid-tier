@@ -11,6 +11,8 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     # filter_horizontal = ('title',)
     list_display = ('title', 'parent', 'is_associative')
+    fields = ('title', 'parent', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width')
+    readonly_fields = ('icon_height', 'icon_width')
     inlines = [
         SubcategoriesInline
     ]

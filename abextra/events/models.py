@@ -12,6 +12,9 @@ class Category(models.Model):
     parent = models.ForeignKey('self', related_name='subcategories', blank=True, null=True)
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
+    icon = models.ImageField(upload_to="category_icons", height_field='icon_height', width_field='icon_width', blank=True, null=True)
+    icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
+    icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name_plural = _('categories')
