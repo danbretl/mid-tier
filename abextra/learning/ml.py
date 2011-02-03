@@ -7,6 +7,7 @@
 import numpy
 import random
 import helper
+import settings
 from events.models import Category
 
 def recommend_categories(user):
@@ -18,7 +19,7 @@ def recommend_categories_only_subchildren(user, category):
 def tree_walk_algorithm(user, category=None, N = 20):
     """
     All algorithms follow this same fundamental structure
-        Input: UserID as input 
+        Input: User as input 
         N is the number of events to return and has a default of 20
     Output: Ordered list of EventIDs
     """
@@ -72,19 +73,6 @@ def flatten_expo(x, lst):
     return normalize(newlst)
 
 
-#def trivial_Algorithm(UserID, N = 20):
-#    distribution = get_distribution(uid)        #distribution is a list of (CategoryID,score) where score is between 0 and 1
-                                                #The sum of all scores in the tuple adds up to 1
-# usage example:
-# f = ScoringFunction((2,2,2,3),(2,2,2,1))
-# print f((2,2,2,1))
-def scoring_function(tup = (1,1,1,0.9), pow = (1,1,1)):
-    G,V,I,X = tup
-    g,v,i = pow
-    return (lambda y: ((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I)/(X**y[3])  )
-
-scoringFunction = scoring_function((1,1,1,0.9))
-
 def SampleDistribution(distribution,trials):
     # convert into a cumulative distribution
     # Generate random number and return numbers per range
@@ -105,17 +93,17 @@ def child_scores_combinator(scores):
     scores = [score for score in scores if score]          # filter out none type scores
     return (sum([x[0] for x in scores]),sum([x[1] for x in scores]),sum([x[2] for x in scores]), sum([x[3] for x in scores]))
 
-def get_category_score(uid,cid):
-    child_scores = [get_category_score(uid, x) for x in helper.get_children(cid)]
+def get_category_scores(uid,cid):
+    child_scores = [get_category_scores(uid, x) for x in helper.get_children(cid)]
     child_scores = [b for a in child_scores for b in a]
     score = helper.get_node_val(uid,cid)
     parent_score = (cid,scoringFunction(score)) if score else (cid,scoringFunction((0,0,0,0)))
     if cid:
-        return parent_child_score_combinator(parent_score,child_scores) if child_scores else [parent_score]
+        return propagator(parent_score,child_scores) if child_scores else [parent_score]
     else:
         return child_scores
 
-def parent_child_score_combinator(parent_category_score,category_scores):
+def propagator(parent_category_score,category_scores):
     number_of_siblings = len(category_scores)
     simple_constant = 0.5 / number_of_siblings
     # print "Parent Category Score: ", parent_category_score
