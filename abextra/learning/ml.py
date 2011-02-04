@@ -12,11 +12,10 @@ from events.models import Category
 from CategoryTree import CategoryTree
 
 def recommend_categories(user):
-    #return tree_walk_algorithm(user)
-    return ml.random_tree_walk_algorithm(user)
+    return random_tree_walk_algorithm(user)
 
 def recommend_categories_only_subchildren(user, category):
-    return tree_walk_algorithm(user, category)
+    return random_tree_walk_algorithm(user, category)
 
 def score_algorithm(user, category=None):
     """
