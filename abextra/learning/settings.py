@@ -7,6 +7,8 @@ Xp = 0.9               # X's power in scoring function
 learning_constant = 3  # learning constant. Affects learning speed.
                        # Higher values result in slower learning
 
+N = 20                 # Number of recommendations to the end user
+
 def scoring_function(tup = (1,1,1,0.9), pow = (1,1,1)):
     G,V,I,X = tup
     g,v,i = pow
