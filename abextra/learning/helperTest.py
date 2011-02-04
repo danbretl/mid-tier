@@ -1,5 +1,5 @@
 import helper
-import ml
+from learning import ml
 from CategoryTree import CategoryTree
 
 
@@ -12,6 +12,13 @@ from CategoryTree import CategoryTree
 
 #print "Scoring summary for user 1's root nodes", ml.tree_walk_algorithm(1098)
 
-a = CategoryTree(1)
-print "Tree for user 1:", a
-print "Type of a: ", type(a)
+#a = CategoryTree(1)
+
+#ml.scoring_function(a)
+#a.print_dictionary_key_values()
+
+#ml.probabilistic_walk(a);
+
+#a.print_dictionary_key_values()
+
+print ml.random_tree_walk_algorithm(1)
