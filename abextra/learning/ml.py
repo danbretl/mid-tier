@@ -38,9 +38,12 @@ def score_algorithm(user, category=None):
 #Sew the functions in together
 def random_tree_walk_algorithm(user):
     userTree = CategoryTree(user)
-    scoring_function(userTree)
-    topN_function(userTree)
-    probabilistic_walk(userTree)
+    #scoring_function(userTree)
+    userTree.top_down_recursion(scoring_function,{"outkey":"score"})
+    #topN_function(userTree)
+    userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
+    #probabilistic_walk(userTree)
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"topNscore","midleaf_tag":"mkey","category_tag":"probabilistic_walk"})
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["probabilistic_walk"])],settings.N)
 
 def SummaryScore(Sample_Distribution):
@@ -165,13 +168,15 @@ CategoryTree tree
 tree.top_down_recursion(probabilistic_walk,dictionary)
 Function would look like: 
 """
-def probabilistic_walk(parent, children, inkey="topNscore", midleaf_tag="mkey", category_tag="probabilistic_walk"):
+def probabilistic_walk(parent, inkey="topNscore", midleaf_tag="mkey", category_tag="probabilistic_walk"):
+    children = parent.get_children()
     sum_scores = parent.get_key_value(inkey)
     sum_scores += sum([tree.get_key_value(inkey) for tree in children])
     count = len(children) + 1
-
     try:
         parent_probability_score = parent.get_key_value(midleaf_tag)
+        if not parent_probability_score: parent_probability_score = 1.0
+        
     except:
         parent_probability_score = 1.0
 
@@ -180,10 +185,10 @@ def probabilistic_walk(parent, children, inkey="topNscore", midleaf_tag="mkey", 
     except:
         parent_score = 0.0
 
-    parent.insert_key_value(mid_leaf_score,parent_score)
-
+    parent.insert_key_value(midleaf_tag, parent_score)
+    
     if sum_scores == 0:
-        parent.insert_key_value(category_tag,parent_probability_score * parent_score/sum_scores)
+        parent.insert_key_value(category_tag,parent_probability_score / count)
         for tree in children:
             tree.insert_key_value(midleaf_tag,parent_probability_score/count)
     else:
@@ -210,7 +215,7 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
     children = parent.get_children()
     if len(children)==0:
         parent.insert_key_value(outkey,parent.get_key_value(inkey))
-    parent.insert_key_value(outkey,top3Score([tree.get_category_score_dictionary(outkey) for tree in children]))
+    parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(outkey) for tree in children]))
 
 """
 The scoring function works on one node at a time calculating and storing information into the dictionary.
@@ -218,9 +223,10 @@ Example:
 CategoryTree tree
 tree.top_down_recursion(scoring_function,dictionary)
 """
-def scoring_function(parent,children,outkey="score", **kwargs):
+def scoring_function(parent, outkey="score"):
     # If this is the root node, insert a value of 0
+    #import pdb; pdb.set_trace()
     if not parent.get_parent():
-        node.insert_key_value(outkey,0)
+        parent.insert_key_value(outkey,0)
     else:
-        node.insert_key_value(outkey,settings.scoringFunction(node.get_score()))
+        parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
