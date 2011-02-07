@@ -39,6 +39,7 @@ def score_algorithm(user, category=None):
 def random_tree_walk_algorithm(user):
     userTree = CategoryTree(user)
     scoring_function(userTree)
+    topN_function(userTree)
     probabilistic_walk(userTree)
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["probabilistic_walk"])],settings.N)
 
@@ -52,7 +53,14 @@ def SummaryScore(Sample_Distribution):
     return dict
 
 def normalize(lst):
-    """normalize all values so they add up to 1"""
+    """ normalize all values so they add up to 1.
+    All elements of the list are expected to be zero or positive.
+    If input is empty, return an empty list """
+    if not lst: return lst
+    """ Calculate sum.
+    If the sums up to 0, then this is a uniform distribution
+    Otherwise, return the normalized value for each element.
+    """
     s = float(sum(lst))
     if s!=0:
         return [e / s for e in lst]
@@ -81,8 +89,9 @@ def flatten_expo(x, lst):
 
 
 def SampleDistribution(distribution,trials):
-    # convert into a cumulative distribution
-    # Generate random number and return numbers per range
+    """
+    convert into a cumulative distribution
+    """
     CDFDistribution = numpy.cumsum([x[1] for x in distribution])
     #print "Distribution: ",  CDFDistribution
     returnList = []
@@ -109,7 +118,9 @@ def get_category_scores(uid,cid):
     else:
         return child_scores
 
+
 def propagator(parent_category_score,category_scores):
+    """ This function has been deprecated."""
     number_of_siblings = len(category_scores)
     simple_constant = 0.5 / number_of_siblings
     # print "Parent Category Score: ", parent_category_score
@@ -122,7 +133,9 @@ def propagator(parent_category_score,category_scores):
     c_s = [(parent_category_score[0],parent_category_score[1] + score)] + category_scores
     return zip([x[0] for x in c_s],flatten_expo(association_coefficient,[x[1] for x in c_s]))
 
-def probabilistic_walk(user_CategoryTree,inkey="score",mid_leaf_score="mkey", outkey="probabilistic_walk", parent_score=1.0):
+
+##Outdated
+def probabilistic_walk_deprecated(user_CategoryTree,inkey="topNscore",mid_leaf_score="mkey", outkey="probabilistic_walk", parent_score=1.0):
     sum_scores = user_CategoryTree.get_key_value(inkey) 
     sum_scores+= sum ([tree.get_key_value(inkey) for tree in user_CategoryTree.get_children()])
     #print user_CategoryTree.title
@@ -143,19 +156,71 @@ def probabilistic_walk(user_CategoryTree,inkey="score",mid_leaf_score="mkey", ou
             #print "Value inserted in ", tree.title," : ",tree.get_key_value(outkey)
             test_total +=tree.get_key_value(outkey)
         #print "Total inserted: ", test_total
-
     for tree in user_CategoryTree.get_children():
         probabilistic_walk(tree,inkey,mid_leaf_score, outkey,tree.get_key_value(outkey))
-    
+
+"""
+Call probabilistic_walk recursively top down on the category tree.
+CategoryTree tree
+tree.top_down_recursion(probabilistic_walk,dictionary)
+Function would look like: 
+"""
+def probabilistic_walk(parent, children, inkey="topNscore", midleaf_tag="mkey", category_tag="probabilistic_walk"):
+    sum_scores = parent.get_key_value(inkey)
+    sum_scores += sum([tree.get_key_value(inkey) for tree in children])
+    count = len(children) + 1
+
+    try:
+        parent_probability_score = parent.get_key_value(midleaf_tag)
+    except:
+        parent_probability_score = 1.0
+
+    try:
+        parent_score = parent.get_key_value(inkey)
+    except:
+        parent_score = 0.0
+
+    parent.insert_key_value(mid_leaf_score,parent_score)
+
+    if sum_scores == 0:
+        parent.insert_key_value(category_tag,parent_probability_score * parent_score/sum_scores)
+        for tree in children:
+            tree.insert_key_value(midleaf_tag,parent_probability_score/count)
+    else:
+        parent.insert_key_value(category_tag, parent_probability_score * parent_score/sum_scores)
+        for tree in children:
+            tree.insert_key_value(midleaf_tag, parent_probability_score * tree.get_key_value(inkey)/sum_scores)
+
+
+##Outdated
 def score_propagator(user_CategoryTree,inkey="SCORE",outkey="propScore"):
     for tree in user_CategoryTree.get_children():
         propogator(user_categoryTree,inkey,outkey) 
     scores = [user_categoryTree.get_key_value(inkey)] + [tree.get_key_value(inkey) for tree in user_CategoryTree.get_children()]
     user_categoryTree.insert_key_value(outkey,settings.scoreCombinator(list_scores))
 
-def scoring_function(user_CategoryTree,outkey="score"):
-    if user_CategoryTree.title == "ROOT": user_CategoryTree.insert_key_value(outkey,0)
-    for tree in user_CategoryTree.get_children():
-        tree.insert_key_value(outkey,settings.scoringFunction(tree.get_score()))
-    for tree in user_CategoryTree.get_children():
-        scoring_function(tree,outkey)
+
+"""
+topN function should be called bottom up (to ensure niche categories get enough attention)
+Example:
+CategoryTree tree
+tree.bottom_up_recursion(topN_function,dictionary)
+"""
+def topN_function(parent,inkey="score",outkey="topNscore"):
+    children = parent.get_children()
+    if len(children)==0:
+        parent.insert_key_value(outkey,parent.get_key_value(inkey))
+    parent.insert_key_value(outkey,top3Score([tree.get_category_score_dictionary(outkey) for tree in children]))
+
+"""
+The scoring function works on one node at a time calculating and storing information into the dictionary.
+Example:
+CategoryTree tree
+tree.top_down_recursion(scoring_function,dictionary)
+"""
+def scoring_function(parent,children,outkey="score", **kwargs):
+    # If this is the root node, insert a value of 0
+    if not parent.get_parent():
+        node.insert_key_value(outkey,0)
+    else:
+        node.insert_key_value(outkey,settings.scoringFunction(node.get_score()))
