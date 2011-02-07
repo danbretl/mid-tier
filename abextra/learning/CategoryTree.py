@@ -4,14 +4,15 @@ from django.contrib.auth.models import User
 import settings
 
 class CategoryTree:
-    def __init__(self, userID, category=None, score=None,dict=None):
+    def __init__(self, userID, category=None, parent=None, score=None, dict=None):
         """A Tree for a user is represented recursively as a collection of trees, 
         Each tree is for a specific user.
         The name of a tree node is the category name otherwise defaults to ROOT
         the value is calculated from the persisted representation of the tree
         much the user likes this, and optionally children"""
-        self.children = [CategoryTree(userID,x) for x in  Category.objects.filter(parent__exact=category)]
+        self.children = [CategoryTree(userID,self,x) for x in  Category.objects.filter(parent__exact=category)]
         self.category = category
+        self.parent = parent
         if category:
             self.title = category.title
         else:
@@ -29,6 +30,10 @@ class CategoryTree:
                 self.score = EventActionAggregate.objects.values_list('g','v','i','x').get(user=default_user,category=self.category)
             else:
                 self.score = ((0,0,0,0))# * settings.scoringFunction((0,0,0,0)) #This is the root node
+
+
+    def get_parent(self):
+        return self.parent
 
     def get_score(self):
         """get the value that the tree is scored on"""
@@ -53,6 +58,9 @@ class CategoryTree:
     def get_name(self):
         return self.category.title
 
+    def del_dictionary_key(self,key):
+        del dictionary[key]
+
     def get_category_scores_dictionary(self,keys):
         if self.category:
             list = [(self.category.id,[self.dictionary[key] for key in keys])]
@@ -60,6 +68,12 @@ class CategoryTree:
             list =[]
         list += [b for a in [tree.get_category_scores_dictionary(keys) for tree in self.children] for b in a]
         return list
+
+    def get_category_score_dictionary(self,key):
+        if self.category:
+            return self.dictionary[key]
+        else:
+            return None
     
     def get_children(self):
         """return a list of child SimpleTree objects"""
@@ -85,6 +99,18 @@ class CategoryTree:
             print key, ":", value
         for tree in self.children:
             tree.print_dictionary_key_values()
+
+    def top_down_recursion(self, function, dict):
+        function(self, **dict)
+
+        for tree in self.children:
+            tree.top_down_recursion(function,dict)
+
+    def bottom_up_recursion(self, function, dict):
+        for tree in self.children:
+            tree.bottom_up_recursion(function, dict)
+
+        function(self, **dict)
 
     #TODO:
     # 1: Implement an iterator
