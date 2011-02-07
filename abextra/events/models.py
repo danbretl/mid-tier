@@ -20,7 +20,7 @@ class Category(models.Model):
         verbose_name_plural = _('categories')
 
     def __unicode__(self):
-        return u'%s' % self.title
+        return u'[%s] %s' % (self.id or '?', self.title)
 
 
 class Event(models.Model):
