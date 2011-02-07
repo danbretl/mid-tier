@@ -60,6 +60,7 @@ class CategoryTree:
     def get_name(self):
         return self.category.title
 
+
     def del_dictionary_key(self, key):
         del dictionary[key]
 
@@ -71,7 +72,7 @@ class CategoryTree:
         list += [b for a in [tree.get_category_scores_dictionary(keys) for tree in self.children] for b in a]
         return list
 
-    def get_category_score_dictionary(self, key):
+    def get_category_score_dictionary(self,key):
         if self.category:
             return self.dictionary[key]
         else:
