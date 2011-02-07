@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+#from django.contrib.auth.models import User
 
 Gm = 1                 # G Multiplier in the scoring function
 Vm = 1                 # V Multiplier in the scoring function
@@ -31,3 +31,5 @@ def topN_function(N):
         return lambda lst: 0.0
 
 top3Score = topN_function(3)
+
+

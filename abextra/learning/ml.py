@@ -121,7 +121,6 @@ def get_category_scores(uid,cid):
     else:
         return child_scores
 
-
 def propagator(parent_category_score,category_scores):
     """ This function has been deprecated."""
     number_of_siblings = len(category_scores)
@@ -230,3 +229,4 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,0)
     else:
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
+
