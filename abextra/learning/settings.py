@@ -1,4 +1,4 @@
-#from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 
 Gm = 1                 # G Multiplier in the scoring function
 Vm = 1                 # V Multiplier in the scoring function
@@ -16,7 +16,7 @@ def scoring_function(tup = (1,1,1,0.9), pow = (1,1,1)):
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp))
 
-#default_user = User.objects.get(username="default_behavior")
+default_user = User.objects.get(username="default_behavior")
 
 def mean(lst):
     if lst:
@@ -29,3 +29,5 @@ def topN_function(N):
         return lambda lst: mean(sorted(lst)[-N:])
     else:
         return lambda lst: 0.0
+
+top3Score = topN_function(3)
