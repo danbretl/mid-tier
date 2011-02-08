@@ -45,15 +45,3 @@ class EventCategorizer(admin.ModelAdmin):
         OccurrenceInline
     ]
 admin.site.register(Event, EventCategorizer)
-
-# class EventAdmin(admin.ModelAdmin):
-#     """A full version of event administration form"""
-#     search_fields = ('title',)
-#     prepopulated_fields = {'slug': ('title',)}
-#     filter_horizontal = ('categories',)
-#     list_display = ('title', 'place', 'created', 'cat_titles')
-#     list_filter = ('one_off_place',)
-#     inlines = [
-#         EventTimeInline
-#     ]
-# # admin.site.register(Event, EventAdmin)

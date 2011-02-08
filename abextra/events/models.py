@@ -18,7 +18,6 @@ class Category(models.Model):
     icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
 
-
     class Meta:
         verbose_name_plural = _('categories')
 
@@ -38,11 +37,8 @@ class Event(models.Model):
     url = models.URLField(verify_exists=False, max_length=300)
     image_url = models.URLField(verify_exists=False, max_length=300, blank=True)
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
+    concrete_category = models.ForeignKey(Category, related_name='events_concrete', blank=True, null=True)
     categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
-
-    @property
-    def cat_titles(self):
-        return ', '.join(self.categories.values_list('title', flat=True))
 
     class Meta:
         verbose_name_plural = _('events')
