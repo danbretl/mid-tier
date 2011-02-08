@@ -4,7 +4,6 @@ from events.models import Category
 
 from learning import ml, settings, CategoryTree
 
-
 class MLModuleTest(TestCase):
     """
     This module tests the ML algorithm functions
@@ -118,4 +117,3 @@ class AlgorithmTest(TestCase):
 # 
 # def _concrete_category_tree():
 #     categories_by_id = _category_tree()
-
