@@ -8,13 +8,16 @@ from places.models import Place
 
 class Category(models.Model):
     """Category model"""
-    title = models.CharField(max_length=100)
+    TYPE_CHOICES = ( ('C', 'Concrete'), ('A', 'Abstract'), ('O', 'Other') )
+    category_type = models.CharField(max_length=1, choices=TYPE_CHOICES)
+    title = models.CharField(max_length=100, unique=True)
     parent = models.ForeignKey('self', related_name='subcategories', blank=True, null=True)
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
     icon = models.ImageField(upload_to="category_icons", height_field='icon_height', width_field='icon_width', blank=True, null=True)
     icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
+
 
     class Meta:
         verbose_name_plural = _('categories')

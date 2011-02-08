@@ -1,6 +1,4 @@
 import ml
-from 
-
 
 class MLTest(TestCase):
     fixtures = ['auth.json']

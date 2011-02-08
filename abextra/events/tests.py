@@ -1,23 +1,22 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
 from django.test import TestCase
+from events.models import Category
+from events.utils import CachedCategoryTree
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class TestCategoryTree(TestCase):
+    fixtures = ['categories.json']
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+    def setUp(self):
+        self.ctree = CachedCategoryTree()
 
->>> 1 + 1 == 2
-True
-"""}
+    def test_convenience(self):
+        concretes = set(self.ctree.all_concrete())
+        abstracts = set(self.ctree.all_abstract())
+        self.assertTrue(concretes)
+        self.assertTrue(abstracts)
+        self.assertFalse(concretes & abstracts)
 
+    def test_category_retreival(self):
+        title = 'concerts'
+        cdb = Category.objects.get(title=title)
+        cmem = self.ctree.category_by_title(title)
+        self.assertEqual(cdb, cmem)

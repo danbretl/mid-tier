@@ -4,14 +4,14 @@ from events.models import *
 class SubcategoriesInline(admin.TabularInline):
     """Inline forms for subcategories"""
     model = Category
-    fk = 'parent'
+    extra = 0
 
 class CategoryAdmin(admin.ModelAdmin):
     """Admin for categories"""
     search_fields = ('title',)
-    # filter_horizontal = ('title',)
-    list_display = ('title', 'parent', 'is_associative')
-    fields = ('title', 'parent', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width')
+    list_filter = ('category_type',)
+    list_display = ('title', 'parent', 'category_type', 'is_associative')
+    fields = ('title', 'category_type', 'parent', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width')
     readonly_fields = ('icon_height', 'icon_width')
     inlines = [
         SubcategoriesInline
