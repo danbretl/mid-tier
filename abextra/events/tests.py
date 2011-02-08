@@ -18,7 +18,7 @@ class MLModuleTest(TestCase):
     def test_normalize(self):
         self.assertEqual(ml.normalize(self.unitArray), [1.0 / len(self.unitArray)] * len(self.unitArray))
         self.assertEqual(ml.normalize(self.emptyArray), [])
-        # self.assertEqual(ml.normalize(self.rangeArray), [(x * 2.0) / (len(self.unitArray) * (len(self.unitArray) - 1)) for x in self.rangeArray])
+        self.assertEqual(ml.normalize(self.rangeArray), [(x * 2.0) / (len(self.rangeArray) * (len(self.rangeArray) - 1)) for x in self.rangeArray])
 
     def test_topN_function_generator(self):
         for k in [x + 1 for x in range(5)]:
@@ -45,6 +45,7 @@ class AlgorithmTest(TestCase):
     def test_convergence(self):
         # import ipdb; ipdb.set_trace()
         categories = ml.recommend_categories(self.user)
+        print "Categories: ", categories
         picked_category = Category.objects.get(id=categories[0])
 
         picked_aggr = EventActionAggregate(user=self.user, category=picked_category)
@@ -56,14 +57,23 @@ class AlgorithmTest(TestCase):
             if count > 100:
                 self.assertTrue(False)
 
-            # # G(oto) picked category
-            picked_aggr.g += 1
-            picked_aggr.save()
-
             # recommend a new set of categories
-            cats = set(ml.recommend_categories(self.user))
-            print cats, picked_category.id
+            cats = ml.recommend_categories(self.user)
+            cnt = 0
+            for i in cats:
+                if i == picked_category.id:
+                    cnt += 1
+            cats = set(cats)
+
+            print "Categories: ",cats
+            print "ID: ", picked_category.id
+            print "Count: ", cnt
+
             cats.discard(picked_category.id)
+            
+            # # G(oto) picked category
+            picked_aggr.g += cnt
+            picked_aggr.save()
 
             # test converge
             if not cats: break
