@@ -43,7 +43,7 @@ def random_tree_walk_algorithm(user):
     #topN_function(userTree)
     userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
     print userTree.get_category_scores_dictionary(["score","topNscore"])
-    import pdb; pdb.set_trace()    
+    #import pdb; pdb.set_trace()    
     #probabilistic_walk(userTree)
     userTree.top_down_recursion(probabilistic_walk,{"probability_key":"topNscore","inkey":"score", "outkey":"probabilistic_walk"})
     #print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["probabilistic_walk"])]
