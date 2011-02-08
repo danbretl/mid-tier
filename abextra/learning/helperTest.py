@@ -1,4 +1,4 @@
-import helper
+from learning import helper
 from learning import ml
 from CategoryTree import CategoryTree
 
@@ -22,3 +22,4 @@ from CategoryTree import CategoryTree
 #a.print_dictionary_key_values()
 
 print ml.random_tree_walk_algorithm(1)
+
