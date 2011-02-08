@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+
 #from django.contrib.auth.models import User
 
 Gm = 1                 # G Multiplier in the scoring function
@@ -16,7 +18,8 @@ def scoring_function(tup = (1,1,1,0.9), pow = (1,1,1)):
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp))
 
-default_user = User.objects.get(username="default_behavior")
+def get_default_user():
+    return User.objects.get(username="default_behavior")
 
 def mean(lst):
     if lst:

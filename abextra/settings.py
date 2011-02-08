@@ -118,7 +118,7 @@ INSTALLED_APPS = (
     'places',                       # ABEX places | helps normalize places
     'behavior',                     # ABEX behavior | user actions
     'learning',                     # ABEX machine learning | recommendations
-    'preprocess',                       # ABEX data preprocessing | scrape->django
+    'preprocess',                   # ABEX data preprocessing | scrape->django
 )
 
 #########################

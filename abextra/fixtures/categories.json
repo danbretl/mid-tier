@@ -3,1290 +3,1703 @@
         "pk": 1, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Sports", 
+            "icon_height": 429, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Sports"
+            "icon_width": 1120, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/sports.jpg"
         }
     }, 
     {
         "pk": 2, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 1, 
-            "title": "Spectator"
+            "title": "Spectator", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 3, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 1, 
-            "title": "Participation"
+            "title": "Participation", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 4, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 1, 
-            "title": "Activities"
+            "title": "Activities", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 5, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 4, 
-            "title": "Cycling"
+            "title": "Cycling", 
+            "icon_height": 688, 
+            "is_associative": false, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/cycling.jpg"
         }
     }, 
     {
         "pk": 6, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 4, 
-            "title": "Walks"
+            "title": "Walks", 
+            "icon_height": 539, 
+            "is_associative": false, 
+            "icon_width": 1000, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/walks.jpg"
         }
     }, 
     {
         "pk": 8, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 5, 
-            "title": "Marathons"
+            "title": "Marathons", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 9, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Gatherings", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Gatherings"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 10, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 9, 
-            "title": "Conventions"
+            "title": "Conventions", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 11, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 9, 
-            "title": "Conferences"
-        }
-    }, 
-    {
-        "pk": 12, 
-        "model": "events.category", 
-        "fields": {
-            "association_coefficient": 0.0, 
+            "title": "Conferences", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": 9, 
-            "title": "Political"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 13, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 9, 
+            "title": "Rallies", 
+            "icon_height": 369, 
             "is_associative": false, 
-            "parent": 12, 
-            "title": "Rallies"
+            "icon_width": 553, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Rally.jpg"
         }
     }, 
     {
         "pk": 14, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 9, 
+            "title": "Fundraising", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": 12, 
-            "title": "Fundraising"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 15, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 9, 
+            "title": "Appearances", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": 12, 
-            "title": "Appearances"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 16, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Nightlife", 
+            "icon_height": 400, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Nightlife"
+            "icon_width": 400, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/nightlife.jpg"
         }
     }, 
     {
         "pk": 17, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 16, 
-            "title": "Clubs"
+            "title": "Clubs", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 18, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 16, 
-            "title": "Bars"
+            "title": "Bars", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 19, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 16, 
-            "title": "Amateur Performances"
+            "title": "Amateur Performances", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 20, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 17, 
-            "title": "Openings"
+            "title": "Openings", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 21, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 17, 
-            "title": "DJs"
+            "title": "DJs", 
+            "icon_height": 425, 
+            "is_associative": false, 
+            "icon_width": 640, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Djing.jpg"
         }
     }, 
     {
         "pk": 22, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 17, 
-            "title": "Celebrity"
+            "title": "Celebrity", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 23, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 18, 
-            "title": "Trivia Night"
+            "title": "Trivia Night", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 24, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 18, 
-            "title": "Karaoke Night"
+            "title": "Karaoke Night", 
+            "icon_height": 282, 
+            "is_associative": false, 
+            "icon_width": 425, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Karaoke.jpg"
         }
     }, 
     {
         "pk": 25, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 19, 
-            "title": "Musical "
+            "title": "Musical ", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 26, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 19, 
-            "title": "Comedy Show"
+            "title": "Comedy Show", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 27, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 19, 
-            "title": "Poetry "
+            "title": "Poetry ", 
+            "icon_height": 680, 
+            "is_associative": false, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Poetry2.jpg"
         }
     }, 
     {
         "pk": 28, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Shows", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Shows"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 29, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Movies"
+            "title": "Movies", 
+            "icon_height": 689, 
+            "is_associative": false, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/movie.jpg"
         }
     }, 
     {
         "pk": 30, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Concerts"
+            "title": "Concerts", 
+            "icon_height": 1024, 
+            "is_associative": false, 
+            "icon_width": 768, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/concert1.jpg"
         }
     }, 
     {
         "pk": 31, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Plays"
+            "title": "Plays", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 32, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Musicals"
+            "title": "Musicals", 
+            "icon_height": 300, 
+            "is_associative": false, 
+            "icon_width": 600, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Musicals.jpg"
         }
     }, 
     {
         "pk": 33, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Stand-up"
+            "title": "Stand-up", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 34, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Talks", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Talks"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 35, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 34, 
-            "title": "Lectures"
+            "title": "Lectures", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 36, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 34, 
-            "title": "Panels"
+            "title": "Panels", 
+            "icon_height": 375, 
+            "is_associative": false, 
+            "icon_width": 500, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Panel.jpg"
         }
     }, 
     {
         "pk": 37, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 34, 
-            "title": "Book Signings"
+            "title": "Book Signings", 
+            "icon_height": 350, 
+            "is_associative": false, 
+            "icon_width": 900, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/booksignings.jpg"
         }
     }, 
     {
         "pk": 38, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Food & Drink", 
+            "icon_height": 1024, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Food & Drink"
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/food.jpg"
         }
     }, 
     {
         "pk": 39, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 38, 
-            "title": "Tastings"
+            "title": "Tastings", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 40, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 38, 
-            "title": "Street Fairs"
+            "title": "Street Fairs", 
+            "icon_height": 419, 
+            "is_associative": false, 
+            "icon_width": 640, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/street_fairs.jpg"
         }
     }, 
     {
         "pk": 41, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 38, 
-            "title": "Restaurant opening"
+            "title": "Restaurant opening", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 42, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 39, 
-            "title": "Wine"
+            "title": "Wine", 
+            "icon_height": 300, 
+            "is_associative": false, 
+            "icon_width": 400, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/wine_tasting.jpg"
         }
     }, 
     {
         "pk": 43, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 40, 
-            "title": "Farmers Market"
+            "title": "Farmers Market", 
+            "icon_height": 375, 
+            "is_associative": false, 
+            "icon_width": 500, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/farmers_market.jpg"
         }
     }, 
     {
         "pk": 44, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Television Tapings", 
+            "icon_height": 305, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Television Tapings"
+            "icon_width": 350, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/tv-shows.jpg"
         }
     }, 
     {
         "pk": 45, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 44, 
-            "title": "Late Night"
+            "title": "Late Night", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 46, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 44, 
-            "title": "Morning Shows"
+            "title": "Morning Shows", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 47, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 45, 
-            "title": "Colbert report"
+            "title": "Colbert report", 
+            "icon_height": 842, 
+            "is_associative": false, 
+            "icon_width": 1122, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/colbert.jpg"
         }
     }, 
     {
         "pk": 48, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 45, 
-            "title": "Daily Show"
+            "title": "Daily Show", 
+            "icon_height": 600, 
+            "is_associative": false, 
+            "icon_width": 800, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/The_Daily_Show.jpg"
         }
     }, 
     {
         "pk": 49, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 45, 
-            "title": "Letterman"
+            "title": "Letterman", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 50, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 45, 
-            "title": "Fallon"
-        }
-    }, 
-    {
-        "pk": 51, 
-        "model": "events.category", 
-        "fields": {
-            "association_coefficient": 0.0, 
+            "title": "Fallon", 
+            "icon_height": null, 
             "is_associative": false, 
-            "parent": 45, 
-            "title": "Regis"
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 52, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 46, 
-            "title": "Regis"
+            "title": "Regis", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 53, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 46, 
-            "title": "The View"
+            "title": "The View", 
+            "icon_height": 796, 
+            "is_associative": false, 
+            "icon_width": 1000, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/the_view.jpg"
         }
     }, 
     {
         "pk": 54, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 46, 
-            "title": "Today Show"
+            "title": "Today Show", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 55, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 46, 
-            "title": "Good Morning America"
+            "title": "Good Morning America", 
+            "icon_height": 415, 
+            "is_associative": false, 
+            "icon_width": 415, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/GoodMorningAmerica.jpg"
         }
     }, 
     {
         "pk": 56, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": null, 
-            "title": "Abstract"
+            "title": "Abstract", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 57, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Show Genres"
+            "title": "Show Genres", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 58, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Music Genres"
+            "title": "Music Genres", 
+            "icon_height": 732, 
+            "is_associative": false, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/music.jpg"
         }
     }, 
     {
         "pk": 59, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "LGBT"
+            "title": "LGBT", 
+            "icon_height": 480, 
+            "is_associative": false, 
+            "icon_width": 777, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Gay.png"
         }
     }, 
     {
         "pk": 60, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Religion"
+            "title": "Religion", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 61, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Political"
+            "title": "Political", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 62, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Health"
+            "title": "Health", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 63, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Ages"
+            "title": "Ages", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 64, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 56, 
-            "title": "Educational"
+            "title": "Educational", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 65, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 56, 
-            "title": "Charity"
+            "title": "Charity", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 66, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 65, 
-            "title": "Diseases"
+            "title": "Diseases", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 67, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 65, 
-            "title": "Poverty"
+            "title": "Poverty", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 68, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 65, 
-            "title": "Environmental"
+            "title": "Environmental", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 69, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 64, 
-            "title": "Math and Science"
+            "title": "Math and Science", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 70, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 64, 
-            "title": "History"
+            "title": "History", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 71, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 64, 
-            "title": "The Arts"
+            "title": "The Arts", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 72, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 64, 
-            "title": "Current Events"
+            "title": "Current Events", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 73, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 64, 
-            "title": "Business"
+            "title": "Business", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 74, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 64, 
-            "title": "Technology"
+            "title": "Technology", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 75, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 69, 
-            "title": "Math"
+            "title": "Math", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 76, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 69, 
-            "title": "Physics"
+            "title": "Physics", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 77, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 69, 
-            "title": "Biology"
+            "title": "Biology", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 78, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 69, 
-            "title": "Chemistry"
+            "title": "Chemistry", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 79, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 69, 
-            "title": "Astronomy"
+            "title": "Astronomy", 
+            "icon_height": 1010, 
+            "is_associative": true, 
+            "icon_width": 1000, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/astronomy.jpeg"
         }
     }, 
     {
         "pk": 80, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 69, 
-            "title": "Computer Science"
+            "title": "Computer Science", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 81, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 69, 
-            "title": "Anthropology"
+            "title": "Anthropology", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 82, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 71, 
-            "title": "Film"
+            "title": "Film", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 83, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 71, 
-            "title": "Literature"
+            "title": "Literature", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 84, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 71, 
-            "title": "Music"
+            "title": "Music", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 85, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 63, 
-            "title": "Under 13"
+            "title": "Under 13", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 86, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 63, 
-            "title": "13-17"
+            "title": "13-17", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 87, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 63, 
-            "title": "18-20"
+            "title": "18-20", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 88, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 63, 
-            "title": "21+"
+            "title": "21+", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 89, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 61, 
-            "title": "Democrat"
+            "title": "Democrat", 
+            "icon_height": 414, 
+            "is_associative": false, 
+            "icon_width": 421, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Democratic.jpg"
         }
     }, 
     {
         "pk": 90, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 61, 
-            "title": "Republican"
+            "title": "Republican", 
+            "icon_height": 521, 
+            "is_associative": false, 
+            "icon_width": 600, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/republican.jpg"
         }
     }, 
     {
         "pk": 91, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Christianity"
+            "title": "Christianity", 
+            "icon_height": 685, 
+            "is_associative": false, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/bible.jpg"
         }
     }, 
     {
         "pk": 92, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Hinduism"
+            "title": "Hinduism", 
+            "icon_height": 420, 
+            "is_associative": false, 
+            "icon_width": 420, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/hinduism.jpg"
         }
     }, 
     {
         "pk": 93, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Judaism"
+            "title": "Judaism", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 94, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Islam"
+            "title": "Islam", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 95, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Buddhism"
+            "title": "Buddhism", 
+            "icon_height": 1024, 
+            "is_associative": false, 
+            "icon_width": 1280, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/buddism.jpg"
         }
     }, 
     {
         "pk": 96, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Jainism"
+            "title": "Jainism", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 97, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 60, 
-            "title": "Sikhism"
+            "title": "Sikhism", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 98, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 59, 
-            "title": "Lesbian"
+            "title": "Lesbian", 
+            "icon_height": 1056, 
+            "is_associative": false, 
+            "icon_width": 792, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Lesbian.jpg"
         }
     }, 
     {
         "pk": 99, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 59, 
-            "title": "Gay"
+            "title": "Gay", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 100, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 59, 
-            "title": "Bisexual"
+            "title": "Bisexual", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 101, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 59, 
-            "title": "Transgender"
+            "title": "Transgender", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 102, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 56, 
-            "title": "Family"
+            "title": "Family", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 103, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 102, 
-            "title": "For Kids"
+            "title": "For Kids", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 104, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 103, 
-            "title": "Under 10"
+            "title": "Under 10", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 105, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 103, 
-            "title": "Teenage"
+            "title": "Teenage", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 106, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 58, 
-            "title": "Rock"
+            "title": "Rock", 
+            "icon_height": 410, 
+            "is_associative": false, 
+            "icon_width": 615, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/rock1.jpg"
         }
     }, 
     {
         "pk": 107, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 58, 
-            "title": "Blues"
+            "title": "Blues", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 108, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 58, 
-            "title": "Jazz"
+            "title": "Jazz", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 109, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 58, 
-            "title": "Western Classical"
+            "title": "Western Classical", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 110, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 57, 
-            "title": "Comedy"
+            "title": "Comedy", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 111, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 57, 
-            "title": "Drama"
+            "title": "Drama", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 112, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 71, 
-            "title": "Gallery"
+            "title": "Gallery", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 113, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": null, 
-            "title": "Discount"
+            "title": "Discount", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 114, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 9, 
-            "title": "Festival"
+            "title": "Festival", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 115, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 28, 
-            "title": "Circus"
+            "title": "Circus", 
+            "icon_height": 512, 
+            "is_associative": false, 
+            "icon_width": 640, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Circus.jpg"
         }
     }, 
     {
         "pk": 116, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Tourism", 
+            "icon_height": 442, 
             "is_associative": false, 
-            "parent": null, 
-            "title": "Tourism"
+            "icon_width": 500, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Tourists1.jpg"
         }
     }, 
     {
         "pk": 117, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 116, 
-            "title": "Tour"
+            "title": "Tour", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 118, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 58, 
-            "title": "Alternative"
+            "title": "Alternative", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 119, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 71, 
-            "title": "Photography"
+            "title": "Photography", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 120, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 29, 
-            "title": "Classic"
+            "title": "Classic", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 121, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Museum", 
+            "icon_height": 733, 
             "is_associative": true, 
-            "parent": null, 
-            "title": "Museum"
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Museums2.jpg"
         }
     }, 
     {
         "pk": 122, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 71, 
-            "title": "Dance"
+            "title": "Dance", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 123, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": null, 
-            "title": "Invalid"
+            "title": "Invalid", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 124, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 32, 
-            "title": "Broadway"
+            "title": "Broadway", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 125, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 32, 
-            "title": "Off-Broadway"
+            "title": "Off-Broadway", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 127, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
+            "parent": 135, 
+            "title": "Visual Arts", 
+            "icon_height": 1322, 
             "is_associative": true, 
-            "parent": null, 
-            "title": "Visual Arts"
+            "icon_width": 2195, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/VisualArts.jpg"
         }
     }, 
     {
         "pk": 128, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 127, 
-            "title": "Painting"
+            "title": "Painting", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 129, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 127, 
-            "title": "Sculpture"
+            "title": "Sculpture", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 130, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": false, 
             "parent": 57, 
-            "title": "Fantasy"
+            "title": "Fantasy", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }, 
     {
         "pk": 131, 
         "model": "events.category", 
         "fields": {
-            "association_coefficient": 0.0, 
-            "is_associative": true, 
             "parent": 57, 
-            "title": "Adventure"
+            "title": "Adventure", 
+            "icon_height": 765, 
+            "is_associative": true, 
+            "icon_width": 1024, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/Hiking.jpg"
+        }
+    }, 
+    {
+        "pk": 132, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 28, 
+            "title": "Opera", 
+            "icon_height": 310, 
+            "is_associative": true, 
+            "icon_width": 500, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/opera.jpg"
+        }
+    }, 
+    {
+        "pk": 133, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 45, 
+            "title": "Conan o'brien", 
+            "icon_height": 400, 
+            "is_associative": true, 
+            "icon_width": 300, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/conan_1.jpg"
+        }
+    }, 
+    {
+        "pk": 134, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 8, 
+            "title": "Running", 
+            "icon_height": 337, 
+            "is_associative": true, 
+            "icon_width": 450, 
+            "association_coefficient": 0.0, 
+            "icon": "category_icons/marathon.jpg"
+        }
+    }, 
+    {
+        "pk": 135, 
+        "model": "events.category", 
+        "fields": {
+            "parent": null, 
+            "title": "Concrete", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "association_coefficient": 0.0, 
+            "icon": ""
         }
     }
 ]

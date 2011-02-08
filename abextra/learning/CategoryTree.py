@@ -19,7 +19,7 @@ class CategoryTree:
             self.category = category
             self.title = category.title
         else:
-            self.category = Category.objects.filter(title = "Concrete")
+            self.category = Category.objects.get(title = "Concrete")
             self.title = "ROOT"
         if dictionary: 
             self.dictionary = dictionary
@@ -28,7 +28,7 @@ class CategoryTree:
         try:
             self.score = EventActionAggregate.objects.values_list('g', 'v', 'i', 'x').get(user=userID, category=self.category)
         except:
-            default_user = settings.default_user
+            default_user = settings.get_default_user()
             if self.category:
                 self.score = EventActionAggregate.objects.values_list('g', 'v', 'i', 'x').get(user=default_user, category=self.category)
             else:
