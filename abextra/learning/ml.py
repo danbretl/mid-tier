@@ -17,26 +17,14 @@ def recommend_categories(user):
 def recommend_categories_only_subchildren(user, category):
     return random_tree_walk_algorithm(user, category)
 
-def score_algorithm(user, category=None):
+#Sew the functions in together
+def random_tree_walk_algorithm(user):
     """
     All algorithms follow this same fundamental structure
         Input: User as input 
         N is the number of events to return and has a default of 20 (configured in settings.py)
     Output: Ordered list of EventIDs
     """
-    Category_Scores = get_category_score(user,category)
-    TotalScore = sum ([x[1] for x in Category_Scores])
-    if TotalScore!=0:
-        Normalized_Scores = [(x[0],x[1]*1.0/TotalScore) for x in Category_Scores]
-    else:
-        size = len(Category_Scores) 
-        Normalized_Scores = [(x[0],1.0/size) for x in Category_Scores]
-    #Flattened_Distribution = flatten(Normalized_Scores)
-    #print "Normalized Scores: ", Normalized_Scores
-    return SampleDistribution(Normalized_Scores, settings.N)
-
-#Sew the functions in together
-def random_tree_walk_algorithm(user):
     userTree = CategoryTree(user)
     #scoring_function(userTree)
     userTree.top_down_recursion(scoring_function,{"outkey":"score"})
@@ -44,10 +32,76 @@ def random_tree_walk_algorithm(user):
     userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
     userTree.top_down_recursion(probabilistic_walk, {"inkey":"score", "outkey":"walk_score"})
     userTree.top_down_recursion(probabilistic_walk, {"inkey":"topNscore", "outkey":"topN_walk_score"})
-    print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["topN_walk_score","walk_score"])]
-    print "Sum is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["walk_score"])])
+    #print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["topN_walk_score","walk_score"])]
+    #print "Sum is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["walk_score"])])
     #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["prob_scores"])])
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["walk_score"])],settings.N)
+
+"""
+Call probabilistic_walk recursively top down on the category tree.
+CategoryTree tree
+tree.top_down_recursion(probabilistic_walk,dictionary)
+Function would look like: 
+"""
+def probabilistic_walk(parent, inkey, outkey):
+    # If this is the Root node, insert a value of 1.0 for probability of parent and score of 0 (so the parent isn't assigned a score: unless all children scores are zero)
+    if not parent.get_parent():
+        parent.insert_key_value(outkey, 1.0)
+        parent.insert_key_value(inkey,0.0)
+
+    children = parent.get_children()
+
+    parent_score = parent.get_key_value(outkey)
+
+    total_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
+
+    for tree in [parent] + children:
+        if not tree.get_parent:
+            tree.insert_key_value(outkey,0.0)
+        else:
+            if total_score:
+                tree.insert_key_value(outkey, parent_score * tree.get_key_value(inkey) / total_score)
+            else:
+                tree.insert_key_value(outkey, parent_score / (len(children) + 1))
+
+"""
+#Comment:
+topN function should be called bottom up (to ensure niche categories get enough attention)
+Example:
+CategoryTree tree
+tree.bottom_up_recursion(topN_function,dictionary)
+"""
+def topN_function(parent,inkey="score",outkey="topNscore"):
+    if not parent.get_parent():
+        parent.insert_key_value(outkey,1.0)
+        parent.insert_key_value(inkey,0.0)
+
+    children = parent.get_children()
+    parent_score = parent.get_key_value(inkey)
+    
+    if not children:
+        parent.insert_key_value(outkey,parent.get_key_value(inkey))
+        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+    else:
+        #parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in [parent]+children]))
+        parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in children]))
+        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+
+"""
+The scoring function works on one node at a time calculating and storing information into the dictionary.
+Example:
+CategoryTree tree
+tree.top_down_recursion(scoring_function,dictionary)
+"""
+def scoring_function(parent, outkey="score"):
+    # If this is the root node, insert a value of 0
+    #import pdb; pdb.set_trace()
+    if not parent.get_parent():
+        parent.insert_key_value(outkey,0)
+    else:
+        parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
+
+
 
 
 def SummaryScore(Sample_Distribution):
@@ -109,7 +163,7 @@ def SampleDistribution(distribution,trials):
         for count in range(len(distribution)):
             if (value < CDFDistribution[count]): break
         returnList += [(distribution[count])[0]]
-    import pdb; pdb.set_trace()
+    #import pdb; pdb.set_trace()
     return returnList
 
 def get_category_scores(uid,cid):
@@ -122,9 +176,9 @@ def get_category_scores(uid,cid):
     else:
         return child_scores
 
-
+"""
 def propagator(parent_category_score,category_scores):
-    """ This function has been deprecated."""
+    This function has been deprecated.
     number_of_siblings = len(category_scores)
     simple_constant = 0.5 / number_of_siblings
     # print "Parent Category Score: ", parent_category_score
@@ -163,29 +217,7 @@ def probabilistic_walk_deprecated(user_CategoryTree,inkey="topNscore", mid_leaf_
     for tree in user_CategoryTree.get_children():
         probabilistic_walk(tree,inkey,mid_leaf_score, outkey,tree.get_key_value(outkey))
 
-"""
-Call probabilistic_walk recursively top down on the category tree.
-CategoryTree tree
-tree.top_down_recursion(probabilistic_walk,dictionary)
-Function would look like: 
-"""
-def probabilistic_walk(parent, inkey, outkey):
-    if not parent.get_parent():
-        parent.insert_key_value(outkey, 1.0)
-        parent.insert_key_value(inkey,0.0)
-
-    children = parent.get_children()
-
-    parent_score = parent.get_key_value(outkey)
-
-    total_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
-
-    for tree in [parent] + children:
-        if total_score:
-            tree.insert_key_value(outkey, parent_score * tree.get_key_value(inkey) / total_score)
-        else:
-            tree.insert_key_value(outkey, parent_score / (len(children) + 1))
-
+Trial Functions:
 def assign_probabilities(parent, inkey="topNscore", outkey="topN_prob_scores"):
     children = parent.get_children()
     #Calculate total topNscore
@@ -214,43 +246,28 @@ def assign_category_probabilities(parent, inkey = "scores", outkey = "cat_prob_s
             tree.insert_key_value(outkey, tree.get_key_value(outkey)/(len(children)))
             #print "inserted in ", tree.category.id, " ",tree.get_key_value(tree.get_key_value(outkey)/(len(children) + 1))
 
-
-##Outdated
 def score_propagator(user_CategoryTree,inkey="SCORE",outkey="propScore"):
     for tree in user_CategoryTree.get_children():
         propogator(user_categoryTree,inkey,outkey) 
     scores = [user_categoryTree.get_key_value(inkey)] + [tree.get_key_value(inkey) for tree in user_CategoryTree.get_children()]
     user_categoryTree.insert_key_value(outkey,settings.scoreCombinator(list_scores))
 
+def score_algorithm(user, category=None):
 
-"""
-topN function should be called bottom up (to ensure niche categories get enough attention)
-Example:
-CategoryTree tree
-tree.bottom_up_recursion(topN_function,dictionary)
-"""
-def topN_function(parent,inkey="score",outkey="topNscore"):
-    children = parent.get_children()
-    if not children:
-        parent.insert_key_value(outkey,parent.get_key_value(inkey))
-        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+    All algorithms follow this same fundamental structure
+        Input: User as input 
+        N is the number of events to return and has a default of 20 (configured in settings.py)
+    Output: Ordered list of EventIDs
+
+    Category_Scores = get_category_score(user,category)
+    TotalScore = sum ([x[1] for x in Category_Scores])
+    if TotalScore!=0:
+        Normalized_Scores = [(x[0],x[1]*1.0/TotalScore) for x in Category_Scores]
     else:
-        parent.insert_key_value(outkey,settings.top3Score([parent.get_category_score_dictionary(inkey)]+[tree.get_category_score_dictionary(inkey) for tree in children]))
-        parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in children]))
-        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
-
+        size = len(Category_Scores) 
+        Normalized_Scores = [(x[0],1.0/size) for x in Category_Scores]
+    #Flattened_Distribution = flatten(Normalized_Scores)
+    #print "Normalized Scores: ", Normalized_Scores
+    return SampleDistribution(Normalized_Scores, settings.N)
     
-
 """
-The scoring function works on one node at a time calculating and storing information into the dictionary.
-Example:
-CategoryTree tree
-tree.top_down_recursion(scoring_function,dictionary)
-"""
-def scoring_function(parent, outkey="score"):
-    # If this is the root node, insert a value of 0
-    #import pdb; pdb.set_trace()
-    if not parent.get_parent():
-        parent.insert_key_value(outkey,0)
-    else:
-        parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))

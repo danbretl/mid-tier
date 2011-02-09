@@ -105,6 +105,9 @@ class CategoryTree:
         for tree in self.children:
             tree.print_dictionary_key_values()
 
+    def subtree_score(self,inkey="score"):
+        return self.get_key_value(inkey) + sum([tree.subtree_score(inkey) for tree in self.get_children()])
+    
     def top_down_recursion(self, function, dict):
         function(self, **dict)
 
@@ -116,6 +119,7 @@ class CategoryTree:
             tree.bottom_up_recursion(function, dict)
 
         function(self, **dict)
+
 
     #TODO:
     # 1: Implement an iterator
