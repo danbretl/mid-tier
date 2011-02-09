@@ -103,8 +103,6 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
 
 
-
-
 def SummaryScore(Sample_Distribution):
     dict = {}
     for x in Sample_Distribution:
@@ -148,7 +146,6 @@ def flatten_expo(x, lst):
         else:
             newlst.append(m-decrease(x, m-e))
     return normalize(newlst)
-
 
 def SampleDistribution(distribution,trials):
     """
