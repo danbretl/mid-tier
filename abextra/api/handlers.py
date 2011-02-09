@@ -54,6 +54,10 @@ class EventHandler(BaseHandler):
                 ))
             ))
         )),
+        ('concrete_category', (
+            'id',
+            'title')
+        ),
         ('categories', (
             'id',
             'title')
