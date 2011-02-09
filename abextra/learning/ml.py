@@ -84,8 +84,8 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
             parent.insert_key_value(outkey,parent.get_key_value(inkey))
             #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
         else:
-            parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(inkey) for tree in [parent]+children]))
-            #parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
+            #parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in [parent]+children]))
+            parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
             #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
 
 """
