@@ -1,6 +1,8 @@
 from django.test import TestCase
 from events.models import Category
 from events.utils import CachedCategoryTree
+from matplotlib import pyplot as plt
+
 
 class TestCategoryTree(TestCase):
     fixtures = ['categories.json']
@@ -90,49 +92,50 @@ class AlgorithmTest(TestCase):
         categories = ml.recommend_categories(self.user)
         print "Categories: ", categories
         picked_category = Category.objects.get(id=categories[0])
-
+        
         picked_aggr = EventActionAggregate(user=self.user, category=picked_category)
         picked_aggr.save()
-
-        while True:
-            count = self.count.next()
+        lst = []
+        
+        count = 0
+        while count < 20:
+            count +=1
             print count
-            if count > 100:
-                self.assertTrue(False)
-
             # recommend a new set of categories
             cats = ml.recommend_categories(self.user)
             cnt = 0
             for i in cats:
                 if i == picked_category.id:
                     cnt += 1
+                    
             cats = set(cats)
-
+                
             print "Categories: ",cats
             print "ID: ", picked_category.id
             print "Count: ", cnt
-
+            
             cats.discard(picked_category.id)
             
             # # G(oto) picked category
             picked_aggr.g += cnt
             picked_aggr.save()
-
-            # test converge
-            if not cats: break
-
+            
             # X all other categories
             for c in cats:
                 try:
                     eaa = EventActionAggregate.objects.get(user=self.user, category=c)
                 except EventActionAggregate.DoesNotExist:
                     eaa = EventActionAggregate(user=self.user, category=Category.objects.get(id=c))
-                eaa.x += 1
-                eaa.save()
+                    eaa.x += 1
+                    eaa.save()
 
-            if count == 50 or count == 80:
-                import pdb; pdb.set_trace()
-
+            lst.append(cnt*100.0/20)
+        lst.append(100.0)
+        plt.plot(lst,color="blue")
+        plt.title("Rate of learning")
+        plt.xlabel("Trials")
+        plt.ylabel("% of all Recommendations")
+        plt.savefig("test.pdf")
         self.assertTrue(True)
 
 class CategoryTest(TestCase):
