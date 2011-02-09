@@ -22,14 +22,11 @@ class EventHandler(BaseHandler):
             'id',
             'place',
             'one_off_place',
-            ('event_times', (
-                'id',
-                'start_date',
-                'start_time',
-                'end_date',
-                'end_time',
-                'is_all_day')
-            ),
+            'start_date',
+            'start_time',
+            'end_date',
+            'end_time',
+            'is_all_day',
             ('place', (
                 'id',
                 'title',

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from events.models import *
 
+
 class SubcategoriesInline(admin.TabularInline):
     """Inline forms for subcategories"""
     model = Category
@@ -18,20 +19,11 @@ class CategoryAdmin(admin.ModelAdmin):
     ]
 admin.site.register(Category, CategoryAdmin)
 
-# FIXME currently, django does not support nested inlines http://code.djangoproject.com/ticket/9025
-class EventTimeInline(admin.StackedInline):
-    """Inline forms for event times"""
-    model = EventTime
-    fk = 'occurrence'
-
 class OccurrenceInline(admin.StackedInline):
     model = Occurrence
     fk = 'event'
-    fields = ('one_off_place',)
-    readonly_fields = ('one_off_place',)
-    inlines = [
-        EventTimeInline
-    ]
+    # fields = ('one_off_place',)
+    # readonly_fields = ('one_off_place',)
 
 class EventCategorizer(admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
