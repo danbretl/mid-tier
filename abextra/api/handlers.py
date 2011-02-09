@@ -6,7 +6,7 @@ from learning import ml
 ##########
 # Events #
 ##########
-from events.models import Event
+from events.models import Event, Category
 
 class EventHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
@@ -84,8 +84,9 @@ class EventHandler(BaseHandler):
 
         # FIXME brute force
         events = set()
+
         for category in recommended_categories:
-            event = m.filter(categories__exact=1).order_by('?')[:1][0]
+            event = Category.objects.get(id=category).events_concrete.order_by('?')[0]
             events.add(event)
 
         # TODO make sure to not send Xed events - check event actions
