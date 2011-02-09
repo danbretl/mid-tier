@@ -78,7 +78,8 @@ class AlgorithmTest(TestCase):
         userTree.top_down_recursion(ml.probabilistic_walk,{"inkey":"score", "outkey":"probabilistic_walk"})
         print "simple_probability sum is: ", userTree.subtree_score("probabilistic_walk")
         self.assertAlmostEqual(1.0,userTree.subtree_score("probabilistic_walk"))
-        userTree.bottom_up_recursion(ml.topN_function,{"inkey":"probabilistic_walk","outkey":"topNscore_probability"})
+        userTree.bottom_up_recursion(ml.topN_function,{"inkey":"score","outkey":"topNscore"})
+        userTree.top_down_recursion(ml.probabilistic_walk,{"inkey":"topNscore", "outkey":"topNscore_probability"})
         print "topNscore_probability sum is: ", userTree.subtree_score("topNscore_probability")
         print "Current Dictionary: "
         userTree.print_dictionary_key_values()
@@ -128,6 +129,9 @@ class AlgorithmTest(TestCase):
                     eaa = EventActionAggregate(user=self.user, category=Category.objects.get(id=c))
                 eaa.x += 1
                 eaa.save()
+
+            if count == 50 or count == 80:
+                import pdb; pdb.set_trace()
 
         self.assertTrue(True)
 
