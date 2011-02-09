@@ -11,10 +11,14 @@ class Migration(SchemaMigration):
         # Adding model 'Category'
         db.create_table('events_category', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('category_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
+            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
             ('parent', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='subcategories', null=True, to=orm['events.Category'])),
             ('is_associative', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('association_coefficient', self.gf('django.db.models.fields.FloatField')(default=0)),
+            ('icon', self.gf('django.db.models.fields.files.ImageField')(max_length=100, null=True, blank=True)),
+            ('icon_height', self.gf('django.db.models.fields.PositiveSmallIntegerField')(null=True, blank=True)),
+            ('icon_width', self.gf('django.db.models.fields.PositiveSmallIntegerField')(null=True, blank=True)),
         ))
         db.send_create_signal('events', ['Category'])
 
@@ -24,8 +28,6 @@ class Migration(SchemaMigration):
             ('xid', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50, db_index=True)),
-            ('place', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['places.Place'], null=True, blank=True)),
-            ('one_off_place', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
             ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('submitted_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
@@ -33,6 +35,7 @@ class Migration(SchemaMigration):
             ('url', self.gf('django.db.models.fields.URLField')(max_length=300)),
             ('image_url', self.gf('django.db.models.fields.URLField')(max_length=300, blank=True)),
             ('video_url', self.gf('django.db.models.fields.URLField')(max_length=200, blank=True)),
+            ('concrete_category', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='events_concrete', null=True, to=orm['events.Category'])),
         ))
         db.send_create_signal('events', ['Event'])
 
@@ -44,15 +47,19 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('events_event_categories', ['event_id', 'category_id'])
 
-        # Adding model 'EventTime'
-        db.create_table('events_eventtime', (
+        # Adding model 'Occurrence'
+        db.create_table('events_occurrence', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('event', self.gf('django.db.models.fields.related.ForeignKey')(related_name='event_times', to=orm['events.Event'])),
-            ('start', self.gf('django.db.models.fields.DateTimeField')()),
-            ('end', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('event', self.gf('django.db.models.fields.related.ForeignKey')(related_name='occurrences', to=orm['events.Event'])),
+            ('place', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['places.Place'], null=True, blank=True)),
+            ('one_off_place', self.gf('django.db.models.fields.CharField')(max_length=200, blank=True)),
+            ('start_date', self.gf('django.db.models.fields.DateField')()),
+            ('start_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
+            ('end_date', self.gf('django.db.models.fields.DateField')(null=True, blank=True)),
+            ('end_time', self.gf('django.db.models.fields.TimeField')(null=True, blank=True)),
             ('is_all_day', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('events', ['EventTime'])
+        db.send_create_signal('events', ['Occurrence'])
 
 
     def backwards(self, orm):
@@ -66,8 +73,8 @@ class Migration(SchemaMigration):
         # Removing M2M table for field categories on 'Event'
         db.delete_table('events_event_categories')
 
-        # Deleting model 'EventTime'
-        db.delete_table('events_eventtime')
+        # Deleting model 'Occurrence'
+        db.delete_table('events_occurrence')
 
 
     models = {
@@ -110,21 +117,24 @@ class Migration(SchemaMigration):
         'events.category': {
             'Meta': {'object_name': 'Category'},
             'association_coefficient': ('django.db.models.fields.FloatField', [], {'default': '0'}),
+            'category_type': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
+            'icon': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'icon_height': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'icon_width': ('django.db.models.fields.PositiveSmallIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_associative': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'subcategories'", 'null': 'True', 'to': "orm['events.Category']"}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
         },
         'events.event': {
             'Meta': {'object_name': 'Event'},
             'categories': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['events.Category']", 'symmetrical': 'False', 'blank': 'True'}),
+            'concrete_category': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'events_concrete'", 'null': 'True', 'to': "orm['events.Category']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'image_url': ('django.db.models.fields.URLField', [], {'max_length': '300', 'blank': 'True'}),
             'modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'one_off_place': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'}),
-            'place': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['places.Place']", 'null': 'True', 'blank': 'True'}),
             'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
             'submitted_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
@@ -132,32 +142,17 @@ class Migration(SchemaMigration):
             'video_url': ('django.db.models.fields.URLField', [], {'max_length': '200', 'blank': 'True'}),
             'xid': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'})
         },
-        'events.eventtime': {
-            'Meta': {'object_name': 'EventTime'},
-            'end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'event': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'event_times'", 'to': "orm['events.Event']"}),
+        'events.occurrence': {
+            'Meta': {'object_name': 'Occurrence'},
+            'end_date': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
+            'end_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'}),
+            'event': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'occurrences'", 'to': "orm['events.Event']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_all_day': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'start': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        'events.scrapedevent': {
-            'Meta': {'object_name': 'ScrapedEvent', 'db_table': "u'scraped_events_vw'", 'managed': 'False'},
-            'cost': ('django.db.models.fields.IntegerField', [], {'null': 'True', 'db_column': "'Cost'", 'blank': 'True'}),
-            'description': ('django.db.models.fields.CharField', [], {'max_length': '9000', 'db_column': "'Description'", 'blank': 'True'}),
-            'email': ('django.db.models.fields.CharField', [], {'max_length': '150', 'db_column': "'Email'", 'blank': 'True'}),
-            'endtime': ('django.db.models.fields.TextField', [], {'db_column': "'EndTime'"}),
-            'eventdate': ('django.db.models.fields.DateField', [], {'null': 'True', 'db_column': "'EventDate'", 'blank': 'True'}),
-            'eventhighlight': ('django.db.models.fields.CharField', [], {'max_length': '150', 'db_column': "'EventHighlight'", 'blank': 'True'}),
-            'eventorganizer': ('django.db.models.fields.CharField', [], {'max_length': '150', 'db_column': "'EventOrganizer'", 'blank': 'True'}),
-            'externalid': ('django.db.models.fields.CharField', [], {'max_length': '90', 'db_column': "'ExternalID'", 'blank': 'True'}),
-            'imageurl': ('django.db.models.fields.CharField', [], {'max_length': '600', 'db_column': "'ImageURL'", 'blank': 'True'}),
-            'internalid': ('django.db.models.fields.IntegerField', [], {'primary_key': 'True', 'db_column': "'InternalID'"}),
-            'location': ('django.db.models.fields.CharField', [], {'max_length': '600', 'db_column': "'Location'", 'blank': 'True'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '45', 'db_column': "'Phone'", 'blank': 'True'}),
-            'starttime': ('django.db.models.fields.TextField', [], {'db_column': "'StartTime'"}),
-            'title': ('django.db.models.fields.CharField', [], {'max_length': '600', 'db_column': "'Title'", 'blank': 'True'}),
-            'url': ('django.db.models.fields.CharField', [], {'max_length': '600', 'db_column': "'URL'", 'blank': 'True'}),
-            'videourl': ('django.db.models.fields.CharField', [], {'max_length': '600', 'db_column': "'VideoURL'", 'blank': 'True'})
+            'one_off_place': ('django.db.models.fields.CharField', [], {'max_length': '200', 'blank': 'True'}),
+            'place': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['places.Place']", 'null': 'True', 'blank': 'True'}),
+            'start_date': ('django.db.models.fields.DateField', [], {}),
+            'start_time': ('django.db.models.fields.TimeField', [], {'null': 'True', 'blank': 'True'})
         },
         'places.city': {
             'Meta': {'ordering': "('state', 'city')", 'unique_together': "(('city', 'state'),)", 'object_name': 'City'},
