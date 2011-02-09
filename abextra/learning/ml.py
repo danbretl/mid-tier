@@ -26,16 +26,18 @@ def random_tree_walk_algorithm(user):
     Output: Ordered list of EventIDs
     """
     userTree = CategoryTree(user)
-    #scoring_function(userTree)
     userTree.top_down_recursion(scoring_function,{"outkey":"score"})
-    #topN_function(userTree)
     userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
-    userTree.top_down_recursion(probabilistic_walk, {"inkey":"score", "outkey":"walk_score"})
-    userTree.top_down_recursion(probabilistic_walk, {"inkey":"topNscore", "outkey":"topN_walk_score"})
+    #userTree.top_down_recursion(probabilistic_walk,{"inkey":"topNscore", "outkey":"topNscore_probability"})
+    userTree.top_down_recursion(topN_score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"combined_score", "outkey":"combined_probability"})
     #print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["topN_walk_score","walk_score"])]
     #print "Sum is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["walk_score"])])
     #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["prob_scores"])])
-    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["walk_score"])],settings.N)
+    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["combined_probability"])],settings.N)
+
+def topN_score_combinator(parent,inkey1 = "inkey1", inkey2="inkey2", outkey="combined_score"):
+    parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2)) 
 
 """
 Call probabilistic_walk recursively top down on the category tree.
@@ -73,19 +75,18 @@ tree.bottom_up_recursion(topN_function,dictionary)
 """
 def topN_function(parent,inkey="score",outkey="topNscore"):
     if not parent.get_parent():
-        parent.insert_key_value(outkey,1.0)
+        parent.insert_key_value(outkey,0.0)
         parent.insert_key_value(inkey,0.0)
 
-    children = parent.get_children()
-    parent_score = parent.get_key_value(inkey)
-    
-    if not children:
-        parent.insert_key_value(outkey,parent.get_key_value(inkey))
-        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
     else:
-        #parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in [parent]+children]))
-        parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in children]))
-        #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+        children = parent.get_children()        
+        if not children:
+            parent.insert_key_value(outkey,parent.get_key_value(inkey))
+            #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+        else:
+            #parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in [parent]+children]))
+            parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
+            #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
 
 """
 The scoring function works on one node at a time calculating and storing information into the dictionary.
