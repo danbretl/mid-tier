@@ -13,12 +13,14 @@ class CategoryTree:
         The name of a tree node is the category name otherwise defaults to ROOT
         the value is calculated from the persisted representation of the tree
         much the user likes this, and optionally children"""
-        self.children = [CategoryTree(userID, x, self) for x in  Category.objects.filter(parent__exact=category)]
         self.parent = parent
+        self.children = []
         if category:
+            self.children = [CategoryTree(userID, x, self) for x in  Category.objects.filter(parent__exact=category)]
             self.category = category
             self.title = category.title
         else:
+            self.children = [CategoryTree(userID, x, self) for x in  Category.objects.filter(parent=Category.objects.get(title="Concrete"))]
             self.category = Category.objects.get(title = "Concrete")
             self.title = "ROOT"
         if dictionary: 

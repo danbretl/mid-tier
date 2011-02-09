@@ -42,13 +42,13 @@ def random_tree_walk_algorithm(user):
     userTree.top_down_recursion(scoring_function,{"outkey":"score"})
     #topN_function(userTree)
     userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
-    print userTree.get_category_scores_dictionary(["score","topNscore"])
-    #import pdb; pdb.set_trace()    
-    #probabilistic_walk(userTree)
-    userTree.top_down_recursion(probabilistic_walk,{"probability_key":"topNscore","inkey":"score", "outkey":"probabilistic_walk"})
-    #print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["probabilistic_walk"])]
-    print userTree.get_category_scores_dictionary(["score","topNscore","probabilistic_walk"])
-    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["probabilistic_walk"])],settings.N)
+    userTree.top_down_recursion(probabilistic_walk, {"inkey":"score", "outkey":"walk_score"})
+    userTree.top_down_recursion(probabilistic_walk, {"inkey":"topNscore", "outkey":"topN_walk_score"})
+    print [(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["topN_walk_score","walk_score"])]
+    print "Sum is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["walk_score"])])
+    #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["prob_scores"])])
+    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["walk_score"])],settings.N)
+
 
 def SummaryScore(Sample_Distribution):
     dict = {}
@@ -109,6 +109,7 @@ def SampleDistribution(distribution,trials):
         for count in range(len(distribution)):
             if (value < CDFDistribution[count]): break
         returnList += [(distribution[count])[0]]
+    import pdb; pdb.set_trace()
     return returnList
 
 def get_category_scores(uid,cid):
@@ -168,49 +169,50 @@ CategoryTree tree
 tree.top_down_recursion(probabilistic_walk,dictionary)
 Function would look like: 
 """
-def probabilistic_walk(parent, inkey="score", outkey="probabilistic_walk", probability_key = "topNscore"):
+def probabilistic_walk(parent, inkey, outkey):
+    if not parent.get_parent():
+        parent.insert_key_value(outkey, 1.0)
+        parent.insert_key_value(inkey,0.0)
+
     children = parent.get_children()
-    mkey = "m." + outkey
-    
+
+    parent_score = parent.get_key_value(outkey)
+
+    total_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
+
+    for tree in [parent] + children:
+        if total_score:
+            tree.insert_key_value(outkey, parent_score * tree.get_key_value(inkey) / total_score)
+        else:
+            tree.insert_key_value(outkey, parent_score / (len(children) + 1))
+
+def assign_probabilities(parent, inkey="topNscore", outkey="topN_prob_scores"):
+    children = parent.get_children()
     #Calculate total topNscore
-    total_top_n_score = sum([tree.get_key_value(probability_key) for tree in children])
-    print "Total top N score: ", total_top_n_score
+    total_top_n_score = sum([tree.get_key_value(inkey) for tree in children])
 
     if not parent.get_parent():
         parent.insert_key_value(outkey, 1.0)
-
+        #print "inserted 1.0 at root"
+        
     for tree in children:
         if total_top_n_score:
-            tree.insert_key_value(outkey, parent.get_key_value(outkey) * parent.get_key_value(probability_key) / total_top_n_score)
+            tree.insert_key_value(outkey, parent.get_key_value(outkey) * parent.get_key_value(inkey) / total_top_n_score)
+            #print "inserted in ", tree.category.id, " ", parent.get_key_value(outkey) * parent.get_key_value(probability_key) / total_top_n_score
         else:
             tree.insert_key_value(outkey, parent.get_key_value(outkey) / len(children))
-    
+            #print "inserted in ", tree.category.id, " ", parent.get_key_value(outkey) / len(children)
+
+def assign_category_probabilities(parent, inkey = "scores", outkey = "cat_prob_scores"):
+    parent = parent.get_children()
     total_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
     for tree in [parent] + children:
         if total_score:
             tree.insert_key_value(outkey, tree.get_key_value(outkey) * tree.get_key_value(inkey) / total_score)
+            #print "inserted in ", tree.category.id, " ", tree.get_key_value(outkey) * tree.get_key_value(inkey) / total_score
         else:
-            tree.insert_key_value(outkey, tree.get_key_value(tree.get_key_value(outkey)/(len(children) + 1)))
-    
-
-def assign_independent_probabilities(parent, inkey="topNscore", outkey="top_n_probabilities"):
-    children = parent.get_children()
-    sum_scores = parent.get_key_value(inkey)
-    sum_scores += sum([tree.get_key_value(inkey) for tree in children])
-    count = len(children) + 1
-
-    # Assign probability walk scores        
-    if sum_scores == 0:
-        uniform_distribution = 1.0 / count
-        parent.insert_key_value(outkey, uniform_distribution )
-        for tree in children:
-            tree.insert_key_value(outkey, uniform_distribution)
-    else:
-        parent_score = parent.get_key_value(inkey)
-        if not parent_score: parent_score = 0.0
-        parent.insert_key_value(outkey, parent_score / sum_scores)
-        for tree in children:
-            tree.insert_key_value(midleaf_tag, tree.get_key_value(inkey) / sum_scores)
+            tree.insert_key_value(outkey, tree.get_key_value(outkey)/(len(children)))
+            #print "inserted in ", tree.category.id, " ",tree.get_key_value(tree.get_key_value(outkey)/(len(children) + 1))
 
 
 ##Outdated
@@ -234,6 +236,7 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
         #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
     else:
         parent.insert_key_value(outkey,settings.top3Score([parent.get_category_score_dictionary(inkey)]+[tree.get_category_score_dictionary(inkey) for tree in children]))
+        parent.insert_key_value(outkey,settings.top3Score([tree.get_category_score_dictionary(inkey) for tree in children]))
         #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
 
     

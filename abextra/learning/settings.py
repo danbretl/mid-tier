@@ -2,11 +2,11 @@ from django.contrib.auth.models import User
 
 #from django.contrib.auth.models import User
 
-Gm = 5                 # G Multiplier in the scoring function
+Gm = 1                 # G Multiplier in the scoring function
 Vm = 1                 # V Multiplier in the scoring function
 Im = 1                 # I Multiplier in the scoring function
 Xp = 0.4               # X's power in scoring function
-learning_constant = 1  # learning constant. Affects learning speed.
+learning_constant = 50  # learning constant. Affects learning speed.
                        # Higher values result in slower learning
 
 N = 20                 # Number of recommendations to the end user
@@ -33,4 +33,15 @@ def topN_function(N):
     else:
         return lambda lst: 0.0
 
-top3Score = topN_function(3)
+
+
+
+def mod_topN_function(N):
+    if N > 1:
+        return lambda lst:lst[0]*mean(sorted(lst[1:])[-N:])/(sum(lst[1:]) + 1)
+    else:
+        return lambda lst: sum(lst)
+
+#top3Score = mod_topN_function(3)
+
+top3Score = mod_topN_function(3)
