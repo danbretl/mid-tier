@@ -49,14 +49,6 @@ class Occurrence(models.Model):
     event = models.ForeignKey(Event, related_name='occurrences')
     place = models.ForeignKey(Place, blank=True, null=True)
     one_off_place = models.CharField(max_length=200, blank=True)
-
-    class Meta:
-        verbose_name_plural = _('occurrences')
-
-
-class EventTime(models.Model):
-    """EventTime model"""
-    occurrence = models.ForeignKey(Occurrence, related_name='event_times')
     start_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
@@ -64,8 +56,7 @@ class EventTime(models.Model):
     is_all_day = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = _('event time')
-        verbose_name_plural = _('event times')
+        verbose_name_plural = _('occurrences')
 
     @property
     def is_past(self): pass
@@ -75,4 +66,3 @@ class EventTime(models.Model):
 
     @property
     def is_now(self): pass
-

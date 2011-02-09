@@ -37,7 +37,7 @@ class Costs(models.Model):
 # ---- old scrape db flat schema ----
 
 import datetime, re
-from events.models import Event, EventTime
+from events.models import Event
 rg=re.compile(r'[a-z]*')
 class ScrapedEvent(models.Model):
     """Works with the sraped events view"""
@@ -80,11 +80,11 @@ class ScrapedEvent(models.Model):
         e.video_url = self.videourl or ''
         if save: e.save()
 
-        if self.eventdate:
-            et = EventTime()
-            et.event = e
-            et.start = datetime.datetime.combine(self.eventdate, self.starttime)
-            et.end = datetime.datetime.combine(self.eventdate, self.endtime)
-            if save: et.save()
+        # if self.eventdate:
+        #     et = EventTime()
+        #     et.event = e
+        #     et.start = datetime.datetime.combine(self.eventdate, self.starttime)
+        #     et.end = datetime.datetime.combine(self.eventdate, self.endtime)
+        #     if save: et.save()
 
         return e
