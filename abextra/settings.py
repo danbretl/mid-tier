@@ -26,7 +26,7 @@ DATABASES = {
     },
     'scrape': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'scrape_alchemy',
+        'NAME': 'scrape',
         'USER': DB_USER,
         'PASSWORD': DB_PASSWD,
         'HOST': DB_HOST,                        # Set to empty string for localhost.
