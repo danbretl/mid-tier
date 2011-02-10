@@ -11,7 +11,7 @@ learning_constant = 50  # learning constant. Affects learning speed.
 
 N = 20                 # Number of recommendations to the end user
 
-def scoring_function(tup = (1,1,1,0.9), pow = (1,1,1)):
+def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
     g,v,i = pow
     return (lambda y: ((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant )*(X**y[3]) ) 
