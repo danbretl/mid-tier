@@ -10,6 +10,7 @@
             "icon_width": 1120, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "sports", 
             "icon": "category_icons/sports.jpg"
         }
     }, 
@@ -24,6 +25,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "spectator", 
             "icon": ""
         }
     }, 
@@ -38,6 +40,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "participation", 
             "icon": ""
         }
     }, 
@@ -52,6 +55,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "activities", 
             "icon": ""
         }
     }, 
@@ -66,6 +70,7 @@
             "icon_width": 1024, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "cycling", 
             "icon": "category_icons/cycling.jpg"
         }
     }, 
@@ -80,6 +85,7 @@
             "icon_width": 1000, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "walks", 
             "icon": "category_icons/walks.jpg"
         }
     }, 
@@ -94,6 +100,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "marathons", 
             "icon": ""
         }
     }, 
@@ -108,6 +115,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "gatherings", 
             "icon": ""
         }
     }, 
@@ -122,6 +130,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "conventions", 
             "icon": ""
         }
     }, 
@@ -136,6 +145,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "conferences", 
             "icon": ""
         }
     }, 
@@ -150,6 +160,7 @@
             "icon_width": 553, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "rallies", 
             "icon": "category_icons/Rally.jpg"
         }
     }, 
@@ -164,6 +175,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "fundraising", 
             "icon": ""
         }
     }, 
@@ -178,6 +190,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "appearances", 
             "icon": ""
         }
     }, 
@@ -192,6 +205,7 @@
             "icon_width": 400, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "nightlife", 
             "icon": "category_icons/nightlife.jpg"
         }
     }, 
@@ -206,6 +220,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "clubs", 
             "icon": ""
         }
     }, 
@@ -220,6 +235,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "bars", 
             "icon": ""
         }
     }, 
@@ -234,6 +250,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "amateur-performances", 
             "icon": ""
         }
     }, 
@@ -248,6 +265,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "openings", 
             "icon": ""
         }
     }, 
@@ -262,6 +280,7 @@
             "icon_width": 640, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "djs", 
             "icon": "category_icons/Djing.jpg"
         }
     }, 
@@ -276,6 +295,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "celebrity", 
             "icon": ""
         }
     }, 
@@ -290,6 +310,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "trivia-night", 
             "icon": ""
         }
     }, 
@@ -304,6 +325,7 @@
             "icon_width": 425, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "karaoke-night", 
             "icon": "category_icons/Karaoke.jpg"
         }
     }, 
@@ -318,6 +340,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "musical", 
             "icon": ""
         }
     }, 
@@ -332,6 +355,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "comedy-show", 
             "icon": ""
         }
     }, 
@@ -346,6 +370,7 @@
             "icon_width": 1024, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "poetry", 
             "icon": "category_icons/Poetry2.jpg"
         }
     }, 
@@ -360,6 +385,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "shows", 
             "icon": ""
         }
     }, 
@@ -374,6 +400,7 @@
             "icon_width": 1024, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "movies", 
             "icon": "category_icons/movie.jpg"
         }
     }, 
@@ -388,6 +415,7 @@
             "icon_width": 768, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "concerts", 
             "icon": "category_icons/concert1.jpg"
         }
     }, 
@@ -402,6 +430,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "plays", 
             "icon": ""
         }
     }, 
@@ -416,6 +445,7 @@
             "icon_width": 600, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "musicals", 
             "icon": "category_icons/Musicals.jpg"
         }
     }, 
@@ -430,6 +460,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "stand-up", 
             "icon": ""
         }
     }, 
@@ -444,6 +475,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "talks", 
             "icon": ""
         }
     }, 
@@ -458,6 +490,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "lectures", 
             "icon": ""
         }
     }, 
@@ -472,6 +505,7 @@
             "icon_width": 500, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "panels", 
             "icon": "category_icons/Panel.jpg"
         }
     }, 
@@ -486,6 +520,7 @@
             "icon_width": 900, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "book-signings", 
             "icon": "category_icons/booksignings.jpg"
         }
     }, 
@@ -500,6 +535,7 @@
             "icon_width": 1024, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "food-drink", 
             "icon": "category_icons/food.jpg"
         }
     }, 
@@ -514,6 +550,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "tastings", 
             "icon": ""
         }
     }, 
@@ -528,6 +565,7 @@
             "icon_width": 640, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "street-fairs", 
             "icon": "category_icons/street_fairs.jpg"
         }
     }, 
@@ -542,6 +580,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "restaurant-opening", 
             "icon": ""
         }
     }, 
@@ -556,6 +595,7 @@
             "icon_width": 400, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "wine", 
             "icon": "category_icons/wine_tasting.jpg"
         }
     }, 
@@ -570,6 +610,7 @@
             "icon_width": 500, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "farmers-market", 
             "icon": "category_icons/farmers_market.jpg"
         }
     }, 
@@ -584,6 +625,7 @@
             "icon_width": 350, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "television-tapings", 
             "icon": "category_icons/tv-shows.jpg"
         }
     }, 
@@ -598,6 +640,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "late-night", 
             "icon": ""
         }
     }, 
@@ -612,6 +655,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "morning-shows", 
             "icon": ""
         }
     }, 
@@ -626,6 +670,7 @@
             "icon_width": 1122, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "colbert-report", 
             "icon": "category_icons/colbert.jpg"
         }
     }, 
@@ -640,6 +685,7 @@
             "icon_width": 800, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "daily-show", 
             "icon": "category_icons/The_Daily_Show.jpg"
         }
     }, 
@@ -654,6 +700,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "letterman", 
             "icon": ""
         }
     }, 
@@ -668,6 +715,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "fallon", 
             "icon": ""
         }
     }, 
@@ -682,6 +730,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "regis", 
             "icon": ""
         }
     }, 
@@ -696,6 +745,7 @@
             "icon_width": 1000, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "the-view", 
             "icon": "category_icons/the_view.jpg"
         }
     }, 
@@ -710,6 +760,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "today-show", 
             "icon": ""
         }
     }, 
@@ -724,6 +775,7 @@
             "icon_width": 415, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "good-morning-america", 
             "icon": "category_icons/GoodMorningAmerica.jpg"
         }
     }, 
@@ -738,6 +790,7 @@
             "icon_width": null, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
+            "slug": "abstract", 
             "icon": ""
         }
     }, 
@@ -752,6 +805,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "show-genres", 
             "icon": ""
         }
     }, 
@@ -766,6 +820,7 @@
             "icon_width": 1024, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "music-genres", 
             "icon": "category_icons/music.jpg"
         }
     }, 
@@ -780,6 +835,7 @@
             "icon_width": 777, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "lgbt", 
             "icon": "category_icons/Gay.png"
         }
     }, 
@@ -794,6 +850,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "religion", 
             "icon": ""
         }
     }, 
@@ -808,6 +865,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "political", 
             "icon": ""
         }
     }, 
@@ -822,6 +880,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "health", 
             "icon": ""
         }
     }, 
@@ -836,6 +895,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "ages", 
             "icon": ""
         }
     }, 
@@ -850,6 +910,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "educational", 
             "icon": ""
         }
     }, 
@@ -864,6 +925,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "charity", 
             "icon": ""
         }
     }, 
@@ -878,6 +940,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "diseases", 
             "icon": ""
         }
     }, 
@@ -892,6 +955,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "poverty", 
             "icon": ""
         }
     }, 
@@ -906,6 +970,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "environmental", 
             "icon": ""
         }
     }, 
@@ -920,6 +985,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "math-and-science", 
             "icon": ""
         }
     }, 
@@ -934,6 +1000,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "history", 
             "icon": ""
         }
     }, 
@@ -948,6 +1015,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "the-arts", 
             "icon": ""
         }
     }, 
@@ -962,6 +1030,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "current-events", 
             "icon": ""
         }
     }, 
@@ -976,6 +1045,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "business", 
             "icon": ""
         }
     }, 
@@ -990,6 +1060,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "technology", 
             "icon": ""
         }
     }, 
@@ -1004,6 +1075,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "math", 
             "icon": ""
         }
     }, 
@@ -1018,6 +1090,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "physics", 
             "icon": ""
         }
     }, 
@@ -1032,6 +1105,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "biology", 
             "icon": ""
         }
     }, 
@@ -1046,6 +1120,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "chemistry", 
             "icon": ""
         }
     }, 
@@ -1060,6 +1135,7 @@
             "icon_width": 1000, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "astronomy", 
             "icon": "category_icons/astronomy.jpeg"
         }
     }, 
@@ -1074,6 +1150,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "computer-science", 
             "icon": ""
         }
     }, 
@@ -1088,6 +1165,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "anthropology", 
             "icon": ""
         }
     }, 
@@ -1102,6 +1180,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "film", 
             "icon": ""
         }
     }, 
@@ -1116,6 +1195,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "literature", 
             "icon": ""
         }
     }, 
@@ -1130,6 +1210,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "music", 
             "icon": ""
         }
     }, 
@@ -1144,6 +1225,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "under-13", 
             "icon": ""
         }
     }, 
@@ -1158,6 +1240,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "13-17", 
             "icon": ""
         }
     }, 
@@ -1172,6 +1255,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "18-20", 
             "icon": ""
         }
     }, 
@@ -1186,6 +1270,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "21", 
             "icon": ""
         }
     }, 
@@ -1200,6 +1285,7 @@
             "icon_width": 421, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "democrat", 
             "icon": "category_icons/Democratic.jpg"
         }
     }, 
@@ -1214,6 +1300,7 @@
             "icon_width": 600, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "republican", 
             "icon": "category_icons/republican.jpg"
         }
     }, 
@@ -1228,6 +1315,7 @@
             "icon_width": 1024, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "christianity", 
             "icon": "category_icons/bible.jpg"
         }
     }, 
@@ -1242,6 +1330,7 @@
             "icon_width": 420, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "hinduism", 
             "icon": "category_icons/hinduism.jpg"
         }
     }, 
@@ -1256,6 +1345,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "judaism", 
             "icon": ""
         }
     }, 
@@ -1270,6 +1360,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "islam", 
             "icon": ""
         }
     }, 
@@ -1284,6 +1375,7 @@
             "icon_width": 1280, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "buddhism", 
             "icon": "category_icons/buddism.jpg"
         }
     }, 
@@ -1298,6 +1390,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "jainism", 
             "icon": ""
         }
     }, 
@@ -1312,6 +1405,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "sikhism", 
             "icon": ""
         }
     }, 
@@ -1326,6 +1420,7 @@
             "icon_width": 792, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "lesbian", 
             "icon": "category_icons/Lesbian.jpg"
         }
     }, 
@@ -1340,6 +1435,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "gay", 
             "icon": ""
         }
     }, 
@@ -1354,6 +1450,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "bisexual", 
             "icon": ""
         }
     }, 
@@ -1368,6 +1465,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "transgender", 
             "icon": ""
         }
     }, 
@@ -1382,6 +1480,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "family", 
             "icon": ""
         }
     }, 
@@ -1396,6 +1495,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "for-kids", 
             "icon": ""
         }
     }, 
@@ -1410,6 +1510,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "under-10", 
             "icon": ""
         }
     }, 
@@ -1424,6 +1525,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "teenage", 
             "icon": ""
         }
     }, 
@@ -1438,6 +1540,7 @@
             "icon_width": 615, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "rock", 
             "icon": "category_icons/rock1.jpg"
         }
     }, 
@@ -1452,6 +1555,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "blues", 
             "icon": ""
         }
     }, 
@@ -1466,6 +1570,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "jazz", 
             "icon": ""
         }
     }, 
@@ -1480,6 +1585,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "western-classical", 
             "icon": ""
         }
     }, 
@@ -1494,6 +1600,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "comedy", 
             "icon": ""
         }
     }, 
@@ -1508,6 +1615,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "drama", 
             "icon": ""
         }
     }, 
@@ -1522,6 +1630,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "gallery", 
             "icon": ""
         }
     }, 
@@ -1536,6 +1645,7 @@
             "icon_width": null, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
+            "slug": "discount", 
             "icon": ""
         }
     }, 
@@ -1550,6 +1660,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "festival", 
             "icon": ""
         }
     }, 
@@ -1564,6 +1675,7 @@
             "icon_width": 640, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "circus", 
             "icon": "category_icons/Circus.jpg"
         }
     }, 
@@ -1578,6 +1690,7 @@
             "icon_width": 500, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "tourism", 
             "icon": "category_icons/Tourists1.jpg"
         }
     }, 
@@ -1592,6 +1705,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "tour", 
             "icon": ""
         }
     }, 
@@ -1606,6 +1720,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "alternative", 
             "icon": ""
         }
     }, 
@@ -1620,6 +1735,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "photography", 
             "icon": ""
         }
     }, 
@@ -1634,6 +1750,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "classic", 
             "icon": ""
         }
     }, 
@@ -1648,6 +1765,7 @@
             "icon_width": 1024, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "museum", 
             "icon": "category_icons/Museums2.jpg"
         }
     }, 
@@ -1662,6 +1780,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "dance", 
             "icon": ""
         }
     }, 
@@ -1676,6 +1795,7 @@
             "icon_width": null, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
+            "slug": "invalid", 
             "icon": ""
         }
     }, 
@@ -1690,6 +1810,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "broadway", 
             "icon": ""
         }
     }, 
@@ -1704,6 +1825,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "off-broadway", 
             "icon": ""
         }
     }, 
@@ -1718,6 +1840,7 @@
             "icon_width": 2195, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "visual-arts", 
             "icon": "category_icons/VisualArts.jpg"
         }
     }, 
@@ -1732,6 +1855,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "painting", 
             "icon": ""
         }
     }, 
@@ -1746,6 +1870,7 @@
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "sculpture", 
             "icon": ""
         }
     }, 
@@ -1760,6 +1885,7 @@
             "icon_width": null, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "fantasy", 
             "icon": ""
         }
     }, 
@@ -1774,6 +1900,7 @@
             "icon_width": 1024, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
+            "slug": "adventure", 
             "icon": "category_icons/Hiking.jpg"
         }
     }, 
@@ -1788,6 +1915,7 @@
             "icon_width": 500, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "opera", 
             "icon": "category_icons/opera.jpg"
         }
     }, 
@@ -1802,6 +1930,7 @@
             "icon_width": 300, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "conan-obrien", 
             "icon": "category_icons/conan_1.jpg"
         }
     }, 
@@ -1816,6 +1945,7 @@
             "icon_width": 450, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
+            "slug": "running", 
             "icon": "category_icons/marathon.jpg"
         }
     }, 
@@ -1830,6 +1960,7 @@
             "icon_width": null, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
+            "slug": "concrete", 
             "icon": ""
         }
     }

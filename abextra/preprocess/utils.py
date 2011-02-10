@@ -1,12 +1,11 @@
-import datetime, re, random
+import datetime, random
 
-from events.utils import CachedCategoryTree
+from django.template.defaultfilters import slugify
 
 from places.models import Place
 from events.models import Event, Occurrence, User
+from events.utils import CachedCategoryTree
 from behavior.models import Category
-
-rg=re.compile(r'[a-z]*')
 
 class MockInitializer(object):
     def __init__(self, n_events_per_concrete_category=100):
@@ -15,22 +14,19 @@ class MockInitializer(object):
     def run(self):
         ctree = CachedCategoryTree()
 
-        concretes = set(ctree.all_concrete())
-        abstracts = set(ctree.all_abstract())
-
         tester_api = User.objects.get(username='tester_api')
         village_vanguard = Place.objects.get(slug='village-vanguard')
 
         description = """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
 
-        for concrete_category in concretes:
+        for concrete_category in ctree.concretes:
             for n_events in xrange(self.n_events_per_concrete_category):
                 # create an event
                 title = '%s event #%i' % (concrete_category.title, n_events)
                 e = Event(
                     xid = 'xid-%i' % n_events,
                     title = title,
-                    slug = '-'.join(p for p in rg.findall(title.lower()) if p)[:50] + '-%i' % n_events,
+                    slug = slugify(title),
                     description = description,
                     submitted_by = tester_api,
                     url = 'http://abextratech.com/',
@@ -41,7 +37,7 @@ class MockInitializer(object):
                 e.save()
 
                 # add some abstract categories to it
-                for ac in random.sample(abstracts, random.randint(1,5)):
+                for ac in random.sample(ctree.abstracts, random.randint(1,5)):
                     e.categories.add(ac)
 
                 # add some occurrences

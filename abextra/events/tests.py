@@ -9,11 +9,9 @@ class TestCategoryTree(TestCase):
         self.ctree = CachedCategoryTree()
 
     def test_convenience(self):
-        concretes = set(self.ctree.all_concrete())
-        abstracts = set(self.ctree.all_abstract())
-        self.assertTrue(concretes)
-        self.assertTrue(abstracts)
-        self.assertFalse(concretes & abstracts)
+        self.assertTrue(self.ctree.concretes)
+        self.assertTrue(self.ctree.abstracts)
+        self.assertFalse(set(self.ctree.concretes) & set(self.ctree.abstracts))
 
     def test_category_retreival(self):
         title = 'concerts'

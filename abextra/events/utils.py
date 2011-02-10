@@ -4,7 +4,7 @@ from events.models import Category
 class CachedCategoryTree(object):
     abstract_title = 'abstract'
     concrete_title = 'concrete'
-    
+
     def __init__(self, skinny=False):
         # prepare the initial db queryset
         category_qs = Category.objects
@@ -31,6 +31,9 @@ class CachedCategoryTree(object):
             if c.parent: graph[c.parent].append(c)
         self._graph = graph
 
+        # memoizers
+        self._abstracts = self._concretes = None
+
     def category_by_id(self, id):
         return self._categories_by_id[id]
     def category_by_title(self, title):
@@ -48,9 +51,16 @@ class CachedCategoryTree(object):
     def children(self, category):
         return self._graph[category]
 
-    def all_abstract(self):
-        c = self.category_by_title(self.abstract_title)
-        return self.children_recursive(c)
-    def all_concrete(self):
-        c = self.category_by_title(self.concrete_title)
-        return self.children_recursive(c)
+    @property
+    def abstracts(self):
+        if not self._abstracts:
+            c = self.category_by_title(self.abstract_title)
+            self._abstracts = self.children_recursive(c)
+        return self._abstracts
+
+    @property
+    def concretes(self):
+        if not self._concretes:
+            c = self.category_by_title(self.concrete_title)
+            self._concretes = self.children_recursive(c)
+        return self._concretes

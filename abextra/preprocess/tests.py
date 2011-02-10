@@ -12,5 +12,5 @@ class InitializerTest(TestCase):
 
     def test_load_db(self):
         ctree = CachedCategoryTree()
-        for cc in ctree.all_concrete():
+        for cc in ctree.concretes:
             self.assertEqual(self.n, cc.events_concrete.all().count())

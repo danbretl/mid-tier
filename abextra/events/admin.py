@@ -1,29 +1,36 @@
 from django.contrib import admin
-from events.models import *
+from django.template.defaultfilters import slugify
+from events.models import Category, Event, Occurrence
+from events.forms import CategoryAdminForm
 
 
-class SubcategoriesInline(admin.TabularInline):
+class CategoriesInline(admin.TabularInline):
     """Inline forms for subcategories"""
     model = Category
+    form = CategoryAdminForm
     extra = 0
+    fields = ('title', 'is_associative', 'association_coefficient', 'icon')
 
 class CategoryAdmin(admin.ModelAdmin):
     """Admin for categories"""
+    form = CategoryAdminForm
     search_fields = ('title',)
     list_filter = ('category_type',)
     list_display = ('title', 'parent', 'category_type', 'is_associative')
-    fields = ('title', 'category_type', 'parent', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width')
+    fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width')
     readonly_fields = ('icon_height', 'icon_width')
     inlines = [
-        SubcategoriesInline
+        CategoriesInline
     ]
 admin.site.register(Category, CategoryAdmin)
+
 
 class OccurrenceInline(admin.StackedInline):
     model = Occurrence
     fk = 'event'
     # fields = ('one_off_place',)
     # readonly_fields = ('one_off_place',)
+
 
 class EventCategorizer(admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""

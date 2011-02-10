@@ -12,7 +12,8 @@ class Migration(SchemaMigration):
         db.create_table('events_category', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('category_type', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('title', self.gf('django.db.models.fields.CharField')(unique=True, max_length=100)),
+            ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50, db_index=True)),
             ('parent', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='subcategories', null=True, to=orm['events.Category'])),
             ('is_associative', self.gf('django.db.models.fields.BooleanField')(default=True)),
             ('association_coefficient', self.gf('django.db.models.fields.FloatField')(default=0)),
@@ -124,7 +125,8 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_associative': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'subcategories'", 'null': 'True', 'to': "orm['events.Category']"}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'events.event': {
             'Meta': {'object_name': 'Event'},
