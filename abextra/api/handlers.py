@@ -1,12 +1,14 @@
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
+from events.models import Event, Category
+from events.utils import CachedCategoryTree
+
+from behavior.models import EventAction
+
 from learning import ml
 
-##########
-# Events #
-##########
-from events.models import Event, Category
+# Events
 
 class EventHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')
@@ -97,7 +99,6 @@ class EventHandler(BaseHandler):
         return m.filter(pk=event_id) if event_id else list(events - removed_events)
         # return m.filter(pk=event_id) if event_id else m.all()[:20]
 
-from events.utils import CachedCategoryTree
 class CategoryHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Category
@@ -105,18 +106,14 @@ class CategoryHandler(BaseHandler):
 
     def read(self, request, parent_node_title='concrete'):
         """
-        Returns a single event if 'event_id' is given,
-        otherwise a subset.
+        Returns immediate children of the parent category node
         """
         # FIXME shameless plug to fix nulled opt param - fix url handler
         if not parent_node_title: parent_node_title = 'concrete'
         ctree = CachedCategoryTree()
         return ctree.children(ctree.category_by_title(parent_node_title))
 
-############
-# Behavior #
-############
-from behavior.models import EventAction
+# Behavior
 
 class EventActionHandler(BaseHandler):
     allowed_methods = ('GET', 'POST')

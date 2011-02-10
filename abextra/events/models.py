@@ -1,4 +1,4 @@
-import datetime
+import datetime, os
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -20,7 +20,7 @@ class Category(models.Model):
 
     @property
     def icon_path(self):
-        return self.icon.name if self.icon else None
+        return os.path.split(self.icon.name)[-1] if self.icon else None
 
     class Meta:
         verbose_name_plural = _('categories')
