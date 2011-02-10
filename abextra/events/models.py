@@ -18,6 +18,10 @@ class Category(models.Model):
     icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
 
+    @property
+    def icon_path(self):
+        return self.icon.name if self.icon else None
+
     class Meta:
         verbose_name_plural = _('categories')
 

@@ -97,6 +97,22 @@ class EventHandler(BaseHandler):
         return m.filter(pk=event_id) if event_id else list(events - removed_events)
         # return m.filter(pk=event_id) if event_id else m.all()[:20]
 
+from events.utils import CachedCategoryTree
+class CategoryHandler(BaseHandler):
+    allowed_methods = ('GET')
+    model = Category
+    fields = ('id', 'title', 'icon_path')
+
+    def read(self, request, parent_node_title='concrete'):
+        """
+        Returns a single event if 'event_id' is given,
+        otherwise a subset.
+        """
+        # FIXME shameless plug to fix nulled opt param - fix url handler
+        if not parent_node_title: parent_node_title = 'concrete'
+        ctree = CachedCategoryTree()
+        return ctree.children(ctree.category_by_title(parent_node_title))
+
 ############
 # Behavior #
 ############

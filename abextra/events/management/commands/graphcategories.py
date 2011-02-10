@@ -14,8 +14,6 @@ from pygraph.classes.exceptions import AdditionError
 
 from itertools import count
 
-ROOT_NODE = 'ROOT'
-CONCRETE_NODE = 'Concrete'
 output_dir = 'category_graphs'
 
 class Command(NoArgsCommand):
@@ -27,8 +25,6 @@ class Command(NoArgsCommand):
         cats_by_id = dict((c.id, c) for c in Category.objects.all())
 
         # Add nodes
-        gr.add_node(ROOT_NODE)
-        gr.add_node(CONCRETE_NODE)
         dups = count()
         for c in cats_by_id.itervalues():
             try:
@@ -42,19 +38,15 @@ class Command(NoArgsCommand):
         if dups.next() > 0: return
 
         # Add edges
-        gr.add_edge((CONCRETE_NODE, ROOT_NODE))
+        # gr.add_edge((CONCRETE_NODE, ROOT_NODE))
         for c in cats_by_id.itervalues():
             parent = cats_by_id.get(c.parent_id)
             if parent:
                 gr.add_edge((c, parent))
-            else:
-                if not c.title.lower() in ('abstract', 'discount', 'invalid'):
-                    gr.add_edge((c, CONCRETE_NODE))
-                else:
-                    gr.add_edge((c, ROOT_NODE))
 
+        import ipdb; ipdb.set_trace()
         # The whole tree from the root
-        st, order = breadth_first_search(gr, root=ROOT_NODE)
+        st, order = breadth_first_search(gr, root=Category.objects.get(title="Concrete"))
         gst = digraph()
         gst.add_spanning_tree(st)
 
@@ -62,7 +54,7 @@ class Command(NoArgsCommand):
         gvv = gv.readstring(dot)
 
         gv.layout(gvv, 'dot')
-        gv.render(gvv, 'pdf', os.path.join(output_dir, 'all.pdf'))
+        gv.render(gvv, 'pdf', os.path.join(output_dir, 'concrete.pdf'))
 
         # # Individual trees from
         # for c in Category.objects.filter(parent__exact=None):

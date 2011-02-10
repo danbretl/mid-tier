@@ -3,13 +3,15 @@ from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 
-from api.handlers import EventHandler, EventActionHandler
+from api.handlers import EventHandler, EventActionHandler, CategoryHandler
 
 auth = HttpBasicAuthentication()
 ad = { 'authentication': auth }
 
 events = Resource(handler=EventHandler, **ad)
 event_actions = Resource(handler=EventActionHandler, **ad)
+categories = Resource(handler=CategoryHandler, **ad)
+
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
 
 # urlpatterns = patterns('piston.authentication',
@@ -20,7 +22,8 @@ event_actions = Resource(handler=EventActionHandler, **ad)
 
 urlpatterns = patterns('',
     # url(r'^events/$', events),
-    url(r'^events(/(?P<event_id>[^/]+))?/$', events),  # TODO should prolly remove pre-prod -- testing only
+    url(r'^events(/(?P<event_id>[^/]+))?/$', events),
+    url(r'^categories(/(?P<parent_node_title>[^/]+))?/$', categories),
 
     # url(r'^actions/$', event_actions),
     # url(r'^actions(/(?P<event_id>[^/]+))?/$', event_actions),
