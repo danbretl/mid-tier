@@ -2,7 +2,7 @@ from django.test import TestCase
 from events.models import Category
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
-
+import random
 
 class TestCategoryTree(TestCase):
     fixtures = ['categories.json']
@@ -64,8 +64,7 @@ class AlgorithmTest(TestCase):
     fixtures = ['auth.json', 'categories.json']
     def setUp(self):
         # defualt behavior setup
-        u = User(username='default_behavior')
-        u.save()
+        u = User.objects.get(username='default_behavior')
         for c in Category.objects.all():
             EventActionAggregate(user=u, category=c).save()
 
@@ -87,16 +86,89 @@ class AlgorithmTest(TestCase):
         userTree.print_dictionary_key_values()
         self.assertAlmostEqual(1.0,userTree.subtree_score("topNscore_probability"))
 
+    def test_multi_category_recall(self,user=None):
+        if not user:
+            user = self.user
+        for c in Category.objects.all():
+            EventActionAggregate(user=user,category=c).save()
+        
+        categories = set(ml.recommend_categories(user))
+
+        for k in range(1,6):
+            picked_categories = set(random.sample(categories,k))
+            print "Selected categories: ", picked_categories
+            picked_cat_aggregates = dict([(p,EventActionAggregate.objects.get(user=user, category=p)) for p in picked_categories])
+            loop_count = 0
+
+            while loop_count < 20:
+                loop_count+=1
+                print "Loop: ", loop_count
+                cats = ml.recommend_categories(user)
+                picked_cat_count = 0
+                category_count_map = {}
+                for i in cats:
+                    if i in picked_categories:
+                        try:
+                            category_count_map[i] +=1
+                        except:
+                            category_count_map[i] = 1
+                cats = set(cats)
+#                print "Recommendations: ", cats
+
+                correct_recommendations = cats.intersection(picked_categories)
+                for x in correct_recommendations:
+                    picked_cat_aggregates[x].g += 1 #category_count_map[x]
+                    picked_cat_aggregates[x].save()
+                    cats.discard(picked_cat_aggregates[x])
+
+                recall = len(correct_recommendations)*100.0/len(picked_categories)
+                print "Recall: ", recall #picked_count*5 #picked_count*100/20
+
+                for c in cats:
+                    try:
+                        eaa = EventActionAggregate.objects.get(user=user, category=c)
+                    except EventActionAggregate.DoesNotExist:
+                        eaa = EventActionAggregate(user=user, category=c)
+                        eaa.x += 1
+                        eaa.save()
+                    except:
+                        #EventActionAggregate.objects.filter(user=user,category=c).delete()
+                        #eaa = EventActionAggregate(user=user, category=c)
+                        #eaa.x = 1
+                        #eaa.save()
+                        print "wierd situation"
+                        import pdb; pdb.set_trace()
+                        eaas = EventActionAggregate.objects.filter(user=user, category=c)
+                        pass
+                        
+                        
+            for c in Category.objects.all():
+                #import pdb; pdb.set_trace()
+                try:
+                    eaa = EventActionAggregate.objects.get(user=user, category=c)
+                    eaa.g = 0
+                    eaa.v = 0
+                    eaa.i = 0
+                    eaa.x = 0
+                    eaa.save()
+                except:
+                    pass
+                    
+
+        #import pdb; pdb.set_trace()
+        self.assertTrue(True)
+
+
     def test_convergence(self):
         # import ipdb; ipdb.set_trace()
         categories = ml.recommend_categories(self.user)
         print "Categories: ", categories
-        picked_category = Category.objects.get(id=categories[0])
+        picked_category = categories[0]
         
         picked_aggr = EventActionAggregate(user=self.user, category=picked_category)
         picked_aggr.save()
         lst = []
-        
+    
         count = 0
         while count < 20:
             count +=1
@@ -125,10 +197,10 @@ class AlgorithmTest(TestCase):
                 try:
                     eaa = EventActionAggregate.objects.get(user=self.user, category=c)
                 except EventActionAggregate.DoesNotExist:
-                    eaa = EventActionAggregate(user=self.user, category=Category.objects.get(id=c))
+                    eaa = EventActionAggregate(user=self.user, category=c)
                     eaa.x += 1
                     eaa.save()
-
+                    
             lst.append(cnt*100.0/20)
         lst.append(100.0)
         plt.plot(lst,color="blue")
@@ -137,6 +209,7 @@ class AlgorithmTest(TestCase):
         plt.ylabel("% of all Recommendations")
         plt.savefig("test.pdf")
         self.assertTrue(True)
+
 
 class CategoryTest(TestCase):
 
