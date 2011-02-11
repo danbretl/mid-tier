@@ -61,6 +61,7 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
     # import ipdb; ipdb.set_trace()
     event_action = instance
     event_categories = set(event_action.event.categories.all())
+    event_categories.add(event_action.event.concrete_category)
 
     # process existing aggregates
     aggregates = EventActionAggregate.objects.filter(
@@ -68,6 +69,7 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
         category__in=event_categories
     )
 
+    # get the old event action for this event from the db
     old_event_action = None
     if event_action.id:
         try:
@@ -75,6 +77,7 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
         except EventAction.DoesNotExist:
             pass
 
+    # process existing aggregates
     for aggregate in aggregates:
         event_categories.remove(aggregate.category)
         if old_event_action:
