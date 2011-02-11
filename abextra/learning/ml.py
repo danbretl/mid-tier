@@ -56,51 +56,67 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
 
     # This is a modification of the Top-N algorithm. When scores get bubbled up via parents, the probability of parents getting selected -
-    # also goes up proportionally. To make the score of the parent proportional to its GVIX score, we combine the two.
-    userTree.top_down_recursion(topN_score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
+    # also goes up proportionally. To make the score of the parent proportional to its GVIX score, we combine the two multiplicatively.
+    userTree.top_down_recursion(score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
 
     # Perform a probabilistic walk on the tree generated.
     userTree.top_down_recursion(probabilistic_walk,{"inkey":"combined_score", "outkey":"combined_probability"})
 
     # Useful Debugging statements:
     #print userTree.print_dictionary_key_values()
-    #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_category_scores_dictionary(["prob_scores"])])
-    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_category_scores_dictionary(["combined_probability"])],N)
+    #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["prob_scores"])])
+    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
 
 
-def topN_score_combinator(parent,inkey1, inkey2, outkey):
+def score_combinator(parent,inkey1, inkey2, outkey):
+    """
+    Multiplies inkey1 and inkey2 and stores the result in outkey in the dictionary.
+    Input:
+         Parent (required)
+         Inkey1 (required)
+         Inkey2 (required)
+         Outkey (required)
+    
+    """
     parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2)) 
 
 
 def probabilistic_walk(parent, inkey, outkey):
-    # If this is the Root node, insert a value of 1.0 for probability of parent and score of 0 (so the parent isn't assigned a score: unless all children scores are zero)
+    """
+    The probabilistic walk can be performed on any key on the dictionary if and only if the key stores non-negative values.
+    Conceptually, the walk is such that the probability of reaching the Parent gets divided amongst itself and all its children.
+    The loop invariants are thus:
+        a) After a loop, the Sum of scores of all children and parent sum up to the original score of the parent.
+        b) At any given point in the walk, the sum of all scores add up to 1.0 (This is also a necessary requirement for Sampling)
+    The parent node always starts with a probability of 1.0.
+    The parent is assigned a probability, unless (if and only if) it is the root 'Concrete' node
+    """
     if not parent.get_parent():
         parent.insert_key_value(outkey, 1.0)
+        # This ensures that the Root node is assigned a probability of 0.0 and hence never selected.
         parent.insert_key_value(inkey,0.0)
 
     children = parent.get_children()
 
-    parent_score = parent.get_key_value(outkey)
+    # The parent outkey will always be assigned before this step. Why? Because this is top down recursion starting from the root,
+    # which has a score of 1.0. In the next few steps you will see all the children have their outkey assigned.
+    parent_out_score = parent.get_key_value(outkey)
 
-    total_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
+    # Calculate the total of all children and parent based on the inkey. Why? Because the walk is performed based on the inkey values.
+    total_in_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
 
+    # Reassign probabilities to the parent based on the distribution of its children and assign probabilities to all children.
     for tree in [parent] + children:
-        if not tree.get_parent:
-            tree.insert_key_value(outkey,0.0)
+        if total_in_score:
+            tree.insert_key_value(outkey, parent_out_score * tree.get_key_value(inkey) / total_in_score)
         else:
-            if total_score:
-                tree.insert_key_value(outkey, parent_score * tree.get_key_value(inkey) / total_score)
-            else:
-                tree.insert_key_value(outkey, parent_score / (len(children) + 1))
+            tree.insert_key_value(outkey, parent_out_score / (len(children) + 1))
 
-"""
-#Comment:
-topN function should be called bottom up (to ensure niche categories get enough attention)
-Example:
-CategoryTree tree
-tree.bottom_up_recursion(topN_function,dictionary)
-"""
+
 def topN_function(parent,inkey="score",outkey="topNscore"):
+    """
+    This function calculates the mean of the top k inkey scores amongst a parent and all its children and stores it in outkey
+    """
     if not parent.get_parent():
         parent.insert_key_value(outkey,0.0)
         parent.insert_key_value(inkey,0.0)
@@ -113,15 +129,11 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
         else:
             parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(inkey) for tree in [parent]+children]))
             #parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
-            #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
 
-"""
-The scoring function works on one node at a time calculating and storing information into the dictionary.
-Example:
-CategoryTree tree
-tree.top_down_recursion(scoring_function,dictionary)
-"""
 def scoring_function(parent, outkey="score"):
+    """
+    
+    """
     # If this is the root node, insert a value of 0
     #import pdb; pdb.set_trace()
     if not parent.get_parent():
@@ -130,24 +142,17 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
 
 
-def SummaryScore(Sample_Distribution):
-    dict = {}
-    for x in Sample_Distribution:
-        try:
-            dict[x]+=1
-        except:
-            dict[x]=1
-    return dict
-
 def normalize(lst):
-    """ normalize all values so they add up to 1.
-    All elements of the list are expected to be zero or positive.
-    If input is empty, return an empty list """
-    if not lst: return lst
-    """ Calculate sum.
-    If the sums up to 0, then this is a uniform distribution
-    Otherwise, return the normalized value for each element.
     """
+    Normalize all values so they add up to 1.
+    All elements of the list are expected to be zero or positive.
+    """
+
+    #If input is empty, return an empty list 
+    if not lst: return lst
+
+    #Calculate sum: If the sums adds up to 0, then this is a uniform distribution
+    #               Otherwise, return the normalized value for each element.
     s = float(sum(lst))
     if s!=0:
         return [e / s for e in lst]
@@ -155,15 +160,18 @@ def normalize(lst):
         return [1/len(lst) for e in lst]
 
 def decrease(x, d):
-    """decrease d by a factor that is smaller
-    and smaller the greater the difference is"""
+    """
+    Decrease d by a factor that is smaller and smaller the greater the difference is
+    """
     # limit
     if x == 0:
         return d
     return d * (1 - math.exp(-d/x))
 
 def flatten_expo(x, lst):
-    """remove part of the distance towards the mean"""
+    """
+    Remove part of the distance towards the mean
+    """
     m = sum(lst) / float(len(lst)) # mean
     
     newlst = []
@@ -176,8 +184,9 @@ def flatten_expo(x, lst):
 
 def SampleDistribution(distribution,trials):
     """
-    convert into a cumulative distribution
+    Given a distribution of [(item,probability)] samples items. 
     """
+    #    Convert into a cumulative distribution
     CDFDistribution = numpy.cumsum([x[1] for x in distribution])
     #print "Distribution: ",  CDFDistribution
     returnList = []
@@ -191,12 +200,3 @@ def SampleDistribution(distribution,trials):
     #import pdb; pdb.set_trace()
     return returnList
 
-def get_category_scores(uid,cid):
-    child_scores = [get_category_scores(uid, x) for x in helper.get_children(cid)]
-    child_scores = [b for a in child_scores for b in a]
-    score = helper.get_node_val(uid,cid)
-    parent_score = (cid,scoringFunction(score)) if score else (cid,scoringFunction((0,0,0,0)))
-    if cid:
-        return propagator(parent_score,child_scores) if child_scores else [parent_score]
-    else:
-        return child_scores
