@@ -162,7 +162,7 @@ class AlgorithmTest(TestCase):
         plt.xlabel("Trials")
         plt.ylabel("% of User preferred categories")
         #plt.legend()
-        plt.savefig("recall.pdf")
+        plt.savefig("learning/test_results/recall.pdf")
         #import pdb; pdb.set_trace()
         self.assertTrue(True)
 
@@ -214,17 +214,17 @@ class AlgorithmTest(TestCase):
         plt.title("Rate of learning one category")
         plt.xlabel("Trials")
         plt.ylabel("% of all Recommendations")
-        plt.savefig("test.pdf")
+        plt.savefig("learning/test_results/test.pdf")
         self.assertTrue(True)
 
 
 class CategoryTest(TestCase):
 
     def setUp(self):
-        None
+        pass
 
     def test_scoring_function(self):
-        None
+        pass
         
 
         
