@@ -82,7 +82,7 @@ class EventHandler(BaseHandler):
         m = Event.objects
 
         # FIXME this should not live here
-        recommended_categories = ml.recommend_categories(request.user)
+        recommended_categories = [category.id for category in ml.recommend_categories(request.user)]
 
         # FIXME brute force
         events = set()
