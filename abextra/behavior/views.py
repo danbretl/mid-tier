@@ -28,6 +28,7 @@ def create_eventaction(request):
     if action:
         data['action'] = action.upper()
 
+    # import ipdb; ipdb.set_trace()
     f = EventActionForm(data=data)
     if f.is_valid():
         inst = f.instance
