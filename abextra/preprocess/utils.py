@@ -2,6 +2,7 @@ import datetime, random
 
 from django.template.defaultfilters import slugify
 
+from core.utils import unique_everseen
 from places.models import Place
 from events.models import Event, Occurrence, User
 from events.utils import CachedCategoryTree
@@ -37,7 +38,9 @@ class MockInitializer(object):
                 e.save()
 
                 # add some abstract categories to it
-                for ac in random.sample(ctree.abstracts, random.randint(1,5)):
+                abstract_leaves = ctree.leaves(ctree.abstract_node)
+                divergent_leaves = unique_everseen(abstract_leaves, lambda c: c.parent)
+                for ac in random.sample(list(divergent_leaves), random.randint(1,5)):
                     e.categories.add(ac)
 
                 # add some occurrences

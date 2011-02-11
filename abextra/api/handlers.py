@@ -104,14 +104,14 @@ class CategoryHandler(BaseHandler):
     model = Category
     fields = ('id', 'title', 'icon_path')
 
-    def read(self, request, parent_node_title='concrete'):
+    def read(self, request, parent_node_slug='concrete'):
         """
         Returns immediate children of the parent category node
         """
         # FIXME shameless plug to fix nulled opt param - fix url handler
-        if not parent_node_title: parent_node_title = 'concrete'
+        if not parent_node_slug: parent_node_slug = 'concrete'
         ctree = CachedCategoryTree()
-        return ctree.children(ctree.category_by_title(parent_node_title))
+        return ctree.children(ctree.get(slug=parent_node_slug))
 
 # Behavior
 

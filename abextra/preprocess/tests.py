@@ -4,7 +4,7 @@ from preprocess.utils import MockInitializer
 from events.utils import CachedCategoryTree
 
 class InitializerTest(TestCase):
-    fixtures = ['categories.json', 'auth.json', 'default_behavior.json', 'places']
+    fixtures = ['categories', 'auth', 'places']
 
     def setUp(self):
         self.n = 5

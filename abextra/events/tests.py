@@ -2,22 +2,33 @@ from django.test import TestCase
 from events.models import Category
 from events.utils import CachedCategoryTree
 
-class TestCategoryTree(TestCase):
-    fixtures = ['categories.json']
+class CachedCategoryTreeTest(TestCase):
+    fixtures = ['categories']
+    ctree = CachedCategoryTree()
 
-    def setUp(self):
-        self.ctree = CachedCategoryTree()
+    def test_get_by_title(self):
+        title = 'Math and Science'
+        cmem = self.ctree.get(title=title)
+        cdb = Category.objects.get(title=title)
+        self.assertEqual(cdb, cmem)
+
+    def test_get_by_slug(self):
+        slug = 'concerts'
+        cmem = self.ctree.get(slug=slug)
+        cdb = Category.objects.get(title=slug)
+        self.assertEqual(cdb, cmem)
+
+    def test_get_by_id(self):
+        id = 10
+        cmem = self.ctree.get(id=id)
+        cdb = Category.objects.get(id=id)
+        self.assertEqual(cdb, cmem)
 
     def test_convenience(self):
         self.assertTrue(self.ctree.concretes)
         self.assertTrue(self.ctree.abstracts)
         self.assertFalse(set(self.ctree.concretes) & set(self.ctree.abstracts))
 
-    def test_category_retreival(self):
-        title = 'concerts'
-        cdb = Category.objects.get(title=title)
-        cmem = self.ctree.category_by_title(title)
-        self.assertEqual(cdb, cmem)
 
 from django.contrib.auth.models import User
 from events.models import Category

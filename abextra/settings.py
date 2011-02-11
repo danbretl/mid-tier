@@ -114,6 +114,7 @@ INSTALLED_APPS = (
     'south',                        # migrations managements
     'registration',                 # user registration app
     'piston',                       # api assistance
+    'core',                         # ABEX core
     'events',                       # ABEX events
     'places',                       # ABEX places | helps normalize places
     'behavior',                     # ABEX behavior | user actions

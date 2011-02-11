@@ -17,6 +17,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('behavior', ['EventAction'])
 
+        # Adding unique constraint on 'EventAction', fields ['user', 'event']
+        db.create_unique('behavior_eventaction', ['user_id', 'event_id'])
+
         # Adding model 'EventActionAggregate'
         db.create_table('behavior_eventactionaggregate', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -29,9 +32,18 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('behavior', ['EventActionAggregate'])
 
+        # Adding unique constraint on 'EventActionAggregate', fields ['user', 'category']
+        db.create_unique('behavior_eventactionaggregate', ['user_id', 'category_id'])
+
 
     def backwards(self, orm):
         
+        # Removing unique constraint on 'EventActionAggregate', fields ['user', 'category']
+        db.delete_unique('behavior_eventactionaggregate', ['user_id', 'category_id'])
+
+        # Removing unique constraint on 'EventAction', fields ['user', 'event']
+        db.delete_unique('behavior_eventaction', ['user_id', 'event_id'])
+
         # Deleting model 'EventAction'
         db.delete_table('behavior_eventaction')
 
@@ -70,14 +82,14 @@ class Migration(SchemaMigration):
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         'behavior.eventaction': {
-            'Meta': {'object_name': 'EventAction'},
+            'Meta': {'unique_together': "(('user', 'event'),)", 'object_name': 'EventAction'},
             'action': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
             'event': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['events.Event']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
         },
         'behavior.eventactionaggregate': {
-            'Meta': {'object_name': 'EventActionAggregate'},
+            'Meta': {'unique_together': "(('user', 'category'),)", 'object_name': 'EventActionAggregate'},
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['events.Category']"}),
             'g': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
             'i': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
@@ -103,7 +115,8 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_associative': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'parent': ('django.db.models.fields.related.ForeignKey', [], {'blank': 'True', 'related_name': "'subcategories'", 'null': 'True', 'to': "orm['events.Category']"}),
-            'title': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'})
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'title': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'events.event': {
             'Meta': {'object_name': 'Event'},

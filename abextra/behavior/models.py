@@ -15,6 +15,9 @@ class EventAction(models.Model):
     event = models.ForeignKey(Event)
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
 
+    class Meta:
+        unique_together = (('user', 'event'),)
+
     def __unicode__(self): return unicode(self.id or '?')
 
 class EventActionAggregate(models.Model):
@@ -25,6 +28,9 @@ class EventActionAggregate(models.Model):
     v = models.IntegerField(default=0, null=False)
     i = models.IntegerField(default=0, null=False)
     x = models.IntegerField(default=0, null=False)
+
+    class Meta:
+        unique_together = (('user', 'category'),)
 
     def __unicode__(self): return unicode(self.id or '?')
 

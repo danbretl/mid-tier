@@ -1,10 +1,8 @@
 from collections import defaultdict
+from django.template.defaultfilters import slugify
 from events.models import Category
 
 class CachedCategoryTree(object):
-    abstract_title = 'abstract'
-    concrete_title = 'concrete'
-
     def __init__(self, skinny=False):
         # prepare the initial db queryset
         category_qs = Category.objects
@@ -14,16 +12,18 @@ class CachedCategoryTree(object):
         category_qs = category_qs.all()
 
         # hash categories by id
-        self._categories_by_id = dict( (c.id, c) for c in category_qs)
+        self._categories_by_id = dict((c.id, c) for c in category_qs)
 
         # process parents efficiently in memory
         for c in self._categories_by_id.itervalues():
             c.parent = self._categories_by_id.get(c.parent_id)
 
-        # hash categories by title
-        self._categories_by_title = dict(
-            (c.title.lower(), c) for c in self._categories_by_id.itervalues()
+        # hash categories by slug
+        self._categories_by_slug = dict(
+            (c.slug, c) for c in self._categories_by_id.itervalues()
         )
+        self.abstract_node = self._categories_by_slug['abstract']
+        self.concrete_node = self._categories_by_slug['concrete']
 
         # build directed graph
         graph = defaultdict(lambda: [])
@@ -34,10 +34,16 @@ class CachedCategoryTree(object):
         # memoizers
         self._abstracts = self._concretes = None
 
-    def category_by_id(self, id):
-        return self._categories_by_id[id]
-    def category_by_title(self, title):
-        return self._categories_by_title[title.lower()]
+    def get(self, **kwargs):
+        id = kwargs.get('id')
+        if id:
+            return self._categories_by_id[id]
+        slug = kwargs.get('slug')
+        if slug:
+            return self._categories_by_slug[slug]
+        title = kwargs.get('title')
+        if title:
+            return self._categories_by_slug[slugify(title)]
 
     # FIXME simplify recursion
     # FIXME preemptive recursion with caching for better consequent requests
@@ -48,19 +54,27 @@ class CachedCategoryTree(object):
         return l
     def children_recursive(self, category):
         return self._children_recursive(category, [])
+
+    def _leaves(self, category, l):
+        for c in self._graph[category]:
+            if not self.children(c): l.append(c)
+            self._leaves(c, l)
+        return l
+
+    def leaves(self, category):
+        return self._leaves(category, [])
+
     def children(self, category):
         return self._graph[category]
 
     @property
     def abstracts(self):
         if not self._abstracts:
-            c = self.category_by_title(self.abstract_title)
-            self._abstracts = self.children_recursive(c)
+            self._abstracts = self.children_recursive(self.abstract_node)
         return self._abstracts
 
     @property
     def concretes(self):
         if not self._concretes:
-            c = self.category_by_title(self.concrete_title)
-            self._concretes = self.children_recursive(c)
+            self._concretes = self.children_recursive(self.concrete_node)
         return self._concretes

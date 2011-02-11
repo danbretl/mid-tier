@@ -5,7 +5,7 @@ from behavior.models import EventAction, EventActionAggregate
 
 
 class EventActionAggregateTest(TestCase):
-    fixtures = ['auth.json', 'categories.json']
+    fixtures = ['auth', 'categories']
 
     def setUp(self):
         user = User.objects.get(username='tester_api')
@@ -45,7 +45,7 @@ class EventActionAggregateTest(TestCase):
 
 
 class UpdateAggregateBehaviorSignalTest(TestCase):
-    fixtures = ['auth.json', 'categories.json', 'events.json']
+    fixtures = ['auth', 'categories', 'events']
 
     def setUp(self):
         user = User.objects.get(username='tester_api')
