@@ -2,21 +2,21 @@ from django.contrib.auth.models import User
 
 #from django.contrib.auth.models import User
 
-Gm = 1                 # G Multiplier in the scoring function
+Gm = 50                 # G Multiplier in the scoring function
 Vm = 1                 # V Multiplier in the scoring function
 Im = 1                 # I Multiplier in the scoring function
-Xp = 0.4               # X's power in scoring function
-learning_constant = 50  # learning constant. Affects learning speed.
+Xp = 0.7               # X's power in scoring function
+learning_constant = 500  # learning constant. Affects learning speed.
                        # Higher values result in slower learning
 
-N = 20                 # Number of recommendations to the end user
+N = 40                 # Number of recommendations to the end user
 
 def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
     g,v,i = pow
     return (lambda y: ((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant )*(X**y[3]) ) 
 
-scoringFunction = scoring_function((Gm,Vm,Im,Xp),(3,2,1))
+scoringFunction = scoring_function((Gm,Vm,Im,Xp),(1,1,1))
 
 def get_default_user():
     return User.objects.get(username="default_behavior")
