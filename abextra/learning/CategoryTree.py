@@ -43,49 +43,33 @@ class CategoryTree:
         """get the value that the tree is scored on"""
         return self.score
 
-    def get_key_value(self, key):
-        value = None
-        try:
-            value = self.dictionary[key]
-        except:
-            None
-        return value
-    
     def association_constant(self):
         """value from 0 to 1- 0 is not associative, 1 is perfectly
         associative"""
         return self.category.association_coefficient
 
-    def return_flat_tree(self, key): 
-        return self.category
-
     def get_name(self):
         return self.category.title
-
 
     def del_dictionary_key(self, key):
         del dictionary[key]
 
     def get_category_scores_dictionary(self, keys):
-        if self.category:
-            list = [(self.category.id, [self.dictionary[key] for key in keys])]
+        if self.get_parent():
+            list = [(self.category, [self.dictionary[key] for key in keys])]
         else:
             list = []
         list += [b for a in [tree.get_category_scores_dictionary(keys) for tree in self.children] for b in a]
         return list
 
-    def get_category_score_dictionary(self,key):
-        if self.category:
-            return self.dictionary[key]
-        else:
-            return None
-    
+    #def get_category_score_dictionary(self,key):
+
     def get_children(self):
         """return a list of child SimpleTree objects"""
         return self.children
     
     def num_nodes(self):
-        return 1 + sum([c.num_leaves() for c in self.children])
+        return 1 + sum([c.num_nodes() for c in self.children])
     
     def __repr__(self):
         """string representation in nested parentheses"""
@@ -97,6 +81,14 @@ class CategoryTree:
 
     def insert_key_value(self, key, value):
         self.dictionary[key] = value
+
+    def get_key_value(self, key):
+        value = None
+        try:
+            value = self.dictionary[key]
+        except:
+            None
+        return value
 
     def print_dictionary_key_values(self):
         print self.title
@@ -120,11 +112,8 @@ class CategoryTree:
 
         function(self, **dict)
 
-
     #TODO:
     # 1: Implement an iterator
-    # 2: Implement a map function to perform top down recursion
-    # 3: Implement a map function to perform bottom up recursion
             
     """def __iter__(self):
         return self
