@@ -18,9 +18,9 @@ class MockInitializer(object):
         tester_api = User.objects.get(username='tester_api')
         village_vanguard = Place.objects.get(slug='village-vanguard')
 
-        description = """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
+        mitch = """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
 
-        for concrete_category in ctree.concretes:
+        for concrete_category in ctree.children(ctree.concrete_node):
             for n_events in xrange(self.n_events_per_concrete_category):
                 # create an event
                 title = '%s event #%i' % (concrete_category.title, n_events)
@@ -28,7 +28,7 @@ class MockInitializer(object):
                     xid = 'xid-%i' % n_events,
                     title = title,
                     slug = slugify(title),
-                    description = description,
+                    description = 'This is a test `%s`.\n\nSome Mitch:\n%s' % (title, mitch),
                     submitted_by = tester_api,
                     url = 'http://abextratech.com/',
                     image_url = 'http://www3.pictures.fp.zimbio.com/Vicky+Cristina+Barcelona+Movie+Stills+-Zma0rlbU7Tl.jpg',

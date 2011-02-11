@@ -67,6 +67,10 @@ class CachedCategoryTree(object):
     def children(self, category):
         return self._graph[category]
 
+    def deepest_parent(self, category):
+        if not category.parent: return None
+        return self.deepest_parent(category.parent) if category.parent.parent else category
+
     @property
     def abstracts(self):
         if not self._abstracts:
