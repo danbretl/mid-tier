@@ -1,0 +1,279 @@
+Creating test database 'default'...
+Creating table auth_permission
+Creating table auth_group_permissions
+Creating table auth_group
+Creating table auth_user_user_permissions
+Creating table auth_user_groups
+Creating table auth_user
+Creating table auth_message
+Creating table django_content_type
+Creating table django_session
+Creating table django_site
+Creating table django_admin_log
+Creating table south_migrationhistory
+Creating table registration_registrationprofile
+Creating table piston_nonce
+Creating table piston_resource
+Creating table piston_consumer
+Creating table piston_token
+Creating table events_category
+Creating table events_event_categories
+Creating table events_event
+Creating table events_occurrence
+Creating table places_placetype
+Creating table places_city
+Creating table places_point
+Creating table places_place_place_types
+Creating table places_place
+Creating table behavior_eventaction
+Creating table behavior_eventactionaggregate
+Installing index for auth.Permission model
+Installing index for auth.Group_permissions model
+Installing index for auth.User_user_permissions model
+Installing index for auth.User_groups model
+Installing index for auth.Message model
+Installing index for admin.LogEntry model
+Installing index for piston.Consumer model
+Installing index for piston.Token model
+Installing index for events.Category model
+Installing index for events.Event_categories model
+Installing index for events.Event model
+Installing index for events.Occurrence model
+Installing index for places.Point model
+Installing index for places.Place_place_types model
+Installing index for places.Place model
+Installing index for behavior.EventAction model
+Installing index for behavior.EventActionAggregate model
+No fixtures found.
+Creating test database 'scrape'...
+Creating table auth_permission
+Creating table auth_group_permissions
+Creating table auth_group
+Creating table auth_user_user_permissions
+Creating table auth_user_groups
+Creating table auth_user
+Creating table auth_message
+Creating table django_content_type
+Creating table django_session
+Creating table django_site
+Creating table django_admin_log
+Creating table south_migrationhistory
+Creating table registration_registrationprofile
+Creating table piston_nonce
+Creating table piston_resource
+Creating table piston_consumer
+Creating table piston_token
+Creating table events_category
+Creating table events_event_categories
+Creating table events_event
+Creating table events_occurrence
+Creating table places_placetype
+Creating table places_city
+Creating table places_point
+Creating table places_place_place_types
+Creating table places_place
+Creating table behavior_eventaction
+Creating table behavior_eventactionaggregate
+Installing index for auth.Permission model
+Installing index for auth.Group_permissions model
+Installing index for auth.User_user_permissions model
+Installing index for auth.User_groups model
+Installing index for auth.Message model
+Installing index for admin.LogEntry model
+Installing index for piston.Consumer model
+Installing index for piston.Token model
+Installing index for events.Category model
+Installing index for events.Event_categories model
+Installing index for events.Event model
+Installing index for events.Occurrence model
+Installing index for places.Point model
+Installing index for places.Place_place_types model
+Installing index for places.Place model
+Installing index for behavior.EventAction model
+Installing index for behavior.EventActionAggregate model
+No fixtures found.
+Selected categories:  set([<Category: [35] Lectures>])
+Loop:  1
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [3] Participation>, <Category: [4] Activities>, <Category: [39] Tastings>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [14] Fundraising>, <Category: [18] Bars>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [26] Comedy Show>])
+Recall:  0.0
+Loop:  2
+Recommendations:  set([<Category: [128] Painting>, <Category: [33] Stand-up>, <Category: [34] Talks>, <Category: [35] Lectures>, <Category: [37] Book Signings>, <Category: [9] Gatherings>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [2] Spectator>, <Category: [16] Nightlife>, <Category: [49] Letterman>, <Category: [116] Tourism>, <Category: [53] The View>, <Category: [22] Celebrity>, <Category: [23] Trivia Night>, <Category: [121] Museum>, <Category: [125] Off-Broadway>, <Category: [127] Visual Arts>])
+Recall:  5.55555555556
+Loop:  3
+Recommendations:  set([<Category: [32] Musicals>, <Category: [34] Talks>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [37] Book Signings>, <Category: [9] Gatherings>, <Category: [2] Spectator>, <Category: [14] Fundraising>, <Category: [15] Appearances>, <Category: [48] Daily Show>, <Category: [114] Festival>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [28] Shows>, <Category: [30] Concerts>, <Category: [53] The View>])
+Recall:  0.0
+Loop:  4
+Recommendations:  set([<Category: [116] Tourism>, <Category: [2] Spectator>, <Category: [34] Talks>, <Category: [1] Sports>, <Category: [33] Stand-up>, <Category: [39] Tastings>, <Category: [44] Television Tapings>, <Category: [13] Rallies>, <Category: [16] Nightlife>, <Category: [17] Clubs>, <Category: [3] Participation>, <Category: [20] Openings>, <Category: [117] Tour>, <Category: [22] Celebrity>, <Category: [121] Museum>])
+Recall:  0.0
+Loop:  5
+Recommendations:  set([<Category: [3] Participation>, <Category: [33] Stand-up>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [36] Panels>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [39] Tastings>, <Category: [40] Street Fairs>, <Category: [10] Conventions>, <Category: [13] Rallies>, <Category: [16] Nightlife>, <Category: [115] Circus>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [23] Trivia Night>, <Category: [31] Plays>])
+Recall:  5.88235294118
+Loop:  6
+Recommendations:  set([<Category: [128] Painting>, <Category: [1] Sports>, <Category: [35] Lectures>, <Category: [133] Conan o'brien>, <Category: [41] Restaurant opening>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [16] Nightlife>, <Category: [3] Participation>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [24] Karaoke Night>, <Category: [121] Museum>, <Category: [27] Poetry >, <Category: [31] Plays>])
+Recall:  6.25
+Loop:  7
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [34] Talks>, <Category: [3] Participation>, <Category: [133] Conan o'brien>, <Category: [33] Stand-up>, <Category: [41] Restaurant opening>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [13] Rallies>, <Category: [16] Nightlife>, <Category: [35] Lectures>, <Category: [116] Tourism>, <Category: [24] Karaoke Night>, <Category: [121] Museum>, <Category: [39] Tastings>])
+Recall:  6.66666666667
+Loop:  8
+Recommendations:  set([<Category: [35] Lectures>, <Category: [5] Cycling>, <Category: [6] Walks>, <Category: [40] Street Fairs>, <Category: [9] Gatherings>, <Category: [117] Tour>, <Category: [49] Letterman>, <Category: [50] Fallon>, <Category: [116] Tourism>, <Category: [53] The View>, <Category: [54] Today Show>, <Category: [121] Museum>, <Category: [28] Shows>, <Category: [133] Conan o'brien>])
+Recall:  7.14285714286
+Loop:  9
+Recommendations:  set([<Category: [1] Sports>, <Category: [35] Lectures>, <Category: [37] Book Signings>, <Category: [129] Sculpture>, <Category: [41] Restaurant opening>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [47] Colbert report>, <Category: [16] Nightlife>, <Category: [19] Amateur Performances>, <Category: [20] Openings>, <Category: [121] Museum>, <Category: [28] Shows>, <Category: [127] Visual Arts>])
+Recall:  6.66666666667
+Loop:  10
+Recommendations:  set([<Category: [1] Sports>, <Category: [35] Lectures>, <Category: [4] Activities>, <Category: [33] Stand-up>, <Category: [44] Television Tapings>, <Category: [14] Fundraising>, <Category: [15] Appearances>, <Category: [16] Nightlife>, <Category: [114] Festival>, <Category: [115] Circus>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [53] The View>, <Category: [127] Visual Arts>])
+Recall:  6.66666666667
+Loop:  11
+Recommendations:  set([<Category: [33] Stand-up>, <Category: [35] Lectures>, <Category: [9] Gatherings>, <Category: [10] Conventions>, <Category: [44] Television Tapings>, <Category: [13] Rallies>, <Category: [14] Fundraising>, <Category: [16] Nightlife>, <Category: [49] Letterman>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [29] Movies>, <Category: [127] Visual Arts>])
+Recall:  7.14285714286
+Loop:  12
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [132] Opera>, <Category: [33] Stand-up>, <Category: [1] Sports>, <Category: [41] Restaurant opening>, <Category: [50] Fallon>, <Category: [18] Bars>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [28] Shows>, <Category: [31] Plays>])
+Recall:  7.14285714286
+Loop:  13
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [4] Activities>, <Category: [10] Conventions>, <Category: [17] Clubs>, <Category: [116] Tourism>, <Category: [21] DJs>, <Category: [23] Trivia Night>, <Category: [121] Museum>, <Category: [31] Plays>])
+Recall:  9.09090909091
+Loop:  14
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [39] Tastings>, <Category: [41] Restaurant opening>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [115] Circus>, <Category: [117] Tour>, <Category: [26] Comedy Show>])
+Recall:  9.09090909091
+Loop:  15
+Recommendations:  set([<Category: [35] Lectures>, <Category: [9] Gatherings>, <Category: [43] Farmers Market>, <Category: [46] Morning Shows>, <Category: [15] Appearances>, <Category: [50] Fallon>, <Category: [117] Tour>, <Category: [41] Restaurant opening>, <Category: [121] Museum>, <Category: [21] DJs>])
+Recall:  10.0
+Loop:  16
+Recommendations:  set([<Category: [11] Conferences>, <Category: [41] Restaurant opening>, <Category: [42] Wine>, <Category: [35] Lectures>, <Category: [127] Visual Arts>])
+Recall:  20.0
+Loop:  17
+Recommendations:  set([<Category: [3] Participation>, <Category: [41] Restaurant opening>, <Category: [35] Lectures>, <Category: [116] Tourism>, <Category: [39] Tastings>])
+Recall:  20.0
+Loop:  18
+Recommendations:  set([<Category: [3] Participation>, <Category: [16] Nightlife>, <Category: [35] Lectures>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [121] Museum>, <Category: [31] Plays>])
+Recall:  14.2857142857
+Loop:  19
+Recommendations:  set([<Category: [3] Participation>, <Category: [41] Restaurant opening>, <Category: [35] Lectures>, <Category: [16] Nightlife>, <Category: [121] Museum>])
+Recall:  20.0
+Loop:  20
+Recommendations:  set([<Category: [35] Lectures>, <Category: [9] Gatherings>, <Category: [15] Appearances>, <Category: [116] Tourism>, <Category: [121] Museum>, <Category: [30] Concerts>])
+Recall:  16.6666666667
+Selected categories:  set([<Category: [9] Gatherings>, <Category: [42] Wine>])
+Loop:  1
+Recommendations:  set([<Category: [34] Talks>, <Category: [3] Participation>, <Category: [6] Walks>, <Category: [38] Food & Drink>, <Category: [9] Gatherings>, <Category: [10] Conventions>, <Category: [114] Festival>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [22] Celebrity>, <Category: [41] Restaurant opening>, <Category: [121] Museum>])
+Recall:  8.33333333333
+Loop:  2
+Recommendations:  set([<Category: [2] Spectator>, <Category: [3] Participation>, <Category: [4] Activities>, <Category: [38] Food & Drink>, <Category: [42] Wine>, <Category: [11] Conferences>, <Category: [114] Festival>, <Category: [14] Fundraising>, <Category: [45] Late Night>, <Category: [16] Nightlife>, <Category: [17] Clubs>, <Category: [50] Fallon>, <Category: [35] Lectures>, <Category: [25] Musical >, <Category: [121] Museum>, <Category: [28] Shows>])
+Recall:  6.25
+Loop:  3
+Recommendations:  set([<Category: [35] Lectures>, <Category: [132] Opera>, <Category: [5] Cycling>, <Category: [38] Food & Drink>, <Category: [55] Good Morning America>, <Category: [47] Colbert report>, <Category: [16] Nightlife>, <Category: [49] Letterman>, <Category: [114] Festival>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [36] Panels>, <Category: [124] Broadway>, <Category: [127] Visual Arts>])
+Recall:  0.0
+Loop:  4
+Recommendations:  set([<Category: [128] Painting>, <Category: [33] Stand-up>, <Category: [2] Spectator>, <Category: [6] Walks>, <Category: [38] Food & Drink>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [50] Fallon>, <Category: [16] Nightlife>, <Category: [114] Festival>, <Category: [117] Tour>, <Category: [55] Good Morning America>, <Category: [10] Conventions>, <Category: [30] Concerts>, <Category: [127] Visual Arts>])
+Recall:  6.66666666667
+Loop:  5
+Recommendations:  set([<Category: [1] Sports>, <Category: [34] Talks>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [116] Tourism>, <Category: [42] Wine>, <Category: [50] Fallon>, <Category: [46] Morning Shows>, <Category: [16] Nightlife>, <Category: [49] Letterman>, <Category: [18] Bars>, <Category: [52] Regis>, <Category: [120] Classic>, <Category: [121] Museum>, <Category: [26] Comedy Show>, <Category: [31] Plays>])
+Recall:  6.25
+Loop:  6
+Recommendations:  set([<Category: [128] Painting>, <Category: [19] Amateur Performances>, <Category: [3] Participation>, <Category: [132] Opera>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [41] Restaurant opening>, <Category: [10] Conventions>, <Category: [11] Conferences>, <Category: [44] Television Tapings>, <Category: [16] Nightlife>, <Category: [115] Circus>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [127] Visual Arts>])
+Recall:  0.0
+Loop:  7
+Recommendations:  set([<Category: [128] Painting>, <Category: [1] Sports>, <Category: [34] Talks>, <Category: [36] Panels>, <Category: [43] Farmers Market>, <Category: [46] Morning Shows>, <Category: [52] Regis>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [116] Tourism>, <Category: [127] Visual Arts>, <Category: [29] Movies>, <Category: [30] Concerts>, <Category: [31] Plays>])
+Recall:  0.0
+Loop:  8
+Recommendations:  set([<Category: [128] Painting>, <Category: [1] Sports>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [36] Panels>, <Category: [33] Stand-up>, <Category: [40] Street Fairs>, <Category: [11] Conferences>, <Category: [45] Late Night>, <Category: [43] Farmers Market>, <Category: [17] Clubs>, <Category: [54] Today Show>, <Category: [121] Museum>, <Category: [28] Shows>, <Category: [31] Plays>])
+Recall:  0.0
+Loop:  9
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [11] Conferences>, <Category: [132] Opera>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [33] Stand-up>, <Category: [15] Appearances>, <Category: [41] Restaurant opening>, <Category: [43] Farmers Market>, <Category: [13] Rallies>, <Category: [45] Late Night>, <Category: [18] Bars>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [36] Panels>, <Category: [27] Poetry >, <Category: [4] Activities>])
+Recall:  0.0
+Loop:  10
+Recommendations:  set([<Category: [128] Painting>, <Category: [33] Stand-up>, <Category: [2] Spectator>, <Category: [3] Participation>, <Category: [38] Food & Drink>, <Category: [17] Clubs>, <Category: [43] Farmers Market>, <Category: [16] Nightlife>, <Category: [49] Letterman>, <Category: [35] Lectures>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [120] Classic>, <Category: [121] Museum>, <Category: [26] Comedy Show>, <Category: [29] Movies>, <Category: [31] Plays>])
+Recall:  0.0
+Loop:  11
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [35] Lectures>, <Category: [6] Walks>, <Category: [38] Food & Drink>, <Category: [17] Clubs>, <Category: [10] Conventions>, <Category: [116] Tourism>, <Category: [47] Colbert report>, <Category: [49] Letterman>, <Category: [18] Bars>, <Category: [115] Circus>, <Category: [52] Regis>, <Category: [121] Museum>, <Category: [26] Comedy Show>, <Category: [27] Poetry >, <Category: [28] Shows>, <Category: [5] Cycling>])
+Recall:  0.0
+Loop:  12
+Recommendations:  set([<Category: [128] Painting>, <Category: [32] Musicals>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [1] Sports>, <Category: [5] Cycling>, <Category: [129] Sculpture>, <Category: [10] Conventions>, <Category: [11] Conferences>, <Category: [44] Television Tapings>, <Category: [13] Rallies>, <Category: [14] Fundraising>, <Category: [16] Nightlife>, <Category: [117] Tour>, <Category: [22] Celebrity>, <Category: [121] Museum>, <Category: [36] Panels>])
+Recall:  0.0
+Loop:  13
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [41] Restaurant opening>, <Category: [44] Television Tapings>, <Category: [34] Talks>, <Category: [46] Morning Shows>, <Category: [15] Appearances>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [27] Poetry >, <Category: [20] Openings>, <Category: [127] Visual Arts>])
+Recall:  0.0
+Loop:  14
+Recommendations:  set([<Category: [128] Painting>, <Category: [2] Spectator>, <Category: [3] Participation>, <Category: [4] Activities>, <Category: [37] Book Signings>, <Category: [9] Gatherings>, <Category: [42] Wine>, <Category: [44] Television Tapings>, <Category: [47] Colbert report>, <Category: [53] The View>, <Category: [19] Amateur Performances>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [10] Conventions>, <Category: [127] Visual Arts>])
+Recall:  13.3333333333
+Loop:  15
+Recommendations:  set([<Category: [34] Talks>, <Category: [35] Lectures>, <Category: [36] Panels>, <Category: [38] Food & Drink>, <Category: [6] Walks>, <Category: [9] Gatherings>, <Category: [10] Conventions>, <Category: [44] Television Tapings>, <Category: [14] Fundraising>, <Category: [114] Festival>, <Category: [22] Celebrity>, <Category: [41] Restaurant opening>, <Category: [121] Museum>, <Category: [26] Comedy Show>, <Category: [28] Shows>, <Category: [42] Wine>, <Category: [133] Conan o'brien>])
+Recall:  11.7647058824
+Loop:  16
+Recommendations:  set([<Category: [128] Painting>, <Category: [33] Stand-up>, <Category: [11] Conferences>, <Category: [3] Participation>, <Category: [9] Gatherings>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [15] Appearances>, <Category: [114] Festival>, <Category: [115] Circus>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>])
+Recall:  7.69230769231
+Loop:  17
+Recommendations:  set([<Category: [128] Painting>, <Category: [116] Tourism>, <Category: [35] Lectures>, <Category: [133] Conan o'brien>, <Category: [6] Walks>, <Category: [129] Sculpture>, <Category: [9] Gatherings>, <Category: [10] Conventions>, <Category: [44] Television Tapings>, <Category: [114] Festival>, <Category: [14] Fundraising>, <Category: [16] Nightlife>, <Category: [50] Fallon>, <Category: [18] Bars>, <Category: [3] Participation>, <Category: [20] Openings>, <Category: [121] Museum>, <Category: [127] Visual Arts>])
+Recall:  5.55555555556
+Loop:  18
+Recommendations:  set([<Category: [128] Painting>, <Category: [3] Participation>, <Category: [9] Gatherings>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [45] Late Night>, <Category: [47] Colbert report>, <Category: [16] Nightlife>, <Category: [114] Festival>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [15] Appearances>, <Category: [28] Shows>])
+Recall:  14.2857142857
+Loop:  19
+Recommendations:  set([<Category: [43] Farmers Market>, <Category: [4] Activities>, <Category: [134] Running>, <Category: [40] Street Fairs>, <Category: [9] Gatherings>, <Category: [42] Wine>, <Category: [11] Conferences>, <Category: [44] Television Tapings>, <Category: [14] Fundraising>, <Category: [49] Letterman>, <Category: [114] Festival>, <Category: [117] Tour>, <Category: [36] Panels>, <Category: [127] Visual Arts>])
+Recall:  14.2857142857
+Loop:  20
+Recommendations:  set([<Category: [9] Gatherings>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [14] Fundraising>, <Category: [55] Good Morning America>, <Category: [27] Poetry >, <Category: [28] Shows>, <Category: [127] Visual Arts>])
+Recall:  25.0
+Selected categories:  set([<Category: [42] Wine>, <Category: [36] Panels>, <Category: [133] Conan o'brien>])
+Loop:  1
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [3] Participation>, <Category: [133] Conan o'brien>, <Category: [35] Lectures>, <Category: [40] Street Fairs>, <Category: [41] Restaurant opening>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [18] Bars>, <Category: [115] Circus>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [55] Good Morning America>, <Category: [121] Museum>, <Category: [10] Conventions>, <Category: [125] Off-Broadway>])
+Recall:  11.7647058824
+Loop:  2
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [35] Lectures>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [32] Musicals>, <Category: [11] Conferences>, <Category: [44] Television Tapings>, <Category: [13] Rallies>, <Category: [43] Farmers Market>, <Category: [52] Regis>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [121] Museum>, <Category: [27] Poetry >, <Category: [116] Tourism>])
+Recall:  0.0
+Loop:  3
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [3] Participation>, <Category: [132] Opera>, <Category: [41] Restaurant opening>, <Category: [10] Conventions>, <Category: [44] Television Tapings>, <Category: [14] Fundraising>, <Category: [117] Tour>, <Category: [55] Good Morning America>, <Category: [120] Classic>, <Category: [36] Panels>, <Category: [26] Comedy Show>])
+Recall:  7.14285714286
+Loop:  4
+Recommendations:  set([<Category: [32] Musicals>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [38] Food & Drink>, <Category: [6] Walks>, <Category: [39] Tastings>, <Category: [14] Fundraising>, <Category: [15] Appearances>, <Category: [117] Tour>, <Category: [55] Good Morning America>, <Category: [121] Museum>, <Category: [47] Colbert report>, <Category: [53] The View>, <Category: [30] Concerts>, <Category: [127] Visual Arts>])
+Recall:  6.66666666667
+Loop:  5
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [35] Lectures>, <Category: [4] Activities>, <Category: [37] Book Signings>, <Category: [1] Sports>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [17] Clubs>, <Category: [19] Amateur Performances>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [26] Comedy Show>, <Category: [127] Visual Arts>])
+Recall:  0.0
+Loop:  6
+Recommendations:  set([<Category: [33] Stand-up>, <Category: [132] Opera>, <Category: [35] Lectures>, <Category: [36] Panels>, <Category: [37] Book Signings>, <Category: [39] Tastings>, <Category: [42] Wine>, <Category: [48] Daily Show>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [54] Today Show>, <Category: [55] Good Morning America>, <Category: [121] Museum>])
+Recall:  15.3846153846
+Loop:  7
+Recommendations:  set([<Category: [32] Musicals>, <Category: [129] Sculpture>, <Category: [35] Lectures>, <Category: [8] Marathons>, <Category: [41] Restaurant opening>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [22] Celebrity>, <Category: [52] Regis>, <Category: [31] Plays>, <Category: [28] Shows>, <Category: [127] Visual Arts>])
+Recall:  0.0
+Loop:  8
+Recommendations:  set([<Category: [128] Painting>, <Category: [2] Spectator>, <Category: [36] Panels>, <Category: [37] Book Signings>, <Category: [38] Food & Drink>, <Category: [39] Tastings>, <Category: [41] Restaurant opening>, <Category: [44] Television Tapings>, <Category: [45] Late Night>, <Category: [16] Nightlife>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [23] Trivia Night>, <Category: [24] Karaoke Night>, <Category: [121] Museum>, <Category: [127] Visual Arts>])
+Recall:  6.25
+Loop:  9
+Recommendations:  set([<Category: [128] Painting>, <Category: [33] Stand-up>, <Category: [2] Spectator>, <Category: [36] Panels>, <Category: [42] Wine>, <Category: [44] Television Tapings>, <Category: [16] Nightlife>, <Category: [50] Fallon>, <Category: [20] Openings>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [31] Plays>])
+Recall:  16.6666666667
+Loop:  10
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [36] Panels>, <Category: [38] Food & Drink>, <Category: [6] Walks>, <Category: [9] Gatherings>, <Category: [42] Wine>, <Category: [11] Conferences>, <Category: [45] Late Night>, <Category: [47] Colbert report>, <Category: [19] Amateur Performances>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [132] Opera>, <Category: [15] Appearances>, <Category: [127] Visual Arts>])
+Recall:  11.7647058824
+Loop:  11
+Recommendations:  set([<Category: [1] Sports>, <Category: [2] Spectator>, <Category: [36] Panels>, <Category: [5] Cycling>, <Category: [6] Walks>, <Category: [124] Broadway>, <Category: [42] Wine>, <Category: [14] Fundraising>, <Category: [15] Appearances>, <Category: [114] Festival>, <Category: [116] Tourism>, <Category: [41] Restaurant opening>, <Category: [121] Museum>, <Category: [127] Visual Arts>, <Category: [28] Shows>, <Category: [20] Openings>, <Category: [31] Plays>])
+Recall:  11.7647058824
+Loop:  12
+Recommendations:  set([<Category: [1] Sports>, <Category: [36] Panels>, <Category: [16] Nightlife>, <Category: [15] Appearances>, <Category: [10] Conventions>, <Category: [42] Wine>, <Category: [44] Television Tapings>, <Category: [47] Colbert report>, <Category: [48] Daily Show>, <Category: [17] Clubs>, <Category: [50] Fallon>, <Category: [116] Tourism>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [27] Poetry >, <Category: [29] Movies>, <Category: [53] The View>])
+Recall:  11.7647058824
+Loop:  13
+Recommendations:  set([<Category: [128] Painting>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [38] Food & Drink>, <Category: [39] Tastings>, <Category: [42] Wine>, <Category: [45] Late Night>, <Category: [14] Fundraising>, <Category: [50] Fallon>, <Category: [115] Circus>, <Category: [121] Museum>, <Category: [127] Visual Arts>])
+Recall:  16.6666666667
+Loop:  14
+Recommendations:  set([<Category: [33] Stand-up>, <Category: [34] Talks>, <Category: [11] Conferences>, <Category: [36] Panels>, <Category: [42] Wine>, <Category: [43] Farmers Market>, <Category: [14] Fundraising>, <Category: [16] Nightlife>, <Category: [117] Tour>, <Category: [121] Museum>, <Category: [127] Visual Arts>])
+Recall:  18.1818181818
+Loop:  15
+Recommendations:  set([<Category: [128] Painting>, <Category: [129] Sculpture>, <Category: [2] Spectator>, <Category: [36] Panels>, <Category: [43] Farmers Market>, <Category: [44] Television Tapings>, <Category: [16] Nightlife>, <Category: [115] Circus>, <Category: [121] Museum>])
+Recall:  11.1111111111
+Loop:  16
+Recommendations:  set([<Category: [32] Musicals>, <Category: [1] Sports>, <Category: [36] Panels>, <Category: [42] Wine>, <Category: [45] Late Night>, <Category: [116] Tourism>, <Category: [127] Visual Arts>])
+Recall:  28.5714285714
+Loop:  17
+Recommendations:  set([<Category: [1] Sports>, <Category: [11] Conferences>, <Category: [36] Panels>, <Category: [38] Food & Drink>, <Category: [43] Farmers Market>, <Category: [116] Tourism>, <Category: [117] Tour>])
+Recall:  14.2857142857
+Loop:  18
+Recommendations:  set([<Category: [33] Stand-up>, <Category: [2] Spectator>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [16] Nightlife>, <Category: [115] Circus>, <Category: [117] Tour>])
+Recall:  14.2857142857
+Loop:  19
+Recommendations:  set([<Category: [10] Conventions>, <Category: [36] Panels>, <Category: [6] Walks>])
+Recall:  33.3333333333
+Loop:  20
+Recommendations:  set([<Category: [129] Sculpture>, <Category: [3] Participation>, <Category: [36] Panels>, <Category: [9] Gatherings>, <Category: [116] Tourism>, <Category: [23] Trivia Night>, <Category: [121] Museum>])
+Recall:  14.2857142857
+Selected categories:  set([<Category: [11] Conferences>, <Category: [35] Lectures>, <Category: [27] Poetry >, <Category: [39] Tastings>])
+Loop:  1
