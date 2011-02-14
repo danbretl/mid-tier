@@ -1,7 +1,13 @@
 from django.test import TestCase
+from django.contrib.auth.models import User
 from events.models import Category
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
+from learning import ml, settings, CategoryTree
+from itertools import count
+from behavior.models import EventActionAggregate
+
+
 import random
 
 class CachedCategoryTreeTest(TestCase):
@@ -32,10 +38,6 @@ class CachedCategoryTreeTest(TestCase):
         self.assertFalse(set(self.ctree.concretes) & set(self.ctree.abstracts))
 
 
-from django.contrib.auth.models import User
-from events.models import Category
-
-from learning import ml, settings, CategoryTree
 
 class MLModuleTest(TestCase):
     """
@@ -66,8 +68,6 @@ class MLModuleTest(TestCase):
             self.assertEqual(topkFunction(self.rangeArray), settings.mean(self.rangeArray[-k:]))
             
 
-from itertools import count
-from behavior.models import EventActionAggregate
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""
     fixtures = ['auth', 'categories', 'default_behavior']
@@ -96,45 +96,48 @@ class AlgorithmTest(TestCase):
         for c in Category.objects.all():
             EventActionAggregate(user=user,category=c).save()
 
+        # Each color corresponds to the number of categories (position in list + 1) selected during the iteration. 
         colors = ["r","b","g","k","c","m","y"]
-
+        # k is the number of categories selected.
         for k in range(1,8):
             categories = set(ml.recommend_categories(user))
             picked_categories = set(random.sample(categories,k))
-            print "Picked categories: ", picked_categories
-            #print "Selected categories: ", picked_categories
-            picked_cat_aggregates = dict([(p,EventActionAggregate.objects.get(user=user, category=p)) for p in picked_categories])
-            loop_count = 0
+            print "User picked categories: ", picked_categories
+            # Generate mapping between categories and User's event action aggregate (GVIX store)
+            picked_cat_aggregates = dict([(c,EventActionAggregate.objects.get(user=user, category=c)) for c in picked_categories])
+            trials = count()
             lst = []
-            while loop_count < 50:
-                loop_count+=1
-                #print "Loop: ", loop_count
-                cats = ml.recommend_categories(user)
-                picked_cat_count = 0
-                category_count_map = {}
-
-                for i in cats:
-                    if i in picked_categories:
+            while trials.next() < 50:
+                print "Loop: ", trials
+                mean_loop_count = count()
+                recall = 0
+                iterations = 10
+                G = {}           #temporary dictionary that store G counts for selected categories during iterations.
+                while mean_loop_count.next() < iterations:
+                    cats = set(ml.recommend_categories(user))
+                    correct_recommendations = cats.intersection(picked_categories)
+                    for c in correct_recommendations:
                         try:
-                            category_count_map[i] +=1
+                            G[c] += 1
                         except:
-                            category_count_map[i] = 1
-                            
-                cats = set(cats)
-#                print "Recommendations: ", cats
+                            G[c] = 1
+                        #picked_cat_aggregates[x].save()
+                        cats.discard(picked_cat_aggregates[c])
+                    #end of looping over correct_recommendations
+                    recall += len(correct_recommendations)*100.0/len(picked_categories)
+                #end of looping over iterations to calculate means.
 
-                correct_recommendations = cats.intersection(picked_categories)
-                for x in correct_recommendations:
-                    picked_cat_aggregates[x].g += 1 #category_count_map[x]
-                    picked_cat_aggregates[x].save()
-                    cats.discard(picked_cat_aggregates[x])
-
-                print "recommendations: ", correct_recommendations
-
-                recall = len(correct_recommendations)*100.0/len(picked_categories)
+                #####
                 #print "Recall: ", recall
-                lst.append(recall)
+                #set and save the x values of discarded categories to the average number of times the category was G'd over iterations.
+                for key,value in G.iteritems():
+                    picked_cat_aggregates[key].g += min(round(value/iterations),2)
+                    picked_cat_aggregates[key].save()
+                #end of looping over temporary dictionary.
+                    
+                lst.append(recall*1.0/iterations)
 
+                #Variant 1: All items in the last iterations that were not in the picked category have been X'd once.
                 for c in cats:
                     try:
                         eaa = EventActionAggregate.objects.get(user=user, category=c)
@@ -142,7 +145,8 @@ class AlgorithmTest(TestCase):
                         eaa = EventActionAggregate(user=user, category=c)
                     eaa.x += 1
                     eaa.save()
-                    
+                #end of adding X's 
+                #end    
             print "Recall: ",lst
             plt.plot(lst,color=colors[k-1],label=k)       
             for c in Category.objects.all():

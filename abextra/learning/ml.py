@@ -7,8 +7,8 @@
      b) Each function works on a parent and its children.
      c) Each function may be applied top_down_recursive or bottom_up_recursive.
      d) Each function only writes to the CategoryTree dictionary.
- The most important (main) function is recomend_categories(user) which is called by the middle tier.
- It returns a default number of recommendations.
+ The most important (main) function is get_event_recommendations(user) which is called by the middle tier.
+ It returns a set of events as recommendations.
  All default values and functions are defined in settings.py.
  #ToDo: Migrate all default values and functions from settings.py into LiveSettings
 """
@@ -17,8 +17,18 @@ import numpy
 import random
 import helper
 import settings
-from events.models import Category
+from events.models import Category, Event
 from CategoryTree import CategoryTree
+from django.contrib.auth.models import User
+from behavior.models import EventActionAggregate
+
+
+
+def get_event_recommendations(user, N=settings.N, category=None):
+    categories = random_tree_walk_algorithm(user, N, category)
+    return filter_events(user,categories)
+
+
 
 def recommend_categories(user, N=settings.N, category=None):
     """
@@ -31,7 +41,9 @@ def recommend_categories(user, N=settings.N, category=None):
     """
     return random_tree_walk_algorithm(user, N, category)
 
-#Sew the functions in together
+
+
+
 def random_tree_walk_algorithm(user, N=settings.N, category=None):
     """
     Input:
@@ -68,6 +80,51 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
 
 
+
+def abstract_scoring_function(user,event):
+    """
+    This scoring function estimates the score an event recieved based on its abstract categories.
+    ToDo: Use a kernel function instead of returning mean.
+    """
+    scores_list = []
+    # Given an event find the "maximum" scores for all categories that are abstract.
+    for c in [cat for cat in event.categories.get_query_set() if cat.category_type=='A']:
+        try:
+            eaa = EventActionAggregate.objects.get(user=user, category=c)
+        except:
+            #If no score found for this particular user, use default users scores.
+            eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category=c)
+        scores_list.append(settings.abstract_scoring_function((eaa.g, eaa.v, eaa.i, eaa.x)))
+    return max(scores_list)
+
+
+
+def filter_events(user,categories=None, N=settings.N, **kwargs):
+    """
+    Input: User,
+           List of categories
+           N = Number of recommendations to provide
+    Output: List of events.
+    Description:
+                 This function accepts as input a list of categories and randomly selects 50 events for these categories
+                 Events that are cross listed in multiple times have a higher probability of getting selected.
+                     - Once selected, they also have a higher probability of getting sampled.
+    """
+    events = []
+    for c in categories:
+        events += [e for e in Event.objects.filter(categories = c).order_by('?')[:50]]
+        
+    event_score = {}
+    for e in events:
+        try:
+            event_score[e] += abstract_scoring_function(user,e)
+        except:
+            event_score[e] = abstract_scoring_function(user,e)
+
+    return SampleDistribution(event_score.items(),settings.N)
+
+
+
 def score_combinator(parent,inkey1, inkey2, outkey):
     """
     Multiplies inkey1 and inkey2 and stores the result in outkey in the dictionary.
@@ -79,6 +136,7 @@ def score_combinator(parent,inkey1, inkey2, outkey):
     
     """
     parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2)) 
+
 
 
 def probabilistic_walk(parent, inkey, outkey):
@@ -113,6 +171,7 @@ def probabilistic_walk(parent, inkey, outkey):
             tree.insert_key_value(outkey, parent_out_score / (len(children) + 1))
 
 
+
 def topN_function(parent,inkey="score",outkey="topNscore"):
     """
     This function calculates the mean of the top k inkey scores amongst a parent and all its children and stores it in outkey
@@ -130,9 +189,11 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
             parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(inkey) for tree in [parent]+children]))
             #parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
 
+
+
 def scoring_function(parent, outkey="score"):
     """
-    
+    This is the recursive scoring function that calculates score based on the GVIX values and stores them in outkey.
     """
     # If this is the root node, insert a value of 0
     #import pdb; pdb.set_trace()
@@ -142,12 +203,12 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
 
 
+
 def normalize(lst):
     """
     Normalize all values so they add up to 1.
     All elements of the list are expected to be zero or positive.
     """
-
     #If input is empty, return an empty list 
     if not lst: return lst
 
@@ -159,6 +220,8 @@ def normalize(lst):
     else:
         return [1/len(lst) for e in lst]
 
+
+
 def decrease(x, d):
     """
     Decrease d by a factor that is smaller and smaller the greater the difference is
@@ -167,6 +230,8 @@ def decrease(x, d):
     if x == 0:
         return d
     return d * (1 - math.exp(-d/x))
+
+
 
 def flatten_expo(x, lst):
     """
@@ -182,12 +247,15 @@ def flatten_expo(x, lst):
             newlst.append(m-decrease(x, m-e))
     return normalize(newlst)
 
+
+
 def SampleDistribution(distribution,trials):
     """
-    Given a distribution of [(item,probability)] samples items. 
+    Given a distribution of [(item,score)] samples items.
+    Items are first normalized by scores and then sampled from it.
     """
     #    Convert into a cumulative distribution
-    CDFDistribution = numpy.cumsum([x[1] for x in distribution])
+    CDFDistribution = numpy.cumsum(normalize([x[1] for x in distribution]))
     #print "Distribution: ",  CDFDistribution
     returnList = []
     for i in range(trials):
@@ -196,7 +264,8 @@ def SampleDistribution(distribution,trials):
         count = 0
         for count in range(len(distribution)):
             if (value < CDFDistribution[count]): break
-        returnList += [(distribution[count])[0]]
+        if distribution:
+            returnList += [(distribution[count])[0]]
     #import pdb; pdb.set_trace()
     return returnList
 
