@@ -18,6 +18,8 @@ def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp),(1,1,1))
 
+abstract_scoring_function = scoring_function((Gm,Vm,Im,Xp),(1,1,1))
+
 def get_default_user():
     return User.objects.get(username="default_behavior")
 
@@ -43,3 +45,4 @@ def mod_topN_function(N):
 top3Score = topN_function(3)
 
 #top3Score = mod_topN_function(3)
+
