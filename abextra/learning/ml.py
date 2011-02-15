@@ -24,9 +24,12 @@ from behavior.models import EventActionAggregate
 
 
 
-def get_event_recommendations(user, N=settings.N, category=None):
-    categories = random_tree_walk_algorithm(user, N, category)
-    return filter_events(user,categories)
+def get_event_recommendations(user, categories=None, N=settings.N):
+    if not categories:
+        categories = random_tree_walk_algorithm(user, N)
+        return filter_events(user, categories, N)
+    else:
+        return filter_events(user, categories, N*10)
 
 
 
@@ -70,8 +73,11 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     # also goes up proportionally. To make the score of the parent proportional to its GVIX score, we combine the two multiplicatively.
     userTree.top_down_recursion(score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
 
+    # Flatten the scores to infuse contagiousness
+    userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
+
     # Perform a probabilistic walk on the tree generated.
-    userTree.top_down_recursion(probabilistic_walk,{"inkey":"combined_score", "outkey":"combined_probability"})
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
 
     # Useful Debugging statements:
     #print userTree.print_dictionary_key_values()
@@ -94,7 +100,9 @@ def abstract_scoring_function(user,event):
             #If no score found for this particular user, use default users scores.
             eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category=c)
         scores_list.append(settings.abstract_scoring_function((eaa.g, eaa.v, eaa.i, eaa.x)))
-    return max(scores_list)
+    if scores_list:
+        return sum(scores_list)/len(scores_list)
+    return 0
 
 
 
@@ -110,8 +118,10 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
                      - Once selected, they also have a higher probability of getting sampled.
     """
     events = []
+    #ToDo: Filter events that have already been X'd
     for c in categories:
-        events += [e for e in Event.objects.filter(categories = c).order_by('?')[:50]]
+        events += [e for e in Event.objects.filter(categories = c).order_by('?')[:50]] 
+
         
     event_score = {}
     for e in events:
@@ -120,8 +130,45 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
         except:
             event_score[e] = abstract_scoring_function(user,e)
 
-    return SampleDistribution(event_score.items(),settings.N)
+    events = SampleDistribution(event_score.items(),settings.N)
+    
+    #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
+    semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))
+    return probabilistic_sort(events)
 
+
+def semi_sort(events, top_sort=3):
+    """
+    Since we always have only 20 events, not using any fancy algorithms. Just regular scan and find max 3
+    #ToDo: Make more efficient. Use a max heap for efficiency. 
+    !Python does not support a max heap. :(
+    """
+    for i in range(top_sort):
+        maximum = events[i]
+        pos = i
+        for j in range(i+1,len(events)):
+            if maximum < events[j]:
+                pos = j
+                maximum = events[j]
+
+        #Swap maximum with the top i'th position under evaluation.
+        events[pos],events[i] = events[i],events[pos]
+        
+    return events
+
+def probabilistic_sort(events):
+    """
+    This is an utterly simple probabilistic sort with no guarantees..
+    It's purpose is to bubble up preferred elements towards the top of the list.
+    """
+    for i in range(len(events)):
+        a, b = random.randrange(0,len(events)-1), random.randrange(0,len(events)-1)
+        if a > b:
+            a, b = b, a
+
+        if events[a] < events[b]:
+            events[a], events[b] = events[b], events[a]
+    return events
 
 
 def score_combinator(parent,inkey1, inkey2, outkey):
@@ -135,7 +182,6 @@ def score_combinator(parent,inkey1, inkey2, outkey):
     
     """
     parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2)) 
-
 
 
 def probabilistic_walk(parent, inkey, outkey):
@@ -203,6 +249,21 @@ def scoring_function(parent, outkey="score"):
 
 
 
+def flattening_function(parent, inkey="score", outkey="flattened_score"):
+    """
+    This is the recursive flattening function.
+    """
+    if not parent.get_parent():
+        flatten_categories = parent.get_children()
+    else:
+        flatten_categories = [parent] + parent.get_children() 
+
+    outkeys = flatten_expo(parent.association_coefficient(), [x.get_key_value(inkey) for x in flatten_categories])
+    for i in range(len(flatten_categories)):
+        flatten_categories[i].insert_key_value(outkey,outkeys[i])
+
+
+
 def normalize(lst):
     """
     Normalize all values so they add up to 1.
@@ -267,4 +328,3 @@ def SampleDistribution(distribution,trials):
             returnList += [(distribution[count])[0]]
     #import pdb; pdb.set_trace()
     return returnList
-
