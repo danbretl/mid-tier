@@ -43,7 +43,6 @@ def recommend_categories(user, N=settings.N, category=None):
 
 
 
-
 def random_tree_walk_algorithm(user, N=settings.N, category=None):
     """
     Input:
