@@ -3,11 +3,12 @@ from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 import settings
 
+from events.utils import CachedCategoryTree
 
 class CategoryTree:
     #ToDo:
     # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it. 
-    def __init__(self, userID, category=None, parent=None, category_objects=None, score=None, dictionary=None):
+    def __init__(self, userID, category=None, parent=None, ctree=None, score=None, dictionary=None):
         """
         A Tree for a user is represented recursively as a collection of trees, 
         Each tree is for a specific user.
@@ -17,15 +18,15 @@ class CategoryTree:
         """
         self.parent = parent
         self.children = []
-        if not category_objects:
-            category_objects = Category.objects
+        if not ctree:
+            ctree = CachedCategoryTree()
         if category:
-            self.children = [CategoryTree(userID, x, self,category_objects) for x in  category_objects.filter(parent__exact=category)]
+            self.children = [CategoryTree(userID, x, self, ctree) for x in ctree.children(category)]
             self.category = category
             self.title = category.title
         else:
-            self.children = [CategoryTree(userID, x, self, category_objects) for x in  category_objects.filter(parent=category_objects.get(title="Concrete"))]
-            self.category = category_objects.get(title = "Concrete")
+            self.children = [CategoryTree(userID, x, self, ctree) for x in  ctree.children(ctree.concrete_node)]
+            self.category = ctree.concrete_node
             self.title = "ROOT"
         if dictionary: 
             self.dictionary = dictionary
