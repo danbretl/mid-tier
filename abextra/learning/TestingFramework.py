@@ -15,11 +15,13 @@ import random
 
 class EventureUser:
     """
+    This class creates a new user for ML testing every time.
+    
     """
     
     def __init__(self, user=None, categories=None):
         """
-        Initialize a user and prepare to get recommendations.
+        Initialize a new user and prepare to get recommendations from scratch.
         """
         self.accuracy_dictionary = {}
         if user:
@@ -43,16 +45,18 @@ class EventureUser:
 
         for c in Category.objects.all():
             try:
-                #See if event action aggregate exists.
+                #See if event action aggregate exists.If it does, reset it to default.
                 eaa = EventActionAggregate.objects.get(user=self.user,category=c)
-                eaa.g = 0
-                eaa.v = 0
-                eaa.i = 0
-                eaa.x = 0
             except:
                 #Else create one.
-                EventActionAggregate(user=self.user, category=c).save()
-
+                eaa = EventActionAggregate(user=self.user, category=c)
+                
+            default_eaa = EventActionAggregate.objects.get(user=settings.get_default_user(),category=c)
+            eaa.g = default_eaa.g
+            eaa.v = default_eaa.v
+            eaa.i = default_eaa.i
+            eaa.x = default_eaa.x
+            eaa.save()
 
         
         if categories:
@@ -72,7 +76,12 @@ class EventureUser:
             x = random.randrange(1,8)
         return Category.objects.all().order_by('?')[:x]
 
+
+    #ToDo: Make this generic so user behavior can be easily defined by an ML tester.
     def update_behavior(self,events):
+        """
+        This is one example of updating user behavior between recommendations.
+        """
         if events:
             recommended_categories = [e.categories.get_query_set() for e in events]
             result = [set(c).intersection(preferred_categories) for c in recommended_categories]
@@ -87,6 +96,7 @@ class EventureUser:
                             if random.random() < 0.15 :                            # Roughly 15% of the time we delete a category.
                                 self.update_user_category_behavior(c,(0,0,0,1))
 
+
     def update_user_category_behavior(self,category,(g,v,i,x)=(0,0,0,0)):
         eaa = EventActionAggregate.objects.get(user=self.user, category=category)
         eaa.g += g
@@ -97,7 +107,7 @@ class EventureUser:
         
     def reset_user_behavior(self, category):
         try:
-            eaa = EventActionAggregate.objects.get(user=self.user, category = category)
+            eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category = category)
             g = eaa.g
             v = eaa.v
             i = eaa.i
@@ -116,9 +126,10 @@ class EventureUser:
         try:
             for c in Category.objects.all():
                 eaa = EventActionAggregate.objects.get(user=self.user, category=c)
-                print c.title, ": ",eaa.g,eaa.v,eaa.i,eaa.x
+                return (eaa.g,eaa.v,eaa.i,eaa.x)
         except:
             print "Exception occurred"
+            return (None,None,None,None)
 
     def calculate_precision(self, events=None):
         if events:
@@ -142,6 +153,9 @@ class EventureUser:
 
     
     def calculate_plot_metrics(self,N=1,color="blue"):
+        """
+        This method calculates and plots (currently precision and recall) metrics.
+        """
         avg_precision = []
         avg_recall = []
         num_loops = 10
