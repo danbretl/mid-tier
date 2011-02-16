@@ -2,7 +2,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 
 from events.models import Category
-
+from events.utils import CachedCategoryTree
 
 class CategoryAdminForm(forms.ModelForm):
     class Meta:
@@ -10,7 +10,23 @@ class CategoryAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         self.instance.slug = slugify(self.cleaned_data['title'])
-        # get category_type from the parent if provided else it's 'OTHER'
+
+        ctree = CachedCategoryTree()
+
+        # get category_type from the parent
         parent = self.cleaned_data.get('parent')
-        self.instance.category_type = parent.category_type if parent else 'O'
+        if parent:
+            if parent == ctree.abstract_node: category_type = 'A'
+            elif parent == ctree.concrete_node: category_type = 'C'
+            else: category_type = parent.category_type
+        else:
+            category_type = 'O'
+        self.instance.category_type = category_type
+
+        # recurse the children and set their type correctly
+        if self.instance.id:
+            for c in ctree.children_recursive(self.instance):
+                c.category_type = self.instance.category_type
+                c.save()
+
         return super(CategoryAdminForm, self).save(commit=commit)

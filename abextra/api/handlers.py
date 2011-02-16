@@ -92,7 +92,7 @@ class EventHandler(BaseHandler):
         for category in recommended_categories:
             event = Category.objects.get(id=category).events_concrete.order_by('?')[0]
             # FIXME shameless plug to set the parent to the deepest root
-            event.concrete_category = ctree.deepest_parent(event.concrete_category)
+            event.concrete_category = ctree.surface_parent(event.concrete_category)
             events.add(event)
 
         # TODO make sure to not send Xed events - check event actions
