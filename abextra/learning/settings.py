@@ -9,7 +9,7 @@ Xp = 0.7               # X's power in scoring function
 learning_constant = 500  # learning constant. Affects learning speed.
                        # Higher values result in slower learning
 
-N = 40                 # Number of recommendations to the end user
+N = 20                 # Number of recommendations to the end user
 
 def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
