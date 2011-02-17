@@ -34,7 +34,7 @@ class EventureUser:
             self.delete_user = True
             success = False
             count = 0
-            while success:
+            while not success:
                 count += 1
                 try:
                     self.user = User(username="test"+str(count), password='test'+str(count))
@@ -80,7 +80,7 @@ class EventureUser:
     #ToDo: Make this generic so user behavior can be easily defined by an ML tester.
     def update_behavior(self,events):
         """
-        This is one example of updating user behavior between recommendations.
+        This is just one way of updating user behavior between recommendations.
         """
         if events:
             recommended_categories = [e.categories.get_query_set() for e in events]
@@ -159,30 +159,30 @@ class EventureUser:
         avg_precision = []
         avg_recall = []
         num_loops = 10
-        for i in range(num_loops):
-            precision = []
-            recall = []
+        precision = []
+        recall = []
+        events = ml.get_event_recommendations(self.user)
+        print "preferred_categories: ", self.preferred_categories
+        for i in range(N):
+            self.update_behavior(events)
+            print "Events: ", events
             events = ml.get_event_recommendations(self.user)
-            for i in range(N):
-                self.update_behavior(events)
-                print "Events: ", events
-                events = ml.get_event_recommendations(self.user)
-                precision.append(self.calculate_precision(events))
-                recall.append(self.calculate_recall(events))
-                print "Precision: ",precision[-1]
-                print "Recall: ", recall[-1]
+            precision.append(self.calculate_precision(events))
+            recall.append(self.calculate_recall(events))
+            print "Precision: ",precision[-1]
+            print "Recall: ", recall[-1]
                 
-            if not avg_precision:
-                avg_precision = precision
-            else:
-                for i in range(len(precision)):
-                    avg_precision[i] += precision[i]
-                    
-            if not avg_recall:
-                avg_recall = recall
-            else:
-                for i in range (len(precision)):
-                    avg_recall[i] += recall[i]
+        if not avg_precision:
+            avg_precision = precision
+        else:
+            for j in range(len(precision)):
+                avg_precision[j] += precision[j]
+                
+        if not avg_recall:
+            avg_recall = recall
+        else:
+            for j in range (len(precision)):
+                avg_recall[j] += recall[j]
 
         avg_precision = [score/num_loops for score in avg_precision]
         avg_recall = [score/num_loops for score in avg_recall]
@@ -200,7 +200,7 @@ class EventureUser:
         plt.ylabel("% of User preferred categories")
         plt.savefig("learning/test_results/recall.pdf")
         plt.cla() 
-        
+
 
     def get_accuracy(self):
         return accuracy_dictionary

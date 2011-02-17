@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 from events.models import Category
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
-from learning import ml, settings, CategoryTree
+from learning import ml, settings, CategoryTree, TestingFramework
 from itertools import count
 from behavior.models import EventActionAggregate
-
+from preprocess.utils import MockInitializer
 
 import random
 
@@ -70,7 +70,7 @@ class MLModuleTest(TestCase):
 
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""
-    fixtures = ['auth', 'categories', 'default_behavior']
+    fixtures = ['auth', 'categories', 'default_behavior','places']
     def setUp(self):
         self.count = count()
         self.user = User.objects.get(username='tester_api')
@@ -89,6 +89,13 @@ class AlgorithmTest(TestCase):
         #print "Current Dictionary: "
         userTree.print_dictionary_key_values()
         self.assertAlmostEqual(1.0,userTree.subtree_score("topNscore_probability"))
+
+    def test_framework(self):
+        print "Running MockInitializer"
+        MockInitializer(100).run()
+        print "Completed insert."
+        user = TestingFramework.EventureUser()
+        user.calculate_plot_metrics(10)
 
     def test_multi_category_recall(self,user=None):
         if not user:

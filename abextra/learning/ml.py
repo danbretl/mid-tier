@@ -27,10 +27,10 @@ from behavior.models import EventActionAggregate
 def get_event_recommendations(user, categories=None, N=settings.N):
     if not categories:
         categories = random_tree_walk_algorithm(user, N)
-        return filter_events(user, categories, N)
-    else:
-        return filter_events(user, categories, N*10)
 
+    print "Categories Recommended:", categories
+
+    return filter_events(user, categories, N)
 
 
 def recommend_categories(user, N=settings.N, category=None):
