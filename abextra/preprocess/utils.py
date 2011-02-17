@@ -1,5 +1,6 @@
 import datetime, random
 
+from django.db import transaction
 from django.template.defaultfilters import slugify
 
 from core.utils import unique_everseen
@@ -8,17 +9,23 @@ from events.models import Event, Occurrence, User
 from events.utils import CachedCategoryTree
 from behavior.models import Category
 
-class MockInitializer(object):
-    def __init__(self, n_events_per_concrete_category=100):
-        self.n_events_per_concrete_category = n_events_per_concrete_category
+def joke():
+    return """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
 
+class MockInitializer(object):
+    def __init__(self, n_events_per_concrete_category=100, max_occurrences_per_event=5, max_abstract_categories=2, description=joke):
+        self.n_events_per_concrete_category = n_events_per_concrete_category
+        self.max_occurrences_per_event = max_occurrences_per_event
+        self.max_abstract_categories = max_abstract_categories
+        self.description = description()
+
+    # @transaction.commit_manually
     def run(self):
         ctree = CachedCategoryTree()
 
         tester_api = User.objects.get(username='tester_api')
         village_vanguard = Place.objects.get(slug='village-vanguard')
 
-        mitch = """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
 
         for concrete_category in ctree.concretes:
             for n_events in xrange(self.n_events_per_concrete_category):
@@ -28,7 +35,7 @@ class MockInitializer(object):
                     xid = 'xid-%i' % n_events,
                     title = title,
                     slug = slugify(title),
-                    description = 'This is a test `%s`.\n\nSome Mitch:\n%s' % (title, mitch),
+                    description = 'This is a test `%s`.\n\nSome Mitch:\n%s' % (title, self.description),
                     submitted_by = tester_api,
                     url = 'http://abextratech.com/',
                     image_url = 'http://www3.pictures.fp.zimbio.com/Vicky+Cristina+Barcelona+Movie+Stills+-Zma0rlbU7Tl.jpg',
@@ -40,11 +47,11 @@ class MockInitializer(object):
                 # add some abstract categories to it
                 abstract_leaves = ctree.leaves(ctree.abstract_node)
                 divergent_leaves = unique_everseen(abstract_leaves, lambda c: c.parent)
-                for ac in random.sample(list(divergent_leaves), random.randint(1,5)):
+                for ac in random.sample(list(divergent_leaves), random.randint(1, self.max_abstract_categories)):
                     e.categories.add(ac)
 
                 # add some occurrences
-                for n_occurences in xrange(random.randint(1,5)):
+                for n_occurences in xrange(random.randint(1,self.max_occurrences_per_event)):
                     today = datetime.date.today()
                     Occurrence(
                         event = e,
@@ -56,6 +63,7 @@ class MockInitializer(object):
                         end_time = datetime.datetime.now().time(),
                         is_all_day = False
                     ).save()
+        # transaction.commit()
 
 
 class PreprocessRouter(object):
