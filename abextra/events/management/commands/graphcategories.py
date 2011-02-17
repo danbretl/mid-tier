@@ -44,9 +44,9 @@ class Command(NoArgsCommand):
             if parent:
                 gr.add_edge((c, parent))
 
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         # The whole tree from the root
-        st, order = breadth_first_search(gr, root=Category.objects.get(title="Concrete"))
+        st, order = breadth_first_search(gr, root=Category.objects.get(title="Abstract"))
         gst = digraph()
         gst.add_spanning_tree(st)
 
@@ -54,7 +54,7 @@ class Command(NoArgsCommand):
         gvv = gv.readstring(dot)
 
         gv.layout(gvv, 'dot')
-        gv.render(gvv, 'pdf', os.path.join(output_dir, 'concrete.pdf'))
+        gv.render(gvv, 'pdf', os.path.join(output_dir, 'abstract.pdf'))
 
         # # Individual trees from
         # for c in Category.objects.filter(parent__exact=None):
