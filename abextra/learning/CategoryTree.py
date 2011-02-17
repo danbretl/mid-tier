@@ -8,36 +8,43 @@ from events.utils import CachedCategoryTree
 class CategoryTree:
     #ToDo:
     # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it. 
-    def __init__(self, userID, category=None, parent=None, ctree=None, score=None, dictionary=None):
+    def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, score=None, dictionary=None):
         """
         A Tree for a user is represented recursively as a collection of trees, 
-        Each tree is for a specific user.
+        Each gtree is for a specific user.
         The name of a tree node is the category name otherwise defaults to ROOT
         the value is calculated from the persisted representation of the tree
         much the user likes this, and optionally children
         """
         self.parent = parent
         self.children = []
+
         if not ctree:
             ctree = CachedCategoryTree()
+
+        if not eaa:
+            eaa = EventActionAggregate.objects.filter(user=userID)
+            eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+            
         if category:
-            self.children = [CategoryTree(userID, x, self, ctree) for x in ctree.children(category)]
+            self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in ctree.children(category)]
             self.category = category
             self.title = category.title
         else:
-            self.children = [CategoryTree(userID, x, self, ctree) for x in  ctree.children(ctree.concrete_node)]
+            self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in  ctree.children(ctree.concrete_node)]
             self.category = ctree.concrete_node
             self.title = "ROOT"
+
         if dictionary: 
             self.dictionary = dictionary
         else:
             self.dictionary = {}
+
         try:
-            self.score = EventActionAggregate.objects.values_list('g', 'v', 'i', 'x').get(user=userID, category=self.category)
+            self.score = eaa[self.category.id]
         except:
-            default_user = settings.get_default_user()
             if self.category:
-                self.score = EventActionAggregate.objects.values_list('g', 'v', 'i', 'x').get(user=default_user, category=self.category)
+                self.score = settings.default_eaa[self.category.id]
             else:
                 self.score = ((0, 0, 0, 0))  # * settings.scoringFunction((0,0,0,0)) #This is the root node
 

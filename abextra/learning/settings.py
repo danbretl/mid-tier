@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from behavior.models import EventActionAggregate
 
 #from django.contrib.auth.models import User
 
@@ -22,6 +23,8 @@ abstract_scoring_function = scoring_function((Gm,Vm,Im,Xp),(1,1,1))
 
 def get_default_user():
     return User.objects.get(username="default_behavior")
+
+default_eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in EventActionAggregate.objects.filter(user=get_default_user()))
 
 def mean(lst):
     if lst:
