@@ -91,11 +91,9 @@ class AlgorithmTest(TestCase):
         self.assertAlmostEqual(1.0,userTree.subtree_score("topNscore_probability"))
 
     def test_framework(self):
-        #print "Running MockInitializer"
-        #MockInitializer(100).run()
-        #print "Completed insert."
+        MockInitializer(100,1,1,"").run()
         user = TestingFramework.EventureUser()
-        user.calculate_plot_metrics(10)
+        user.calculate_plot_metrics(1)
 
     def test_multi_category_recall(self,user=None):
         if not user:
