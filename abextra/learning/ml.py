@@ -23,12 +23,9 @@ from django.contrib.auth.models import User
 from behavior.models import EventActionAggregate
 
 
-
-def get_event_recommendations(user, categories=None, N=settings.N):
+def recommend_events(user, categories=None, N=settings.N):
     if not categories:
         categories = random_tree_walk_algorithm(user, N)
-
-    print "Categories Recommended:", categories
 
     return filter_events(user, categories, N)
 
@@ -119,10 +116,11 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     """
     events = []
     #ToDo: Filter events that have already been X'd
-    for c in categories:
-        events += [e for e in Event.objects.filter(categories = c).order_by('?')[:50]] 
-
-        
+    #ToDo: This is a stop-gap solution. We need to sample and score all events optimally.
+    # For performance reasons in testing limiting this to 50 events for now.
+    ##!! This command takes unreasonably long to complete:
+    events = Event.objects.filter(concrete_category__in= categories)[:1000]
+    #events = [b for a in events for b in a]
     event_score = {}
     for e in events:
         try:
@@ -130,7 +128,7 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
         except:
             event_score[e] = abstract_scoring_function(user,e)
 
-    events = SampleDistribution(event_score.items(),settings.N)
+    events = SampleDistribution(event_score.items(),N)
     
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))

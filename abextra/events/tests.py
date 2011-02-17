@@ -70,7 +70,7 @@ class MLModuleTest(TestCase):
 
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""
-    fixtures = ['auth', 'categories', 'default_behavior','places']
+    fixtures = ['auth', 'categories', 'default_behavior','places', 'events']
     def setUp(self):
         self.count = count()
         self.user = User.objects.get(username='tester_api')
@@ -91,9 +91,9 @@ class AlgorithmTest(TestCase):
         self.assertAlmostEqual(1.0,userTree.subtree_score("topNscore_probability"))
 
     def test_framework(self):
-        print "Running MockInitializer"
-        MockInitializer(100).run()
-        print "Completed insert."
+        #print "Running MockInitializer"
+        #MockInitializer(100).run()
+        #print "Completed insert."
         user = TestingFramework.EventureUser()
         user.calculate_plot_metrics(10)
 
