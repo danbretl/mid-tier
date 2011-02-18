@@ -1,3 +1,5 @@
+File settings_local.py is not found. Continuing with production settings.
+File settings_local.py is not found. Continuing with production settings.
 [
     {
         "pk": 1, 
@@ -108,7 +110,7 @@
         "pk": 9, 
         "model": "events.category", 
         "fields": {
-            "parent": 138, 
+            "parent": 135, 
             "title": "Gatherings", 
             "icon_height": 506, 
             "is_associative": false, 
