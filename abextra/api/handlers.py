@@ -114,7 +114,7 @@ class EventHandler(BaseHandler):
 class CategoryHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Category
-    fields = ('id', 'title', 'icon_path')
+    fields = ('id', 'title', 'icon_path', 'color')
 
     def read(self, request, parent_node_slug='concrete'):
         """
