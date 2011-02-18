@@ -1,5 +1,3 @@
-File settings_local.py is not found. Continuing with production settings.
-File settings_local.py is not found. Continuing with production settings.
 [
     {
         "pk": 1, 
@@ -13,6 +11,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sports-recreation", 
+            "color": "", 
             "icon": "category_icons/sports.jpg"
         }
     }, 
@@ -28,6 +27,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "spectator", 
+            "color": "", 
             "icon": "category_icons/Spectator.jpg"
         }
     }, 
@@ -43,6 +43,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "participation", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -58,6 +59,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "activities", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -73,6 +75,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "cycling", 
+            "color": "", 
             "icon": "category_icons/cycling.jpg"
         }
     }, 
@@ -88,6 +91,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "walks", 
+            "color": "", 
             "icon": "category_icons/walks.jpg"
         }
     }, 
@@ -103,6 +107,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "marathons", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -110,7 +115,7 @@ File settings_local.py is not found. Continuing with production settings.
         "pk": 9, 
         "model": "events.category", 
         "fields": {
-            "parent": 135, 
+            "parent": 138, 
             "title": "Gatherings", 
             "icon_height": 506, 
             "is_associative": false, 
@@ -118,6 +123,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "gatherings", 
+            "color": "", 
             "icon": "category_icons/Gatherings_1.png"
         }
     }, 
@@ -133,6 +139,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conventions", 
+            "color": "", 
             "icon": "category_icons/Conventions.JPG"
         }
     }, 
@@ -148,6 +155,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conferences", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -163,6 +171,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "rallies", 
+            "color": "", 
             "icon": "category_icons/Rally.jpg"
         }
     }, 
@@ -178,6 +187,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fundraising", 
+            "color": "", 
             "icon": "category_icons/fundraising.jpg"
         }
     }, 
@@ -193,6 +203,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "appearances", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -208,6 +219,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "nightlife", 
+            "color": "", 
             "icon": "category_icons/nightlife.jpg"
         }
     }, 
@@ -223,6 +235,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "clubs", 
+            "color": "", 
             "icon": "category_icons/Clubs.jpg"
         }
     }, 
@@ -238,6 +251,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "bars", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -253,6 +267,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "amateur-performances", 
+            "color": "", 
             "icon": "category_icons/A-Performances.jpg"
         }
     }, 
@@ -268,6 +283,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "openings", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -283,6 +299,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "djs", 
+            "color": "", 
             "icon": "category_icons/Djing.jpg"
         }
     }, 
@@ -298,6 +315,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "celebrity", 
+            "color": "", 
             "icon": "category_icons/Celeberity.jpg"
         }
     }, 
@@ -313,6 +331,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "trivia-night", 
+            "color": "", 
             "icon": "category_icons/Trivia_Night.jpg"
         }
     }, 
@@ -328,6 +347,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "karaoke-night", 
+            "color": "", 
             "icon": "category_icons/Karaoke.jpg"
         }
     }, 
@@ -343,6 +363,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "musical", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -358,6 +379,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "comedy-show", 
+            "color": "", 
             "icon": "category_icons/comedy-shows.jpg"
         }
     }, 
@@ -373,6 +395,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "poetry", 
+            "color": "", 
             "icon": "category_icons/Poetry2.jpg"
         }
     }, 
@@ -388,6 +411,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "shows", 
+            "color": "", 
             "icon": "category_icons/shows_1.jpg"
         }
     }, 
@@ -403,6 +427,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "movies", 
+            "color": "", 
             "icon": "category_icons/movie.jpg"
         }
     }, 
@@ -418,6 +443,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "concerts", 
+            "color": "", 
             "icon": "category_icons/concert1.jpg"
         }
     }, 
@@ -433,6 +459,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "plays", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -448,6 +475,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "musicals", 
+            "color": "", 
             "icon": "category_icons/Musicals.jpg"
         }
     }, 
@@ -463,6 +491,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "stand-up", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -478,6 +507,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "talks", 
+            "color": "", 
             "icon": "category_icons/TALKS_1.jpg"
         }
     }, 
@@ -493,6 +523,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "lectures", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -508,6 +539,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "panels", 
+            "color": "", 
             "icon": "category_icons/Panel.jpg"
         }
     }, 
@@ -523,6 +555,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "book-signings", 
+            "color": "", 
             "icon": "category_icons/booksignings.jpg"
         }
     }, 
@@ -538,6 +571,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "food-drink", 
+            "color": "", 
             "icon": "category_icons/food_and_drink.jpeg"
         }
     }, 
@@ -553,6 +587,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tastings", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -568,6 +603,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "street-fairs", 
+            "color": "", 
             "icon": "category_icons/street_fairs.jpg"
         }
     }, 
@@ -583,6 +619,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "restaurant-opening", 
+            "color": "", 
             "icon": "category_icons/rest_opening.jpg"
         }
     }, 
@@ -598,6 +635,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "wine", 
+            "color": "", 
             "icon": "category_icons/wine_tasting.jpg"
         }
     }, 
@@ -613,6 +651,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "farmers-market", 
+            "color": "", 
             "icon": "category_icons/farmers_market.jpg"
         }
     }, 
@@ -628,6 +667,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "television-tapings", 
+            "color": "", 
             "icon": "category_icons/tv-shows.jpg"
         }
     }, 
@@ -643,6 +683,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "late-night", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -658,6 +699,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "morning-shows", 
+            "color": "", 
             "icon": "category_icons/morning_shows.jpg"
         }
     }, 
@@ -673,6 +715,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "colbert-report", 
+            "color": "", 
             "icon": "category_icons/colbert.jpg"
         }
     }, 
@@ -688,6 +731,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "daily-show", 
+            "color": "", 
             "icon": "category_icons/The_Daily_Show.jpg"
         }
     }, 
@@ -703,6 +747,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "letterman", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -718,6 +763,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fallon", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -733,6 +779,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "regis", 
+            "color": "", 
             "icon": "category_icons/Regis_Show.jpg"
         }
     }, 
@@ -748,6 +795,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "the-view", 
+            "color": "", 
             "icon": "category_icons/the_view.jpg"
         }
     }, 
@@ -763,6 +811,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "today-show", 
+            "color": "", 
             "icon": "category_icons/Today_Show.jpg"
         }
     }, 
@@ -778,6 +827,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "good-morning-america", 
+            "color": "", 
             "icon": "category_icons/GoodMorningAmerica.jpg"
         }
     }, 
@@ -793,6 +843,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "abstract", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -808,6 +859,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "show-genres", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -823,6 +875,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "music-genres", 
+            "color": "", 
             "icon": "category_icons/music.jpg"
         }
     }, 
@@ -838,6 +891,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "lgbt", 
+            "color": "", 
             "icon": "category_icons/Gay.png"
         }
     }, 
@@ -853,6 +907,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "religion", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -868,6 +923,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "political", 
+            "color": "", 
             "icon": "category_icons/Politics.jpg"
         }
     }, 
@@ -883,6 +939,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "health", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -898,6 +955,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "ages", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -913,6 +971,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "informative", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -928,6 +987,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "charity", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -943,6 +1003,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "diseases", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -958,6 +1019,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "poverty", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -973,6 +1035,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "environmental", 
+            "color": "", 
             "icon": "category_icons/Environmental-Charity.png"
         }
     }, 
@@ -988,6 +1051,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "math-and-science", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1003,6 +1067,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "history", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1018,6 +1083,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "the-arts", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1033,6 +1099,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "current-events", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1048,6 +1115,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "business", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1063,6 +1131,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "technology", 
+            "color": "", 
             "icon": "category_icons/Technology.jpg"
         }
     }, 
@@ -1078,6 +1147,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "math", 
+            "color": "", 
             "icon": "category_icons/math.jpg"
         }
     }, 
@@ -1093,6 +1163,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "physics", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1108,6 +1179,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "biology", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1123,6 +1195,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "chemistry", 
+            "color": "", 
             "icon": "category_icons/Chemistry.jpg"
         }
     }, 
@@ -1138,6 +1211,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "astronomy", 
+            "color": "", 
             "icon": "category_icons/astronomy.jpeg"
         }
     }, 
@@ -1153,6 +1227,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "computer-science", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1168,6 +1243,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "anthropology", 
+            "color": "", 
             "icon": "category_icons/Anthropology.jpg"
         }
     }, 
@@ -1183,6 +1259,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "film", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1198,6 +1275,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "literature", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1213,6 +1291,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "music", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1228,6 +1307,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "under-13", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1243,6 +1323,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "13-17", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1258,6 +1339,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "18-20", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1273,6 +1355,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "21", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1288,6 +1371,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "democrat", 
+            "color": "", 
             "icon": "category_icons/Democratic.jpg"
         }
     }, 
@@ -1303,6 +1387,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "republican", 
+            "color": "", 
             "icon": "category_icons/republican.jpg"
         }
     }, 
@@ -1318,6 +1403,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "christianity", 
+            "color": "", 
             "icon": "category_icons/bible.jpg"
         }
     }, 
@@ -1333,6 +1419,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "hinduism", 
+            "color": "", 
             "icon": "category_icons/hinduism.jpg"
         }
     }, 
@@ -1348,6 +1435,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "judaism", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1363,6 +1451,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "islam", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1378,6 +1467,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "buddhism", 
+            "color": "", 
             "icon": "category_icons/buddism.jpg"
         }
     }, 
@@ -1393,6 +1483,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "jainism", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1408,6 +1499,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "sikhism", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1423,6 +1515,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "lesbian", 
+            "color": "", 
             "icon": "category_icons/Lesbian.jpg"
         }
     }, 
@@ -1438,6 +1531,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "gay", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1453,6 +1547,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "bisexual", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1468,6 +1563,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "transgender", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1483,6 +1579,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "family", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1498,6 +1595,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "for-kids", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1513,6 +1611,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "under-10", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1528,6 +1627,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "teenage", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1543,6 +1643,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "rock", 
+            "color": "", 
             "icon": "category_icons/rock1.jpg"
         }
     }, 
@@ -1558,6 +1659,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "blues", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1573,6 +1675,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "jazz", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1588,6 +1691,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "western-classical", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1603,6 +1707,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "comedy", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1618,6 +1723,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "drama", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1633,6 +1739,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "gallery", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1648,6 +1755,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "discount", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1663,6 +1771,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "festival", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1678,6 +1787,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "circus", 
+            "color": "", 
             "icon": "category_icons/Circus.jpg"
         }
     }, 
@@ -1693,6 +1803,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tourism", 
+            "color": "", 
             "icon": "category_icons/Tourists1.jpg"
         }
     }, 
@@ -1708,6 +1819,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tour", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1723,6 +1835,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "alternative", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1738,6 +1851,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "photography", 
+            "color": "", 
             "icon": "category_icons/Photography.jpg"
         }
     }, 
@@ -1753,6 +1867,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "classic", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1768,6 +1883,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "museum", 
+            "color": "", 
             "icon": "category_icons/Museums2.jpg"
         }
     }, 
@@ -1783,6 +1899,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "dance", 
+            "color": "", 
             "icon": "category_icons/Dancing.jpg"
         }
     }, 
@@ -1798,6 +1915,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "invalid", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1813,6 +1931,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "broadway", 
+            "color": "", 
             "icon": "category_icons/Broadway.gif"
         }
     }, 
@@ -1828,6 +1947,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "off-broadway", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1843,6 +1963,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "visual-arts", 
+            "color": "", 
             "icon": "category_icons/VisualArts.jpg"
         }
     }, 
@@ -1858,6 +1979,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "painting", 
+            "color": "", 
             "icon": "category_icons/Paintings.jpg"
         }
     }, 
@@ -1873,6 +1995,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sculpture", 
+            "color": "", 
             "icon": "category_icons/Sculpture.jpg"
         }
     }, 
@@ -1888,6 +2011,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "fantasy", 
+            "color": "", 
             "icon": "category_icons/Fantasy-Show_Genres.jpg"
         }
     }, 
@@ -1903,6 +2027,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "adventure", 
+            "color": "", 
             "icon": "category_icons/Hiking.jpg"
         }
     }, 
@@ -1918,6 +2043,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "opera", 
+            "color": "", 
             "icon": "category_icons/opera_1.jpg"
         }
     }, 
@@ -1933,6 +2059,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conan-obrien", 
+            "color": "", 
             "icon": "category_icons/conan_1.jpg"
         }
     }, 
@@ -1948,6 +2075,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "running", 
+            "color": "", 
             "icon": "category_icons/marathon.jpg"
         }
     }, 
@@ -1963,6 +2091,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "concrete", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1978,6 +2107,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "movies-media", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -1993,6 +2123,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "hobbies-interest", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -2008,6 +2139,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "arts-theater", 
+            "color": "", 
             "icon": ""
         }
     }, 
@@ -2023,6 +2155,7 @@ File settings_local.py is not found. Continuing with production settings.
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "causes", 
+            "color": "", 
             "icon": ""
         }
     }

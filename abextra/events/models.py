@@ -15,9 +15,11 @@ class Category(models.Model):
     parent = models.ForeignKey('self', related_name='subcategories', blank=True, null=True)
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
+    # TODO bring this out into a OneToOne CategoryGraphics class
     icon = models.ImageField(upload_to='category_icons', height_field='icon_height', width_field='icon_width', blank=True, null=True)
     icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
+    color = models.CharField(max_length=7, blank=True)
 
     @property
     def icon_path(self):
@@ -29,7 +31,6 @@ class Category(models.Model):
     def __unicode__(self):
         return self.title
         # return u'[%s] %s' % (self.id or '?', self.title)
-
 
 class Event(models.Model):
     """Event model"""
