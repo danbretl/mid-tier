@@ -25,6 +25,7 @@ from CategoryTree import CategoryTree
 from django.contrib.auth.models import User
 from behavior.models import EventActionAggregate
 from collections import defaultdict
+from itertools import izip
 
 def recommend_events(user, categories=None, N=settings.N):
     if not categories:
@@ -105,16 +106,17 @@ def abstract_scoring_function2(user,event):
         return sum(scores_list)/len(scores_list)
     return 0
 
-def abstract_scoring_function(user,eid,dictionary_category_eaa):
+def abstract_scoring_function(user,eid,dictionary_category_eaa, abstract_category_ids):
     """
     This scoring function estimates the score an event recieved based on its abstract categories.
     ToDo: Use a kernel function instead of returning mean.
     """
     scores_list = []
     # Given an event find the "maximum" scores for all categories that are abstract.
-    for c in [cat for cat in Event.objects.get(id=eid).categories.filter(category_type='A')]:
-        scores_list.append(settings.abstract_scoring_function(dictionary_category_eaa[c.id]))
-        
+    #for c in [cat for cat in Event.objects.get(id=eid).categories.filter(category_type='A')]:
+        #scores_list.append(settings.abstract_scoring_function(dictionary_category_eaa[c.id]))
+
+    scores_list = [settings.abstract_scoring_function(dictionary_category_eaa[c]) for c in abstract_category_ids]
     if scores_list:
         score =  sum(scores_list)/len(scores_list)
         #print "Score: ", score
@@ -136,8 +138,9 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     # ToDo: Filter events that have already been X'd
     # ToDo: This function is a stop-gap solution. We need to sample and score all events optimally.
     # For performance reasons in testing limiting this to 50 events for now.
+    
     dictionary = defaultdict(lambda :0)
-    num_events = 50 #Should this be a setting?
+    num_events = 50  #Should this be a setting?
     for c in categories:
         dictionary[c] += num_events
 
@@ -145,9 +148,8 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     
     #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] for category,number in dictionary.iteritems()]
     events = [Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number] for category,number in dictionary.iteritems()]
-    events = [a for b in events for a in b]
-
-
+    events = [a[0] for b in events for a in b]
+    
     #For all categories:abstract and concrete:
     eaa = EventActionAggregate.objects.filter(user=user)
     dictionary_category_eaa = defaultdict(lambda :(0,0,0,0))
@@ -161,19 +163,18 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
         dictionary_category_eaa[k] = defaultdict_category_eaa[k]
 
     del defaultdict_category_eaa
-    
+
     ##!! This part takes unreasonably long to complete. Optimize it:
     ##############"
     #import datetime
     #start = datetime.datetime.now()
     
     event_score = defaultdict(lambda :0)
-    for e in events:
-        event_score[e[0]] += abstract_scoring_function(user,e[0],dictionary_category_eaa)
+    for e,abstract_categories in zip(events,get_categories(events,'A')):
+        event_score[e] += abstract_scoring_function(user,e,dictionary_category_eaa, abstract_categories)
 
     #print "Time taken: ", datetime.datetime.now() - start;
     #print "3#############"
-    
     events = SampleDistribution(event_score.items(),N)
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))
@@ -371,3 +372,47 @@ def SampleDistribution(distribution,trials):
             returnList += [(distribution[count])[0]]
     #import pdb; pdb.set_trace()
     return returnList
+
+
+
+def get_categories(event_ids=None,categories = 'E'):
+    """
+    #FIXME: This requires a significant fix.We need to model the ORM effectively here in some way.
+    categories may be 'E' - Everything, 'A' - Abstract or 'C' - Concrete
+    """
+    concrete_categories, abstract_categories, all_categories = [], [], []
+    #events = Event.objects.select_related('categories').in_bulk(event_ids).values()
+    if categories == 'E' or categories == 'C':
+        concrete_categories =[[e[0]] for e in [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]]
+    if categories == 'E' or categories == 'A':
+        #This needs to be made more efficient.
+        #abstract_categories = [e[0] for e in Event.objects.categories.in_bulk(event_ids).values()]
+        #import pdb; pdb.set_trace()
+        import MySQLdb
+        conn=MySQLdb.connect(passwd="vike33",db="abexmid",user="root")
+        cursor= conn.cursor()
+        format_string = ",".join(['%s'] * len(event_ids))
+        
+        #values = tuple([str(e) for e in event_ids])
+        query = """
+        SELECT event_id,category_id
+        FROM events_event_categories
+        where event_id IN (%s)
+        """
+        cursor.execute(query % format_string,tuple(event_ids))
+        dictionary = defaultdict(lambda :[])
+        for a,b in cursor.fetchall():
+            dictionary[a].append(b)
+        abstract_categories = [dictionary[e] for e in event_ids]
+
+        
+    #print "abstract_categories: ", abstract_categories
+    #print "recommended_categories: ", recommended_categories
+    if categories == 'E':
+        all_categories = [ i + j for i,j in izip(concrete_categories,abstract_categories)]
+        return all_categories
+    if categories == 'C':
+        return concrete_categories
+    else:
+        return abstract_categories
+    

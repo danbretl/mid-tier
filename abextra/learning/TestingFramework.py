@@ -18,7 +18,6 @@ import random
 class EventureUser:
     """
     This class creates a new user for ML testing every time.
-    
     """
     
     def __init__(self, user=None, categories=None):
@@ -44,7 +43,7 @@ class EventureUser:
                     success = True
                 except:
                     success = False
-        """
+                    
         for c in Category.objects.all():
             try:
                 #See if event action aggregate exists.If it does, reset it to default.
@@ -59,7 +58,6 @@ class EventureUser:
             eaa.i = default_eaa.i
             eaa.x = default_eaa.x
             eaa.save()
-        """
         
 
         
@@ -72,6 +70,7 @@ class EventureUser:
     def __del__(self):
         if self.delete_user:
             self.user.delete()
+        self.reset_user_behavior()
 
         
     def get_random_categories(self,num_categories=None):
@@ -84,55 +83,65 @@ class EventureUser:
 
 
     #ToDo: Make this generic so user behavior can be easily defined by an ML tester.
-    def update_behavior(self,event_ids):
+    def update_behavior(self,event_ids,category_ids):
         """
         This is just one way of updating user behavior between recommendations.
         """
         if event_ids:
-            events = [Event.objects.get(id=e) for e in event_ids]
-            recommended_categories = self.get_recommended_categories(event_ids)
+            #import pdb; pdb.set_trace()
+            #events = Event.objects.in_bulk(event_ids)
             #recommended_categories = [a for b in recommended_categories for a in b]
             #print recommended_categories
-            result = [set(c).intersection(self.preferred_categories) for c in recommended_categories]
+            pref_categories = set([c.id for c in self.preferred_categories])
+            correct_recommendations = [set(c).intersection(pref_categories) for c in category_ids]
 
-            for e,categories,recs in zip(events,result,recommended_categories):
+            for categories,all_recs in zip(correct_recommendations,category_ids):
                 if categories:
                     for c in categories:
                         self.update_user_category_behavior(c,(1,0,0,0))
                 else:
-                    if recs:
-                        #This was a bad recommendation X it.
+                    if all_recs:
+                        #This was a bad recommendation, so X it.
                         #if random.random() < 0.15 :                            # Roughly 15% of the time we delete a category.
-                        for c in recs: 
+                        for c in all_recs: 
                             self.update_user_category_behavior(c,(0,0,0,1))
 
 
 
-    def update_user_category_behavior(self,category,(g,v,i,x)=(0,0,0,0)):
-        eaa = EventActionAggregate.objects.get(user=self.user, category=category)
-        eaa.g += g
-        eaa.v += v
-        eaa.i += i
-        eaa.x += x
-        eaa.save()
-
-
-    def reset_user_behavior(self, category):
+    def update_user_category_behavior(self,category_id,(g,v,i,x)=(0,0,0,0)):
         try:
-            eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category = category)
-            g = eaa.g
-            v = eaa.v
-            i = eaa.i
-            x = eaa.x
-        except:
-            g, v, i, x = 0, 0, 0, 0
+            eaa = EventActionAggregate.objects.get(user=self.user, category_id=category_id)
+            eaa.g += g
+            eaa.v += v
+            eaa.i += i
+            eaa.x += x
+            eaa.save()
 
-        eaa = EventActionAggregate.objects.get(user=self.user, category=category)
-        eaa.g = g
-        eaa.v = v
-        eaa.i = i
-        eaa.x = x
-        eaa.save()
+        except:
+            pass
+
+
+    def reset_user_behavior(self):
+        for category in Category.objects.all():
+            try:
+                eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category = category)
+                g = eaa.g
+                v = eaa.v
+                i = eaa.i
+                x = eaa.x
+            except:
+                g, v, i, x = 0, 0, 0, 0
+
+            try:
+                eaa = EventActionAggregate.objects.get(user=self.user, category=category)
+                eaa.g = g
+                eaa.v = v
+                eaa.i = i
+                eaa.x = x
+                eaa.save()
+            except:
+                pass
+
 
     def return_user_behavior(self):
         try:
@@ -143,35 +152,23 @@ class EventureUser:
             return (None,None,None,None)
 
 
-    def get_recommended_categories(self,event_ids=None):
+    def calculate_recall_value(self, event_ids,event_category_ids):
         if event_ids:
-            events = Event.objects.in_bulk(event_ids)
-            recommended_categories = [[e.concrete_category]  for e in events]
-            abstract_categories = [e.categories.get_query_set() for e in events]
-            #print "abstract_categories: ", abstract_categories
-            #print "recommended_categories: ", recommended_categories
-            #import ipdb; ipdb.set_trace()
-            recommended_categories = [ i + j for i,j in izip(recommended_categories,abstract_categories)]
-            return recommended_categories
-        else:
-            return [[]]
-
-        
-    def calculate_recall_value(self, event_ids):
-        if event_ids:
-            recommended_categories = set([a for b in self.get_recommended_categories(event_ids) for a in b])
+            recommended_categories = set([a for b in event_category_ids for a in b])
             #print "recommended_categories: ", recommended_categories
             #print "user preferred_categories: ", self.preferred_categories
-            correct_recommendations = recommended_categories.intersection(self.preferred_categories)
-            return len(correct_recommendations) * 100.0 / len(self.preferred_categories)
+            pref_categories = set([c.id for c in self.preferred_categories])
+            correct_recommendations = recommended_categories.intersection(pref_categories)
+            return len(correct_recommendations) * 100.0 / len(pref_categories)
         else:
             return 0.0
 
 
-    def calculate_precision_value(self, event_ids=None):
+    def calculate_precision_value(self, event_ids=None, event_category_ids=None):
         if event_ids:
-            recommended_categories = self.get_recommended_categories(event_ids)
-            result = [len(set(c).intersection(self.preferred_categories))>0 for c in recommended_categories]
+            recommended_categories = event_category_ids
+            pref_categories = set([c.id for c in self.preferred_categories])
+            result = [len(set(c).intersection(pref_categories))>0 for c in recommended_categories]
             #print "precision result: ", result
             return sum(result) * 100.0 / len(result)
         else:
@@ -195,14 +192,16 @@ class EventureUser:
         precision = []
         recall = []
         color = "blue"
-        events = ml.recommend_events(self.user)
+        event_ids = ml.recommend_events(self.user)
+        event_category_ids = ml.get_categories(event_ids)
         for i in range(N):
             print "In loop: ", i
-            self.update_behavior(events)
+            self.update_behavior(event_ids,event_category_ids)
             #print "Events: ", events
             event_ids = ml.recommend_events(self.user)
-            precision.append(self.calculate_precision_value(event_ids))
-            recall.append(self.calculate_recall_value(event_ids))
+            event_category_ids = ml.get_categories(event_ids)
+            precision.append(self.calculate_precision_value(event_ids, event_category_ids))
+            recall.append(self.calculate_recall_value(event_ids, event_category_ids))
             #print "precision: ", precision
             #print "recall: ", recall
 
