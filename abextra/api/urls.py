@@ -22,7 +22,7 @@ categories = Resource(handler=CategoryHandler, **ad)
 
 urlpatterns = patterns('',
     # url(r'^events/$', events),
-    url(r'^events(/(?P<event_id>[^/]+))?/$', events),
+    url(r'^events/$', events),
     url(r'^categories(/(?P<parent_node_slug>[^/]+))?/$', categories),
 
     # url(r'^actions/$', event_actions),
