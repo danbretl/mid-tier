@@ -378,16 +378,18 @@ def SampleDistribution(distribution,trials):
 def get_categories(event_ids=None,categories = 'E'):
     """
     #FIXME: This requires a significant fix.We need to model the ORM effectively here in some way.
-    categories may be 'E' - Everything, 'A' - Abstract or 'C' - Concrete
+    Input: Event_ids, categories which may be 'E' - Everything, 'A' - Abstract or 'C' - Concrete
+    Output: List of list of category ids corresponding to Event_ids
     """
     concrete_categories, abstract_categories, all_categories = [], [], []
     #events = Event.objects.select_related('categories').in_bulk(event_ids).values()
     if categories == 'E' or categories == 'C':
+        #This also may be optimized with a bulk request for events. 
         concrete_categories =[[e[0]] for e in [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]]
     if categories == 'E' or categories == 'A':
-        #This needs to be made more efficient.
-        #abstract_categories = [e[0] for e in Event.objects.categories.in_bulk(event_ids).values()]
-        #import pdb; pdb.set_trace()
+        """
+        This part needs serious refactoring.
+        """
         import MySQLdb
         conn=MySQLdb.connect(passwd="vike33",db="abexmid",user="root")
         cursor= conn.cursor()
@@ -404,7 +406,6 @@ def get_categories(event_ids=None,categories = 'E'):
         for a,b in cursor.fetchall():
             dictionary[a].append(b)
         abstract_categories = [dictionary[e] for e in event_ids]
-
         
     #print "abstract_categories: ", abstract_categories
     #print "recommended_categories: ", recommended_categories
