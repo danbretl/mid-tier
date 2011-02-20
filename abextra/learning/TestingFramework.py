@@ -9,7 +9,9 @@ from matplotlib import pyplot as plt
 from learning import ml, settings, CategoryTree
 from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
-from events.models import Category
+from events.models import Category, Event
+
+from itertools import izip
 
 import random
 
@@ -42,7 +44,7 @@ class EventureUser:
                     success = True
                 except:
                     success = False
-
+        """
         for c in Category.objects.all():
             try:
                 #See if event action aggregate exists.If it does, reset it to default.
@@ -57,12 +59,15 @@ class EventureUser:
             eaa.i = default_eaa.i
             eaa.x = default_eaa.x
             eaa.save()
+        """
+        
 
         
         if categories:
             self.preferred_categories = set(categories)
         else:
             self.preferred_categories = set(self.get_random_categories())
+            
 
     def __del__(self):
         if self.delete_user:
@@ -77,14 +82,18 @@ class EventureUser:
         return Category.objects.all().order_by('?')[:x]
 
 
+
     #ToDo: Make this generic so user behavior can be easily defined by an ML tester.
-    def update_behavior(self,events):
+    def update_behavior(self,event_ids):
         """
         This is just one way of updating user behavior between recommendations.
         """
-        if events:
-            recommended_categories = [e.categories.get_query_set() for e in events]
-            result = [set(c).intersection(preferred_categories) for c in recommended_categories]
+        if event_ids:
+            events = [Event.objects.get(id=e) for e in event_ids]
+            recommended_categories = self.get_recommended_categories(event_ids)
+            #recommended_categories = [a for b in recommended_categories for a in b]
+            #print recommended_categories
+            result = [set(c).intersection(self.preferred_categories) for c in recommended_categories]
 
             for e,categories,recs in zip(events,result,recommended_categories):
                 if categories:
@@ -92,9 +101,11 @@ class EventureUser:
                         self.update_user_category_behavior(c,(1,0,0,0))
                 else:
                     if recs:
-                        for c in recs:
-                            if random.random() < 0.15 :                            # Roughly 15% of the time we delete a category.
-                                self.update_user_category_behavior(c,(0,0,0,1))
+                        #This was a bad recommendation X it.
+                        #if random.random() < 0.15 :                            # Roughly 15% of the time we delete a category.
+                        for c in recs: 
+                            self.update_user_category_behavior(c,(0,0,0,1))
+
 
 
     def update_user_category_behavior(self,category,(g,v,i,x)=(0,0,0,0)):
@@ -104,7 +115,8 @@ class EventureUser:
         eaa.i += i
         eaa.x += x
         eaa.save()
-        
+
+
     def reset_user_behavior(self, category):
         try:
             eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category = category)
@@ -128,73 +140,82 @@ class EventureUser:
                 eaa = EventActionAggregate.objects.get(user=self.user, category=c)
                 return (eaa.g,eaa.v,eaa.i,eaa.x)
         except:
-            print "Exception occurred"
             return (None,None,None,None)
 
-    def calculate_precision(self, events=None):
-        if events:
-            recommended_categories = [e.categories.get_query_set() for e in events]
-            result = [len(set(c).intersection(preferred_categories))>0 for c in recommended_categories]
+
+    def get_recommended_categories(self,event_ids=None):
+        if event_ids:
+            events = Event.objects.in_bulk(event_ids)
+            recommended_categories = [[e.concrete_category]  for e in events]
+            abstract_categories = [e.categories.get_query_set() for e in events]
+            #print "abstract_categories: ", abstract_categories
+            #print "recommended_categories: ", recommended_categories
+            #import ipdb; ipdb.set_trace()
+            recommended_categories = [ i + j for i,j in izip(recommended_categories,abstract_categories)]
+            return recommended_categories
+        else:
+            return [[]]
+
+        
+    def calculate_recall_value(self, event_ids):
+        if event_ids:
+            recommended_categories = set([a for b in self.get_recommended_categories(event_ids) for a in b])
+            #print "recommended_categories: ", recommended_categories
+            #print "user preferred_categories: ", self.preferred_categories
+            correct_recommendations = recommended_categories.intersection(self.preferred_categories)
+            return len(correct_recommendations) * 100.0 / len(self.preferred_categories)
+        else:
+            return 0.0
+
+
+    def calculate_precision_value(self, event_ids=None):
+        if event_ids:
+            recommended_categories = self.get_recommended_categories(event_ids)
+            result = [len(set(c).intersection(self.preferred_categories))>0 for c in recommended_categories]
+            #print "precision result: ", result
             return sum(result) * 100.0 / len(result)
         else:
             return 0.0
 
 
-
-    def calculate_recall(self, events):
-        if events:
-            #unfolding list of lists into a simple list.
-            recommended_categories = set([a for b in [e.categories.get_query_set() for e in events] for a in b])
-            correct_recommendations = recommended_categories.intersection(self.preferred_categories)
-            return len(correct_recommendations) * 100.0 / len(preferred_categories)
-        else:
-            return 0.0
-
+    def plot(self,lst_lst, description="", color="blue", xlabel="x-axis", ylabel="y-axis", save_file="test.pdf"):
+        for pos,lst in enumerate(lst_lst):
+            plt.plot(lst,color)
+        plt.title(description)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+        plt.savefig(save_file)
+        plt.cla()
 
     
-    def calculate_plot_metrics(self,N=1,color="blue"):
+    def calculate_plot_metrics(self,N=1):
         """
         This method calculates and plots (currently precision and recall) metrics.
         """
-        avg_precision = []
-        avg_recall = []
-        num_loops = 10
         precision = []
         recall = []
-        events = ml.get_event_recommendations(self.user)
-        print "preferred_categories: ", self.preferred_categories
+        color = "blue"
+        events = ml.recommend_events(self.user)
         for i in range(N):
+            print "In loop: ", i
             self.update_behavior(events)
-            print "Events: ", events
-            events = ml.get_event_recommendations(self.user)
-            precision.append(self.calculate_precision(events))
-            recall.append(self.calculate_recall(events))
-            print "Precision: ",precision[-1]
-            print "Recall: ", recall[-1]
-                
-        if not avg_precision:
-            avg_precision = precision
-        else:
-            for j in range(len(precision)):
-                avg_precision[j] += precision[j]
-                
-        if not avg_recall:
-            avg_recall = recall
-        else:
-            for j in range (len(precision)):
-                avg_recall[j] += recall[j]
+            #print "Events: ", events
+            event_ids = ml.recommend_events(self.user)
+            precision.append(self.calculate_precision_value(event_ids))
+            recall.append(self.calculate_recall_value(event_ids))
+            #print "precision: ", precision
+            #print "recall: ", recall
 
-        avg_precision = [score/num_loops for score in avg_precision]
-        avg_recall = [score/num_loops for score in avg_recall]
-
-        plt.plot(avg_precision,color=color)
+        print "precision: ", precision
+        print "recall: ", recall
+        plt.plot(precision,color=color)
         plt.title("Rate of learning for 1 category")
         plt.xlabel("Trials")
         plt.ylabel("Average presence in Recommendations")
         plt.savefig("learning/test_results/precision.pdf")
         plt.cla() 
 
-        plt.plot(avg_recall,color=color)
+        plt.plot(recall,color=color)
         plt.title("Recall")
         plt.xlabel("Trials")
         plt.ylabel("% of User preferred categories")

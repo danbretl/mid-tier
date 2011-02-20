@@ -11,6 +11,9 @@
  It returns a set of events as recommendations.
  All default values and functions are defined in settings.py.
  #ToDo: Migrate all default values and functions from settings.py into LiveSettings
+
+ Assumptions:
+    1) Each event is assigned only a single Concrete category and potentially multiple abstract categories. 
 """
 
 import numpy
@@ -21,7 +24,7 @@ from events.models import Category, Event
 from CategoryTree import CategoryTree
 from django.contrib.auth.models import User
 from behavior.models import EventActionAggregate
-
+from collections import defaultdict
 
 def recommend_events(user, categories=None, N=settings.N):
     if not categories:
@@ -71,10 +74,11 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     userTree.top_down_recursion(score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
 
     # Flatten the scores to infuse contagiousness
-    userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
+    #userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
 
     # Perform a probabilistic walk on the tree generated.
-    userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
+    #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"combined_score", "outkey":"combined_probability"})
 
     # Useful Debugging statements:
     #print userTree.print_dictionary_key_values()
@@ -83,7 +87,7 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
 
 
 
-def abstract_scoring_function(user,event):
+def abstract_scoring_function2(user,event):
     """
     This scoring function estimates the score an event recieved based on its abstract categories.
     ToDo: Use a kernel function instead of returning mean.
@@ -101,8 +105,23 @@ def abstract_scoring_function(user,event):
         return sum(scores_list)/len(scores_list)
     return 0
 
+def abstract_scoring_function(user,eid,dictionary_category_eaa):
+    """
+    This scoring function estimates the score an event recieved based on its abstract categories.
+    ToDo: Use a kernel function instead of returning mean.
+    """
+    scores_list = []
+    # Given an event find the "maximum" scores for all categories that are abstract.
+    for c in [cat for cat in Event.objects.get(id=eid).categories.filter(category_type='A')]:
+        scores_list.append(settings.abstract_scoring_function(dictionary_category_eaa[c.id]))
+        
+    if scores_list:
+        score =  sum(scores_list)/len(scores_list)
+        #print "Score: ", score
+        return score
+    return 0
 
-
+#testing
 def filter_events(user,categories=None, N=settings.N, **kwargs):
     """
     Input: User,
@@ -114,22 +133,48 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
                  Events that are cross listed in multiple times have a higher probability of getting selected.
                      - Once selected, they also have a higher probability of getting sampled.
     """
-    events = []
-    #ToDo: Filter events that have already been X'd
-    #ToDo: This is a stop-gap solution. We need to sample and score all events optimally.
+    # ToDo: Filter events that have already been X'd
+    # ToDo: This function is a stop-gap solution. We need to sample and score all events optimally.
     # For performance reasons in testing limiting this to 50 events for now.
-    ##!! This command takes unreasonably long to complete:
-    events = Event.objects.filter(concrete_category__in= categories)[:1000]
-    #events = [b for a in events for b in a]
-    event_score = {}
-    for e in events:
-        try:
-            event_score[e] += abstract_scoring_function(user,e)
-        except:
-            event_score[e] = abstract_scoring_function(user,e)
+    dictionary = defaultdict(lambda :0)
+    num_events = 50 #Should this be a setting?
+    for c in categories:
+        dictionary[c] += num_events
 
-    events = SampleDistribution(event_score.items(),N)
+    events = []
     
+    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] for category,number in dictionary.iteritems()]
+    events = [Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number] for category,number in dictionary.iteritems()]
+    events = [a for b in events for a in b]
+
+
+    #For all categories:abstract and concrete:
+    eaa = EventActionAggregate.objects.filter(user=user)
+    dictionary_category_eaa = defaultdict(lambda :(0,0,0,0))
+    dictionary_category_eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+
+    eaa = EventActionAggregate.objects.filter(user=settings.get_default_user())
+    defaultdict_category_eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+
+    #This is inefficient. think of better ways to do it. 
+    for k in set(defaultdict_category_eaa.keys()) - set(dictionary_category_eaa.keys()):
+        dictionary_category_eaa[k] = defaultdict_category_eaa[k]
+
+    del defaultdict_category_eaa
+    
+    ##!! This part takes unreasonably long to complete. Optimize it:
+    ##############"
+    #import datetime
+    #start = datetime.datetime.now()
+    
+    event_score = defaultdict(lambda :0)
+    for e in events:
+        event_score[e[0]] += abstract_scoring_function(user,e[0],dictionary_category_eaa)
+
+    #print "Time taken: ", datetime.datetime.now() - start;
+    #print "3#############"
+    
+    events = SampleDistribution(event_score.items(),N)
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))
     return probabilistic_sort(events)
