@@ -9,7 +9,8 @@ from django.db.models import Q
 from places.models import Place
 
 class CategoryManager(models.Manager):
-    def for_events(self, event_ids=[], category_types=('C', 'A')):
+    def for_events(self, event_ids, category_types=('C', 'A')):
+        if not event_ids: return None
         category_types = map(str.lower, category_types)
         select_by_type = {
             'a': 'SELECT event_id, category_id FROM events_event_categories WHERE event_id IN %(event_ids)s',
