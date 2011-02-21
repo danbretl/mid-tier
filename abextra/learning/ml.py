@@ -147,8 +147,11 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     events = []
     
     #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] for category,number in dictionary.iteritems()]
-    events = [Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number] for category,number in dictionary.iteritems()]
-    events = [a[0] for b in events for a in b]
+    events = [(category,Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number]) for category,number in dictionary.iteritems()]
+    #events = [a[0] for b in events for a in b]
+    #The events list is of the form: [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
+    #Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
+    events = [(c, [e[0] for e in elst]) for c, elst in events]
     
     #For all categories:abstract and concrete:
     eaa = EventActionAggregate.objects.filter(user=user)
@@ -168,14 +171,13 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     ##############"
     #import datetime
     #start = datetime.datetime.now()
-    
+    #import pdb; pdb.set_trace()
     event_score = defaultdict(lambda :0)
-    for e,abstract_categories in zip(events,get_categories(events,'A')):
-        event_score[e] += abstract_scoring_function(user,e,dictionary_category_eaa, abstract_categories)
-
-    #print "Time taken: ", datetime.datetime.now() - start;
-    #print "3#############"
-    events = SampleDistribution(event_score.items(),N)
+    for category,events in events:
+        for event_id,abstract_categories in zip(events,get_categories(events,'A')):
+            event_score[event_id] += abstract_scoring_function(user,event_id,dictionary_category_eaa, abstract_categories)
+            events += SampleDistribution(event_score.items(),dictionary[c]/50)
+            
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))
     return probabilistic_sort(events)
@@ -391,7 +393,7 @@ def get_categories(event_ids=None,categories = 'E'):
         This part needs serious refactoring.
         """
         import MySQLdb
-        conn=MySQLdb.connect(passwd="vike33",db="abexmid",user="root")
+        conn=MySQLdb.connect(passwd="test",db="abexmid",user="root")
         cursor= conn.cursor()
         format_string = ",".join(['%s'] * len(event_ids))
         
@@ -401,6 +403,7 @@ def get_categories(event_ids=None,categories = 'E'):
         FROM events_event_categories
         where event_id IN (%s)
         """
+        #import pdb; pdb.set_trace()
         cursor.execute(query % format_string,tuple(event_ids))
         dictionary = defaultdict(lambda :[])
         for a,b in cursor.fetchall():

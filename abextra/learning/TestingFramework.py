@@ -60,6 +60,7 @@ class EventureUser:
         
         if categories:
             self.preferred_categories = set([c.id for c in categories])
+        else:
             self.preferred_categories = set([c.id for c in 
                                              self.get_random_categories(num_categories)])
     
@@ -84,7 +85,7 @@ class EventureUser:
         #import pdb; pdb.set_trace()
         #events = Event.objects.in_bulk(event_ids)
         #recommended_categories = [a for b in recommended_categories for a in b]            
-        for categories, all_recs in category_ids:
+        for categories in category_ids:
             # if there is an intersection with preferred categories
             if self.preferred_categories.intersection(set(categories)):
                 for c in categories:
@@ -93,13 +94,13 @@ class EventureUser:
                 #This was a bad recommendation, so X it.
                 #if random.random() < 0.15 :                            
                 # Roughly 15% of the time we delete a category.
-                for c in all_recs: 
+                for c in categories: 
                     self.update_user_category_behavior(c,(0,0,0,1))
 
     def update_user_category_behavior(self,category_id,(g,v,i,x)=(0,0,0,0)):
         """change the user's aggregate action by given (g,v,i,x) tuple"""
         eaa = EventActionAggregate.objects.get(user=self.user, 
-                                               category_id=category_id)
+                                               category__id=category_id)
         eaa.g += g
         eaa.v += v
         eaa.i += i
@@ -129,7 +130,8 @@ class EventureUser:
             #print "recommended_categories: ", recommended_categories
             #print "user preferred_categories: ", self.preferred_categories
             correct_recommendations = recommended_categories.intersection(self.preferred_categories)
-            return len(correct_recommendations) * 100.0 / len(pref_categories)
+            return (len(correct_recommendations) * 100.0 /
+                        len(self.preferred_categories))
         else:
             return 0.0
 
