@@ -1,23 +1,27 @@
 import datetime, os
 import operator
+from collections import defaultdict
 
-from django.db import models
+from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.db.models import Q
 from places.models import Place
 
 class CategoryManager(models.Manager):
-    def for_events(self, events, category_types=('C', 'A')):
+    def for_events(self, event_ids=[], category_types=('C', 'A')):
         category_types = map(str.lower, category_types)
-        q_by_type = {
-            'a': Q(events_abstract__in=events),
-            'c': Q(events_concrete__in=events)
+        select_by_type = {
+            'a': 'SELECT event_id, category_id FROM events_event_categories WHERE event_id IN %(event_ids)s',
+            'c': 'SELECT id, concrete_category_id FROM events_event WHERE id IN %(event_ids)s'
         }
-        q_ = map(q_by_type.get, category_types)
-        predicate = reduce(operator.or_, q_)
-        qs = super(CategoryManager, self).get_query_set()
-        return qs.filter(predicate) if predicate else qs.none()
+        selects = map(select_by_type.get, category_types)
+        cursor = connection.cursor()
+        cursor.execute(' UNION '.join(selects), {'event_ids': event_ids})
+        category_ids_by_event_id = defaultdict(lambda: [])
+        for event_id, category_id in cursor.fetchall():
+            category_ids_by_event_id[event_id].append(category_id)
+        return category_ids_by_event_id
 
 class Category(models.Model):
     """Category model"""
