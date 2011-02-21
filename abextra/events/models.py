@@ -1,10 +1,23 @@
 import datetime, os
+import operator
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.db.models import Q
 from places.models import Place
 
+class CategoryManager(models.Manager):
+    def for_events(self, events, category_types=('C', 'A')):
+        category_types = map(str.lower, category_types)
+        q_by_type = {
+            'a': Q(events_abstract__in=events),
+            'c': Q(events_concrete__in=events)
+        }
+        q_ = map(q_by_type.get, category_types)
+        predicate = reduce(operator.or_, q_)
+        qs = super(CategoryManager, self).get_query_set()
+        return qs.filter(predicate) if predicate else qs.none()
 
 class Category(models.Model):
     """Category model"""
@@ -21,6 +34,8 @@ class Category(models.Model):
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
 
+    objects = CategoryManager()
+
     @property
     def icon_path(self):
         return os.path.split(self.icon.name)[-1] if self.icon else None
@@ -30,7 +45,6 @@ class Category(models.Model):
 
     def __unicode__(self):
         return self.title
-        # return u'[%s] %s' % (self.id or '?', self.title)
 
 class Event(models.Model):
     """Event model"""
@@ -44,12 +58,11 @@ class Event(models.Model):
     url = models.URLField(verify_exists=False, max_length=300)
     image_url = models.URLField(verify_exists=False, max_length=300, blank=True)
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
-    concrete_category = models.ForeignKey(Category, related_name='events_concrete', blank=True, null=True)
-    categories = models.ManyToManyField(Category, verbose_name=_('event categories'), blank=True)
+    concrete_category = models.ForeignKey(Category, related_name='events_concrete')
+    categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
 
     class Meta:
         verbose_name_plural = _('events')
-
 
 class Occurrence(models.Model):
     """Models a particular occurance of an event"""
