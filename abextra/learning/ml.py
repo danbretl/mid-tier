@@ -26,11 +26,13 @@ from django.contrib.auth.models import User
 from behavior.models import EventActionAggregate
 from collections import defaultdict
 from itertools import izip
+import math
 
 def recommend_events(user, categories=None, N=settings.N):
     if not categories:
         categories = random_tree_walk_algorithm(user, N)
-
+    
+    #print "Recommended categories: ",[c.title for c in categories]
     return filter_events(user, categories, N)
 
 
@@ -44,7 +46,6 @@ def recommend_categories(user, N=settings.N, category=None):
         a) List of recommended Categories (may be repeated)
     """
     return random_tree_walk_algorithm(user, N, category)
-
 
 
 def random_tree_walk_algorithm(user, N=settings.N, category=None):
@@ -75,17 +76,31 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     userTree.top_down_recursion(score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
 
     # Flatten the scores to infuse contagiousness
-    #userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
+    userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
 
     # Perform a probabilistic walk on the tree generated.
     #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
-    userTree.top_down_recursion(probabilistic_walk,{"inkey":"combined_score", "outkey":"combined_probability"})
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
+
+    #import pdb; pdb.set_trace()
+    #testing material here:
+    absd = dict([(c.title,(p[0],p[3],p[2])) for c,p in userTree.get_all_category_scores_dictionary(["combined_probability","score","flattened_score","combined_score"])])
+    #import pdb;pdb.set_trace()
+    print "Bars    : ", absd['Bars']
+    print "Clubs   : ", absd['Clubs']
+    print "Musical : ", absd['Musical ']
+    print "Poetry  : ", absd['Poetry ']
+    print "Museum  : ", absd['Museum']
+    print ""
+    import operator
+    print "All scores: ",sorted(absd.iteritems(), key=operator.itemgetter(1))[-5:]
+
 
     # Useful Debugging statements:
     #print userTree.print_dictionary_key_values()
     #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["prob_scores"])])
+    print "Sum of probabilities: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["combined_probability"])])
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
-
 
 
 def abstract_scoring_function2(user,event):
@@ -142,17 +157,17 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
     dictionary = defaultdict(lambda :0)
     num_events = 50  #Should this be a setting?
     for c in categories:
-        dictionary[c] += num_events
-
+        dictionary[c] += 1
     events = []
-    
+
     #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] for category,number in dictionary.iteritems()]
-    events = [(category,Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number]) for category,number in dictionary.iteritems()]
+    events = [(category,Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number*num_events])
+              for category,number in dictionary.iteritems()]
     #events = [a[0] for b in events for a in b]
     #The events list is of the form: [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
     #Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
     events = [(c, [e[0] for e in elst]) for c, elst in events]
-    
+
     #For all categories:abstract and concrete:
     eaa = EventActionAggregate.objects.filter(user=user)
     dictionary_category_eaa = defaultdict(lambda :(0,0,0,0))
@@ -167,20 +182,16 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
 
     del defaultdict_category_eaa
 
-    ##!! This part takes unreasonably long to complete. Optimize it:
-    ##############"
-    #import datetime
-    #start = datetime.datetime.now()
-    #import pdb; pdb.set_trace()
-    event_score = defaultdict(lambda :0)
-    for category,events in events:
-        for event_id,abstract_categories in zip(events,get_categories(events,'A')):
+    selected_events = []
+    for category,event_ids in events:
+        event_score = defaultdict(lambda :0)
+        for event_id,abstract_categories in zip(event_ids,get_categories(event_ids,'A')):
             event_score[event_id] += abstract_scoring_function(user,event_id,dictionary_category_eaa, abstract_categories)
-            events += SampleDistribution(event_score.items(),dictionary[c]/50)
-            
+        selected_events += SampleDistribution(event_score.items(),dictionary[category])
+
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
-    semi_sorted_events =  semi_sort([(event_score[e],e) for e in events], min(3,len(events)))
-    return probabilistic_sort(events)
+    semi_sorted_events =  semi_sort([(event_score[e],e) for e in selected_events], min(3,len(selected_events)))
+    return probabilistic_sort(selected_events)
 
 
 def semi_sort(events, top_sort=3):
@@ -249,7 +260,7 @@ def probabilistic_walk(parent, inkey, outkey):
 
     # The parent outkey will always be assigned before this step. Why? Because this is top down recursion starting from the root,
     # which has a score of 1.0. In the next few steps you will see all the children have their outkey assigned.
-    parent_out_score = parent.get_key_value(outkey)
+    parent_out_score = parent.get_key_value(outkey) * 1.0
 
     # Calculate the total of all children and parent based on the inkey. Why? Because the walk is performed based on the inkey values.
     total_in_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
@@ -257,10 +268,12 @@ def probabilistic_walk(parent, inkey, outkey):
     # Reassign probabilities to the parent based on the distribution of its children and assign probabilities to all children.
     for tree in [parent] + children:
         if total_in_score:
-            tree.insert_key_value(outkey, parent_out_score * tree.get_key_value(inkey) / total_in_score)
+            score = tree.get_key_value(inkey)
+            score = parent_out_score * score / total_in_score
+            #score = parent_out_score * tree.get_key_value(inkey) / total_in_score
+            tree.insert_key_value(outkey, score)
         else:
             tree.insert_key_value(outkey, parent_out_score / (len(children) + 1))
-
 
 
 def topN_function(parent,inkey="score",outkey="topNscore"):
@@ -280,8 +293,6 @@ def topN_function(parent,inkey="score",outkey="topNscore"):
             parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(inkey) for tree in [parent]+children]))
             #parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
 
-
-
 def scoring_function(parent, outkey="score"):
     """
     This is the recursive scoring function that calculates score based on the GVIX values and stores them in outkey.
@@ -294,7 +305,6 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
 
 
-
 def flattening_function(parent, inkey="score", outkey="flattened_score"):
     """
     This is the recursive flattening function.
@@ -302,12 +312,16 @@ def flattening_function(parent, inkey="score", outkey="flattened_score"):
     if not parent.get_parent():
         flatten_categories = parent.get_children()
     else:
-        flatten_categories = [parent] + parent.get_children() 
+        flatten_categories = [parent] + parent.get_children()
 
-    outkeys = flatten_expo(parent.association_coefficient(), [x.get_key_value(inkey) for x in flatten_categories])
+
+    #outkeys = flatten_expo(parent.association_coefficient(), [x.get_key_value(inkey) for x in flatten_categories])
+    outkeys = flatten_expo(0.2, [x.get_key_value(inkey) for x in flatten_categories])
+    #print "Flatten input: ",[x.get_key_value(inkey) for x in flatten_categories]
+    #print "Flatten outpu: ", outkeys
+    #import pdb; pdb.set_trace()
     for i in range(len(flatten_categories)):
         flatten_categories[i].insert_key_value(outkey,outkeys[i])
-
 
 
 def normalize(lst):
@@ -327,7 +341,6 @@ def normalize(lst):
         return [1/len(lst) for e in lst]
 
 
-
 def decrease(x, d):
     """
     Decrease d by a factor that is smaller and smaller the greater the difference is
@@ -336,7 +349,6 @@ def decrease(x, d):
     if x == 0:
         return d
     return d * (1 - math.exp(-d/x))
-
 
 
 def flatten_expo(x, lst):
@@ -351,8 +363,7 @@ def flatten_expo(x, lst):
             newlst.append(m+decrease(x, e-m))
         else:
             newlst.append(m-decrease(x, m-e))
-    return normalize(newlst)
-
+    return newlst
 
 
 def SampleDistribution(distribution,trials):
@@ -376,7 +387,6 @@ def SampleDistribution(distribution,trials):
     return returnList
 
 
-
 def get_categories(event_ids=None,categories = 'E'):
     """
     #FIXME: This requires a significant fix.We need to model the ORM effectively here in some way.
@@ -387,7 +397,7 @@ def get_categories(event_ids=None,categories = 'E'):
     #events = Event.objects.select_related('categories').in_bulk(event_ids).values()
     if categories == 'E' or categories == 'C':
         #This also may be optimized with a bulk request for events. 
-        concrete_categories =[[e[0]] for e in [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]]
+        concrete_categories = [[e[0]] for e in [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]]
     if categories == 'E' or categories == 'A':
         """
         This part needs serious refactoring.
@@ -419,4 +429,3 @@ def get_categories(event_ids=None,categories = 'E'):
         return concrete_categories
     else:
         return abstract_categories
-    

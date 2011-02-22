@@ -59,7 +59,8 @@ class EventureUser:
             eaa.save()
         
         if categories:
-            self.preferred_categories = set([c.id for c in categories])
+            categories = [self.get_category_id(c) for c in categories]
+            self.preferred_categories = set([c for c in categories])
         else:
             self.preferred_categories = set([c.id for c in 
                                              self.get_random_categories(num_categories)])
@@ -68,6 +69,14 @@ class EventureUser:
         if self.delete_user:
             self.user.delete()
         self.reset_user_behavior()
+
+    def get_category_id(self,string):
+        c = Category.objects.get(title=string)
+        return c.id
+
+    def get_category_string(self,id):
+        c = Category.objects.get(id=id)
+        return c.title
 
     def get_random_categories(self,num_categories=None):
         """
@@ -131,7 +140,7 @@ class EventureUser:
             #print "user preferred_categories: ", self.preferred_categories
             correct_recommendations = recommended_categories.intersection(self.preferred_categories)
             return (len(correct_recommendations) * 100.0 /
-                        len(self.preferred_categories))
+                        len(self.preferred_categories),correct_recommendations)
         else:
             return 0.0
 
@@ -146,7 +155,7 @@ class EventureUser:
             result = [len(set(c).intersection(self.preferred_categories))>0 
                         for c in recommended_categories]
             #print "precision result: ", result
-            return sum(result) * 100.0 / len(result)
+            return (sum(result) * 100.0 / len(result),result)
         else:
             return 0.0
 
@@ -168,21 +177,32 @@ class EventureUser:
         This method calculates and plots (currently precision and recall) metrics.
         """
         precision = []
+        precision_set = []
         recall = []
+        recall_set = []
         color = "blue"
         for i in range(N):
             print "In loop: ", i
             event_ids = ml.recommend_events(self.user)
-            event_category_ids = ml.get_categories(event_ids)
-            precision.append(self.calculate_precision_value(event_ids, event_category_ids))
-            recall.append(self.calculate_recall_value(event_ids, event_category_ids))
+            event_category_ids = ml.get_categories(event_ids,'C')
+            #print map(lambda l: map(self.get_category_string, l),event_category_ids)
+            p,pres =self.calculate_precision_value(event_ids, event_category_ids)
+            precision.append(p)
+            precision_set.append(pres)
+            r,rres = self.calculate_recall_value(event_ids, event_category_ids)
+            recall.append(r)
+            recall_set.append(rres)
             self.update_behavior(event_ids,event_category_ids)
             #print "Events: ", events
             #print "precision: ", precision
             #print "recall: ", recall
+            #print [[self.get_category_string(c) for c in clst] for clst in event_category_ids][0]
 
         print "precision: ", precision
+        #print "Precision: ", precision_set
         print "recall: ", recall
+        print "recall: ", [map(self.get_category_string,a) for a in map(list,recall_set)]
+        
         plt.plot(precision,color=color)
         plt.title("Rate of learning for 1 category")
         plt.xlabel("Trials")
