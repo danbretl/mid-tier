@@ -10,6 +10,11 @@ Im = 1                 # I Multiplier in the scoring function
 Xp = 0.4               # X's power in scoring function
 learning_constant = 500 # learning constant. Affects learning speed.
                        # Higher values result in slower learning
+#resistance is a measure of how stubborn a category is in getting selected.
+#This number should always be less than the learning_constant otherwise
+#the algorithm won't be able to distinguish between an X'ed category
+#from a category that has never been visited by a user.
+resistance = 0
 
 N = 20                 # Number of recommendations to the end user
 
@@ -25,7 +30,7 @@ def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
     g,v,i = pow
     #return (lambda y: ((F(y[0])**g)*G + (y[1]**v)*V + (y[2]**i)*I)*(X**y[3]) + learning_constant)
-    return (lambda y: ((F(y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3]))) 
+    return (lambda y: ((F(y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance) 
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp),(0.4,1,1))
 

@@ -78,9 +78,17 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     # Flatten the scores to infuse contagiousness
     userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
 
+    #TRIAL:
+    #import pdb; pdb.set_trace()
+    userTree.top_down_recursion(depth_assignment,{"outkey":"depth"})
+    print userTree.get_all_category_scores_dictionary(["depth","flattened_score"])
+    #import pdb; pdb.set_trace()
+    userTree.top_down_recursion(score_combinator,{"inkey1":"depth","inkey2":"flattened_score","outkey":"dscore"})
+
     # Perform a probabilistic walk on the tree generated.
     #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
-    userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
+    #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
+    userTree.top_down_recursion(probabilistic_walk,{"inkey":"dscore", "outkey":"combined_probability"})
 
     #import pdb; pdb.set_trace()
     #testing material here:
@@ -102,24 +110,6 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     print "Sum of probabilities: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["combined_probability"])])
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
 
-
-def abstract_scoring_function2(user,event):
-    """
-    This scoring function estimates the score an event recieved based on its abstract categories.
-    ToDo: Use a kernel function instead of returning mean.
-    """
-    scores_list = []
-    # Given an event find the "maximum" scores for all categories that are abstract.
-    for c in [cat for cat in event.categories.get_query_set() if cat.category_type=='A']:
-        try:
-            eaa = EventActionAggregate.objects.get(user=user, category=c)
-        except:
-            #If no score found for this particular user, use default users scores.
-            eaa = EventActionAggregate.objects.get(user=settings.get_default_user(), category=c)
-        scores_list.append(settings.abstract_scoring_function((eaa.g, eaa.v, eaa.i, eaa.x)))
-    if scores_list:
-        return sum(scores_list)/len(scores_list)
-    return 0
 
 def abstract_scoring_function(user,eid,dictionary_category_eaa, abstract_category_ids):
     """
@@ -238,8 +228,11 @@ def score_combinator(parent,inkey1, inkey2, outkey):
          Outkey (required)
     
     """
-    parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2)) 
-
+    try:
+        parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2))
+    except:
+        print "Score combination failed for ailed for ", parent.title
+    
 
 def probabilistic_walk(parent, inkey, outkey):
     """
@@ -305,6 +298,21 @@ def scoring_function(parent, outkey="score"):
         parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
 
 
+def depth_assignment(parent,outkey):
+    """
+    Assigns the depth of the node from the root. 
+    """
+    if not parent.get_parent():
+        parent.insert_key_value(outkey,0)
+    
+    in_value = parent.get_key_value(outkey) + 1
+    in_value = in_value * in_value * in_value
+    if in_value:
+        for tree in parent.get_children():
+            tree.insert_key_value(outkey,in_value)
+
+
+
 def flattening_function(parent, inkey="score", outkey="flattened_score"):
     """
     This is the recursive flattening function.
@@ -313,7 +321,6 @@ def flattening_function(parent, inkey="score", outkey="flattened_score"):
         flatten_categories = parent.get_children()
     else:
         flatten_categories = [parent] + parent.get_children()
-
 
     #outkeys = flatten_expo(parent.association_coefficient(), [x.get_key_value(inkey) for x in flatten_categories])
     outkeys = flatten_expo(0.2, [x.get_key_value(inkey) for x in flatten_categories])
