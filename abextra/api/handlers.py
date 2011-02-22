@@ -102,6 +102,11 @@ class EventHandler(BaseHandler):
                 event = c.events_concrete.order_by('?')[:1].get()
                 event.concrete_category = ctree.surface_parent(event.concrete_category)
                 events.add(event)
+            # fill up the rest
+            if len(events) < 20:
+                events.update(m.order_by('?')[:20-len(events)])
+            else:
+                events = list(events)[:20]
 
         # TODO make sure to not send Xed events - check event actions
         # FIXME make more efficient
