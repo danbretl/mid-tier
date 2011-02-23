@@ -1,11 +1,9 @@
-import datetime, os
-import operator
+import os
 from collections import defaultdict
 
 from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
-from django.db.models import Q
 from places.models import Place
 
 class CategoryManager(models.Manager):

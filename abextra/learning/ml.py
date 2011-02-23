@@ -1,227 +1,276 @@
 """
  Author: Vikas Menon
  Date: 2/11/2011
- This module contains all the Machine Learning algorithms that get applied to the CategoryTree to generate recommendations.
+ This module contains all the Machine Learning algorithms that get applied to -
+ the CategoryTree to generate recommendations.
  All algorithms follow the same fundamental structure:
      a) Required input is a CategoryTree.
      b) Each function works on a parent and its children.
      c) Each function may be applied top_down_recursive or bottom_up_recursive.
      d) Each function only writes to the CategoryTree dictionary.
- The most important (main) function is get_event_recommendations(user) which is called by the middle tier.
+ The most main function is get_event_recommendations(user) which is called by 
+ the middle tier.
  It returns a set of events as recommendations.
  All default values and functions are defined in settings.py.
- #ToDo: Migrate all default values and functions from settings.py into LiveSettings
+ #ToDo: 
+ Migrate all default values and functions from settings.py into LiveSettings
 
  Assumptions:
-    1) Each event is assigned only a single Concrete category and potentially multiple abstract categories. 
+    1) Each event is assigned only a single Concrete category and 
+       potentially multiple abstract categories.
 """
 
 import numpy
 import random
-import helper
 import settings
-from events.models import Category, Event
+from events.models import Event
 from CategoryTree import CategoryTree
-from django.contrib.auth.models import User
 from behavior.models import EventActionAggregate
 from collections import defaultdict
 from itertools import izip
 import math
 
-def recommend_events(user, categories=None, N=settings.N):
+def recommend_events(user, categories=None, number=settings.N):
+    """
+    This is the primary api for the mid-tier to connect to.
+    Input: User, Categories (optional) : The list of categories the user is interested in.
+    If provided, only 
+    number is the number of recommendations requested. This is defaulted to N in settings.py
+    """
     if not categories:
-        categories = random_tree_walk_algorithm(user, N)
-    
-    #print "Recommended categories: ",[c.title for c in categories]
-    return filter_events(user, categories, N)
+        categories = random_tree_walk_algorithm(user, number)
+    else:
+        categories = [random_tree_walk_algorithm(user, number/len(categories), category) for category in categories]
+        categories = [category for category_list in categories for category in category_list]
+
+    # print "Recommended categories: ",[c.title for c in categories]
+    return filter_events(user, categories, number)
 
 
-def recommend_categories(user, N=settings.N, category=None):
+def recommend_categories(user, number=settings.N, category=None):
     """
     Input:
         a) User:Required
         b) N: Optional. Number of recommendations to generate
-        c) Category: Optional. Recommends all Categories below this Category. Defaults to the 'Concrete Category'
+        c) Category: Optional. 
+                     Recommends all Categories below this Category. 
+                     Defaults to the 'Concrete Category'
     Output:
         a) List of recommended Categories (may be repeated)
     """
-    return random_tree_walk_algorithm(user, N, category)
+    return random_tree_walk_algorithm(user, number, category)
 
 
-def random_tree_walk_algorithm(user, N=settings.N, category=None):
+def random_tree_walk_algorithm(user, number=settings.N, category=None):
     """
     Input:
         a) User: Required. 
-        b) N: Optional. Number of recommendations to generate. 
+        b) number: Optional. Number of recommendations to generate. 
     Output: List of recommended categories (may be repeated).
-    
-    ToDo: Flattening of scores amongst siblings.
     """
 
     # Generate CategoryTree for user
-    userTree = CategoryTree(user,category)
+    user_tree = CategoryTree(user, category)
 
-    # Calculate scores for each Category in CategoryTree. Score is calculated from GVIX.
+    # Calculate scores for each Category in CategoryTree. 
+    # Score is calculated from GVIX.
     # This function can be applied in any order. Top-Down or Bottom-Up.
-    # Using Top-Down since it is currently implemented to be tail-recursive and can be optimized by the compiler.
-    userTree.top_down_recursion(scoring_function,{"outkey":"score"})
+    # Using Top-Down since it is currently implemented to be tail-recursive and
+    # could  be optimized by the compiler.
+    user_tree.top_down_recursion(scoring_function, {"outkey":"score"})
 
     # Apply Top-N function Bottom-Up.
-    # Conceptually this gives niche categories to bubble thier scores up through their parent towards the root increasing chances of -
-    # the parent getting selected and thus maximising exploitativeness.
-    userTree.bottom_up_recursion(topN_function,{"inkey":"score","outkey":"topNscore"})
+    # Conceptually this gives niche categories the opportunity to bubble 
+    # thier scores up through their parent towards the root  and thus
+    # increasing chances of the parent getting selected,and effectively
+    # maximizing their own chance of getting selected. 
+    # This will increase exploitativeness.
+    user_tree.bottom_up_recursion(topn_function, {"inkey":"score", 
+                                                 "outkey":"topNscore"})
 
-    # This is a modification of the Top-N algorithm. When scores get bubbled up via parents, the probability of parents getting selected -
-    # also goes up proportionally. To make the score of the parent proportional to its GVIX score, we combine the two multiplicatively.
-    userTree.top_down_recursion(score_combinator,{"inkey1":"score", "inkey2":"topNscore", "outkey":"combined_score"})
+    # This is a modification of the Top-N algorithm. 
+    # When scores get bubbled up via parents, the probability of parents 
+    # getting selected also goes up proportionally. 
+    # This function normalizes the score of a parent and makes it proportional
+    # to its GVIX score, 
+    # Currently combining the two multiplicatively.
+    user_tree.top_down_recursion(score_combinator, {"inkey1":"score", 
+                                                   "inkey2":"topNscore", 
+                                                   "outkey":"combined_score"})
 
     # Flatten the scores to infuse contagiousness
-    userTree.top_down_recursion(flattening_function,{"inkey":"combined_score","outkey":"flattened_score"})
+    user_tree.top_down_recursion(flattening_function, {"inkey":"combined_score", 
+                                                      "outkey":"flattened_score"})
 
-    #TRIAL:
-    #import pdb; pdb.set_trace()
-    userTree.top_down_recursion(depth_assignment,{"outkey":"depth"})
-    #print userTree.get_all_category_scores_dictionary(["depth","flattened_score"])
-    #import pdb; pdb.set_trace()
-    userTree.top_down_recursion(score_combinator,{"inkey1":"depth","inkey2":"flattened_score","outkey":"dscore"})
+    # TRIAL:
+    # import pdb; pdb.set_trace()
+    user_tree.top_down_recursion(depth_assignment, {"outkey":"depth"})
+    # print userTree.get_all_category_scores_dictionary(["depth",
+    #                                                   "flattened_score"])
+    # import pdb; pdb.set_trace()
+    user_tree.top_down_recursion(score_combinator, {"inkey1":"depth",
+                                                   "inkey2":"flattened_score",
+                                                   "outkey":"dscore"})
 
-    # Perform a probabilistic walk on the tree generated.
-    #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
-    #userTree.top_down_recursion(probabilistic_walk,{"inkey":"flattened_score", "outkey":"combined_probability"})
-    userTree.top_down_recursion(probabilistic_walk,{"inkey":"dscore", "outkey":"combined_probability"})
+    user_tree.top_down_recursion(probabilistic_walk, {"inkey":"dscore",
+                                                     "outkey":"combined_probability"})
 
-    #import pdb; pdb.set_trace()
-    #testing material here:
-    absd = dict([(c.title,(p[0],p[3],p[2])) for c,p in userTree.get_all_category_scores_dictionary(["combined_probability","score","flattened_score","combined_score"])])
-    #import pdb;pdb.set_trace()
-    #print "Bars    : ", absd['Bars']
-    #print "Clubs   : ", absd['Clubs']
-    #print "Musical : ", absd['Musical ']
-    #print "Poetry  : ", absd['Poetry ']
-    #print "Museum  : ", absd['Museum']
-    #print ""
-    import operator
-    #print "All scores: ",sorted(absd.iteritems(), key=operator.itemgetter(1))[-5:]
+    # Testing material here:
+    # absd = dict([(c.title, p[0]) for c, p in 
+    #             userTree.get_all_category_scores_dictionary(["score"])
+    # print "Scores:",sorted(absd.iteritems(), key=operator.itemgetter(1))[-5:]
 
 
     # Useful Debugging statements:
-    #print userTree.print_dictionary_key_values()
-    #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["prob_scores"])])
-    #print "Sum of probabilities: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["combined_probability"])])
-    return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
+    # print userTree.print_dictionary_key_values()
+
+    return sample_distribution([(x[0], x[1][0]) for x in 
+                                user_tree.get_all_category_scores_dictionary(["combined_probability"])], number)
 
 
-def abstract_scoring_function(user,eid,dictionary_category_eaa, abstract_category_ids):
+def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     """
-    This scoring function estimates the score an event recieved based on its abstract categories.
+    This scoring function estimates the score an event recieved based 
+    on its abstract categories.The abstract categories are passed as input with a dicitonary
+    that maintains the mapping between the scores and the category. 
     ToDo: Use a kernel function instead of returning mean.
     """
     scores_list = []
-    # Given an event find the "maximum" scores for all categories that are abstract.
-    #for c in [cat for cat in Event.objects.get(id=eid).categories.filter(category_type='A')]:
-        #scores_list.append(settings.abstract_scoring_function(dictionary_category_eaa[c.id]))
 
     scores_list = [settings.abstract_scoring_function(dictionary_category_eaa[c]) for c in abstract_category_ids]
+
     if scores_list:
-        score =  sum(scores_list)/len(scores_list)
-        #print "Score: ", score
+        score =  sum(scores_list) / len(scores_list)  #mean
+        # print "Score: ", score
         return score
     return 0
 
-#testing
-def filter_events(user,categories=None, N=settings.N, **kwargs):
+
+def filter_events(user, categories=None, number=settings.N):
     """
     Input: User,
            List of categories
            N = Number of recommendations to provide
     Output: List of events.
     Description:
-                 This function accepts as input a list of categories and randomly selects 50 events for these categories
-                 Events that are cross listed in multiple times have a higher probability of getting selected.
-                     - Once selected, they also have a higher probability of getting sampled.
+                 This function accepts as input a list of categories and 
+                 randomly selects 50 events for these categories
+                 Events that are cross listed in multiple concrete categories 
+                 have a higher probability of getting selected.
+                 Once selected, they also have a higher probability 
+                 of getting sampled.
     """
     # ToDo: Filter events that have already been X'd
-    # ToDo: This function is a stop-gap solution. We need to sample and score all events optimally.
     # For performance reasons in testing limiting this to 50 events for now.
+    # The hope is that geo-location based filtering will also roughly break 
+    # down the number of events down to roughly 50 a category.
     
     dictionary = defaultdict(lambda :0)
-    num_events = 50  #Should this be a setting?
-    for c in categories:
-        dictionary[c] += 1
+    for category in categories:
+        dictionary[category] += 1
     events = []
 
-    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] for category,number in dictionary.iteritems()]
-    events = [(category,Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number*num_events])
-              for category,number in dictionary.iteritems()]
-    #events = [a[0] for b in events for a in b]
-    #The events list is of the form: [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
-    #Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
-    events = [(c, [e[0] for e in elst]) for c, elst in events]
+    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] 
+    #          for category,number in dictionary.iteritems()]
+    # Should the number 50 be a setting?
+    events = [(category, Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number * 50])
+              for category, number in dictionary.iteritems()]
 
-    #For all categories:abstract and concrete:
+    # events = [a[0] for b in events for a in b]
+    # The events list input is of the form: 
+    #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
+    # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
+    events = [(category, [eid[0] for eid in elst]) for category, elst in events]
+
+    # For all categories:abstract and concrete:
     eaa = EventActionAggregate.objects.filter(user=user)
-    dictionary_category_eaa = defaultdict(lambda :(0,0,0,0))
-    dictionary_category_eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+    dictionary_category_eaa = defaultdict(lambda :(0, 0, 0, 0))
+    dictionary_category_eaa = dict((ea.category_id,(ea.g, ea.v, ea.i, ea.x)) 
+                                   for ea in eaa)
 
     eaa = EventActionAggregate.objects.filter(user=settings.get_default_user())
-    defaultdict_category_eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+    defaultdict_category_eaa = dict((ea.category_id,(ea.g, ea.v, ea.i, ea.x)) 
+                                    for ea in eaa)
 
-    #This is inefficient. think of better ways to do it. 
-    for k in set(defaultdict_category_eaa.keys()) - set(dictionary_category_eaa.keys()):
-        dictionary_category_eaa[k] = defaultdict_category_eaa[k]
+    # This is inefficient. think of better ways to do it. 
+    for category in (set(defaultdict_category_eaa.keys()) - 
+              set(dictionary_category_eaa.keys())):
+        dictionary_category_eaa[category] = defaultdict_category_eaa[category]
 
     del defaultdict_category_eaa
 
     selected_events = []
-    for category,event_ids in events:
-        event_score = defaultdict(lambda :0)
-        for event_id,abstract_categories in zip(event_ids,get_categories(event_ids,'A')):
-            event_score[event_id] += abstract_scoring_function(user,event_id,dictionary_category_eaa, abstract_categories)
-        selected_events += SampleDistribution(event_score.items(),dictionary[category])
 
-    #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
-    semi_sorted_events =  semi_sort([(event_score[e],e) for e in selected_events], min(3,len(selected_events)))
-    #print "Number of events recommended: ", len(selected_events)
-    return probabilistic_sort(selected_events)
+    for category, event_ids in events:
+        event_score = defaultdict(lambda :0)
+
+        for event_id, abstract_categories in izip(event_ids, get_categories(event_ids, 'A')):
+            event_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
+        selected_events += sample_distribution(event_score.items(), dictionary[category])
+
+    # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
+    selected_events =  semi_sort([(event_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
+
+    # print "Number of events recommended: ", len(selected_events)
+    return fuzzy_sort(selected_events)
 
 
 def semi_sort(events, top_sort=3):
     """
-    Since we always have only 20 events, not using any fancy algorithms. Just regular scan and find max 3
-    #ToDo: Make more efficient. Use a max heap for efficiency. 
-    !Python does not support a max heap. :(
+    This function sorts [(event_score,event)]* 
+    such the the events with the top top_sort (say 3) scores
+    are always listed first.The rest of the events are not sorted 
+    in any manner.
+
+    Since we always have only 20 events, not using any fancy 
+    algorithms for semi-sort. 
+    
+    Time-Complexity is proportional to O(top_sort * len(events)) 
+    where top_sort has an upper bound of len(events)
+    
+    ToDo: Nice to have: Make this more efficient. 
+    Use a max heap for efficiency. Efficiency would then be 
+    O(log(top_sort)*len(events))
+    
+    Note:Python does not support a max heap by default 
+         (maybe use a min heap with -ve values for keys) :(
     """
     for i in range(top_sort):
         maximum = events[i]
         pos = i
-        for j in range(i+1,len(events)):
+        for j in range(i+1, len(events)):
             if maximum < events[j]:
                 pos = j
                 maximum = events[j]
 
-        #Swap maximum with the top i'th position under evaluation.
-        events[pos],events[i] = events[i],events[pos]
+        # Swap maximum with the top i'th position under evaluation.
+        events[pos], events[i] = events[i], events[pos]
         
     return events
 
-def probabilistic_sort(events):
+def fuzzy_sort(events):
     """
-    This is an utterly simple probabilistic sort with no guarantees..
-    It's purpose is to bubble up preferred elements towards the top of the list.
+    This function recieves [(event_score,event)]* as input and a 
+    roughly better sorted list.
+    This is a simple probabilistic sort with no guarantees.
+    It's purpose is to bubble up preferred elements towards 
+    the top of the list.
     """
-    for i in range(len(events)):
-        a, b = random.randrange(0,len(events)-1), random.randrange(0,len(events)-1)
-        if a > b:
-            a, b = b, a
+    for index in range(len(events)):
+        item1 = random.randrange(0, len(events) - 1)
+        item2 = random.randrange(0, len(events) - 1)
+        if item1 > item2:
+            item1, item2 = item2, item1
 
-        if events[a] < events[b]:
-            events[a], events[b] = events[b], events[a]
-    return events
+        if events[item1] < events[item2]:
+            events[item1], events[item2] = events[item2], events[item1]
+    return [ev[1] for ev in events]
 
 
-def score_combinator(parent,inkey1, inkey2, outkey):
+def score_combinator(parent, inkey1, inkey2, outkey):
     """
-    Multiplies inkey1 and inkey2 and stores the result in outkey in the dictionary.
+    Multiplies inkey1 and inkey2 and stores the result in outkey in the 
+    dictionary.
     Input:
          Parent (required)
          Inkey1 (required)
@@ -230,228 +279,252 @@ def score_combinator(parent,inkey1, inkey2, outkey):
     
     """
     try:
-        parent.insert_key_value(outkey, parent.get_key_value(inkey1) * parent.get_key_value(inkey2))
+        parent.insert_key_value(outkey, parent.get_key_value(inkey1) * 
+                                parent.get_key_value(inkey2))
     except:
-        print "Score combination failed for ailed for ", parent.title
+        # Should be instead throwing an exception here. 
+        # ToDo: Define exceptions of machine learning algorithms.
+        print "Score combination failed for for ", parent.title
     
 
 def probabilistic_walk(parent, inkey, outkey):
     """
-    The probabilistic walk can be performed on any key on the dictionary if and only if the key stores non-negative values.
-    Conceptually, the walk is such that the probability of reaching the Parent gets divided amongst itself and all its children.
+    A probabilistic walk can be performed on any key on the dictionary 
+    if and only if the key stores non-negative values.
+    Conceptually, the walk is such that the probability of reaching a parent 
+    gets divided amongst itself and all its children.
     The loop invariants are thus:
-        a) After a loop, the Sum of scores of all children and parent sum up to the original score of the parent.
-        b) At any given point in the walk, the sum of all scores add up to 1.0 (This is also a necessary requirement for Sampling)
-    The parent node always starts with a probability of 1.0.
-    The parent is assigned a probability, unless (if and only if) it is the root 'Concrete' node
+        a) After a loop, the Sum of scores of all children and parent 
+           sum up to the original score of the parent.
+        b) At any given point in the walk, the sum of all scores add up to 1.0
+          (This is also a necessary requirement for Sampling)
+    The parent root node always starts with a probability of 1.0.
+    Every node is assigned a positive probability if it has a postive inkey, 
+    unless (if and only if) it is the root node
     """
     if not parent.get_parent():
         parent.insert_key_value(outkey, 1.0)
-        # This ensures that the Root node is assigned a probability of 0.0 and hence never selected.
-        parent.insert_key_value(inkey,0.0)
+        # This ensures that the Root node is assigned a probability of 0.0 
+        # and hence never selected during sampling.
+        parent.insert_key_value(inkey, 0.0)
 
     children = parent.get_children()
 
-    # The parent outkey will always be assigned before this step. Why? Because this is top down recursion starting from the root,
-    # which has a score of 1.0. In the next few steps you will see all the children have their outkey assigned.
+    # The parent outkey will always be assigned before this step. 
+    # Why? Because this is top down recursion starting from the root,
+    # which has a score of 1.0. In the next steps all the children 
+    # will have their outkey assigned.
     parent_out_score = parent.get_key_value(outkey) * 1.0
 
-    # Calculate the total of all children and parent based on the inkey. Why? Because the walk is performed based on the inkey values.
-    total_in_score = sum([tree.get_key_value(inkey) for tree in [parent] + children])
+    # Calculate the total of all children and parent based on the inkey. 
+    # Why? Because the walk is performed based on the inkey values.
+    scores = [tree.get_key_value(inkey) for tree in [parent] + children]
+    total_in_score = sum(scores)
 
-    # Reassign probabilities to the parent based on the distribution of its children and assign probabilities to all children.
+    # Reassign probabilities to the parent based on the distribution 
+    # of its children and assign probabilities to all children.
     for tree in [parent] + children:
         if total_in_score:
             score = tree.get_key_value(inkey)
             score = parent_out_score * score / total_in_score
-            #score = parent_out_score * tree.get_key_value(inkey) / total_in_score
             tree.insert_key_value(outkey, score)
         else:
-            tree.insert_key_value(outkey, parent_out_score / (len(children) + 1))
+            tree.insert_key_value(outkey, 
+                                  parent_out_score / (len(children) + 1))
 
 
-def topN_function(parent,inkey="score",outkey="topNscore"):
+def topn_function(parent, inkey="score", outkey="topNscore"):
     """
-    This function calculates the mean of the top k inkey scores amongst a parent and all its children and stores it in outkey
+    This function gets applied bottom_up_recursively on a CategoryTree
+    It calculates the mean of the top k inkey scores amongst a parent and 
+    all its children and stores it in outkey
     """
     if not parent.get_parent():
-        parent.insert_key_value(outkey,0.0)
-        parent.insert_key_value(inkey,0.0)
+        parent.insert_key_value(outkey, 0.0)
+        parent.insert_key_value(inkey, 0.0)
 
     else:
         children = parent.get_children()        
         if not children:
-            parent.insert_key_value(outkey,parent.get_key_value(inkey))
-            #print "Inserted in", parent.category.id, " ", outkey,": ", parent.get_key_value(outkey)
+            parent.insert_key_value(outkey, parent.get_key_value(inkey))
         else:
-            parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(inkey) for tree in [parent]+children]))
-            #parent.insert_key_value(outkey,settings.top3Score([tree.get_key_value(outkey) for tree in children]))
+            score = [tree.get_key_value(inkey) for tree in [parent] + children]
+            parent.insert_key_value(outkey, settings.top3Score(score))
+
 
 def scoring_function(parent, outkey="score"):
     """
-    This is the recursive scoring function that calculates score based on the GVIX values and stores them in outkey.
+    This function calculates score based on the GVIX values 
+    and stores them in outkey.
     """
     # If this is the root node, insert a value of 0
-    #import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     if not parent.get_parent():
-        parent.insert_key_value(outkey,0)
+        parent.insert_key_value(outkey, 0)
     else:
-        parent.insert_key_value(outkey,settings.scoringFunction(parent.get_score()))
+        score = settings.scoringFunction(parent.get_score())
+        parent.insert_key_value(outkey, score)
 
 
-def depth_assignment(parent,outkey):
+def depth_assignment(parent, outkey):
     """
     Assigns the depth of the node from the root. 
     """
     if not parent.get_parent():
-        parent.insert_key_value(outkey,0)
+        parent.insert_key_value(outkey, 0)
     
     in_value = parent.get_key_value(outkey) + 1
     in_value = in_value * in_value * in_value 
     if in_value:
         for tree in parent.get_children():
-            tree.insert_key_value(outkey,in_value)
+            tree.insert_key_value(outkey, in_value)
 
 
 
 def flattening_function(parent, inkey="score", outkey="flattened_score"):
     """
     This is the recursive flattening function.
+    It introduces the contagiousness between neighbours.
     """
     if not parent.get_parent():
         flatten_categories = parent.get_children()
-        parent.insert_key_value(outkey,0.0)
+        parent.insert_key_value(outkey, 0.0)
     else:
         flatten_categories = [parent] + parent.get_children()
 
-    #outkeys = flatten_expo(parent.association_coefficient(), [x.get_key_value(inkey) for x in flatten_categories])
-    outkeys = flatten_expo(0.2, [x.get_key_value(inkey) for x in flatten_categories])
-    #print "Flatten input: ",[x.get_key_value(inkey) for x in flatten_categories]
-    #print "Flatten outpu: ", outkeys
-    #import pdb; pdb.set_trace()
+    scores = [x.get_key_value(inkey) for x in flatten_categories]
+    outkeys = flatten_expo(0.2, scores)
+
     for i in range(len(flatten_categories)):
-        flatten_categories[i].insert_key_value(outkey,outkeys[i])
+        flatten_categories[i].insert_key_value(outkey, outkeys[i])
 
 
 def normalize(lst):
     """
-    Normalize all values so they add up to 1.
+    Normalize a list of numbers so they add up to 1.
     All elements of the list are expected to be zero or positive.
     """
-    #If input is empty, return an empty list 
-    if not lst: return lst
+    # If input is empty, return an empty list 
+    if not lst: 
+        return lst
 
-    #Calculate sum: If the sums adds up to 0, then this is a uniform distribution
-    #               Otherwise, return the normalized value for each element.
-    s = float(sum(lst))
-    if s!=0:
-        return [e / s for e in lst]
+    # Calculate sum: If the sums adds up to 0, 
+    #                  then this is a uniform distribution
+    #                Otherwise, return the normalized value for each element.
+    total_sum = float(sum(lst))
+    if total_sum != 0:
+        return [e / total_sum for e in lst]
     else:
         return [1/len(lst) for e in lst]
 
 
-def decrease(x, d):
+def decrease(association_coefficient, difference):
     """
-    Decrease d by a factor that is smaller and smaller the greater the difference is
+    Decrease d by a factor that is smaller and smaller 
+    the greater the difference is
     """
     # limit
-    if x == 0:
-        return d
-    return d * (1 - math.exp(-d/x))
+    if association_coefficient == 0:
+        return difference
+    return difference * (1 - math.exp(- difference / association_coefficient))
 
 
-def flatten_expo(x, lst):
+def flatten_expo(association_coefficient, lst):
     """
     Remove part of the distance towards the mean
+    The greater the distance from the mean, the lesser the change.
+    The flattening coefficient is any number between 0 and infinity.
     """
-    m = sum(lst) / float(len(lst)) # mean
+    mean = sum(lst) / float(len(lst))  # mean
     
     newlst = []
-    for e in lst:
-        if e > m:
-            newlst.append(m+decrease(x, e-m))
+    for item in lst:
+        if item > mean:
+            newlst.append(mean + decrease(association_coefficient, item-mean))
         else:
-            newlst.append(m-decrease(x, m-e))
+            newlst.append(mean-decrease(association_coefficient, mean-item))
     return newlst
 
 
-def SampleDistribution(distribution,trials,category_count=None):
+def sample_distribution(distribution, trials=settings.N, category_count=None):
     """
     Given a distribution of [(item,score)] samples items.
     Items are first normalized by scores and then sampled from it.
     """
     #    Convert into a cumulative distribution
-    CDFDistribution = numpy.cumsum(normalize([x[1] for x in distribution]))
-    #print "Distribution: ",  CDFDistribution
-    returnList = []
+    cumulative_distribution = numpy.cumsum(normalize([x[1] for x in distribution]))
+    # print "Distribution: ",  CDFDistribution
+    return_list = []
     if not category_count:
         category_count = defaultdict(lambda : 0)
     for i in range(trials):
         value = random.random()
 
-        #todo: use binary search to scan the array and locate count faster
+        # Todo: use binary search to scan the array and locate count faster
         count = 0
         
         for count in range(len(distribution)):
-            if (value < CDFDistribution[count]): break
+            if (value < cumulative_distribution[count]): 
+                break
             
         if distribution:
-            if category_count[(distribution[count])[0]] <= settings.N * settings.max_probability:
-                returnList += [(distribution[count])[0]]
+            if category_count[(distribution[count])[0]] <= (
+                settings.N * settings.max_probability
+                ):
+                return_list += [(distribution[count])[0]]
                 category_count[(distribution[count])[0]] += 1
             else:
                 if len(distribution) > 1:
                     del distribution[count]
                 else:
                     category_count[(distribution[count])[0]] -=1
-                returnList += SampleDistribution(distribution,trials-i,category_count)
+                return_list += sample_distribution(distribution,
+                                                 trials-i,
+                                                 category_count)
                 break
                 
-    #import pdb; pdb.set_trace()
-    return returnList
+    # import pdb; pdb.set_trace()
+    return return_list
 
 
-def redistribute(lst, total=1.0):
-    return map(lambda x: x*total,normalize(x[1] for x in lst))
-    
-
-def get_categories(event_ids=None,categories = 'E'):
+def get_categories(event_ids=None, categories='E'):
     """
-    #FIXME: This requires a significant fix.We need to model the ORM effectively here in some way.
-    Input: Event_ids, categories which may be 'E' - Everything, 'A' - Abstract or 'C' - Concrete
+    This needs to be replaced.
+
+    Input: Event_ids, categories which may be 
+    'E' - Everything, 'A' - Abstract or 'C' - Concrete
     Output: List of list of category ids corresponding to Event_ids
     """
     concrete_categories, abstract_categories, all_categories = [], [], []
-    #events = Event.objects.select_related('categories').in_bulk(event_ids).values()
     if categories == 'E' or categories == 'C':
-        #This also may be optimized with a bulk request for events. 
-        concrete_categories = [[e[0]] for e in [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]]
+        # This also may be optimized with a bulk request for events. 
+        events = [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]
+        concrete_categories = [[e[0]] for e in events]
     if categories == 'E' or categories == 'A':
-        """
-        This part needs serious refactoring.
-        """
+        #This part needs serious refactoring.
         import MySQLdb
-        conn=MySQLdb.connect(passwd="test",db="abexmid",user="root")
-        cursor= conn.cursor()
+        conn = MySQLdb.connect(passwd="test", db="abexmid", user="root")
+        cursor = conn.cursor()
         format_string = ",".join(['%s'] * len(event_ids))
         
-        #values = tuple([str(e) for e in event_ids])
+        # values = tuple([str(e) for e in event_ids])
         query = """
         SELECT event_id,category_id
         FROM events_event_categories
         where event_id IN (%s)
         """
-        #import pdb; pdb.set_trace()
-        cursor.execute(query % format_string,tuple(event_ids))
+        # import pdb; pdb.set_trace()
+        cursor.execute(query % format_string, tuple(event_ids))
         dictionary = defaultdict(lambda :[])
-        for a,b in cursor.fetchall():
-            dictionary[a].append(b)
-        abstract_categories = [dictionary[e] for e in event_ids]
+        for eid, cid in cursor.fetchall():
+            dictionary[eid].append(cid)
+
+        abstract_categories = [dictionary[eid] for eid in event_ids]
         
-    #print "abstract_categories: ", abstract_categories
-    #print "recommended_categories: ", recommended_categories
+    # print "abstract_categories: ", abstract_categories
+    # print "recommended_categories: ", recommended_categories
     if categories == 'E':
-        all_categories = [ i + j for i,j in izip(concrete_categories,abstract_categories)]
+        all_categories = [i + j for i, j in izip(concrete_categories, abstract_categories)]
         return all_categories
     if categories == 'C':
         return concrete_categories
