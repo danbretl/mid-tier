@@ -112,6 +112,9 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None):
                                                    "inkey2":"flattened_score",
                                                    "outkey":"dscore"})
 
+    #category_count = get_real_time_category_count(user)
+    #user_tree.top_down_recursion(score_multiplier,{"inkey":"score","function_of_parent":(lambda x: category_count[x]), "outkey":"multiplied_score"})
+    
     user_tree.top_down_recursion(probabilistic_walk, {"inkey":"dscore",
                                                      "outkey":"combined_probability"})
 
@@ -127,6 +130,28 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None):
     return sample_distribution([(x[0], x[1][0]) for x in 
                                 user_tree.get_all_category_scores_dictionary(["combined_probability"])], number)
 
+#stub
+def get_all_events(user):
+    pass
+
+#stub
+def get_real_time_category_count(user):
+    """
+    This function calculates the number of events per category 
+    for a given users filter (location, preferences, etc.)
+    
+    This function can also be modified to calculate the capped score. 
+    For example the implementation below assumes 500
+    
+    Input: users
+    Outpu: dictionary[category] = count
+    """
+    events = get_all_events(user)
+    category_count = defaultdict(lambda :0)
+    for e in events:
+        if category_count[e.concrete_category] < 500 :
+            category_count[e.concrete_category] += 1
+    return category_count
 
 def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     """
@@ -284,8 +309,16 @@ def score_combinator(parent, inkey1, inkey2, outkey):
     except:
         # Should be instead throwing an exception here. 
         # ToDo: Define exceptions of machine learning algorithms.
-        print "Score combination failed for for ", parent.title
-    
+        print "Score combination failed for ", parent.title
+
+
+#usage: user_tree.top_down_recursion(score_multiplier,{"inkey":"score","function_of_parent":(lambda x: category_count[x]), "outkey":"multiplied_score"})
+def score_multiplier(parent,inkey,function_of_parent,outkey):
+    try:
+        parent.insert_key_value(outkey, parent.get_key_value(inkey) * function_of_parent(parent))
+    except:
+        print "Score multiplication failed for ", parent.title
+
 
 def probabilistic_walk(parent, inkey, outkey):
     """
