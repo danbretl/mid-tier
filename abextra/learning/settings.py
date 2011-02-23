@@ -30,7 +30,7 @@ def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
     g,v,i = pow
     #return (lambda y: ((F(y[0])**g)*G + (y[1]**v)*V + (y[2]**i)*I)*(X**y[3]) + learning_constant)
-    return (lambda y: ((F(y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance) 
+    return (lambda y: (((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance) 
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp),(0.4,1,1))
 

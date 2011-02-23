@@ -81,7 +81,7 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     #TRIAL:
     #import pdb; pdb.set_trace()
     userTree.top_down_recursion(depth_assignment,{"outkey":"depth"})
-    print userTree.get_all_category_scores_dictionary(["depth","flattened_score"])
+    #print userTree.get_all_category_scores_dictionary(["depth","flattened_score"])
     #import pdb; pdb.set_trace()
     userTree.top_down_recursion(score_combinator,{"inkey1":"depth","inkey2":"flattened_score","outkey":"dscore"})
 
@@ -94,20 +94,20 @@ def random_tree_walk_algorithm(user, N=settings.N, category=None):
     #testing material here:
     absd = dict([(c.title,(p[0],p[3],p[2])) for c,p in userTree.get_all_category_scores_dictionary(["combined_probability","score","flattened_score","combined_score"])])
     #import pdb;pdb.set_trace()
-    print "Bars    : ", absd['Bars']
-    print "Clubs   : ", absd['Clubs']
-    print "Musical : ", absd['Musical ']
-    print "Poetry  : ", absd['Poetry ']
-    print "Museum  : ", absd['Museum']
-    print ""
+    #print "Bars    : ", absd['Bars']
+    #print "Clubs   : ", absd['Clubs']
+    #print "Musical : ", absd['Musical ']
+    #print "Poetry  : ", absd['Poetry ']
+    #print "Museum  : ", absd['Museum']
+    #print ""
     import operator
-    print "All scores: ",sorted(absd.iteritems(), key=operator.itemgetter(1))[-5:]
+    #print "All scores: ",sorted(absd.iteritems(), key=operator.itemgetter(1))[-5:]
 
 
     # Useful Debugging statements:
     #print userTree.print_dictionary_key_values()
     #print "Sum of scores is: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["prob_scores"])])
-    print "Sum of probabilities: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["combined_probability"])])
+    #print "Sum of probabilities: ", sum([x[1][0] for x in userTree.get_all_category_scores_dictionary(["combined_probability"])])
     return SampleDistribution([(x[0],x[1][0]) for x in userTree.get_all_category_scores_dictionary(["combined_probability"])],N)
 
 
@@ -181,6 +181,7 @@ def filter_events(user,categories=None, N=settings.N, **kwargs):
 
     #The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     semi_sorted_events =  semi_sort([(event_score[e],e) for e in selected_events], min(3,len(selected_events)))
+    #print "Number of events recommended: ", len(selected_events)
     return probabilistic_sort(selected_events)
 
 
@@ -306,7 +307,7 @@ def depth_assignment(parent,outkey):
         parent.insert_key_value(outkey,0)
     
     in_value = parent.get_key_value(outkey) + 1
-    in_value = in_value * in_value * in_value
+    in_value = in_value * in_value * in_value 
     if in_value:
         for tree in parent.get_children():
             tree.insert_key_value(outkey,in_value)
@@ -319,6 +320,7 @@ def flattening_function(parent, inkey="score", outkey="flattened_score"):
     """
     if not parent.get_parent():
         flatten_categories = parent.get_children()
+        parent.insert_key_value(outkey,0.0)
     else:
         flatten_categories = [parent] + parent.get_children()
 
@@ -373,7 +375,7 @@ def flatten_expo(x, lst):
     return newlst
 
 
-def SampleDistribution(distribution,trials):
+def SampleDistribution(distribution,trials,category_count=None):
     """
     Given a distribution of [(item,score)] samples items.
     Items are first normalized by scores and then sampled from it.
@@ -382,17 +384,36 @@ def SampleDistribution(distribution,trials):
     CDFDistribution = numpy.cumsum(normalize([x[1] for x in distribution]))
     #print "Distribution: ",  CDFDistribution
     returnList = []
+    if not category_count:
+        category_count = defaultdict(lambda : 0)
     for i in range(trials):
         value = random.random()
+
         #todo: use binary search to scan the array and locate count faster
         count = 0
+        
         for count in range(len(distribution)):
             if (value < CDFDistribution[count]): break
+            
         if distribution:
-            returnList += [(distribution[count])[0]]
+            if category_count[(distribution[count])[0]] <= settings.N * settings.max_probability:
+                returnList += [(distribution[count])[0]]
+                category_count[(distribution[count])[0]] += 1
+            else:
+                if len(distribution) > 1:
+                    del distribution[count]
+                else:
+                    category_count[(distribution[count])[0]] -=1
+                returnList += SampleDistribution(distribution,trials-i,category_count)
+                break
+                
     #import pdb; pdb.set_trace()
     return returnList
 
+
+def redistribute(lst, total=1.0):
+    return map(lambda x: x*total,normalize(x[1] for x in lst))
+    
 
 def get_categories(event_ids=None,categories = 'E'):
     """
