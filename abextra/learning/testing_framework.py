@@ -6,7 +6,7 @@ Date Created: 2/15/2011
 """
 
 from matplotlib import pyplot as plt
-from learning import ml, settings, CategoryTree
+from learning import ml, settings
 from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 from events.models import Category, Event
@@ -185,6 +185,7 @@ class EventureUser:
             print "In loop: ", i
             event_ids = ml.recommend_events(self.user)
             event_category_ids = ml.get_categories(event_ids,'C')
+            event_category_ids = [event_category_ids[e] for e in event_ids]
             #print map(lambda l: map(self.get_category_string, l),event_category_ids)
             p,pres =self.calculate_precision_value(event_ids, event_category_ids)
             precision.append(p)

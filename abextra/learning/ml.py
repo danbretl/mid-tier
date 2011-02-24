@@ -23,7 +23,7 @@
 import numpy
 import random
 import settings
-from events.models import Event
+from events.models import Event, CategoryManager
 from CategoryTree import CategoryTree
 from behavior.models import EventActionAggregate
 from collections import defaultdict
@@ -228,8 +228,8 @@ def filter_events(user, categories=None, number=settings.N):
 
     for category, event_ids in events:
         event_score = defaultdict(lambda :0)
-
-        for event_id, abstract_categories in izip(event_ids, get_categories(event_ids, 'A')):
+        event_cat_dict = get_categories(event_ids, 'A')
+        for event_id, abstract_categories in event_cat_dict.items():
             event_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
         selected_events += sample_distribution(event_score.items(), dictionary[category])
 
@@ -237,6 +237,7 @@ def filter_events(user, categories=None, number=settings.N):
     selected_events =  semi_sort([(event_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
 
     # print "Number of events recommended: ", len(selected_events)
+    #print fuzzy_sort(selected_events)
     return fuzzy_sort(selected_events)
 
 
@@ -522,44 +523,19 @@ def sample_distribution(distribution, trials=settings.N, category_count=None):
 
 def get_categories(event_ids=None, categories='E'):
     """
-    This needs to be replaced.
-
     Input: Event_ids, categories which may be 
     'E' - Everything, 'A' - Abstract or 'C' - Concrete
-    Output: List of list of category ids corresponding to Event_ids
+    Output: Dictionary of events corresponding to list of category ids 
     """
-    concrete_categories, abstract_categories, all_categories = [], [], []
-    if categories == 'E' or categories == 'C':
-        # This also may be optimized with a bulk request for events. 
-        events = [Event.objects.values_list('concrete_category_id').get(id=e) for e in event_ids]
-        concrete_categories = [[e[0]] for e in events]
-    if categories == 'E' or categories == 'A':
-        #This part needs serious refactoring.
-        import MySQLdb
-        conn = MySQLdb.connect(passwd="test", db="abexmid", user="root")
-        cursor = conn.cursor()
-        format_string = ",".join(['%s'] * len(event_ids))
-        
-        # values = tuple([str(e) for e in event_ids])
-        query = """
-        SELECT event_id,category_id
-        FROM events_event_categories
-        where event_id IN (%s)
-        """
-        # import pdb; pdb.set_trace()
-        cursor.execute(query % format_string, tuple(event_ids))
-        dictionary = defaultdict(lambda :[])
-        for eid, cid in cursor.fetchall():
-            dictionary[eid].append(cid)
-
-        abstract_categories = [dictionary[eid] for eid in event_ids]
-        
-    # print "abstract_categories: ", abstract_categories
-    # print "recommended_categories: ", recommended_categories
+    category_manager = CategoryManager()
+    eid_categories = None
     if categories == 'E':
-        all_categories = [i + j for i, j in izip(concrete_categories, abstract_categories)]
-        return all_categories
-    if categories == 'C':
-        return concrete_categories
+        eid_categories = category_manager.for_events(event_ids, ('A','C'))
+    elif categories == 'A':
+        eid_categories = category_manager.for_events(event_ids, ('A'))
+    elif categories == 'C':
+        eid_categories = category_manager.for_events(event_ids, ('C'))
     else:
-        return abstract_categories
+        print "Invalid input to function ml.get_categories."
+
+    return eid_categories
