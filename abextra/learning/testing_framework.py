@@ -160,19 +160,35 @@ class EventureUser:
             return 0.0
 
 
-    def plot(self,lst_lst, description="", color="blue", xlabel="x-axis", 
-                            ylabel="y-axis", save_file="test.pdf"):
-        """helper function for plotting a list of lists of values"""
-        for pos,lst in enumerate(lst_lst):
-            plt.plot(lst,color)
-        plt.title(description)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        plt.savefig(save_file)
-        plt.cla()
+    def iterated_preferred_categories_plot(self, num=1):
+        preferred_categories = list(self.preferred_categories)
 
+        plt.figure(1)
+        plt.title("Rate of learning for " + str(len(self.preferred_categories)) + " category",)
+        plt.xlabel("Trials")
+        plt.ylabel("Average presence in Recommendations")
+
+        plt.figure(2)
+        plt.title("Recall")
+        plt.xlabel("Trials")
+        plt.ylabel("% of User preferred categories")
+        
+        color = "Xcmykrgb"
+        for i in range(1,len(preferred_categories)):
+            self.reset_user_behavior()
+            self.preferred_categories = set(preferred_categories[:i])
+            self.calculate_plot_metrics(num,color[min(i,len(color)-1)], str(i))
+
+        plt.figure(1)
+        plt.legend(loc='upper right')
+        plt.savefig("learning/test_results/precision.pdf")
+        plt.figure(2)
+        plt.legend(loc='upper right')
+        plt.savefig("learning/test_results/recall.pdf")
+        plt.cla()
+        self.preferred_categories = set(preferred_categories)
     
-    def calculate_plot_metrics(self,N=1):
+    def calculate_plot_metrics(self, N=1, color="blue",label=""):
         """
         This method calculates and plots (currently precision and recall) metrics.
         """
@@ -180,7 +196,6 @@ class EventureUser:
         precision_set = []
         recall = []
         recall_set = []
-        color = "blue"
         for i in range(N):
             print "In loop: ", i
             event_ids = ml.recommend_events(self.user)
@@ -203,19 +218,10 @@ class EventureUser:
         #print "Precision: ", precision_set
         print "recall: ", recall
         print "recall: ", [map(self.get_category_string,a) for a in map(list,recall_set)]
-        
-        plt.plot(precision,color=color)
-        plt.title("Rate of learning for 1 category")
-        plt.xlabel("Trials")
-        plt.ylabel("Average presence in Recommendations")
-        plt.savefig("learning/test_results/precision.pdf")
-        plt.cla() 
 
-        plt.plot(recall,color=color)
-        plt.title("Recall")
-        plt.xlabel("Trials")
-        plt.ylabel("% of User preferred categories")
-        plt.savefig("learning/test_results/recall.pdf")
-        plt.cla() 
+        plt.figure(1)
+        plt.plot(precision,color=color,label=label)
+        plt.figure(2)
+        plt.plot(recall,color=color, label=label)
 
 

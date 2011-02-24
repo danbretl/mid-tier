@@ -3,9 +3,10 @@ from learning import testing_framework
 from django.contrib.auth.models import User
 
 u = User.objects.get(id=1)
-c = testing_framework.EventureUser(u,categories=['Bars','Clubs','Musical','Poetry'])
+c = testing_framework.EventureUser(u,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
 #c = TestingFramework.EventureUser(u,categories=['Museum','Daily Show'])
-c.calculate_plot_metrics(50)
+#c.calculate_plot_metrics(100)
+c.iterated_preferred_categories_plot(50)
 """
 
 from events.models import Event, CategoryManager, Category
