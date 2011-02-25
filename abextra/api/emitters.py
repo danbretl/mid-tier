@@ -3,7 +3,7 @@ from piston.emitters import Emitter, DateTimeAwareJSONEncoder
 
 class JSONEmitterMinified(Emitter):
     """
-    JSON emitter, understands timestamps.
+    custom minified JSON emitter , understands timestamps.
     """
     def render(self, request):
         cb = request.GET.get('callback')
