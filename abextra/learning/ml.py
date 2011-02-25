@@ -163,18 +163,43 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     return 0
 
 
-def filter_events(user, event_objects=None, categories_dict=None, number=settings.N):
+def generate_category_mapping(event_query_set=None, categories_dict=None):
+    """
+    Input: a) Query set of event objects
+           b) List of cateegories with probability scores.
+    Output:
+           default dictionary category_event_map[category] = list of event ids. 
+    """
+    category_event_map = defaultdict(lambda: [])
+    if not event_query_set:
+        # events stores categories and event ids corresponding to that category
+        event_ids = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
+                  for category, number in sorted(categories_dict.iteritems(),operator.itemgetter(1))[-50:]]
+        # events = [a[0] for b in events for a in b]
+        # The events list input is of the form: 
+        #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
+        # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
+        for category, event in [(category, [eid[0] for eid in elst]) for category, elst in event_ids]:
+            category_event_map[category].append(event)
+    else:
+        for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_query_set]:
+            category_event_map[category].append(event)
+
+    return category_event_map
+
+
+def filter_events(user, event_query_set=None, categories_dict=None, number=settings.N):
     """
     Input: User,
            List of categories
            N = Number of recommendations to provide
     Output: List of events.
     Description:
-                 This function accepts as input a list of categories and 
+                 This function accepts as input a list of categories and
                  randomly selects 50 events for these categories
-                 Events that are cross listed in multiple concrete categories 
+                 Events that are cross listed in multiple concrete categories
                  have a higher probability of getting selected.
-                 Once selected, they also have a higher probability 
+                 Once selected, they also have a higher probability
                  of getting sampled.
     """
     # ToDo: Filter events that have already been X'd
@@ -186,67 +211,58 @@ def filter_events(user, event_objects=None, categories_dict=None, number=setting
     #          for category,number in dictionary.iteritems()]
     # Should the number 50 be a setting?
 
-    if not event_objects:
-        # events stores the categories and event ids corresponding to that category
-        events = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
-                  for category, number in sorted(dictionary.iteritems(),operator.itemgetter(1))[-50:]]
-        # events = [a[0] for b in events for a in b]
-        # The events list input is of the form: 
-        #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
-        # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
-        events = [(category, [eid[0] for eid in elst]) for category, elst in events]
-        #Fixme (during code review): events should ideally be a default dict. Need to research how to initialize a defaultdict with values.
-        #for now using a standard dictionary. 
-        events = dict(events)
+    events = generate_category_mapping(event_query_set,categories_dict)
 
-    else:
-        events = defaultdict(lambda: [])
-        for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_objects]:
-            events[category].append(event)
-        events =  dict([ x for x in events.iteritems()])
-        
-
+    # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
             del categories_dict[key]
+    categories = sample_distribution(categories_dict.items(), settings.N)
     
-    # For all categories:abstract and concrete:
-    eaa = EventActionAggregate.objects.filter(user=user)
+    # This is an optimization.
+    # Prepare in advance all the users behavior for the categories under consideration. 
+    eaa = EventActionAggregate.objects.filter(user=user,category__in=categories)
     dictionary_category_eaa = defaultdict(lambda :(0, 0, 0, 0))
-    dictionary_category_eaa = dict((ea.category_id,(ea.g, ea.v, ea.i, ea.x)) 
-                                   for ea in eaa)
+    for ea in eaa:
+        dictionary_category_eaa[ea.category_id] = (ea.g, ea.v, ea.i, ea.x)
 
-    eaa = EventActionAggregate.objects.filter(user=settings.get_default_user())
-    defaultdict_category_eaa = dict((ea.category_id,(ea.g, ea.v, ea.i, ea.x)) 
-                                    for ea in eaa)
-
-    # This is inefficient. think of better ways to do it. 
-    for category in (set(defaultdict_category_eaa.keys()) - 
-              set(dictionary_category_eaa.keys())):
-        dictionary_category_eaa[category] = defaultdict_category_eaa[category]
-
-    del defaultdict_category_eaa
-
+    # This contains the selected events to be returned. 
     selected_events = []
 
+    #This is an optimization
     #Stores the score for every event id.
     event_abstract_score = defaultdict(lambda :0)
-
     for category, event_ids in events.iteritems():
         #Mapping between event ids and all abstract categories. 
         event_cat_dict = get_categories(event_ids, 'A')
         for event_id, abstract_categories in event_cat_dict.items():
             event_abstract_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
 
-    selected_events = []
-    i = 0
-    # First sample a category.
-    while i < settings.N:
+    # First sample a category (already sampled and available in categories).
+    # This maintains a count of all categories that were sampled from but didn't have enough events and need to be asked for again. 
+    missing_count = 0
+    for category in categories:
         # Next sample an event based on the abstract score.
-        #fixme: this is inefficient (since the sampling recalculates a lot of intermediate steps(normalize, cumsum, etc).
-        category = sample_distribution([x for x in categories_dict.iteritems()])[0]
         event = sample_distribution([(event_id, event_abstract_score[category]) for event_id in events[category]])
-        selected_events += event
-        i += 1
+        if event:
+            selected_events += event
+        else:
+            #This category has no more events. If it comes down to it, Don't sample it ever again. 
+            del categories_dict[category]
+            missing_count += 1
+        #Fixme: Inefficient.
+        # This ensures an already selected event does not get selected again.
+        events[category] = list( set(events[category]) - set(list(event)))
+        if len(events[category]) == 0 :
+            del events[category]
+            
+
+    if missing_count > 0 and len(events) > 0:
+        # This is "hopefully" unlikely to happen if there are enough events in each category.
+        # If we get to this point, it means we don't have enough events for the categories sampled
+        # resample from the categories and recommend more events. This is one place where we could break the settings.max_probability cap.
+        # But this could be necessary for example if you are in Waukeesha, Wisconsin and only have movies to go to.
+        # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you. 
+        selected_events.append(filter_events(user,event_query_set, categories_dict,missing_count))
         
     # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
@@ -518,7 +534,7 @@ def sample_distribution(distribution, trials=1, category_count=None):
             
         if distribution:
             if category_count[(distribution[count])[0]] <= (
-                settings.N * settings.max_probability
+                trials * settings.max_probability
                 ):
                 return_list += [(distribution[count])[0]]
                 category_count[(distribution[count])[0]] += 1
