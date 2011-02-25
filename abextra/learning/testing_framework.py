@@ -6,13 +6,12 @@ Date Created: 2/15/2011
 """
 
 from matplotlib import pyplot as plt
-from learning import ml, settings
+from learning import ml
 from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
-from events.models import Category, Event
-
+from events.models import Category
 from itertools import izip
-
+import math
 import random
 
 class EventureUser:
@@ -159,8 +158,22 @@ class EventureUser:
         else:
             return 0.0
 
+    def rms(self,lst):
+        if lst:
+            mean = sum(lst) * 1.0 / len(lst)
+        else:
+            mean = 0.0
+        rms_value = math.sqrt(sum( [(x-mean)*(x-mean) for x in lst]))
+        return rms_value
+                              
+    def plot_with_error_bars(self,values_list=None):
+        mean = [sum(x) * 1.0 / len(x) for x in izip(*values_list)]
+        error_range_lower = [min(x) for x in izip(*values_list)]
+        error_range_upper = [max(x) for x in izip(*values_list)]
+        #plt.boxplot(zip(*values_list))
+        plt.errorbar(range(1,len(mean)+1), mean, yerr=[error_range_lower, error_range_upper])
 
-    def iterated_preferred_categories_plot(self, num=1):
+    def iterated_preferred_categories_plot(self, length_of_recommendations=10,number_of_iterations=2):
         preferred_categories = list(self.preferred_categories)
 
         plt.figure(1)
@@ -172,23 +185,36 @@ class EventureUser:
         plt.title("Recall")
         plt.xlabel("Trials")
         plt.ylabel("% of User preferred categories")
-        
-        color = "Xcmykrgb"
-        for i in range(1,len(preferred_categories)):
-            self.reset_user_behavior()
-            self.preferred_categories = set(preferred_categories[:i])
-            self.calculate_plot_metrics(num,color[min(i,len(color)-1)], str(i))
+        #color = "cmykrgb"
 
-        plt.figure(1)
-        plt.legend(loc='upper right')
-        plt.savefig("learning/test_results/precision.pdf")
-        plt.figure(2)
-        plt.legend(loc='upper right')
-        plt.savefig("learning/test_results/recall.pdf")
-        plt.cla()
+        for j in range(2,10,2):
+            random.shuffle(preferred_categories)
+            precision_recall = []
+            self.preferred_categories = set(preferred_categories[:j])
+            for i in range(number_of_iterations):
+                self.reset_user_behavior()
+                precision_recall.append(self.calculate_plot_metrics(length_of_recommendations))
+
+            # Plot precision
+            plt.figure(1)
+            plt.title("Rate of learning for " + str(len(self.preferred_categories)) + " category",)
+            plt.xlabel("Trials")
+            plt.ylabel("Average presence in Recommendations")
+            self.plot_with_error_bars([precision[0] for precision in precision_recall])
+            plt.savefig("learning/test_results/precision." + str(j) +".pdf")
+            plt.cla()
+            # Plot recall
+            plt.figure(2)
+            plt.title("Recall")
+            plt.xlabel("Trials")
+            plt.ylabel("% of User preferred categories")
+            self.plot_with_error_bars([recall[1] for recall in precision_recall])
+            plt.savefig("learning/test_results/recall." + str(j) +".pdf")
+            plt.cla()
+            
         self.preferred_categories = set(preferred_categories)
     
-    def calculate_plot_metrics(self, N=1, color="blue",label=""):
+    def calculate_plot_metrics(self, number_of_recommendations=1):
         """
         This method calculates and plots (currently precision and recall) metrics.
         """
@@ -196,7 +222,7 @@ class EventureUser:
         precision_set = []
         recall = []
         recall_set = []
-        for i in range(N):
+        for i in range(number_of_recommendations):
             print "In loop: ", i
             event_ids = ml.recommend_events(self.user)
             event_category_ids = ml.get_categories(event_ids,'C')
@@ -219,9 +245,9 @@ class EventureUser:
         print "recall: ", recall
         print "recall: ", [map(self.get_category_string,a) for a in map(list,recall_set)]
 
-        plt.figure(1)
-        plt.plot(precision,color=color,label=label)
-        plt.figure(2)
-        plt.plot(recall,color=color, label=label)
-
+        #plt.figure(1)
+        #plt.plot(precision,color=color,label=label)
+        #plt.figure(2)
+        #plt.plot(recall,color=color, label=label)
+        return (precision, recall)
 

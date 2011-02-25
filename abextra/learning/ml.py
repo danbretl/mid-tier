@@ -27,7 +27,6 @@ from events.models import Event, CategoryManager
 from CategoryTree import CategoryTree
 from behavior.models import EventActionAggregate
 from collections import defaultdict
-from itertools import izip
 import math
 
 def recommend_events(user, categories=None, number=settings.N):
