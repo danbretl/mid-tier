@@ -27,23 +27,36 @@ from events.models import Event, CategoryManager
 from CategoryTree import CategoryTree
 from behavior.models import EventActionAggregate
 from collections import defaultdict
+import operator
 import math
 
-def recommend_events(user, categories=None, number=settings.N):
+def recommend_events(user, events=None, categories=None, number=settings.N):
     """
     This is the primary api for the mid-tier to connect to.
     Input: User, Categories (optional) : The list of categories the user is interested in.
     If provided, only 
     number is the number of recommendations requested. This is defaulted to N in settings.py
     """
+    categories = defaultdict(lambda :0)
     if not categories:
-        categories = random_tree_walk_algorithm(user, number)
+        categories_dict = random_tree_walk_algorithm(user, number)
     else:
-        categories = [random_tree_walk_algorithm(user, number/len(categories), category) for category in categories]
-        categories = [category for category_list in categories for category in category_list]
+        # When we have multiple categories as input we want to sample them and all their children.
+        # We perform a random walk starting on each of the categories. Each of these is going to produce a
+        # dictionary of (category,scores). We combine these dictionaries together and then renormalize their scores.
+        # Combining dictionaries currently adds up all scores, this might not be the best solution and may require
+        # changes depending on performances.
+        # Most often, we expect only a single category to get passed, in which case this isn't a concern. 
+        categories_dicts = [random_tree_walk_algorithm(user, number/len(categories), category) for category in categories]
+        categories = defaultdict(lambda :0)
+        for cat_dict in categories_dicts:
+            for k,v in cat_dict:
+                categories_dict[k] += v
+
+        categories_dict = dict(zip(categories_dict.keys(), normalize(categories_dicts.values())))
 
     # print "Recommended categories: ",[c.title for c in categories]
-    return filter_events(user, categories, number)
+    return filter_events(user, events, categories_dict, number)
 
 
 def recommend_categories(user, number=settings.N, category=None):
@@ -65,7 +78,7 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None):
     Input:
         a) User: Required. 
         b) number: Optional. Number of recommendations to generate. 
-    Output: List of recommended categories (may be repeated).
+    Output: Categories with their probability scores.
     """
 
     # Generate CategoryTree for user
@@ -126,31 +139,11 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None):
     # Useful Debugging statements:
     # print userTree.print_dictionary_key_values()
 
-    return sample_distribution([(x[0], x[1][0]) for x in 
-                                user_tree.get_all_category_scores_dictionary(["combined_probability"])], number)
+    #return sample_distribution([(x[0], x[1][0]) for x in 
+    #                            user_tree.get_all_category_scores_dictionary(["combined_probability"])], number)
+    category_id_scores = [(x[0], x[1][0]) for x in user_tree.get_all_category_scores_dictionary(["combined_probability"])]
+    return dict(zip([x[0] for x in category_id_scores],normalize([x[1] for x in category_id_scores])))
 
-#stub
-def get_all_events(user):
-    pass
-
-#stub
-def get_real_time_category_count(user):
-    """
-    This function calculates the number of events per category 
-    for a given users filter (location, preferences, etc.)
-    
-    This function can also be modified to calculate the capped score. 
-    For example the implementation below assumes 500
-    
-    Input: users
-    Outpu: dictionary[category] = count
-    """
-    events = get_all_events(user)
-    category_count = defaultdict(lambda :0)
-    for e in events:
-        if category_count[e.concrete_category] < 500 :
-            category_count[e.concrete_category] += 1
-    return category_count
 
 def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     """
@@ -170,7 +163,7 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     return 0
 
 
-def filter_events(user, categories=None, number=settings.N):
+def filter_events(user, event_objects=None, categories_dict=None, number=settings.N):
     """
     Input: User,
            List of categories
@@ -186,26 +179,36 @@ def filter_events(user, categories=None, number=settings.N):
     """
     # ToDo: Filter events that have already been X'd
     # For performance reasons in testing limiting this to 50 events for now.
-    # The hope is that geo-location based filtering will also roughly break 
+    # The hope is that geo-location based filtering will also roughly break
     # down the number of events down to roughly 50 a category.
     
-    dictionary = defaultdict(lambda :0)
-    for category in categories:
-        dictionary[category] += 1
-    events = []
-
-    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number] 
+    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number]
     #          for category,number in dictionary.iteritems()]
     # Should the number 50 be a setting?
-    events = [(category, Event.objects.filter(concrete_category=category).values_list('id').order_by('?')[:number * 50])
-              for category, number in dictionary.iteritems()]
 
-    # events = [a[0] for b in events for a in b]
-    # The events list input is of the form: 
-    #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
-    # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
-    events = [(category, [eid[0] for eid in elst]) for category, elst in events]
+    if not event_objects:
+        # events stores the categories and event ids corresponding to that category
+        events = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
+                  for category, number in sorted(dictionary.iteritems(),operator.itemgetter(1))[-50:]]
+        # events = [a[0] for b in events for a in b]
+        # The events list input is of the form: 
+        #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
+        # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
+        events = [(category, [eid[0] for eid in elst]) for category, elst in events]
+        #Fixme (during code review): events should ideally be a default dict. Need to research how to initialize a defaultdict with values.
+        #for now using a standard dictionary. 
+        events = dict(events)
 
+    else:
+        events = defaultdict(lambda: [])
+        for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_objects]:
+            events[category].append(event)
+        events =  dict([ x for x in events.iteritems()])
+        
+
+    for key in set(categories_dict.keys()) - set(events.keys()):
+            del categories_dict[key]
+    
     # For all categories:abstract and concrete:
     eaa = EventActionAggregate.objects.filter(user=user)
     dictionary_category_eaa = defaultdict(lambda :(0, 0, 0, 0))
@@ -225,15 +228,28 @@ def filter_events(user, categories=None, number=settings.N):
 
     selected_events = []
 
-    for category, event_ids in events:
-        event_score = defaultdict(lambda :0)
+    #Stores the score for every event id.
+    event_abstract_score = defaultdict(lambda :0)
+
+    for category, event_ids in events.iteritems():
+        #Mapping between event ids and all abstract categories. 
         event_cat_dict = get_categories(event_ids, 'A')
         for event_id, abstract_categories in event_cat_dict.items():
-            event_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
-        selected_events += sample_distribution(event_score.items(), dictionary[category])
+            event_abstract_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
 
+    selected_events = []
+    i = 0
+    # First sample a category.
+    while i < settings.N:
+        # Next sample an event based on the abstract score.
+        #fixme: this is inefficient (since the sampling recalculates a lot of intermediate steps(normalize, cumsum, etc).
+        category = sample_distribution([x for x in categories_dict.iteritems()])[0]
+        event = sample_distribution([(event_id, event_abstract_score[category]) for event_id in events[category]])
+        selected_events += event
+        i += 1
+        
     # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
-    selected_events =  semi_sort([(event_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
+    selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
 
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
@@ -479,7 +495,7 @@ def flatten_expo(association_coefficient, lst):
     return newlst
 
 
-def sample_distribution(distribution, trials=settings.N, category_count=None):
+def sample_distribution(distribution, trials=1, category_count=None):
     """
     Given a distribution of [(item,score)] samples items.
     Items are first normalized by scores and then sampled from it.
