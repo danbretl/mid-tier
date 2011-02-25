@@ -6,7 +6,7 @@ u = User.objects.get(id=1)
 c = testing_framework.EventureUser(u,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
 #c = TestingFramework.EventureUser(u,categories=['Museum','Daily Show'])
 #c.calculate_plot_metrics(100)
-c.iterated_preferred_categories_plot(100,10)
+c.iterated_preferred_categories_plot(10,5)
 """
 
 from events.models import Event, CategoryManager, Category

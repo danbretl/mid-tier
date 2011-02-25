@@ -168,8 +168,8 @@ class EventureUser:
                               
     def plot_with_error_bars(self,values_list=None):
         mean = [sum(x) * 1.0 / len(x) for x in izip(*values_list)]
-        error_range_lower = [min(x) for x in izip(*values_list)]
-        error_range_upper = [max(x) for x in izip(*values_list)]
+        error_range_lower = [(sum(x) * 1.0 / len(x)) - min(x) for x in izip(*values_list)]
+        error_range_upper = [max(x) - (sum(x) * 1.0 / len(x))for x in izip(*values_list)]
         #plt.boxplot(zip(*values_list))
         plt.errorbar(range(1,len(mean)+1), mean, yerr=[error_range_lower, error_range_upper])
 
