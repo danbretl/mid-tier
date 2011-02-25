@@ -212,6 +212,9 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     # Should the number 50 be a setting?
 
     events = generate_category_mapping(event_query_set,categories_dict)
+    event_dictionary = dict()
+    for event in event_query_set:
+        event_dictionary[event.id] = event
 
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
@@ -269,7 +272,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
 
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    return fuzzy_sort(selected_events)
+    return [event_dictionary[id] for id in fuzzy_sort(selected_events)]
 
 
 def semi_sort(events, top_sort=3):
