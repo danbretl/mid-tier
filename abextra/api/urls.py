@@ -5,6 +5,9 @@ from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 
 from api.handlers import EventHandler, EventActionHandler, CategoryHandler
 
+from emitters import Emitter, JSONEmitterMinified  # FIXME hack to register the emitter
+Emitter.register('json', JSONEmitterMinified, 'application/json; charset=utf-8')
+
 auth = HttpBasicAuthentication()
 ad = { 'authentication': auth }
 
