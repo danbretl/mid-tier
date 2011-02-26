@@ -181,7 +181,7 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
     if not event_query_set:
         # events stores categories and event ids corresponding to that category
         event_ids = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
-                  for category, number in sorted(categories_dict.iteritems(),operator.itemgetter(1))[-50:]]
+                  for category, number in sorted(categories_dict.iteritems(),key=operator.itemgetter(1))[-50:]]
 
         #This is an optimization. 
         #Load all category objects into a dictionary. 
@@ -193,7 +193,7 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
         #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
         # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
         for category, event in [(category, [eid[0] for eid in elst]) for category, elst in event_ids]:
-            category_event_map[category].append(event)
+            category_event_map[category] +=event
     else:
         #for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_query_set]:
         #    category_event_map[category].append(event)
@@ -254,7 +254,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     #Stores the score for every event id.
     event_abstract_score = defaultdict(lambda :0)
     for category, event_ids in events.iteritems():
-        #Mapping between event ids and all abstract categories. 
+        #Mapping between event ids and all abstract categories.
         event_cat_dict = get_categories(event_ids, 'A')
         for event_id, abstract_categories in event_cat_dict.items():
             event_abstract_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
@@ -296,7 +296,10 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
 
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    return [event_query_set.get(id=event_id) for event_id in fuzzy_sort(selected_events)]
+    if event_query_set:
+        return [event_query_set.get(id=event_id) for event_id in fuzzy_sort(selected_events)]
+    else:
+        return [Event.objects.get(id=event_id) for event_id in fuzzy_sort(selected_events)]
 
 
 def semi_sort(events, top_sort=3):
