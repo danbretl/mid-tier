@@ -12,7 +12,7 @@ class EventAction(models.Model):
         ('X', 'Deleted'),
     )
     user = models.ForeignKey(User)
-    event = models.ForeignKey(Event)
+    event = models.ForeignKey(Event, related_name='actions')
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
 
     class Meta:
@@ -48,7 +48,7 @@ class EventActionAggregate(models.Model):
 # FIXME needs to be much more optimized
 # FIXME indexes on `action aggregate`{user_id, category_id}
 # FIXME eager event / category related fields, see .defer
-# FIXME refactor for a bulk update
+# FIXME refactor for a bulk update  http://docs.djangoproject.com/en/1.2/topics/db/queries/#updating-multiple-objects-at-once
 def update_aggregate_on_event_action_save(sender, instance, **kwargs):
     """
     Increases the aggregate count for a particular user's event action.
