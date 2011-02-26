@@ -182,7 +182,7 @@ class EventureUser:
         plt.ylabel("% of User preferred categories")
         #color = "cmykrgb"
 
-        for j in range(2,10,2):
+        for j in range(2,4,2):
             random.shuffle(preferred_categories)
             precision_recall = []
             self.preferred_categories = set(preferred_categories[:j])
@@ -218,7 +218,8 @@ class EventureUser:
         recall = []
         recall_set = []
         for i in range(number_of_recommendations):
-            print "In loop: ", i
+            print "In loop: ", i, "\r",
+            sys.stdout.flush()
             
             #event_ids = [e.id for e in ml.recommend_events(self.user)]
             #event_category_id_dict = ml.get_categories(event_ids,'C')
@@ -227,18 +228,19 @@ class EventureUser:
             # just get category ids directly
             
             cats = ml.recommend_categories(self.user)
-            event_category_ids = ml.sample_distribution(cats.items(), 
-                                                        settings.N)
-            print event_category_ids
-            
+            event_categories = ml.sample_distribution(cats.items(), 
+                                                    settings.N)
+
+            event_categories= [[a.id] for a in event_categories]
             #print map(lambda l: map(self.get_category_string, l),event_category_ids)
-            p,pres =self.calculate_precision_value(event_category_ids)
+            
+            p,pres =self.calculate_precision_value(event_categories)
             precision.append(p)
             precision_set.append(pres)
-            r,rres = self.calculate_recall_value(event_category_ids)
+            r,rres = self.calculate_recall_value(event_categories)
             recall.append(r)
             recall_set.append(rres)
-            self.update_behavior(event_category_ids)
+            self.update_behavior(event_categories)
             #print "Events: ", events
             #print "precision: ", precision
             #print "recall: ", recall

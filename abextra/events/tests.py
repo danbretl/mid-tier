@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from events.models import Category
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
-from learning import ml, settings, CategoryTree, TestingFramework
+from learning import ml, settings, CategoryTree, testing_framework
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
@@ -74,6 +74,15 @@ class AlgorithmTest(TestCase):
     def setUp(self):
         self.count = count()
         self.user = User.objects.get(username='tester_api')
+        MockInitializer().run()
+
+
+    def test_printing_precision_recall(self):
+        u = User.objects.get(id=1)
+        c = testing_framework.EventureUser(u,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
+        c.iterated_preferred_categories_plot(100,1)
+        self.assertTrue(True)
+
 
     def test_probabilistic_walk(self):
         #invariants:
@@ -91,9 +100,9 @@ class AlgorithmTest(TestCase):
         self.assertAlmostEqual(1.0,userTree.subtree_score("topNscore_probability"))
 
     def test_framework(self):
-        MockInitializer(100,1,1,"").run()
         user = TestingFramework.EventureUser()
         user.calculate_plot_metrics(1)
+
 
     def test_multi_category_recall(self,user=None):
         if not user:
