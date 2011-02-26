@@ -564,11 +564,11 @@ def get_categories(event_ids=None, categories='E'):
     category_manager = CategoryManager()
     eid_categories = None
     if categories == 'E':
-        eid_categories = category_manager.for_events(event_ids, ('A','C'))
+        eid_categories = category_manager.for_events(event_ids, 'AC')
     elif categories == 'A':
-        eid_categories = category_manager.for_events(event_ids, ('A'))
+        eid_categories = category_manager.for_events(event_ids, 'A')
     elif categories == 'C':
-        eid_categories = category_manager.for_events(event_ids, ('C'))
+        eid_categories = category_manager.for_events(event_ids, 'C')
     else:
         print "Invalid input to function ml.get_categories."
 

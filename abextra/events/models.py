@@ -1,4 +1,5 @@
 import os
+import datetime
 from collections import defaultdict
 
 from django.db import models, connection
@@ -7,16 +8,16 @@ from django.contrib.auth.models import User
 from places.models import Place
 
 class CategoryManager(models.Manager):
-    def for_events(self, event_ids, category_types=('C', 'A')):
+    def for_events(self, event_ids, category_types='CA'):
         if not event_ids: return None
-        category_types = map(str.lower, category_types)
         select_by_type = {
             'a': 'SELECT event_id, category_id FROM events_event_categories WHERE event_id IN %(event_ids)s',
             'c': 'SELECT id, concrete_category_id FROM events_event WHERE id IN %(event_ids)s'
         }
-        selects = map(select_by_type.get, category_types)
+        selects = map(select_by_type.get, category_types.lower())
         cursor = connection.cursor()
-        cursor.execute(' UNION '.join(selects), {'event_ids': event_ids})
+        single_item_hack = event_ids if len(event_ids) > 1 else event_ids * 2
+        cursor.execute(' UNION '.join(selects), {'event_ids': single_item_hack})
         category_ids_by_event_id = defaultdict(lambda: [])
         for event_id, category_id in cursor.fetchall():
             category_ids_by_event_id[event_id].append(category_id)
@@ -49,6 +50,16 @@ class Category(models.Model):
     def __unicode__(self):
         return self.title
 
+class EventManager(models.Manager):
+    def with_user_actions(self, user, actions='GVI'):
+        return self.get_query_set() \
+            .filter(actions__user=user, actions__action__in=actions)
+
+class EventFutureManager(EventManager):
+    def get_query_set(self):
+        return super(EventFutureManager, self).get_query_set().distinct() \
+            .filter(occurrences__start_date__gte=datetime.date.today())
+
 class Event(models.Model):
     """Event model"""
     xid = models.CharField(_('external id'), max_length=200, blank=True)
@@ -63,6 +74,9 @@ class Event(models.Model):
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     concrete_category = models.ForeignKey(Category, related_name='events_concrete')
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
+
+    objects = EventManager()
+    future = EventFutureManager()
 
     class Meta:
         verbose_name_plural = _('events')
