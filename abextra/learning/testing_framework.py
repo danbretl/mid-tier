@@ -13,6 +13,7 @@ from events.models import Category
 from itertools import izip
 import math
 import random
+import settings
 
 class EventureUser:
     """
@@ -86,7 +87,7 @@ class EventureUser:
         return Category.objects.all().order_by('?')[:x]
 
     #TODO: Make this generic so user behavior can be easily defined by an ML tester.
-    def update_behavior(self,event_ids,category_ids):
+    def update_behavior(self,category_ids, event_ids=None):
         """
         This is just one way of updating user behavior between recommendations.
         """
@@ -127,36 +128,30 @@ class EventureUser:
                 # TODO: what exception is this meant to cover?
             #    pass
 
-    def calculate_recall_value(self, event_ids,event_category_ids):
+    def calculate_recall_value(self, event_category_ids, event_ids=None):
         """
         Return the recall between the recommended events given and this user's 
         preferred events. The recall is the % of types of events that the user 
         likes that appear in the recommendations
         """
-        if event_ids:
-            recommended_categories = set([a for b in event_category_ids for a in b])
-            #print "recommended_categories: ", recommended_categories
-            #print "user preferred_categories: ", self.preferred_categories
-            correct_recommendations = recommended_categories.intersection(self.preferred_categories)
-            return (len(correct_recommendations) * 100.0 /
-                        len(self.preferred_categories),correct_recommendations)
-        else:
-            return 0.0
+        recommended_categories = set([a for b in event_category_ids for a in b])
+        #print "recommended_categories: ", recommended_categories
+        #print "user preferred_categories: ", self.preferred_categories
+        correct_recommendations = recommended_categories.intersection(self.preferred_categories)
+        return (len(correct_recommendations) * 100.0 /
+                    len(self.preferred_categories),correct_recommendations)
 
-    def calculate_precision_value(self, event_ids, 
-                                        event_category_ids):
+
+    def calculate_precision_value(self, event_category_ids, event_ids=None):
         """
         Return the precision between the recommended events given and the
         user's preferred categories. The precision is the % of recommendations
         that the user likes."""
-        if event_ids:
-            recommended_categories = event_category_ids
-            result = [len(set(c).intersection(self.preferred_categories))>0 
-                        for c in recommended_categories]
-            #print "precision result: ", result
-            return (sum(result) * 100.0 / len(result),result)
-        else:
-            return 0.0
+        result = [len(set(c).intersection(self.preferred_categories))>0 
+                    for c in event_category_ids]
+        #print "precision result: ", result
+        return (sum(result) * 100.0 / len(result),result)
+
 
     def rms(self,lst):
         if lst:
@@ -224,17 +219,26 @@ class EventureUser:
         recall_set = []
         for i in range(number_of_recommendations):
             print "In loop: ", i
-            event_ids = ml.recommend_events(self.user)
-            event_category_ids = ml.get_categories(event_ids,'C')
-            event_category_ids = [event_category_ids[e] for e in event_ids]
+            
+            #event_ids = [e.id for e in ml.recommend_events(self.user)]
+            #event_category_id_dict = ml.get_categories(event_ids,'C')
+            #event_category_ids = [event_category_id_dict[e] for e in event_ids]
+            
+            # just get category ids directly
+            
+            cats = ml.recommend_categories(self.user)
+            event_category_ids = ml.sample_distribution(cats.items(), 
+                                                        settings.N)
+            print event_category_ids
+            
             #print map(lambda l: map(self.get_category_string, l),event_category_ids)
-            p,pres =self.calculate_precision_value(event_ids, event_category_ids)
+            p,pres =self.calculate_precision_value(event_category_ids)
             precision.append(p)
             precision_set.append(pres)
-            r,rres = self.calculate_recall_value(event_ids, event_category_ids)
+            r,rres = self.calculate_recall_value(event_category_ids)
             recall.append(r)
             recall_set.append(rres)
-            self.update_behavior(event_ids,event_category_ids)
+            self.update_behavior(event_category_ids)
             #print "Events: ", events
             #print "precision: ", precision
             #print "recall: ", recall
