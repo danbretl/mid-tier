@@ -1,4 +1,25 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+
+from events.models import Category
+
+class Source(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    domain = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.name
+
+class ExternalCategory(models.Model):
+    name = models.CharField(max_length=100)
+    xid = models.CharField(max_length=300)
+    source = models.ForeignKey(Source, related_name='external_categories')
+    category = models.ForeignKey(Category, related_name='external_categories', blank=True, null=True)
+
+    class Meta:
+        unique_together = (('name', 'source'),)
+        verbose_name_plural = _('external categories')
+
 
 class Events(models.Model):
     id = models.IntegerField(primary_key=True)

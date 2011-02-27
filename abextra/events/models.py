@@ -23,6 +23,16 @@ class CategoryManager(models.Manager):
             category_ids_by_event_id[event_id].append(category_id)
         return category_ids_by_event_id
 
+class CategoryConcreteManager(models.Manager):
+    def get_query_set(self):
+           return super(CategoryConcreteManager, self).get_query_set() \
+               .filter(category_type__exact='C')
+
+class CategoryAbstractManager(models.Manager):
+    def get_query_set(self):
+           return super(CategoryConcreteManager, self).get_query_set() \
+               .filter(category_type__exact='A')
+
 class Category(models.Model):
     """Category model"""
     TYPE_CHOICES = ( ('C', 'Concrete'), ('A', 'Abstract'), ('O', 'Other') )
@@ -39,6 +49,8 @@ class Category(models.Model):
     color = models.CharField(max_length=7, blank=True)
 
     objects = CategoryManager()
+    concrete = CategoryConcreteManager()
+    abstract = CategoryAbstractManager()
 
     @property
     def icon_path(self):
