@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from events.models import Category
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
-from learning import ml, settings, CategoryTree, testing_framework
+from learning import ml, settings, CategoryTree, testing_framework, testing_simulation
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
@@ -66,7 +66,27 @@ class MLModuleTest(TestCase):
             self.assertEqual(topkFunction(self.unitArray), 1.0)
             self.assertEqual(topkFunction(self.emptyArray), 0.0)
             self.assertEqual(topkFunction(self.rangeArray), settings.mean(self.rangeArray[-k:]))
+
+
+class algorithm_profile(TestCase):
+    """
+    Profiling for ML algorithms. 
+    """
+    fixtures = ['auth', 'categories', 'default_behavior','places', 'events']
+    #fixtures = ['categories', 'default_behavior','places', 'events']
+    def setUp(self):
+        self.user = User.objects.get(id=1)
+
+    def test_printing_precision_recall(self):
+        #c = testing_framework.EventureUser(self.user,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
+        #c.iterated_preferred_categories_plot(100,1)
+        #self.assertTrue(True)
+        person = testing_simulation.DiscretePerson()
+        for i in range(100):
+            person.push_recommendation()
             
+
+
 
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""
@@ -74,14 +94,7 @@ class AlgorithmTest(TestCase):
     def setUp(self):
         self.count = count()
         self.user = User.objects.get(username='tester_api')
-        MockInitializer().run()
-
-
-    def test_printing_precision_recall(self):
-        u = User.objects.get(id=1)
-        c = testing_framework.EventureUser(u,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
-        c.iterated_preferred_categories_plot(100,1)
-        self.assertTrue(True)
+        #MockInitializer().run()
 
 
     def test_probabilistic_walk(self):

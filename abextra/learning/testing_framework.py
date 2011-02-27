@@ -11,6 +11,7 @@ from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 from events.models import Category
 from itertools import izip
+import  sys
 import math
 import random
 import settings
