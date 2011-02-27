@@ -1,14 +1,15 @@
 from events.models import Category
-from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 import settings
-
 from events.utils import CachedCategoryTree
+import user_behavior
 
 class CategoryTree:
     #ToDo:
-    # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it. 
-    def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, score=None, dictionary=None):
+    # Efficiency Consideration: The recursive init is inefficient and can be 
+    # made iterative by requesting the entire table and looping over it. 
+    def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, 
+                 score=None, dictionary=None, db=user_behavior.DJANGO_DB):
         """
         A Tree for a user is represented recursively as a collection of trees, 
         Each gtree is for a specific user.
@@ -23,9 +24,9 @@ class CategoryTree:
             ctree = CachedCategoryTree()
 
         if not eaa:
-            eaa = EventActionAggregate.objects.filter(user=userID)
-            eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
-            
+            # get from DB (whether Django or dictionary)
+            eaa = db.gvix_dict(userID)
+        
         if category:
             self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in ctree.children(category)]
             self.category = category
@@ -35,18 +36,12 @@ class CategoryTree:
             self.category = ctree.concrete_node
             self.title = "ROOT"
 
-        if dictionary: 
-            self.dictionary = dictionary
-        else:
-            self.dictionary = {}
+        self.dictionary = dictionary if dictionary else {}
 
-        try:
+        if self.category.id in eaa:
             self.score = eaa[self.category.id]
-        except:
-            if self.category:
-                self.score = settings.default_eaa[self.category.id]
-            else:
-                self.score = ((0, 0, 0, 0))  # * settings.scoringFunction((0,0,0,0)) #This is the root node
+        else:
+            self.score = (0, 0, 0, 0)
 
 
     def category_objects(self,category_objects, category):
@@ -128,12 +123,7 @@ class CategoryTree:
         """
         Return value for key if found, else, return None.
         """
-        value = None
-        try:
-            value = self.dictionary[key]
-        except:
-            None
-        return value
+        return self.dictionary.get(key)
 
     def print_dictionary_key_values(self):
         """

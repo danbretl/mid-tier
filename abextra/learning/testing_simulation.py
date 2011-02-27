@@ -9,13 +9,42 @@ Author: Vikas Menon
 Date Created: 2/26/2011
 """
 
+import sys
 from collections import defaultdict
 
-import ml
-from events.utils import CachedCategoryTree
+from matplotlib import pyplot as plt
+from django.contrib.auth.models import User
 
-# behavior enum
-[GO, VIEW, IGNORE, XOUT] = range(4)
+import ml
+import settings
+from simulation_shared import *
+import user_behavior
+from events.utils import CachedCategoryTree
+from events.models import Category
+
+
+### FUNCTIONS ###
+
+def get_category_id(string):
+    """given the title of a category, return its id"""
+    c = Category.objects.get(title=string)
+    return c.id
+
+
+def get_category_string(id):
+    c = Category.objects.get(id=id)
+    return c.title
+
+
+def finish_plot(outfile):
+    """
+    given an output file, write and clear the figure- if None
+    is given, don't save
+    """
+    if outfile:
+        plt.savefig(outfile)
+        plt.cla()
+
 
 class SimulatedPreference:
     """
@@ -96,10 +125,32 @@ class PreferenceTransitionMatrix:
             self.__recurse_ct(ct, child, d)
 
 
-class Person():
-    def __init__(self, user=None):
-        self.last_actions = None
-        self.last_recommendation = None
+class Round:
+    """represents the results of a round of recommendations"""
+    def __init__(self, recommendations, actions):
+        """given a matching list of recommendations and of actions"""
+        self.recommendations = recommendations
+        self.actions = actions
+        self.N = len(recommendations)
+        
+        # save G, V, I, and X
+        (self.G, self.V, self.I, self.X) = self.gvix()
+    
+    def gvix(self):
+        """return the tuple of G, V, I, and X quantities in this round"""
+        return [self.actions.count(a) for a in ACTIONS]
+
+
+class Person:
+    """
+    this is the class inherited by all Persons- it cannot be used itself
+    """
+    def __init__(self, user=None, db=user_behavior.DJANGO_DB):
+        """optionally given a user, otherwise creates one. Optionally given
+        a DB, otherwise uses default Django DB"""
+        self.rounds = []
+        self.db = db
+        
         if user:
             self.user = user
             self.delete_user = False
@@ -120,61 +171,61 @@ class Person():
                     success = True
                 except:
                     success = False
-                    
-        for c in Category.objects.all():
-            try:
-                #See if event action aggregate exists.If it does, reset it to default.
-                eaa = EventActionAggregate.objects.get(user=self.user,category=c)
-            except:
-                #Else create one.
-                eaa = EventActionAggregate(user=self.user, category=c)
+        
+        # initialize user
+        self.db.initialize_user(self.user, self.delete_user)
+    
+    def run_rounds(self, num_rounds=1, num_recommendations=settings.N):
+        """run some number of rounds"""
+        for i in range(num_rounds):
+            print "Round: ", i, "\r",
+            sys.stdout.flush()
             
-            eaa.g, eaa.v, eaa.i, eaa.x = 0, 0, 0, 0
-            eaa.save()
-        
-
-    def __del__(self):
-        if self.delete_user:
-            self.user.delete()
-        self.reset_user_behavior()
-
-
-    def push_recommendations(self):
+            self.run_round(num_recommendations)
+    
+    def run_round(self, num_recommendations=settings.N):
+        """
+        run a single round with the given number of recommendations, adding 
+        both to the behavior database and to the self.rounds parameter
+        """
+        cats = ml.recommend_categories(self.user, db=self.db).items()
         categories = [c.id for c in
-                      ml.sample_distribution(ml.recommend_categories(self.user),settings.N)]
-        self.last_recommendations = categories[:]
-        self.last_actions = map(self.get_action,
-                                self.last_recommendations)
+                      ml.sample_distribution(cats, settings.N)]
+        actions = map(self.get_action, categories)
         
-        self.update_user_category_behavior(
-            (self.last_actions.count(a)
-             for a in [GO, VIEW, IGNORE, XOUT]))
-        return(self.last_actions)
+        r = Round(categories, actions)
+        
+        # add behavior and to rounds
+        self.db.update_from_round(self.user, r)
+        self.rounds.append(r)
+    
+    def plot_gvix(self, outfile=None):
+        """plot the G, V, I and X over rounds"""
+        num_actions = zip(*[r.gvix() for r in self.rounds])
+        for n, a in zip(ACTION_NAMES, num_actions):
+            print a, n
+            plt.plot(a, label=n)
+        plt.legend()
+        finish_plot(outfile)
+    
+    def __del__(self):
+        """clear info"""
+        self.db.clear()
 
-    def update_user_category_behavior(self,category_id,(g,v,i,x)=(0,0,0,0)):
-        """change the user's aggregate action by given (g,v,i,x) tuple"""
-        eaa = EventActionAggregate.objects.get(user=self.user, 
-                                               category__id=category_id)
-        eaa.g += g
-        eaa.v += v
-        eaa.i += i
-        eaa.x += x
-        eaa.save()
-    
-    
+
 class DeterministicPerson(Person):
     """
     A Person that likes a specific subset of categories and always goes to them,
     and dislikes (always X's) everything else. This allows it to have
     precision and recall
     """
-    def __init__(self, liked_category_ids):
+    def __init__(self, liked_category_ids, user=None, db=user_behavior.DJANGO_DB):
         """
         initialized with a list of category ID's the user likes (he will
         dislike all others)
         """
-        Person.__init__(self)
-        self.liked_category_ids = liked_category_ids
+        Person.__init__(self, user, db)
+        self.liked_category_ids = set(liked_category_ids)
     
     def get_action(self, category_id, event_id=None):
         """return G if the user likes it and X if he doesn't"""
@@ -183,13 +234,21 @@ class DeterministicPerson(Person):
         else:
             return XOUT
     
-    def get_precision_recall(self):
-        """get the last precision and recall"""
-        precision = (float(self.last_actions.count(GO)) /
-                     len(self.last_actions))
+    def get_precision_recall(self, r):
+        """get precision and recall of given round"""
+        precision = float(r.G) / r.N
+        recall = (float(len(self.liked_category_ids.intersection(
+                    set(r.recommendations)))) / len(self.liked_category_ids))
+        
+        return (precision, recall)
 
-        recall = (len(set(self.liked_category_ids).intersection(
-            set(self.last_recommendations))) / len(self.liked_category_ids))
+    def plot_precision_recall(self, outfile):
+        """plot precision recall over history"""
+        precision, recall = zip(*map(self.get_precision_recall, self.rounds))
+        plt.plot(precision, label="Precision")
+        plt.plot(recall, label="Recall")
+        plt.legend()
+        finish_plot(outfile)
 
 
 class DiscretePreferencePerson(Person):
@@ -197,13 +256,22 @@ class DiscretePreferencePerson(Person):
     A user whose interests fall into discrete Preference objects, one for each
     user
     """
-    def __init__(self, preference_map):
+    def __init__(self, preference_map, user=None, db=None):
         """given a dictionary of categories to Preference objects"""
+        Person.__init__(self, user)
         self.preference_map = preference_map
 
     def get_action(self, category):
         """given a category, return an action (G, V, I, or X)"""
         return self.preference_map[category].sample_action()
+    
+    def get_preference_distribution(self, r):
+        """given a round, return the distribution of preferences"""
+        preferences = [self.preference_map[c]
+                        for c in r.recommendations]
+        return dict([(p.name, preferences.count(p)) 
+                        for p in set(preferences)])
+
 
 class TransitionSimulatedPerson(DiscretePreferencePerson):
     """
@@ -211,9 +279,9 @@ class TransitionSimulatedPerson(DiscretePreferencePerson):
     categories. This one has preferences for each that are generated
     from a transition matrix
     """
-    def __init__(self):
+    def __init__(self, user=None, db=None):
         """initialize this user's behavior as a category->preference mapping"""
         transition_matrix = PreferenceTransitionMatrix()
         ct = CachedCategoryTree()
         pref_map = transition_matrix.get_preference_dictionary(ct)
-        DiscretePreferencePerson.__init__(self, pref_map)
+        DiscretePreferencePerson.__init__(self, pref_map, user)

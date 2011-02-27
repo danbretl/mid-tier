@@ -76,17 +76,22 @@ class algorithm_profile(TestCase):
     #fixtures = ['categories', 'default_behavior','places', 'events']
     def setUp(self):
         self.user = User.objects.get(id=1)
-
+    
+    def basic_test(self):
+        """some really basic tests"""
+        person = testing_simulation.DiscretePerson(map(get_category_id, ['Bars', 'Clubs']))
+        print "running rounds"
+        person.run_rounds(100)
+    
     def test_printing_precision_recall(self):
+        pass
         #c = testing_framework.EventureUser(self.user,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
         #c.iterated_preferred_categories_plot(100,1)
         #self.assertTrue(True)
-        person = testing_simulation.DiscretePerson()
-        for i in range(100):
-            person.push_recommendation()
+        #person = testing_simulation.DiscretePerson()
+        #for i in range(100):
+        #    person.push_recommendation()
             
-
-
 
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""

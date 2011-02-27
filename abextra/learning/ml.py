@@ -20,15 +20,20 @@
        potentially multiple abstract categories.
 """
 
+from collections import defaultdict
+import operator
+import math
+
 import numpy
+
 import random
 import settings
 from events.models import Event, Category, CategoryManager
 from CategoryTree import CategoryTree
 from behavior.models import EventActionAggregate
-from collections import defaultdict
-import operator
-import math
+import user_behavior
+
+DJANGO_DB = user_behavior.UserBehaviorDjangoDB()
 
 def recommend_events(user, events=None, categories=None, number=settings.N):
     """
@@ -59,7 +64,9 @@ def recommend_events(user, events=None, categories=None, number=settings.N):
     return filter_events(user, events, categories_dict, number)
 
 
-def recommend_categories(user, number=settings.N, category=None):
+# NOTE: What is the purpose of this wrapper function?
+
+def recommend_categories(user, number=settings.N, category=None, db=DJANGO_DB):
     """
     Input:
         a) User:Required
@@ -70,10 +77,10 @@ def recommend_categories(user, number=settings.N, category=None):
     Output:
         a) List of recommended Categories (may be repeated)
     """
-    return random_tree_walk_algorithm(user, number, category)
+    return random_tree_walk_algorithm(user, number, category, db)
 
 
-def random_tree_walk_algorithm(user, number=settings.N, category=None):
+def random_tree_walk_algorithm(user, number=settings.N, category=None, db=DJANGO_DB):
     """
     Input:
         a) User: Required. 
@@ -82,7 +89,7 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None):
     """
 
     # Generate CategoryTree for user
-    user_tree = CategoryTree(user, category)
+    user_tree = CategoryTree(user, category, db=db)
 
     # Calculate scores for each Category in CategoryTree. 
     # Score is calculated from GVIX.

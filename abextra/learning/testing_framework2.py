@@ -11,7 +11,6 @@ from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 from events.models import Category
 from itertools import izip
-import  sys
 import math
 import random
 import settings
@@ -66,6 +65,11 @@ class EventureUser:
         else:
             self.preferred_categories = set([c.id for c in 
                                              self.get_random_categories(num_categories)])
+    
+    def __del__(self):
+        if self.delete_user:
+            self.user.delete()
+        self.reset_user_behavior()
 
     def get_category_id(self,string):
         c = Category.objects.get(title=string)
@@ -179,7 +183,7 @@ class EventureUser:
         plt.ylabel("% of User preferred categories")
         #color = "cmykrgb"
 
-        for j in range(2,4,2):
+        for j in range(2,10,2):
             random.shuffle(preferred_categories)
             precision_recall = []
             self.preferred_categories = set(preferred_categories[:j])
@@ -215,8 +219,7 @@ class EventureUser:
         recall = []
         recall_set = []
         for i in range(number_of_recommendations):
-            print "In loop: ", i, "\r",
-            sys.stdout.flush()
+            print "In loop: ", i
             
             #event_ids = [e.id for e in ml.recommend_events(self.user)]
             #event_category_id_dict = ml.get_categories(event_ids,'C')
@@ -225,19 +228,18 @@ class EventureUser:
             # just get category ids directly
             
             cats = ml.recommend_categories(self.user)
-            event_categories = ml.sample_distribution(cats.items(), 
-                                                    settings.N)
-
-            event_categories= [[a.id] for a in event_categories]
-            #print map(lambda l: map(self.get_category_string, l),event_category_ids)
+            event_category_ids = ml.sample_distribution(cats.items(), 
+                                                        settings.N)
+            print event_category_ids
             
-            p,pres =self.calculate_precision_value(event_categories)
+            #print map(lambda l: map(self.get_category_string, l),event_category_ids)
+            p,pres =self.calculate_precision_value(event_category_ids)
             precision.append(p)
             precision_set.append(pres)
-            r,rres = self.calculate_recall_value(event_categories)
+            r,rres = self.calculate_recall_value(event_category_ids)
             recall.append(r)
             recall_set.append(rres)
-            self.update_behavior(event_categories)
+            self.update_behavior(event_category_ids)
             #print "Events: ", events
             #print "precision: ", precision
             #print "recall: ", recall
