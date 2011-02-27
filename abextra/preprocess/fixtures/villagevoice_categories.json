@@ -1,0 +1,1722 @@
+[
+    {
+        "pk": 1, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471321", 
+            "name": "Activism"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133854", 
+            "name": "Adult"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133855", 
+            "name": "Announcements"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133856", 
+            "name": "Art - Announcements"
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "538260", 
+            "name": "Art - Galleries"
+        }
+    }, 
+    {
+        "pk": 6, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133857", 
+            "name": "Art - Museums"
+        }
+    }, 
+    {
+        "pk": 7, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133858", 
+            "name": "Art - Ongoings"
+        }
+    }, 
+    {
+        "pk": 8, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133862", 
+            "name": "Art - Openings & Events"
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "155018", 
+            "name": "Arts"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133863", 
+            "name": "Auditions"
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133864", 
+            "name": "Auto"
+        }
+    }, 
+    {
+        "pk": 12, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133865", 
+            "name": "Barhopping"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133870", 
+            "name": "Benefits"
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133867", 
+            "name": "Black History Month"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296690", 
+            "name": "Broadway: Now Playing"
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296689", 
+            "name": "Broadway: Opening"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471311", 
+            "name": "Burlesque"
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133868", 
+            "name": "Cabaret"
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138302", 
+            "name": "Call for Entries"
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482837", 
+            "name": "Celebrity Appearances"
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133869", 
+            "name": "Chanukah"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133871", 
+            "name": "Cheap Thrills"
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133872", 
+            "name": "Children's Events"
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133873", 
+            "name": "Children's Theater"
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133875", 
+            "name": "Christmas"
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133876", 
+            "name": "Cinco de Mayo"
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482838", 
+            "name": "Circus"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133877", 
+            "name": "Civic Events"
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133878", 
+            "name": "Classes & Seminars"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133879", 
+            "name": "Club Events"
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133890", 
+            "name": "Clubs (Community)"
+        }
+    }, 
+    {
+        "pk": 32, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "258631", 
+            "name": "Comedy"
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133881", 
+            "name": "Community Events"
+        }
+    }, 
+    {
+        "pk": 34, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133883", 
+            "name": "Competitions"
+        }
+    }, 
+    {
+        "pk": 35, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133884", 
+            "name": "Conferences"
+        }
+    }, 
+    {
+        "pk": 36, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133885", 
+            "name": "Contests"
+        }
+    }, 
+    {
+        "pk": 37, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133886", 
+            "name": "Conventions"
+        }
+    }, 
+    {
+        "pk": 38, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133887", 
+            "name": "Craft Events"
+        }
+    }, 
+    {
+        "pk": 39, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133992", 
+            "name": "Cultural Events"
+        }
+    }, 
+    {
+        "pk": 40, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138303", 
+            "name": "Cycling"
+        }
+    }, 
+    {
+        "pk": 41, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "229372", 
+            "name": "Dance"
+        }
+    }, 
+    {
+        "pk": 42, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133888", 
+            "name": "Daytripper"
+        }
+    }, 
+    {
+        "pk": 43, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133889", 
+            "name": "Defensive Driving"
+        }
+    }, 
+    {
+        "pk": 44, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133891", 
+            "name": "Dia de los Muertos"
+        }
+    }, 
+    {
+        "pk": 45, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133892", 
+            "name": "Disabled Programs & Services"
+        }
+    }, 
+    {
+        "pk": 46, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138304", 
+            "name": "DIY"
+        }
+    }, 
+    {
+        "pk": 47, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482840", 
+            "name": "Drag"
+        }
+    }, 
+    {
+        "pk": 48, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133893", 
+            "name": "Education"
+        }
+    }, 
+    {
+        "pk": 49, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133894", 
+            "name": "Environmental"
+        }
+    }, 
+    {
+        "pk": 50, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133896", 
+            "name": "Expos"
+        }
+    }, 
+    {
+        "pk": 51, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133897", 
+            "name": "Family Events"
+        }
+    }, 
+    {
+        "pk": 52, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133898", 
+            "name": "Farmers' Markets"
+        }
+    }, 
+    {
+        "pk": 53, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471316", 
+            "name": "Fashion & Style"
+        }
+    }, 
+    {
+        "pk": 54, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133899", 
+            "name": "Father's Day"
+        }
+    }, 
+    {
+        "pk": 55, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471317", 
+            "name": "Festivals"
+        }
+    }, 
+    {
+        "pk": 56, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133900", 
+            "name": "Film"
+        }
+    }, 
+    {
+        "pk": 57, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133901", 
+            "name": "Film - Art House"
+        }
+    }, 
+    {
+        "pk": 58, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133902", 
+            "name": "Film - Events"
+        }
+    }, 
+    {
+        "pk": 59, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138305", 
+            "name": "Film - Festivals"
+        }
+    }, 
+    {
+        "pk": 60, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133903", 
+            "name": "Film - IMAX"
+        }
+    }, 
+    {
+        "pk": 61, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471318", 
+            "name": "Film - Picks"
+        }
+    }, 
+    {
+        "pk": 62, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "155017", 
+            "name": "Film - Repertory & Special Screenings"
+        }
+    }, 
+    {
+        "pk": 63, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133866", 
+            "name": "Flea Markets"
+        }
+    }, 
+    {
+        "pk": 64, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133904", 
+            "name": "Float Trips"
+        }
+    }, 
+    {
+        "pk": 65, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "155019", 
+            "name": "Food & Drink"
+        }
+    }, 
+    {
+        "pk": 66, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133905", 
+            "name": "Forums"
+        }
+    }, 
+    {
+        "pk": 67, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133906", 
+            "name": "Fourth of July"
+        }
+    }, 
+    {
+        "pk": 68, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1094971", 
+            "name": "Free Events"
+        }
+    }, 
+    {
+        "pk": 69, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133907", 
+            "name": "Games"
+        }
+    }, 
+    {
+        "pk": 70, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133908", 
+            "name": "Golf Courses"
+        }
+    }, 
+    {
+        "pk": 71, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133909", 
+            "name": "Grants"
+        }
+    }, 
+    {
+        "pk": 72, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133910", 
+            "name": "Green Events"
+        }
+    }, 
+    {
+        "pk": 73, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133911", 
+            "name": "Groups - Professional"
+        }
+    }, 
+    {
+        "pk": 74, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133912", 
+            "name": "Groups - Social"
+        }
+    }, 
+    {
+        "pk": 75, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133913", 
+            "name": "Halloween"
+        }
+    }, 
+    {
+        "pk": 76, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133914", 
+            "name": "Happy Hours"
+        }
+    }, 
+    {
+        "pk": 77, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1338358", 
+            "name": "Haunted Houses"
+        }
+    }, 
+    {
+        "pk": 78, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133915", 
+            "name": "Health & Fitness"
+        }
+    }, 
+    {
+        "pk": 79, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133916", 
+            "name": "High Country"
+        }
+    }, 
+    {
+        "pk": 80, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133917", 
+            "name": "Hiking"
+        }
+    }, 
+    {
+        "pk": 81, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482841", 
+            "name": "Hispanic Heritage Month"
+        }
+    }, 
+    {
+        "pk": 82, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133918", 
+            "name": "History"
+        }
+    }, 
+    {
+        "pk": 83, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138306", 
+            "name": "Holiday"
+        }
+    }, 
+    {
+        "pk": 84, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133919", 
+            "name": "Holiday - Lights"
+        }
+    }, 
+    {
+        "pk": 85, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133920", 
+            "name": "Holiday - Parties"
+        }
+    }, 
+    {
+        "pk": 86, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133921", 
+            "name": "Home & Garden"
+        }
+    }, 
+    {
+        "pk": 87, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133922", 
+            "name": "Ice Skating Rinks"
+        }
+    }, 
+    {
+        "pk": 88, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138307", 
+            "name": "Juneteenth"
+        }
+    }, 
+    {
+        "pk": 89, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133923", 
+            "name": "Kwanzaa"
+        }
+    }, 
+    {
+        "pk": 90, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133924", 
+            "name": "Labor Day"
+        }
+    }, 
+    {
+        "pk": 91, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133925", 
+            "name": "Landmarks"
+        }
+    }, 
+    {
+        "pk": 92, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133926", 
+            "name": "Lectures"
+        }
+    }, 
+    {
+        "pk": 93, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471319", 
+            "name": "LGBT Events"
+        }
+    }, 
+    {
+        "pk": 94, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133927", 
+            "name": "Libations"
+        }
+    }, 
+    {
+        "pk": 95, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133928", 
+            "name": "Library"
+        }
+    }, 
+    {
+        "pk": 96, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133929", 
+            "name": "Literary Events"
+        }
+    }, 
+    {
+        "pk": 97, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133972", 
+            "name": "Luncheons"
+        }
+    }, 
+    {
+        "pk": 98, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133977", 
+            "name": "Mardi Gras"
+        }
+    }, 
+    {
+        "pk": 99, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133978", 
+            "name": "Martin Luther King, Jr. Day"
+        }
+    }, 
+    {
+        "pk": 100, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133979", 
+            "name": "Mazes and Pumpkin Patches"
+        }
+    }, 
+    {
+        "pk": 101, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133982", 
+            "name": "Meet & Greets"
+        }
+    }, 
+    {
+        "pk": 102, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133983", 
+            "name": "Memorial Day"
+        }
+    }, 
+    {
+        "pk": 103, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133984", 
+            "name": "Mind & Body"
+        }
+    }, 
+    {
+        "pk": 104, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133985", 
+            "name": "Mother's Day"
+        }
+    }, 
+    {
+        "pk": 105, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133991", 
+            "name": "Motorcycles"
+        }
+    }, 
+    {
+        "pk": 106, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133997", 
+            "name": "Multimedia"
+        }
+    }, 
+    {
+        "pk": 107, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "309987", 
+            "name": "Museum Exhibits & Events"
+        }
+    }, 
+    {
+        "pk": 108, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "310677", 
+            "name": "Music"
+        }
+    }, 
+    {
+        "pk": 109, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133998", 
+            "name": "Nature"
+        }
+    }, 
+    {
+        "pk": 110, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482842", 
+            "name": "Networking"
+        }
+    }, 
+    {
+        "pk": 111, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1133999", 
+            "name": "New Age"
+        }
+    }, 
+    {
+        "pk": 112, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134012", 
+            "name": "New Year's Day"
+        }
+    }, 
+    {
+        "pk": 113, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134013", 
+            "name": "New Year's Eve"
+        }
+    }, 
+    {
+        "pk": 114, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134018", 
+            "name": "Nightlife"
+        }
+    }, 
+    {
+        "pk": 115, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134024", 
+            "name": "Off The Wall"
+        }
+    }, 
+    {
+        "pk": 116, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296692", 
+            "name": "Off-Broadway: Now Playing"
+        }
+    }, 
+    {
+        "pk": 117, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296691", 
+            "name": "Off-Broadway: Opening"
+        }
+    }, 
+    {
+        "pk": 118, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296694", 
+            "name": "Off-Off-Broadway: Now Playing"
+        }
+    }, 
+    {
+        "pk": 119, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "296693", 
+            "name": "Off-Off-Broadway: Opening"
+        }
+    }, 
+    {
+        "pk": 120, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482843", 
+            "name": "Open Mic"
+        }
+    }, 
+    {
+        "pk": 121, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471313", 
+            "name": "Opera"
+        }
+    }, 
+    {
+        "pk": 122, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134025", 
+            "name": "Out of Town"
+        }
+    }, 
+    {
+        "pk": 123, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1094972", 
+            "name": "Outdoors"
+        }
+    }, 
+    {
+        "pk": 124, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134027", 
+            "name": "Parades"
+        }
+    }, 
+    {
+        "pk": 125, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134036", 
+            "name": "Parks & Preserves"
+        }
+    }, 
+    {
+        "pk": 126, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134038", 
+            "name": "Parties & Receptions"
+        }
+    }, 
+    {
+        "pk": 127, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482844", 
+            "name": "Performance Art"
+        }
+    }, 
+    {
+        "pk": 128, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1145585", 
+            "name": "Performing Arts"
+        }
+    }, 
+    {
+        "pk": 129, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134039", 
+            "name": "Pets"
+        }
+    }, 
+    {
+        "pk": 130, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "309994", 
+            "name": "Photography"
+        }
+    }, 
+    {
+        "pk": 131, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134044", 
+            "name": "Planetariums"
+        }
+    }, 
+    {
+        "pk": 132, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134045", 
+            "name": "Poetry"
+        }
+    }, 
+    {
+        "pk": 133, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134046", 
+            "name": "Poker Nights"
+        }
+    }, 
+    {
+        "pk": 134, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134051", 
+            "name": "Politics"
+        }
+    }, 
+    {
+        "pk": 135, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134052", 
+            "name": "Pop Culture"
+        }
+    }, 
+    {
+        "pk": 136, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134057", 
+            "name": "Promotional Events"
+        }
+    }, 
+    {
+        "pk": 137, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134058", 
+            "name": "Public Interest"
+        }
+    }, 
+    {
+        "pk": 138, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134059", 
+            "name": "Public Service"
+        }
+    }, 
+    {
+        "pk": 139, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471323", 
+            "name": "Recreation"
+        }
+    }, 
+    {
+        "pk": 140, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134060", 
+            "name": "Religion & Spirituality"
+        }
+    }, 
+    {
+        "pk": 141, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1138308", 
+            "name": "Santa Sightings"
+        }
+    }, 
+    {
+        "pk": 142, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134064", 
+            "name": "Seasonal Events"
+        }
+    }, 
+    {
+        "pk": 143, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134066", 
+            "name": "See & Be Seen"
+        }
+    }, 
+    {
+        "pk": 144, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471322", 
+            "name": "Sex & Fetish Events"
+        }
+    }, 
+    {
+        "pk": 145, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134067", 
+            "name": "Shopping"
+        }
+    }, 
+    {
+        "pk": 146, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134068", 
+            "name": "Singles Events"
+        }
+    }, 
+    {
+        "pk": 147, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134069", 
+            "name": "Skate Parks"
+        }
+    }, 
+    {
+        "pk": 148, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471320", 
+            "name": "Spoken Word"
+        }
+    }, 
+    {
+        "pk": 149, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134070", 
+            "name": "Sports - Participatory"
+        }
+    }, 
+    {
+        "pk": 150, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134072", 
+            "name": "Sports - Spectator"
+        }
+    }, 
+    {
+        "pk": 151, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134073", 
+            "name": "St. Patrick's Day"
+        }
+    }, 
+    {
+        "pk": 152, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134078", 
+            "name": "Summer Camps"
+        }
+    }, 
+    {
+        "pk": 153, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134079", 
+            "name": "Summer Guide"
+        }
+    }, 
+    {
+        "pk": 154, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134081", 
+            "name": "Support Groups & Hotlines"
+        }
+    }, 
+    {
+        "pk": 155, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134270", 
+            "name": "Talks"
+        }
+    }, 
+    {
+        "pk": 156, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1482845", 
+            "name": "Technology Events"
+        }
+    }, 
+    {
+        "pk": 157, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134082", 
+            "name": "Teen Events"
+        }
+    }, 
+    {
+        "pk": 158, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134084", 
+            "name": "Television"
+        }
+    }, 
+    {
+        "pk": 159, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134085", 
+            "name": "Thanksgiving"
+        }
+    }, 
+    {
+        "pk": 160, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "155016", 
+            "name": "Theater"
+        }
+    }, 
+    {
+        "pk": 161, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134086", 
+            "name": "Theater - Dinner"
+        }
+    }, 
+    {
+        "pk": 162, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134087", 
+            "name": "Theater - Large"
+        }
+    }, 
+    {
+        "pk": 163, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134088", 
+            "name": "Theater - Ongoing"
+        }
+    }, 
+    {
+        "pk": 164, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134089", 
+            "name": "Theater - Openings"
+        }
+    }, 
+    {
+        "pk": 165, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134090", 
+            "name": "Theater - Small"
+        }
+    }, 
+    {
+        "pk": 166, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "471325", 
+            "name": "Tours"
+        }
+    }, 
+    {
+        "pk": 167, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134091", 
+            "name": "Valentine's Day"
+        }
+    }, 
+    {
+        "pk": 168, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1992646", 
+            "name": "Visual Art"
+        }
+    }, 
+    {
+        "pk": 169, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134092", 
+            "name": "Volunteer Opportunities"
+        }
+    }, 
+    {
+        "pk": 170, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134093", 
+            "name": "Wineries"
+        }
+    }, 
+    {
+        "pk": 171, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134096", 
+            "name": "Women's Events"
+        }
+    }, 
+    {
+        "pk": 172, 
+        "model": "preprocess.externalcategory", 
+        "fields": {
+            "category": null, 
+            "source": 1, 
+            "xid": "1134097", 
+            "name": "Zoo & Animals"
+        }
+    }
+]
