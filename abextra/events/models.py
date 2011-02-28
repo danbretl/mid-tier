@@ -9,7 +9,8 @@ from places.models import Place
 
 class CategoryManager(models.Manager):
     def for_events(self, event_ids, category_types='CA'):
-        if not event_ids: return None
+        if not event_ids:
+            return {}
         select_by_type = {
             'a': 'SELECT event_id, category_id FROM events_event_categories WHERE event_id IN %(event_ids)s',
             'c': 'SELECT id, concrete_category_id FROM events_event WHERE id IN %(event_ids)s'
