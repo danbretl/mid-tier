@@ -177,10 +177,6 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
     Output:
            default dictionary category_event_map[category] = list of event ids. 
     """
-    #Optimization:
-    if event_query_set.count() <= 20:
-        return [e for e in event_query_set]
-
     #import time
     #start = time.time()
     category_event_map = defaultdict(lambda: [])
@@ -238,6 +234,10 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number]
     #          for category,number in dictionary.iteritems()]
     # Should the number 50 be a setting?
+
+    #Optimization:
+    if event_query_set.count() <= 20:
+        return [e for e in event_query_set]
 
     events = generate_category_mapping(event_query_set,categories_dict)
 
@@ -347,7 +347,7 @@ def fuzzy_sort(events):
     It's purpose is to bubble up preferred elements towards 
     the top of the list.
     """
-    for index in range(len(events)):
+    for index in range(len(events)-1):
         item1 = random.randrange(0, len(events) - 1)
         item2 = random.randrange(0, len(events) - 1)
         if item1 > item2:
