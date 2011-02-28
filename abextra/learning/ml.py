@@ -159,8 +159,6 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     that maintains the mapping between the scores and the category. 
     ToDo: Use a kernel function instead of returning mean.
     """
-    scores_list = []
-
     scores_list = [settings.abstract_scoring_function(dictionary_category_eaa[c]) for c in abstract_category_ids]
 
     if scores_list:
