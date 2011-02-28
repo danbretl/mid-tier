@@ -157,3 +157,6 @@ FIXTURE_DIRS = (
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_DOC_ROOT = MEDIA_ROOT
+
+
+AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'

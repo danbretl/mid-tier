@@ -11,7 +11,7 @@ from learning import ml
 # Events
 
 class EventHandler(BaseHandler):
-    allowed_methods = ('GET', 'POST')
+    allowed_methods = ('GET')
     model = Event
     fields = (
         'id',
@@ -79,7 +79,8 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
         events_qs = Event.future.with_user_actions(request.user)
-        return ml.recommend_events(request.user, events_qs)
+        recommended_events = ml.recommend_events(request.user, events_qs)
+	return recommended_events
 
 class CategoryHandler(BaseHandler):
     allowed_methods = ('GET')

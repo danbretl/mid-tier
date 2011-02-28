@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import pre_save, post_delete
+from django.db.models.signals import pre_save, post_save
 from events.models import Event, Category
 
 class EventAction(models.Model):
@@ -93,6 +93,12 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
 
 # FIXME pre_save is more fragile than post_save, but we need to grab the old action
 pre_save.connect(update_aggregate_on_event_action_save, sender=EventAction)
+
+
+def add_default_behavior(sender, instance, **kwargs):
+    user = User.objects.get(username='default_behavior')
+    EventActionAggregate.objects.get_or_create(user=user, category=instance)
+post_save.connect(add_default_behavior, sender=Category)
 
 # def update_aggregate_on_event_action_delete(sender, instance, **kwargs):
 #     """Decreases aggregates after a deletion of event action."""
