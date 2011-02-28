@@ -235,11 +235,11 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     #          for category,number in dictionary.iteritems()]
     # Should the number 50 be a setting?
 
-    #Optimization:
-    if event_query_set.count() <= 20:
-        return [e for e in event_query_set]
-
     events = generate_category_mapping(event_query_set,categories_dict)
+
+    #Optimization:
+    if len(events) <= number:
+        return [e for e in event_query_set]
 
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
@@ -278,13 +278,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
             events[category] = list( set(events[category]) - set(list(event)))
         else:
             #This category has no more events. If it comes down to it, Don't sample it ever again.
-            try:
-                del categories_dict[category]
-            except:
-                #There are no more events.Period.
-                break
             missing_count += 1
-        #Fixme: Inefficient.
 
         if len(events[category]) == 0 :
             del events[category]
