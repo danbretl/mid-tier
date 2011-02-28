@@ -160,8 +160,6 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     that maintains the mapping between the scores and the category. 
     ToDo: Use a kernel function instead of returning mean.
     """
-    scores_list = []
-
     scores_list = [settings.abstract_scoring_function(dictionary_category_eaa[c]) for c in abstract_category_ids]
 
     if scores_list:
@@ -191,17 +189,13 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
         event_ids = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
                   for category, number in sorted(categories_dict.iteritems(),key=operator.itemgetter(1))[-50:]]
 
-        #This is an optimization. 
-        #Load all category objects into a dictionary. 
-        all_category_objs = Category.objects.filter(category_type='C')
-        all_category_dict = dict([(category.id,category) for category in all_category_objs])
-
         # events = [a[0] for b in events for a in b]
         # The events list input is of the form: 
         #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
         # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
         for category, event in [(category, [eid[0] for eid in elst]) for category, elst in event_ids]:
             category_event_map[category] +=event
+
     else:
         #for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_query_set]:
         #    category_event_map[category].append(event)
@@ -212,6 +206,7 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
         for category_id in categoryid_event_map.keys():
             category = all_category_dict[category_id]
             category_event_map[category] = categoryid_event_map[category_id]
+
     #print "Time taken: ", time.time() - start
     return category_event_map
 
@@ -263,16 +258,17 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     event_abstract_score = defaultdict(lambda :0)
     for category, event_ids in events.iteritems():
         #Mapping between event ids and all abstract categories.
-        event_cat_dict = get_categories(event_ids, 'A')
+        event_cat_dict = get_categories(event_ids, ('A'))
         for event_id, abstract_categories in event_cat_dict.items():
             event_abstract_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
 
+    
     # First sample a category (already sampled and available in categories).
     # This maintains a count of all categories that were sampled from but didn't have enough events and need to be asked for again. 
     missing_count = 0
     for category in categories:
         # Next sample an event based on the abstract score.
-        event = sample_distribution([(event_id, event_abstract_score[category]) for event_id in events[category]])
+        event = sample_distribution([(event_id, event_abstract_score[event_id]) for event_id in events[category]])
         if event:
             selected_events += event
             # This ensures an already selected event does not get selected again.
@@ -518,7 +514,7 @@ def normalize(lst):
     if total_sum != 0:
         return [e / total_sum for e in lst]
     else:
-        return [1/len(lst) for e in lst]
+        return [1.0/len(lst) for e in lst]
 
 
 def decrease(association_coefficient, difference):
