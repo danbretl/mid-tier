@@ -1,7 +1,7 @@
-from events.models import Category
+#from events.models import Category
 from behavior.models import EventActionAggregate
-from django.contrib.auth.models import User
-import settings
+#from django.contrib.auth.models import User
+#import settings
 
 from events.utils import CachedCategoryTree
 
@@ -43,14 +43,14 @@ class CategoryTree:
         try:
             self.score = eaa[self.category.id]
         except:
-            if self.category:
-                self.score = settings.default_eaa[self.category.id]
-            else:
-                self.score = ((0, 0, 0, 0))  # * settings.scoringFunction((0,0,0,0)) #This is the root node
+            #if self.category:
+            #    self.score = settings.default_eaa[self.category.id]
+            #else:
+            self.score = ((0, 0, 0, 0))  # * settings.scoringFunction((0,0,0,0)) #This is the root node
 
 
     def category_objects(self,category_objects, category):
-         return [c for c in category_objects if parent == category.id]
+         return [c for c in category_objects if self.parent == category.id]
     
     def get_parent(self):
         """
@@ -81,7 +81,7 @@ class CategoryTree:
         """
         Remove a key from the dictionary.
         """
-        del dictionary[key]
+        del self.dictionary[key]
 
     def get_all_category_scores_dictionary(self, keys):
         """
