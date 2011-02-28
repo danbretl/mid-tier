@@ -510,7 +510,7 @@ def normalize(lst):
     if total_sum != 0:
         return [e / total_sum for e in lst]
     else:
-        return [1/len(lst) for e in lst]
+        return [1.0/len(lst) for e in lst]
 
 
 def decrease(association_coefficient, difference):
