@@ -293,17 +293,14 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         # resample from the categories and recommend more events. This is one place where we could break the settings.max_probability cap.
         # But this could be necessary for example if you are in Waukeesha, Wisconsin and only have movies to go to.
         # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you. 
-        selected_events += filter_events(user,event_query_set, categories_dict,missing_count)
+        selected_events += [ev.id for ev in filter_events(user,event_query_set, categories_dict,missing_count)]
         
     # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
 
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    if event_query_set:
-        return [event_query_set.get(id=event_id) for event_id in fuzzy_sort(selected_events)]
-    else:
-        return [Event.objects.get(id=event_id) for event_id in fuzzy_sort(selected_events)]
+    return Event.objects.get(id__in=fuzzy_sort(selected_events))
 
 
 def semi_sort(events, top_sort=3):
