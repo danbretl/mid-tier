@@ -10,7 +10,6 @@ Date Created: 2/26/2011
 """
 
 import sys
-import time
 from collections import defaultdict
 
 import numpy as np
@@ -96,8 +95,8 @@ class PreferenceTransitionMatrix:
         self.indifferent = SimulatedPreference("Indifferent", .1, .2, .5, .2)
         self.hate = SimulatedPreference("Hate", 0, .1, .2, .7)
         
-        self.original_distribution = [(self.love, 0), 
-                                      (self.indifferent, .6), 
+        self.original_distribution = [(self.love, 0.04), 
+                                      (self.indifferent, .56), 
                                       (self.hate, .4)]
         
         # thought- there is a way to write this much more succinctly. For
@@ -106,15 +105,15 @@ class PreferenceTransitionMatrix:
         # something to think about it.
         
         self.transition_matrix = {}
-        self.transition_matrix[self.love] = [(self.love, .8), 
-                                             (self.indifferent, .2), 
-                                             (self.hate, 0)]
-        self.transition_matrix[self.indifferent] = [(self.love, .2), 
+        self.transition_matrix[self.love] = [(self.love, .65), 
+                                             (self.indifferent, .3), 
+                                             (self.hate, 0.05)]
+        self.transition_matrix[self.indifferent] = [(self.love, .15), 
                                                     (self.indifferent, .5), 
-                                                    (self.hate, .3)]
-        self.transition_matrix[self.hate] = [(self.love, 0), 
-                                             (self.indifferent, .2), 
-                                             (self.hate, .8)]
+                                                    (self.hate, .35)]
+        self.transition_matrix[self.hate] = [(self.love, 0.005), 
+                                             (self.indifferent, .295), 
+                                             (self.hate, .7)]
         
     def get_preference_dictionary(self, ct):
         """passed a CachedCategoryTree, return category->preference dict"""

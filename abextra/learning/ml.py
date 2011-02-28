@@ -61,6 +61,7 @@ def recommend_events(user, events=None, categories=None, number=settings.N):
         categories_dict = dict(zip(categories_dict.keys(), normalize(categories_dicts.values())))
 
     # print "Recommended categories: ",[c.title for c in categories]
+    # print len(filter_events(user, events, categories_dict, number))
     return filter_events(user, events, categories_dict, number)
 
 
@@ -176,6 +177,10 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
     Output:
            default dictionary category_event_map[category] = list of event ids. 
     """
+    #Optimization:
+    if event_query_set.count() <= 20:
+        return [e for e in event_query_set]
+
     #import time
     #start = time.time()
     category_event_map = defaultdict(lambda: [])
@@ -239,7 +244,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
             del categories_dict[key]
-    categories = sample_distribution(categories_dict.items(), settings.N)
+    categories = sample_distribution(categories_dict.items(), number)
     
     # This is an optimization.
     # Prepare in advance all the users behavior for the categories under consideration. 
