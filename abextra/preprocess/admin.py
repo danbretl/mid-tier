@@ -6,20 +6,13 @@ from autocomplete.admin import AutocompleteAdmin
 from preprocess import models, forms
 from events.models import Category
 
-class ScrapedEventAdmin(admin.ModelAdmin):
-    list_display = ('title',)
-    # filter_horizontal = ('categories',)
-admin.site.register(models.ScrapedEvent, ScrapedEventAdmin)
-
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('name', 'domain')
 admin.site.register(models.Source, SourceAdmin)
 
 
-external_categories_autocomplete_settings = AutocompleteSettings
-external_categories_autocomplete_settings.login_required = True
-
-class ExternalCategoryAutocomplete(external_categories_autocomplete_settings):
+class ExternalCategoryAutocomplete(AutocompleteSettings):
+    login_required = True
     queryset = Category.objects.filter(category_type__in='CA')
     search_fields = ('^title',)
 autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomplete)
