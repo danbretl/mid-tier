@@ -347,14 +347,16 @@ def fuzzy_sort(events):
     It's purpose is to bubble up preferred elements towards 
     the top of the list.
     """
-    for index in range(len(events)-1):
-        item1 = random.randrange(0, len(events) - 1)
-        item2 = random.randrange(0, len(events) - 1)
-        if item1 > item2:
-            item1, item2 = item2, item1
+    if len(events) > 2:
+        for index in range(len(events)-1):
+            item1 = random.randrange(0, len(events) - 1)
+            item2 = random.randrange(0, len(events) - 1)
+            if item1 > item2:
+                item1, item2 = item2, item1
+                
+            if events[item1] < events[item2]:
+                events[item1], events[item2] = events[item2], events[item1]
 
-        if events[item1] < events[item2]:
-            events[item1], events[item2] = events[item2], events[item1]
     return [ev[1] for ev in events]
 
 
