@@ -77,13 +77,13 @@ class algorithm_profile(TestCase):
     def setUp(self):
         self.user = User.objects.get(id=1)
     
-    def basic_test(self):
-        """some really basic tests"""
-        person = testing_simulation.DiscretePerson(map(get_category_id, ['Bars', 'Clubs']))
-        print "running rounds"
-        person.run_rounds(100)
-    
     def test_printing_precision_recall(self):
+        """
+        Note: this test is outdated. For right now algorithm tests remain in 
+        simple_testing.py (made debugging a lot easier, and the main reason
+        for moving to testing framework was speeding up the DB, which was
+        done using the user_behavior module
+        """
         pass
         #c = testing_framework.EventureUser(self.user,categories=['Bars','Clubs','Musical','Poetry','Classic', 'Wine','Plays','Sculpture','Fallon'])
         #c.iterated_preferred_categories_plot(100,1)

@@ -66,7 +66,7 @@ def recommend_events(user, events=None, categories=None, number=settings.N):
 
 # NOTE: What is the purpose of this wrapper function?
 
-def recommend_categories(user, number=settings.N, category=None, db=DJANGO_DB):
+def recommend_categories(*args, **kwargs):
     """
     Input:
         a) User:Required
@@ -77,10 +77,11 @@ def recommend_categories(user, number=settings.N, category=None, db=DJANGO_DB):
     Output:
         a) List of recommended Categories (may be repeated)
     """
-    return random_tree_walk_algorithm(user, number, category, db)
+    return random_tree_walk_algorithm(*args, **kwargs)
 
 
-def random_tree_walk_algorithm(user, number=settings.N, category=None, db=DJANGO_DB):
+def random_tree_walk_algorithm(user, number=settings.N, category=None, 
+                                db=DJANGO_DB, ctree=None):
     """
     Input:
         a) User: Required. 
@@ -89,7 +90,7 @@ def random_tree_walk_algorithm(user, number=settings.N, category=None, db=DJANGO
     """
 
     # Generate CategoryTree for user
-    user_tree = CategoryTree(user, category, db=db)
+    user_tree = CategoryTree(user, category, ctree=ctree, db=db)
 
     # Calculate scores for each Category in CategoryTree. 
     # Score is calculated from GVIX.

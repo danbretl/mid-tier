@@ -24,10 +24,6 @@ class UserBehaviorDB:
     def initialize_user(self, u, delete_user=False):
         """not all need this"""
         pass
-    
-    def clear(self):
-        """not all need this"""
-        pass
 
 
 class UserBehaviorDict(UserBehaviorDB):
@@ -49,6 +45,11 @@ class UserBehaviorDict(UserBehaviorDB):
     def gvix_dict(self, u):
         """return a category->(G, V, I, X) mapping"""
         return self.user_dict[u]
+    
+    def clear(self):
+        """clear user data"""
+        factory = lambda: collections.defaultdict(lambda: [0,0,0,0])
+        self.user_dict = collections.defaultdict(factory)
 
 
 class UserBehaviorDjangoDB(UserBehaviorDB):
