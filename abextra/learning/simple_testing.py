@@ -13,6 +13,7 @@ echo 'from learning import simple_testing' | python manage.py shell
 from learning import testing_simulation
 from django.contrib.auth.models import User
 from learning import user_behavior
+import time
 
 u = User.objects.get(id=1)
 
