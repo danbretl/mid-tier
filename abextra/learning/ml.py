@@ -29,7 +29,7 @@ import numpy
 import random
 import settings
 from events.models import Event, Category, CategoryManager
-from CategoryTree import CategoryTree
+from category_tree import CategoryTree
 from behavior.models import EventActionAggregate
 import user_behavior
 
@@ -235,8 +235,6 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     # Should the number 50 be a setting?
 
     events = generate_category_mapping(event_query_set,categories_dict)
-    event_dictionary = dict()
-
 
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
@@ -300,7 +298,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
 
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    return Event.objects.get(id__in=fuzzy_sort(selected_events))
+    return Event.objects.filter(id__in=fuzzy_sort(selected_events))
 
 
 def semi_sort(events, top_sort=3):

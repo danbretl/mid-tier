@@ -1,14 +1,15 @@
 #from events.models import Category
-from behavior.models import EventActionAggregate
+#from behavior.models import EventActionAggregate
 #from django.contrib.auth.models import User
 #import settings
+import user_behavior
 
 from events.utils import CachedCategoryTree
 
 class CategoryTree:
     #ToDo:
     # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it. 
-    def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, score=None, dictionary=None):
+    def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, score=None, dictionary=None, db=user_behavior.DJANGO_DB):
         """
         A Tree for a user is represented recursively as a collection of trees, 
         Each gtree is for a specific user.
@@ -23,8 +24,8 @@ class CategoryTree:
             ctree = CachedCategoryTree()
 
         if not eaa:
-            eaa = EventActionAggregate.objects.filter(user=userID)
-            eaa = dict((ea.category_id,(ea.g,ea.v,ea.i,ea.x)) for ea in eaa)
+            # get from DB (whether Django or dictionary)
+            eaa = db.gvix_dict(userID)
             
         if category:
             self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in ctree.children(category)]
