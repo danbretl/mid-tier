@@ -78,7 +78,7 @@ class EventHandler(BaseHandler):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
-        events_qs = Event.future.with_user_actions(request.user)
+        events_qs = Event.future.exclude_user_actions(request.user)
         ctree = CachedCategoryTree()
 
         try:
@@ -95,8 +95,6 @@ class EventHandler(BaseHandler):
             recommended_event.concrete_category = \
                 ctree.surface_parent(recommended_event.concrete_category)
 
-	with open('response.log', 'w') as f:
-	    f.write(str(len(recommended_events)))
         return recommended_events
 
 class CategoryHandler(BaseHandler):
