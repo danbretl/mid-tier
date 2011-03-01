@@ -46,7 +46,7 @@ def recommend_events(user, events=None, number=settings.N):
 
     # print "Recommended categories: ",[c.title for c in categories]
     # print len(filter_events(user, events, categories_dict, number))
-    return set(filter_events(user, events, categories_dict, number, set()))
+    return filter_events(user, events, categories_dict, number, set())
 
 
 # NOTE: What is the purpose of this wrapper function?
@@ -154,13 +154,14 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     return 0
 
 
-def generate_category_mapping(event_query_set=None, categories_dict=None):
+def generate_category_mapping(event_query_set, categories_dict=None):
     """
     Input: a) Query set of event objects
            b) List of cateegories with probability scores.
     Output:
            default dictionary category_event_map[category] = set of event ids. 
     """
+
     #import time
     #start = time.time()
     category_event_map = defaultdict(lambda: set())
@@ -169,28 +170,13 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
     #Load all category objects into a dictionary. 
     all_category_dict = dict([(category.id,category) for category in Category.objects.filter(category_type='C')])
 
-    if not event_query_set:
-        # events stores categories and event ids corresponding to that category
-        event_ids = [(category, Event.objects.filter(concrete_category=category).values_list('id'))
-                  for category, number in sorted(categories_dict.iteritems(),key=operator.itemgetter(1))[-50:]]
-
-        # events = [a[0] for b in events for a in b]
-        # The events list input is of the form: 
-        #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
-        # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
-        for category, event in [(category, [eid[0] for eid in elst]) for category, elst in event_ids]:
-            category_event_map[category].add(event)
-
-    else:
-        #for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_query_set]:
-        #    category_event_map[category].append(event)
-        categoryid_event_map = defaultdict(lambda :[])
-        for category, event in event_query_set.values_list('concrete_category_id','id'):
-            categoryid_event_map[category].append(event)
-
-        for category_id in categoryid_event_map.keys():
-            category = all_category_dict[category_id]
-            category_event_map[category] = set(categoryid_event_map[category_id])
+    categoryid_event_map = defaultdict(lambda :[])
+    for category, event in event_query_set.values_list('concrete_category_id','id'):
+        categoryid_event_map[category].append(event)
+        
+    for category_id in categoryid_event_map.keys():
+        category = all_category_dict[category_id]
+        category_event_map[category] = set(categoryid_event_map[category_id])
 
     #print "Time taken: ", time.time() - start
     return category_event_map
