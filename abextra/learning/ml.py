@@ -35,34 +35,18 @@ import user_behavior
 
 DJANGO_DB = user_behavior.UserBehaviorDjangoDB()
 
-def recommend_events(user, events=None, categories=None, number=settings.N):
+def recommend_events(user, events=None, number=settings.N):
     """
     This is the primary api for the mid-tier to connect to.
     Input: User, Categories (optional) : The list of categories the user is interested in.
     If provided, only 
     number is the number of recommendations requested. This is defaulted to N in settings.py
     """
-    categories = defaultdict(lambda :0)
-    if not categories:
-        categories_dict = random_tree_walk_algorithm(user, number)
-    else:
-        # When we have multiple categories as input we want to sample them and all their children.
-        # We perform a random walk starting on each of the categories. Each of these is going to produce a
-        # dictionary of (category,scores). We combine these dictionaries together and then renormalize their scores.
-        # Combining dictionaries currently adds up all scores, this might not be the best solution and may require
-        # changes depending on performances.
-        # Most often, we expect only a single category to get passed, in which case this isn't a concern. 
-        categories_dicts = [random_tree_walk_algorithm(user, number/len(categories), category) for category in categories]
-        categories = defaultdict(lambda :0)
-        for cat_dict in categories_dicts:
-            for k,v in cat_dict:
-                categories_dict[k] += v
-
-        categories_dict = dict(zip(categories_dict.keys(), normalize(categories_dicts.values())))
+    categories_dict = random_tree_walk_algorithm(user, number)
 
     # print "Recommended categories: ",[c.title for c in categories]
     # print len(filter_events(user, events, categories_dict, number))
-    return filter_events(user, events, categories_dict, number)
+    return set(filter_events(user, events, categories_dict, number, set()))
 
 
 # NOTE: What is the purpose of this wrapper function?
@@ -175,11 +159,11 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
     Input: a) Query set of event objects
            b) List of cateegories with probability scores.
     Output:
-           default dictionary category_event_map[category] = list of event ids. 
+           default dictionary category_event_map[category] = set of event ids. 
     """
     #import time
     #start = time.time()
-    category_event_map = defaultdict(lambda: [])
+    category_event_map = defaultdict(lambda: set())
 
     #This is an optimization. 
     #Load all category objects into a dictionary. 
@@ -195,7 +179,7 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
         #              [('cid1', [(eid1,), (eid2,)]), ('cid2', [(eid3,), (eid4,)])]
         # Converting this to [('cid1',['eid1','eid2']),('cid2',['eid3','eid4'])]
         for category, event in [(category, [eid[0] for eid in elst]) for category, elst in event_ids]:
-            category_event_map[category] +=event
+            category_event_map[category].add(event)
 
     else:
         #for category,event in [(e_obj.concrete_category, e_obj.id) for e_obj in event_query_set]:
@@ -206,13 +190,13 @@ def generate_category_mapping(event_query_set=None, categories_dict=None):
 
         for category_id in categoryid_event_map.keys():
             category = all_category_dict[category_id]
-            category_event_map[category] = categoryid_event_map[category_id]
+            category_event_map[category] = set(categoryid_event_map[category_id])
 
     #print "Time taken: ", time.time() - start
     return category_event_map
 
 
-def filter_events(user, event_query_set=None, categories_dict=None, number=settings.N):
+def filter_events(user, event_query_set=None, categories_dict=None, number=settings.N, selected_events=set()):
     """
     Input: User,
            List of categories
@@ -238,7 +222,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     events = generate_category_mapping(event_query_set,categories_dict)
 
     #Optimization:
-    if len(events) <= number:
+    if sum(map(len,events.values())) <= number:
         return [e for e in event_query_set]
 
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
@@ -254,16 +238,16 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         dictionary_category_eaa[ea.category_id] = (ea.g, ea.v, ea.i, ea.x)
 
     # This contains the selected events to be returned. 
-    selected_events = []
 
     #This is an optimization
     #Stores the score for every event id.
     event_abstract_score = defaultdict(lambda :0)
     for category, event_ids in events.iteritems():
         #Mapping between event ids and all abstract categories.
-        event_cat_dict = get_categories(event_ids, ('A'))
+        event_cat_dict = get_categories(list(event_ids), ('A'))
         for event_id, abstract_categories in event_cat_dict.items():
-            event_abstract_score[event_id] += abstract_scoring_function(abstract_categories, dictionary_category_eaa)
+            event_abstract_score[event_id] = max(abstract_scoring_function(abstract_categories, dictionary_category_eaa),
+                                                 event_abstract_score[event_id])
 
     
     # First sample a category (already sampled and available in categories).
@@ -271,11 +255,12 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     missing_count = 0
     for category in categories:
         # Next sample an event based on the abstract score.
-        event = sample_distribution([(event_id, event_abstract_score[event_id]) for event_id in events[category]])
+        # Select only those events that have not yet been selected. 
+        event = sample_distribution([(event_id, event_abstract_score[event_id]) for event_id in (events[category] - selected_events)],1)
         if event:
-            selected_events += event
+            selected_events.add(event[0])
             # This ensures an already selected event does not get selected again.
-            events[category] = list( set(events[category]) - set(list(event)))
+            events[category].discard(event[0])
         else:
             #This category has no more events. If it comes down to it, Don't sample it ever again.
             missing_count += 1
@@ -283,14 +268,15 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         if len(events[category]) == 0 :
             del events[category]
             
-
     if missing_count > 0 and len(events) > 0:
         # This is "hopefully" unlikely to happen if there are enough events in each category.
         # If we get to this point, it means we don't have enough events for the categories sampled
         # resample from the categories and recommend more events. This is one place where we could break the settings.max_probability cap.
         # But this could be necessary for example if you are in Waukeesha, Wisconsin and only have movies to go to.
-        # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you. 
-        selected_events += [ev.id for ev in filter_events(user,event_query_set, categories_dict,missing_count)]
+        # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you.
+        selected_events.union(set([ev.id for ev in
+                                   filter_events(user, event_query_set, categories_dict, missing_count, selected_events)]))
+        import pdb; pdb.set_trace()
         
     # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
