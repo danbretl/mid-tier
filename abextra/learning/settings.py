@@ -4,6 +4,7 @@ import math
 
 #from django.contrib.auth.models import User
 
+
 Gm = 15                # G Multiplier in the scoring function
 Vm = 4                 # V Multiplier in the scoring function
 Im = 1                 # I Multiplier in the scoring function
@@ -32,7 +33,11 @@ def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     #return (lambda y: ((F(y[0])**g)*G + (y[1]**v)*V + (y[2]**i)*I)*(X**y[3]) + learning_constant)
     return (lambda y: (((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance) 
 
+<<<<<<< HEAD
 scoringFunction = scoring_function((Gm,Vm,Im,Xp),(1.5,1,1))
+=======
+scoringFunction = scoring_function((Gm,Vm,Im,Xp),(2,1,1))
+>>>>>>> modified settings
 
 abstract_scoring_function = scoring_function((Gm,Vm,Im,Xp),(2,1,1))
 
