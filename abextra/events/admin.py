@@ -28,6 +28,7 @@ admin.site.register(Category, CategoryAdmin)
 class OccurrenceInline(admin.StackedInline):
     model = Occurrence
     fk = 'event'
+    extra = 0
     # fields = ('one_off_place',)
     # readonly_fields = ('one_off_place',)
 
