@@ -79,7 +79,22 @@ class EventHandler(BaseHandler):
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
         events_qs = Event.future.with_user_actions(request.user)
-        recommended_events = ml.recommend_events(request.user, events_qs)
+        ctree = CachedCategoryTree()
+
+        try:
+            category_id = int(request.GET.get('category_id'))
+        except (ValueError, TypeError):
+            recommended_events = ml.recommend_events(request.user, events_qs)
+        else:
+            all_children = ctree.children_recursive(ctree.get(id=category_id))
+            events_qs = events_qs.filter(concrete_category__in=all_children)
+            recommended_events = ml.recommend_events(request.user, events_qs)
+
+        # TODO hack :: mucking with a persistent obj
+        for recommended_event in recommended_events:
+            recommended_event.concrete_category = \
+                ctree.surface_parent(recommended_event.concrete_category)
+
         return recommended_events
 
 class CategoryHandler(BaseHandler):
