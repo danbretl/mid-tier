@@ -37,8 +37,8 @@ class EventCategorizer(admin.ModelAdmin):
     search_fields = ('title',)
     fields = ('title', 'description', 'categories', 'url', 'image_url', 'video_url')
     readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')
-    list_display = ('title', 'created')
-    list_filter = ('image_url',)
+    list_display = ('title', 'created', '_concrete_category', '_abstract_categories')
+    list_filter = ('concrete_category',)
     filter_horizontal = ('categories',)
     inlines = [
         OccurrenceInline

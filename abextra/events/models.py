@@ -91,6 +91,15 @@ class Event(models.Model):
     objects = EventManager()
     future = EventFutureManager()
 
+    def _concrete_category(self):
+        """Used only by the admin site"""
+        return self.concrete_category.title
+    _concrete_category.admin_order_field = 'concrete_category__title'
+
+    def _abstract_categories(self):
+        """Used only by the admin site"""
+        return ', '.join(self.categories.values_list('title', flat=True))
+
     class Meta:
         verbose_name_plural = _('events')
 

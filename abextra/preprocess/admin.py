@@ -19,7 +19,12 @@ autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomp
 
 class ExternalCategoryAdmin(AutocompleteAdmin,admin.ModelAdmin):
     # form = forms.ExternalCategoryAdminForm
+    list_select_related = True
+    list_display = ('name', 'xid', 'source', 'category_title')
     fields = ('name', 'xid', 'source', 'category')
-    list_display = ('name', 'xid', 'source', 'category')
     list_filter = ('source',)
+
+    # def category(self, external_category):
+    #     return external_category.category.title
+
 admin.site.register(models.ExternalCategory, ExternalCategoryAdmin)

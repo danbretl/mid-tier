@@ -41,6 +41,10 @@ class ExternalCategory(models.Model):
     source = models.ForeignKey(Source, related_name='external_categories')
     category = models.ForeignKey(Category, related_name='external_categories', blank=True, null=True)
 
+    def category_title(self):
+        return self.category.title
+    category_title.admin_order_field = 'category__title'
+
     class Meta:
         unique_together = (('name', 'source'),)
         verbose_name_plural = _('external categories')
