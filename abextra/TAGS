@@ -1,0 +1,468 @@
+
+/home/whisky/Abextra/abexmid/abextra/learning/ml.py,631
+def recommend_events(38,1227
+def recommend_categories(70,2959
+def random_tree_walk_algorithm(84,3403
+def abstract_scoring_function(157,7059
+def generate_category_mapping(173,7710
+def filter_events(215,9658
+def semi_sort(312,14328
+def fuzzy_sort(345,15428
+def score_combinator(366,16145
+def score_multiplier(387,16921
+def probabilistic_walk(395,17199
+def topn_function(441,19342
+def scoring_function(460,20057
+def depth_assignment(474,20492
+def flattening_function(489,20886
+def normalize(507,21502
+def decrease(526,22080
+def flatten_expo(537,22393
+def sample_distribution(554,22944
+def get_categories(595,24488
+
+/home/whisky/Abextra/abexmid/abextra/learning/user_behavior.py,465
+class UserBehaviorDB:UserBehaviorDB17,490
+    def update_from_round(19,566
+    def initialize_user(24,759
+class UserBehaviorDict(29,859
+    def __init__(34,1030
+    def perform_action(41,1362
+    def gvix_dict(45,1517
+    def clear(49,1637
+class UserBehaviorDjangoDB(55,1817
+    def __init__(60,1966
+    def initialize_user(64,2059
+    def perform_action(79,2644
+    def gvix_dict(95,3130
+    def clear(100,3361
+    def reset_user_behavior(107,3544
+
+/home/whisky/Abextra/abexmid/abextra/learning/settings.py,150
+def F(22,922
+def scoring_function(29,1029
+def get_default_user(39,1461
+def mean(44,1674
+def topN_function(50,1772
+def mod_topN_function(57,1899
+
+/home/whisky/Abextra/abexmid/abextra/learning/simple_testing.py,21
+def runtests(20,663
+
+/home/whisky/Abextra/abexmid/abextra/learning/testing_framework.py,533
+class EventureUser:EventureUser20,497
+    def __init__(25,599
+    def get_category_id(70,2509
+    def get_category_string(74,2615
+    def get_random_categories(78,2717
+    def update_behavior(87,3112
+    def update_user_category_behavior(106,4061
+    def reset_user_behavior(118,4480
+    def calculate_recall_value(128,4869
+    def calculate_precision_value(142,5625
+    def rms(153,6125
+    def plot_with_error_bars(161,6372
+    def iterated_preferred_categories_plot(168,6808
+    def calculate_plot_metrics(209,8584
+
+/home/whisky/Abextra/abexmid/abextra/learning/tests.py,212
+class MLTest(5,45
+    def setUp(8,99
+    def test_initialized_with_zero_counts(11,178
+    def test_update_action_count_in_mem(15,363
+    def test_update_action_count_persist(27,850
+    def tearDown(35,1208
+
+/home/whisky/Abextra/abexmid/abextra/learning/mlTester.py,124
+class MLModuleTest(11,88
+    def setUp(16,193
+    def test_normalize(22,328
+    def test_topN_function_generator(27,631
+
+/home/whisky/Abextra/abexmid/abextra/learning/category_tree.py,664
+class CategoryTree:CategoryTree9,215
+    def __init__(12,391
+    def category_objects(53,1974
+    def get_parent(56,2114
+    def get_score(62,2223
+    def association_coefficient(68,2348
+    def get_name(75,2591
+    def del_dictionary_key(81,2706
+    def get_all_category_scores_dictionary(87,2845
+    def get_children(100,3341
+    def num_nodes(106,3477
+    def __repr__(112,3630
+    def insert_key_value(122,3912
+    def get_key_value(128,4060
+    def print_dictionary_key_values(139,4306
+    def subtree_score(149,4631
+    def top_down_recursion(156,5024
+    def bottom_up_recursion(166,5405
+    def __iter__(180,5840
+    def next(183,5889
+
+/home/whisky/Abextra/abexmid/abextra/learning/testing_simulation.py,1180
+def get_category_id(29,860
+def get_category_string(35,1005
+def finish_plot(40,1091
+def freq_dict(50,1285
+def print_carriage_return(59,1497
+class SimulatedPreference:SimulatedPreference64,1640
+    def __init__(69,1821
+    def sample_action(79,2278
+    def __repr__(83,2435
+class PreferenceTransitionMatrix:PreferenceTransitionMatrix86,2509
+    def __init__(92,2764
+    def get_preference_dictionary(118,4196
+    def __recurse_ct(133,4711
+class Round:Round142,5071
+    def __init__(144,5147
+    def gvix(153,5482
+class Person:Person158,5634
+    def __init__(162,5737
+    def run_rounds(198,7145
+    def run_round(219,8016
+    def apply_average_rounds(236,8681
+    def plot_gvix(263,9763
+    def __del__(272,10126
+class DeterministicPerson(277,10200
+    def __init__(283,10427
+    def get_action(291,10738
+    def get_precision_recall(298,10972
+    def plot_precision_recall(306,11291
+class DiscretePreferencePerson(315,11604
+    def __init__(320,11748
+    def get_action(327,12026
+    def get_preference_distribution(331,12193
+    def plot_preference_distribution(339,12602
+class TransitionSimulatedPerson(354,13177
+    def __init__(360,13422
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/migrations/0001_initial.py,74
+class Migration(7,125
+    def forwards(9,160
+    def backwards(33,1515
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/management/commands/import_cats_villagevoice.py,43
+class Command(5,107
+    def handle(8,197
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/forms.py,67
+class ExternalCategoryAdminForm(6,109
+    class Meta:Meta13,320
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/models.py,274
+class SourceManager(8,141
+    def by_name(10,179
+    def clear_cache(18,390
+    def villagevoice(23,486
+    def eventful(27,573
+class Source(30,638
+    def __unicode__(35,799
+class ExternalCategory(38,852
+    def category_title(44,1155
+    class Meta:Meta48,1278
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/admin.py,104
+class SourceAdmin(9,223
+class ExternalCategoryAutocomplete(14,348
+class ExternalCategoryAdmin(20,614
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/utils.py,246
+def joke(12,314
+class MockInitializer(15,758
+    def __init__(16,789
+    def run(23,1207
+class PreprocessRouter(69,3432
+    def db_for_read(76,3640
+    def db_for_write(82,3853
+    def allow_relation(88,4067
+    def allow_syncdb(94,4322
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/tests.py,79
+class InitializerTest(6,124
+    def setUp(9,206
+    def test_load_db(13,285
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/models_external.py,439
+class ExternalScrapeManager(3,30
+    def get_query_set(4,75
+class ExternalScrapeModel(8,208
+    class Meta:Meta10,287
+class Category(16,405
+    class Meta:Meta21,656
+class Event(25,728
+    class Meta:Meta35,1281
+class EventCategory(39,1350
+    class Meta:Meta42,1511
+class Location(46,1589
+    class Meta:Meta61,2442
+class Occurrence(65,2514
+    class Meta:Meta77,3176
+class Price(81,3250
+    class Meta:Meta87,3565
+
+/home/whisky/Abextra/abexmid/abextra/behavior/migrations/0001_initial.py,74
+class Migration(7,125
+    def forwards(9,160
+    def backwards(39,1846
+
+/home/whisky/Abextra/abexmid/abextra/behavior/views.py,108
+def require_auth(9,247
+    def new_func(11,321
+def create_eventaction(19,586
+def reset_behavior(49,1494
+
+/home/whisky/Abextra/abexmid/abextra/behavior/forms.py,87
+class EventActionForm(5,67
+    class Meta:Meta6,107
+    def validate_unique(10,231
+
+/home/whisky/Abextra/abexmid/abextra/behavior/models.py,296
+class EventAction(6,173
+    class Meta:Meta18,558
+    def __unicode__(21,622
+class EventActionAggregate(23,681
+    class Meta:Meta32,1082
+    def __unicode__(35,1149
+    def update_action_count(37,1208
+def update_aggregate_on_event_action_save(52,1867
+def add_default_behavior(98,3693
+
+/home/whisky/Abextra/abexmid/abextra/behavior/admin.py,68
+class EventActionAdmin(4,64
+class EventActionAggregateAdmin(9,259
+
+/home/whisky/Abextra/abexmid/abextra/behavior/utils.py,30
+def reset_user_behavior(3,63
+
+/home/whisky/Abextra/abexmid/abextra/behavior/tests.py,349
+class EventActionAggregateTest(8,228
+    def setUp(11,309
+    def test_initialized_with_zero_counts(20,553
+    def test_update_action_count_in_mem(24,734
+    def test_update_action_count_persist(36,1209
+    def tearDown(44,1559
+class UpdateAggregateBehaviorSignalTest(48,1612
+    def setUp(51,1712
+    def test_update_with_existing(63,2151
+
+/home/whisky/Abextra/abexmid/abextra/places/migrations/0001_initial.py,74
+class Migration(7,125
+    def forwards(9,160
+    def backwards(71,4018
+
+/home/whisky/Abextra/abexmid/abextra/places/models.py,546
+class PlaceType(6,191
+    class Meta:Meta11,374
+    def __unicode__(15,477
+    def get_absolute_url(19,554
+class City(23,652
+    class Meta:Meta29,865
+    def __unicode__(35,1043
+    def get_absolute_url(39,1137
+class Point(43,1235
+    class Meta:Meta52,1675
+    def __unicode__(57,1800
+class Place(62,1902
+    class Meta:Meta83,2902
+    def __unicode__(88,3025
+    def city(92,3106
+    def full_title(96,3180
+    def get_absolute_url(100,3274
+    def longitude(104,3383
+    def latitude(108,3459
+    def address(112,3533
+
+/home/whisky/Abextra/abexmid/abextra/places/admin.py,101
+class PlaceTypeAdmin(5,63
+class CityAdmin(10,199
+class PointAdmin(15,327
+class PlaceAdmin(22,536
+
+/home/whisky/Abextra/abexmid/abextra/places/tests.py,61
+class SimpleTest(10,245
+    def test_basic_addition(11,273
+
+/home/whisky/Abextra/abexmid/abextra/api/handlers.py,187
+class EventHandler(13,273
+    def read(77,1728
+class CategoryHandler(100,2669
+    def read(105,2808
+class EventActionHandler(116,3203
+    def read(124,3390
+    def create(136,3855
+
+/home/whisky/Abextra/abexmid/abextra/api/emitters.py,54
+class JSONEmitterMinified(4,99
+    def render(8,210
+
+/home/whisky/Abextra/abexmid/abextra/api/admin.py,26
+class ConsumerAdmin(5,70
+
+/home/whisky/Abextra/abexmid/abextra/events/migrations/0002_auto__add_field_category_color.py,73
+class Migration(7,125
+    def forwards(9,160
+    def backwards(15,394
+
+/home/whisky/Abextra/abexmid/abextra/events/migrations/0001_initial.py,74
+class Migration(7,125
+    def forwards(9,160
+    def backwards(66,4290
+
+/home/whisky/Abextra/abexmid/abextra/events/management/commands/graphcategories.py,45
+class Command(19,482
+    def handle(22,569
+
+/home/whisky/Abextra/abexmid/abextra/events/management/commands/generateusers.py,43
+class Command(5,169
+    def handle(8,255
+
+/home/whisky/Abextra/abexmid/abextra/events/management/commands/loadscraped.py,43
+class Command(4,102
+    def handle(7,189
+
+/home/whisky/Abextra/abexmid/abextra/events/forms.py,80
+class CategoryAdminForm(7,157
+    class Meta:Meta10,282
+    def save(13,324
+
+/home/whisky/Abextra/abexmid/abextra/events/models.py,726
+class CategoryManager(10,237
+    def for_events(11,276
+class CategoryConcreteManager(27,1109
+    def get_query_set(28,1156
+class CategoryAbstractManager(32,1308
+    def get_query_set(33,1355
+class Category(37,1507
+    def icon_path(57,2534
+    def parent_title(60,2632
+    class Meta:Meta64,2747
+    def __unicode__(67,2810
+class EventManager(70,2864
+    def with_user_actions(71,2900
+class EventFutureManager(75,3062
+    def get_query_set(76,3102
+class Event(80,3280
+    def _concrete_category(98,4190
+    def _abstract_categories(103,4381
+    class Meta:Meta107,4534
+class Occurrence(110,4593
+    class Meta:Meta121,5123
+    def is_past(125,5201
+    def is_future(128,5244
+    def is_now(131,5289
+
+/home/whisky/Abextra/abexmid/abextra/events/admin.py,121
+class CategoriesInline(7,183
+class CategoryAdmin(14,410
+class OccurrenceInline(28,927
+class EventCategorizer(36,1105
+
+/home/whisky/Abextra/abexmid/abextra/events/utils.py,311
+class CachedCategoryTree(5,123
+    def __init__(6,157
+    def get(37,1337
+    def _children_recursive(50,1781
+    def children_recursive(55,1953
+    def _leaves(58,2052
+    def leaves(64,2226
+    def children(67,2301
+    def surface_parent(70,2373
+    def abstracts(75,2564
+    def concretes(81,2741
+
+/home/whisky/Abextra/abexmid/abextra/events/tests.py,734
+class CachedCategoryTreeTest(13,418
+    def test_get_by_title(17,522
+    def test_get_by_slug(23,718
+    def test_get_by_id(29,901
+    def test_convenience(35,1063
+class MLModuleTest(42,1270
+    def setUp(47,1399
+    def test_normalize(52,1521
+    def test_scoring_function(57,1866
+    def test_topN_function(63,2041
+class algorithm_profile(71,2400
+    def setUp(77,2632
+    def test_printing_precision_recall(80,2701
+class AlgorithmTest(96,3429
+    def setUp(99,3570
+    def test_probabilistic_walk(105,3715
+    def test_framework(120,4725
+    def test_multi_category_recall(125,4843
+    def test_convergence(206,8607
+class CategoryTest(258,10313
+    def setUp(260,10344
+    def test_scoring_function(263,10379
+
+/home/whisky/Abextra/abexmid/abextra/core/utils.py,70
+class Bunch(1,0
+    def __init__(13,510
+def unique_everseen(17,630
+
+/home/whisky/Abextra/abexmid/abextra/core/tests.py,61
+class SimpleTest(10,245
+    def test_basic_addition(11,273
+
+/home/whisky/Abextra/abexmid/abextra/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/settings.py,0
+
+/home/whisky/Abextra/abexmid/abextra/core/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/core/models.py,0
+
+/home/whisky/Abextra/abexmid/abextra/core/views.py,0
+
+/home/whisky/Abextra/abexmid/abextra/urls.py,0
+
+/home/whisky/Abextra/abexmid/abextra/events/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/events/views.py,0
+
+/home/whisky/Abextra/abexmid/abextra/events/management/commands/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/events/management/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/events/migrations/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/api/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/api/urls.py,0
+
+/home/whisky/Abextra/abexmid/abextra/places/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/places/views.py,0
+
+/home/whisky/Abextra/abexmid/abextra/places/migrations/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/settings_profile.py,0
+
+/home/whisky/Abextra/abexmid/abextra/manage.py,0
+
+/home/whisky/Abextra/abexmid/abextra/behavior/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/behavior/migrations/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/settings_local.py,0
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/views.py,0
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/management/commands/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/management/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/preprocess/migrations/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/learning/helperTest.py,0
+
+/home/whisky/Abextra/abexmid/abextra/learning/__init__.py,0
+
+/home/whisky/Abextra/abexmid/abextra/learning/utils.py,0
+
+/home/whisky/Abextra/abexmid/abextra/learning/category_tree_tester.py,0
+
+/home/whisky/Abextra/abexmid/abextra/learning/simulation_shared.py,0

@@ -215,6 +215,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     for key in set(categories_dict.keys()) - set(events.keys()):
             del categories_dict[key]
     categories = sample_distribution(categories_dict.items(), number)
+
     
     # This is an optimization.
     # Prepare in advance all the users behavior for the categories under consideration. 
@@ -262,7 +263,6 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you.
         selected_events.union(set([ev.id for ev in
                                    filter_events(user, event_query_set, categories_dict, missing_count, selected_events)]))
-        import pdb; pdb.set_trace()
         
     # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
     selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))

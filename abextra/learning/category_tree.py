@@ -23,7 +23,7 @@ class CategoryTree:
         if not ctree:
             ctree = CachedCategoryTree()
 
-        if not eaa:
+        if eaa==None:
             # get from DB (whether Django or dictionary)
             eaa = db.gvix_dict(userID)
             
