@@ -68,12 +68,11 @@ class Category(models.Model):
         return self.title
 
 class EventManager(models.Manager):
-    def exclude_user_actions(self, user, actions='X'):
+    def filter_user_actions(self, user, actions='GVI'):
+        user_q = models.Q(actions__user=user)
+        actions_q = models.Q(actions__action__in=actions)
         return self.get_query_set() \
-            .exclude(actions__user=user, actions__action__in=actions)
-    def with_user_actions(self, user, actions='GVI'):
-        return self.get_query_set() \
-            .filter(actions__user=user, actions__action__in=actions)
+            .filter((user_q & actions_q) | models.Q(actions__isnull=True))
 
 class EventFutureManager(EventManager):
     def get_query_set(self):
