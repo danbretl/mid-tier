@@ -215,7 +215,6 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     for key in set(categories_dict.keys()) - set(events.keys()):
             del categories_dict[key]
     categories = sample_distribution(categories_dict.items(), number)
-
     
     # This is an optimization.
     # Prepare in advance all the users behavior for the categories under consideration. 
@@ -264,13 +263,13 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         selected_events.union(set([ev.id for ev in
                                    filter_events(user, event_query_set, categories_dict, missing_count, selected_events)]))
         
-    # The formatting of events sent to semi sort below ensures that the comparison works. For example: (21,'a') > (12,'b') in python. 
-    selected_events =  semi_sort([(event_abstract_score[eid], eid) for eid in selected_events], min(3, len(selected_events)))
-
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    return Event.objects.filter(id__in=fuzzy_sort(selected_events))
-
+    returned_events = Event.objects.filter(id__in=selected_events)
+    #this can be made more efficient with a single query. Leaving out for now. 
+    return fuzzy_sort(semi_sort([(categories_dict[event.concrete_category],event)
+                                 for event in returned_events], min(3,len(returned_events))))
+    
 
 def semi_sort(events, top_sort=3):
     """
