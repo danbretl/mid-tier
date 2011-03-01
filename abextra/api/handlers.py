@@ -80,6 +80,13 @@ class EventHandler(BaseHandler):
         """
         events_qs = Event.future.with_user_actions(request.user)
         recommended_events = ml.recommend_events(request.user, events_qs)
+
+        # TODO kind of an ugly hack :: mucking with a persistent obj
+        ctree = CachedCategoryTree()
+        for recommended_event in recommended_events:
+            recommended_event.concrete_category = \
+                ctree.surface_parent(recommended_event.concrete_category)
+
         return recommended_events
 
 class CategoryHandler(BaseHandler):

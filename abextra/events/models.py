@@ -57,6 +57,10 @@ class Category(models.Model):
     def icon_path(self):
         return os.path.split(self.icon.name)[-1] if self.icon else None
 
+    def parent_title(self):
+        return self.parent.title
+    parent_title.admin_order_field = 'parent__title'
+
     class Meta:
         verbose_name_plural = _('categories')
 
