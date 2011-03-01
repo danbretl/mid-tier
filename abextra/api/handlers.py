@@ -80,6 +80,8 @@ class EventHandler(BaseHandler):
         """
         events_qs = Event.future.with_user_actions(request.user)
         recommended_events = ml.recommend_events(request.user, events_qs)
+	with open('response.log', 'w') as f:
+	    f.write(str(len(recommended_events)))
         return recommended_events
 
 class CategoryHandler(BaseHandler):
