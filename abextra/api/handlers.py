@@ -95,6 +95,8 @@ class EventHandler(BaseHandler):
             recommended_event.concrete_category = \
                 ctree.surface_parent(recommended_event.concrete_category)
 
+	with open('response.log', 'w') as f:
+	    f.write(str(len(recommended_events)))
         return recommended_events
 
 class CategoryHandler(BaseHandler):
