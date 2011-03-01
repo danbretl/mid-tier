@@ -16,7 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
     form = CategoryAdminForm
     search_fields = ('title',)
     list_filter = ('category_type',)
-    list_display = ('title', 'parent', 'category_type', 'is_associative')
+    list_display = ('title', 'parent_title', 'category_type', 'is_associative')
     fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width', 'color')
     readonly_fields = ('icon_height', 'icon_width')
     inlines = [
@@ -28,6 +28,7 @@ admin.site.register(Category, CategoryAdmin)
 class OccurrenceInline(admin.StackedInline):
     model = Occurrence
     fk = 'event'
+    extra = 0
     # fields = ('one_off_place',)
     # readonly_fields = ('one_off_place',)
 

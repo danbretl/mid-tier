@@ -11,7 +11,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sports-recreation", 
-            "color": "", 
+            "color": "#50b849", 
             "icon": "category_icons/sports.jpg"
         }
     }, 
@@ -99,7 +99,7 @@
         "pk": 8, 
         "model": "events.category", 
         "fields": {
-            "parent": 5, 
+            "parent": 3, 
             "title": "Marathons", 
             "icon_height": null, 
             "is_associative": false, 
@@ -115,7 +115,7 @@
         "pk": 9, 
         "model": "events.category", 
         "fields": {
-            "parent": 138, 
+            "parent": 135, 
             "title": "Gatherings", 
             "icon_height": 506, 
             "is_associative": false, 
@@ -123,7 +123,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "gatherings", 
-            "color": "", 
+            "color": "#d80b8c", 
             "icon": "category_icons/Gatherings_1.png"
         }
     }, 
@@ -219,7 +219,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "nightlife", 
-            "color": "", 
+            "color": "#812991", 
             "icon": "category_icons/nightlife.jpg"
         }
     }, 
@@ -356,13 +356,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 19, 
-            "title": "Musical ", 
+            "title": "Amateur Music", 
             "icon_height": null, 
             "is_associative": false, 
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
-            "slug": "musical", 
+            "slug": "amateur-music", 
             "color": "", 
             "icon": ""
         }
@@ -372,13 +372,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 19, 
-            "title": "Comedy Show", 
+            "title": "Amateur Comedy", 
             "icon_height": 673, 
             "is_associative": false, 
             "icon_width": 931, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
-            "slug": "comedy-show", 
+            "slug": "amateur-comedy", 
             "color": "", 
             "icon": "category_icons/comedy-shows.jpg"
         }
@@ -451,7 +451,7 @@
         "pk": 31, 
         "model": "events.category", 
         "fields": {
-            "parent": 28, 
+            "parent": 175, 
             "title": "Plays", 
             "icon_height": null, 
             "is_associative": false, 
@@ -467,7 +467,7 @@
         "pk": 32, 
         "model": "events.category", 
         "fields": {
-            "parent": 28, 
+            "parent": 175, 
             "title": "Musicals", 
             "icon_height": 300, 
             "is_associative": false, 
@@ -499,7 +499,7 @@
         "pk": 34, 
         "model": "events.category", 
         "fields": {
-            "parent": 138, 
+            "parent": 9, 
             "title": "Talks", 
             "icon_height": 683, 
             "is_associative": false, 
@@ -571,7 +571,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "food-drink", 
-            "color": "", 
+            "color": "#d2be07", 
             "icon": "category_icons/food_and_drink.jpeg"
         }
     }, 
@@ -645,14 +645,14 @@
         "fields": {
             "parent": 40, 
             "title": "Farmers Market", 
-            "icon_height": 375, 
+            "icon_height": 2304, 
             "is_associative": false, 
-            "icon_width": 500, 
+            "icon_width": 3072, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "farmers-market", 
             "color": "", 
-            "icon": "category_icons/farmers_market.jpg"
+            "icon": "category_icons/farmers_market_1.jpg"
         }
     }, 
     {
@@ -1291,7 +1291,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "music", 
-            "color": "", 
+            "color": "#00aec6", 
             "icon": ""
         }
     }, 
@@ -1749,14 +1749,14 @@
         "fields": {
             "parent": null, 
             "title": "Discount", 
-            "icon_height": null, 
+            "icon_height": 682, 
             "is_associative": false, 
-            "icon_width": null, 
+            "icon_width": 900, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "discount", 
             "color": "", 
-            "icon": ""
+            "icon": "category_icons/discounts.jpg"
         }
     }, 
     {
@@ -1764,13 +1764,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Festival", 
+            "title": "Festivals", 
             "icon_height": null, 
             "is_associative": false, 
             "icon_width": null, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
-            "slug": "festival", 
+            "slug": "festivals", 
             "color": "", 
             "icon": ""
         }
@@ -1853,22 +1853,6 @@
             "slug": "photography", 
             "color": "", 
             "icon": "category_icons/Photography.jpg"
-        }
-    }, 
-    {
-        "pk": 120, 
-        "model": "events.category", 
-        "fields": {
-            "parent": 29, 
-            "title": "Classic", 
-            "icon_height": null, 
-            "is_associative": true, 
-            "icon_width": null, 
-            "category_type": "C", 
-            "association_coefficient": 0.0, 
-            "slug": "classic", 
-            "color": "", 
-            "icon": ""
         }
     }, 
     {
@@ -1972,13 +1956,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Painting", 
+            "title": "Painting Events", 
             "icon_height": 338, 
             "is_associative": true, 
             "icon_width": 540, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
-            "slug": "painting", 
+            "slug": "painting-events", 
             "color": "", 
             "icon": "category_icons/Paintings.jpg"
         }
@@ -1988,13 +1972,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Sculpture", 
+            "title": "Sculpture Events", 
             "icon_height": 375, 
             "is_associative": true, 
             "icon_width": 500, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
-            "slug": "sculpture", 
+            "slug": "sculpture-events", 
             "color": "", 
             "icon": "category_icons/Sculpture.jpg"
         }
@@ -2038,7 +2022,7 @@
             "parent": 28, 
             "title": "Opera", 
             "icon_height": 515, 
-            "is_associative": true, 
+            "is_associative": false, 
             "icon_width": 700, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
@@ -2107,7 +2091,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "movies-media", 
-            "color": "", 
+            "color": "#446ab3", 
             "icon": ""
         }
     }, 
@@ -2123,7 +2107,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "hobbies-interest", 
-            "color": "", 
+            "color": "#f15c72", 
             "icon": ""
         }
     }, 
@@ -2139,7 +2123,7 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "arts-theater", 
-            "color": "", 
+            "color": "#e5a714", 
             "icon": ""
         }
     }, 
@@ -2155,6 +2139,950 @@
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "causes", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 141, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 140, 
+            "title": "Volunteering", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "volunteering", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 142, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 16, 
+            "title": "Adult", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "adult", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 143, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Animal", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "animal", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 145, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 9, 
+            "title": "Parades", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "parades", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 146, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 4, 
+            "title": "Hiking", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "hiking", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 147, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 9, 
+            "title": "Expos", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "expos", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 148, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 34, 
+            "title": "Classes & Seminars", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "classes-seminars", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 149, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Shopping Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "shopping-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 150, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 116, 
+            "title": "Sightseeing", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "sightseeing", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 151, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "St Patricks Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "st-patricks-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 152, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Valentine's Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "valentines-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 153, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 114, 
+            "title": "Holiday Celebration", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "holiday-celebration", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 154, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Christmas", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "christmas", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 155, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "New Year's", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "new-years", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 156, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Father's Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "fathers-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 157, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Halloween", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "halloween", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 158, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Mardi Gras", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "mardi-gras", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 159, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Kwanzaa", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "kwanzaa", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 160, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Chanukah", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "chanukah", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 161, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Dia de los Muertos", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "dia-de-los-muertos", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 162, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "MLK Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "mlk-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 163, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Fourth of July", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "fourth-of-july", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 164, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Labor Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "labor-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 165, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Cinco de Mayo", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "cinco-de-mayo", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 166, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Thanksgiving", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "thanksgiving", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 167, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Mother's Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "mothers-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 168, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Memorial Day", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "memorial-day", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 169, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 9, 
+            "title": "LGBT Events", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "lgbt-events", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 170, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 16, 
+            "title": "Game Nights", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "game-nights", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 171, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 127, 
+            "title": "Gallery Opening", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "gallery-opening", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 173, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 29, 
+            "title": "Special Screening", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "special-screening", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 174, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Fashion Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "fashion-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 175, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 28, 
+            "title": "Theater Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "theater-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 176, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 175, 
+            "title": "Childrens's Theater", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "childrenss-theater", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 177, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Religious Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "religious-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 178, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 3, 
+            "title": "Participation Golf", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "participation-golf", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 179, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 3, 
+            "title": "Participation Skateboarding", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "participation-skateboarding", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 180, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 4, 
+            "title": "Ice Skating", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "ice-skating", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 181, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 4, 
+            "title": "Health & Wellness", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "health-wellness", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 182, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 181, 
+            "title": "Yoga", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "yoga", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 183, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Automotive Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "automotive-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 184, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 183, 
+            "title": "Motorcycle Event", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "motorcycle-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 185, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 183, 
+            "title": "Car Event", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "car-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 186, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 121, 
+            "title": "Historical", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "historical", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 187, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 28, 
+            "title": "Dance Performance", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "dance-performance", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 188, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Tech Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "tech-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 189, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 153, 
+            "title": "Juneteenth", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "juneteenth", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 190, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 127, 
+            "title": "Photography Event", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "photography-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 191, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 18, 
+            "title": "Happy Hour", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "happy-hour", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 192, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 11, 
+            "title": "Business Conference", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "business-conference", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 193, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 116, 
+            "title": "Cultural Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "cultural-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 194, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 9, 
+            "title": "Public Event", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "public-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 195, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "For the Frugal", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "for-the-frugal", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 196, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 114, 
+            "title": "Seasonal Event", 
+            "icon_height": null, 
+            "is_associative": true, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "seasonal-event", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 197, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 4, 
+            "title": "The Great Outdoors", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "the-great-outdoors", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 198, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 197, 
+            "title": "Float Trips", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "float-trips", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 199, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 139, 
+            "title": "Auditions & Casting", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "auditions-casting", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 200, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 138, 
+            "title": "Educational", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "educational", 
+            "color": "", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 201, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 34, 
+            "title": "Support Groups", 
+            "icon_height": null, 
+            "is_associative": false, 
+            "icon_width": null, 
+            "category_type": "C", 
+            "association_coefficient": 0.0, 
+            "slug": "support-groups", 
             "color": "", 
             "icon": ""
         }
