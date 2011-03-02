@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 
 from preprocess.utils import MockInitializer
 from events.utils import CachedCategoryTree

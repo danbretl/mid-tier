@@ -98,3 +98,43 @@ class PreprocessRouter(object):
         elif model._meta.app_label == self.app_name:
             return False
         return None
+
+from preprocess.models_external import Location as ExtLocation
+from places.models import Place, Point, City
+class ImportLocations(object):
+    def run(self):
+        ext_locations = ExtLocation.objects.all()
+        for ext_location in ext_locations:
+            # city
+            city, created = City.objects.create(
+                city=ext_location.city,
+                state=ext_location.state,
+                slug=slugify(ext_location.city)
+                # slug=slugify(' '.join((ext_location.city, ext_location.state)))
+            )
+            # point
+            point, created = Point.objects.create(
+                latitude=ext_location.latitude,
+                longitude=ext_location.longitude,
+                address=ext_location.address,
+                city=city,
+                zip=ext_location.zipcode,
+                country='US'
+            )
+            # place
+            place, created = Place.objects.create(
+                point=point,
+                # prefix = '',
+                title=ext_location.title,
+                slug=slugify(ext_location.title),
+                # nickname=models.CharField(_('nickname'), blank=True, max_length=100),
+                # unit=models.CharField(_('unit'), blank=True, max_length=100, help_text='Suite or Apartment #'),
+                phone=ext_location.phone,
+                url=ext_location.url
+                # email=models.EmailField(_('email'), blank=True),
+                # description = models.TextField(_('description'), blank=True),
+                # status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=1)
+                # created = models.DateTimeField(auto_now_add=True)
+                # modified = models.DateTimeField(auto_now=True)
+                # place_types = models.ManyToManyField(PlaceType, blank=True)
+            )
