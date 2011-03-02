@@ -1,13 +1,11 @@
 import datetime, random
 
-from django.db import transaction
 from django.template.defaultfilters import slugify
 
 from core.utils import unique_everseen
 from places.models import Place
 from events.models import Event, Occurrence, User
 from events.utils import CachedCategoryTree
-from behavior.models import Category
 
 def joke():
     return """My apartment is infested with koala bears. It's the cutest infestation ever. Way better than cockroaches. When I turn on the light, a bunch of koala bears scatter, but I don't want them too. I'm like, "Hey... Hold on fellows... Let me hold one of you, and feed you a leaf." Koala bears are so cute, why do they have to be so far away from me. We need to ship a few over, so I can hold one, and pat it on its head."""
@@ -19,13 +17,11 @@ class MockInitializer(object):
         self.max_abstract_categories = max_abstract_categories
         self.description = description()
 
-    # @transaction.commit_manually
     def run(self):
         ctree = CachedCategoryTree()
 
         tester_api = User.objects.get(username='tester_api')
         village_vanguard = Place.objects.get(slug='village-vanguard')
-
 
         for concrete_category in ctree.concretes:
             for n_events in xrange(self.n_events_per_concrete_category):
@@ -51,7 +47,7 @@ class MockInitializer(object):
                     e.categories.add(ac)
 
                 # add some occurrences
-                for n_occurences in xrange(random.randint(1,self.max_occurrences_per_event)):
+                for n_occurences in xrange(random.randint(1, self.max_occurrences_per_event)):
                     today = datetime.date.today()
                     Occurrence(
                         event = e,
@@ -63,78 +59,3 @@ class MockInitializer(object):
                         end_time = datetime.datetime.now().time(),
                         is_all_day = False
                     ).save()
-        # transaction.commit()
-
-
-class PreprocessRouter(object):
-    """A router to control all database operations on models in
-    the `preprocess` application to the `scrape` db"""
-    
-    app_name = 'preprocess'
-    db_name = 'scrape'
-
-    def db_for_read(self, model, **hints):
-        "Point all operations on `preprocess` models to `scrape`"
-        if model._meta.app_label == self.app_name:
-            return self.db_name
-        return None
-
-    def db_for_write(self, model, **hints):
-        "Point all operations on `preprocess` models to `scrape`"
-        if model._meta.app_label == self.app_name:
-            return self.db_name
-        return None
-
-    def allow_relation(self, obj1, obj2, **hints):
-        "Allow any relation if a model in `preprocess` is involved"
-        if obj1._meta.app_label == self.app_name or obj2._meta.app_label == self.app_name:
-            return True
-        return None
-
-    def allow_syncdb(self, db, model):
-        "Make sure the `preprocess` app only appears on the `scrape` db"
-        if db == self.db_name:
-            return model._meta.app_label == self.app_name
-        elif model._meta.app_label == self.app_name:
-            return False
-        return None
-
-from preprocess.models_external import Location as ExtLocation
-from places.models import Place, Point, City
-class ImportLocations(object):
-    def run(self):
-        ext_locations = ExtLocation.objects.all()
-        for ext_location in ext_locations:
-            # city
-            city, created = City.objects.create(
-                city=ext_location.city,
-                state=ext_location.state,
-                slug=slugify(ext_location.city)
-                # slug=slugify(' '.join((ext_location.city, ext_location.state)))
-            )
-            # point
-            point, created = Point.objects.create(
-                latitude=ext_location.latitude,
-                longitude=ext_location.longitude,
-                address=ext_location.address,
-                city=city,
-                zip=ext_location.zipcode,
-                country='US'
-            )
-            # place
-            place, created = Place.objects.create(
-                point=point,
-                # prefix = '',
-                title=ext_location.title,
-                slug=slugify(ext_location.title),
-                # nickname=models.CharField(_('nickname'), blank=True, max_length=100),
-                # unit=models.CharField(_('unit'), blank=True, max_length=100, help_text='Suite or Apartment #'),
-                phone=ext_location.phone,
-                url=ext_location.url
-                # email=models.EmailField(_('email'), blank=True),
-                # description = models.TextField(_('description'), blank=True),
-                # status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=1)
-                # created = models.DateTimeField(auto_now_add=True)
-                # modified = models.DateTimeField(auto_now=True)
-                # place_types = models.ManyToManyField(PlaceType, blank=True)
-            )
