@@ -7,7 +7,8 @@ class JSONEmitterMinified(Emitter):
     """
     def render(self, request):
         cb = request.GET.get('callback')
-        seria = simplejson.dumps(self.construct(), cls=DateTimeAwareJSONEncoder, ensure_ascii=False)
+        seria = simplejson.dumps(self.construct(), cls=DateTimeAwareJSONEncoder, ensure_ascii=True, separators=(',',':'))
+        # seria = simplejson.dumps(self.construct(), cls=DateTimeAwareJSONEncoder, ensure_ascii=True, sort_keys=True, indent=4)
 
         # Callback
         if cb:
