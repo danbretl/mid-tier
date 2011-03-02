@@ -1,0 +1,9 @@
+.bzr*
+*.pyc
+settings_local.py
+*~
+biketextmate.log
+.ropeproject/
+*#*
+.venv
+TAGS
