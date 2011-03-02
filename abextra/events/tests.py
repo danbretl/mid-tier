@@ -93,6 +93,135 @@ class algorithm_profile(TestCase):
         #    person.push_recommendation()
             
 
+class PersonTest(TestCase):
+    """
+    tests for the Person framework for simulating preferences and testing
+    the ML algorithm.
+    """
+    # right now categories, not events, are used
+    fixtures = ['auth', 'categories']
+    
+    def setUp(self):
+        """initialize behavior db"""
+        self.user = User.objects.get(id=1)
+        self.db = user_behavior.UserBehaviorDict()
+        self.db.initialize_user(self.user)
+    
+    def __run_and_test_rounds(self, person, num_rounds, num_trials,
+                                    num_recommendations=settings.N):
+        """
+        run the given person for the given number of rounds, and then
+        check consistency- number of trials, rounds, recommendations, etc.
+        Not specific to one type of Person
+        """
+        person.run_rounds(num_rounds, num_trials, num_recommendations)
+        
+        # test number of rounds, trials, recommendations
+        self.assertEqual(len(person.rounds), num_rounds)
+        self.assertTrue(all([len(r) == num_trials for r in person.rounds]))
+        for round in person.rounds:
+            self.assertTrue(all([r.N == num_recommendations == len(r.actions)
+                                for r in round]))
+        
+        # check that it can't run more than once
+        self.assertRaises(testing_simulation.SimulationError, 
+                          person.run_rounds, (1, 1))
+    
+    def test_deterministic_person(self):
+        """
+        test the simulation where a person always goes to specific
+        categories and always X's others
+        """
+        # first, try a bunch of simple tests of the get_action behavior
+        all_categories = range(1, 10)
+        liked = random.sample(all_categories, 3)
+        simple_p = testing_simulation.DeterministicPerson(liked,
+                                                        user=self.user,
+                                                        db=self.db)
+        for c in all_categories:
+            self.assertEqual(simple_p.get_action(c), 
+                             GO if c in liked else XOUT)
+        
+        # now more realistic tests with real category IDs
+        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine', 
+                      'Sculpture']
+        category_ids = map(testing_simulation.get_category_id, categories)
+        person = testing_simulation.DeterministicPerson(category_ids, 
+                                                        db=self.db)
+        
+        # this should take under 1 second to run with the custom db, and 
+        # more like 30 seconds with the regular DB
+        self.__run_and_test_rounds(person, 50, 2)
+        
+        # for each round, check that it had the correct behavior
+        for rlst in person.rounds:
+            for r in rlst:
+                for c, a in zip(r.recommendations, r.actions):
+                    if c in category_ids:
+                        self.assertEquals(a, GO)
+                    else:
+                        self.assertEquals(a, XOUT)
+
+
+class UserBehaviorDBTest(TestCase):
+    """
+    test of the UserBehaviorDB classes, including UserBehaviorDict. Note that
+    the UserBehaviorDjangoDB test has not yet been implemented
+    """
+    fixtures = ['auth', 'categories']
+    
+    def setUp(self):
+        """initialize with some category ids"""
+        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine', 
+                      'Sculpture']
+        self.category_ids = map(testing_simulation.get_category_id, categories)
+    
+    def test_user_behavior_dict(self):
+        """
+        test the UserBehaviorDict, which is a class that stores user
+        behavior not in a database but in a dictionary in memory
+        """
+        u = 1 # it doesn't actually matter if we have a real user or not
+        db = user_behavior.UserBehaviorDict()
+        self.__db_test(u, db)
+    
+    def test_user_behavior_django_db(self):
+        """test the UserBehaviorDjangoDB class"""
+        # TODO: THIS TEST HAS YET TO BE WRITTEN
+        pass
+        
+    def __db_test(self, u, db):
+        """given a user and a database, run through a bunch of tests by adding
+        data and checking it at various points"""
+        c1, c2, c3 = self.category_ids[:3]
+        
+        for i in range(10):
+            db.perform_action(u, c1, GO)
+        self.assertEqual(db.gvix_dict(u)[c1], [10, 0, 0, 0])
+        
+        for i in range(20):
+            db.perform_action(u, c1, VIEW)
+        self.assertEqual(db.gvix_dict(u)[c1], [10, 20, 0, 0])
+        
+        for i in range(50):
+            db.perform_action(u, c2, IGNORE)
+            db.perform_action(u, c2, XOUT)
+        self.assertEqual(db.gvix_dict(u)[c2], [0, 0, 50, 50])
+        
+        # check that this hasn't affected others
+        self.assertEqual(db.gvix_dict(u)[c3], [0, 0, 0, 0])
+        
+        # test clearing
+        db.clear()
+        
+        for c in self.category_ids:
+            self.assertEqual(db.gvix_dict(u)[c], [0, 0, 0, 0])
+        
+        # and finally, clear again
+        db.clear()
+
+
+
 class AlgorithmTest(TestCase):
     """test for ml algorithms"""
     fixtures = ['auth', 'categories', 'default_behavior','places', 'events']

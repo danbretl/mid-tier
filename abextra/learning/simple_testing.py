@@ -22,11 +22,14 @@ def runtests():
     behavior_db = user_behavior.UserBehaviorDict()
     category_ids = map(testing_simulation.get_category_id, ['Bars','Clubs', 'Plays','Sculpture','Fallon','Wine','Sculpture'])
     #person = testing_simulation.DeterministicPerson(category_ids)
-    person = testing_simulation.TransitionSimulatedPerson(db=behavior_db)
+    #pref_file = "learning/preferences/twotypes.txt"
+    pref_file = "learning/preferences/default.txt"
+    person = testing_simulation.TransitionSimulatedPerson(db=behavior_db, 
+                                                preference_file=pref_file)
     print "running rounds"
     
     a = time.time()
-    person.run_rounds(50, 100)
+    person.run_rounds(20, 20)
     print "Time to run rounds:", time.time() - a
     person.plot_gvix("plot_gvix.pdf")
     person.plot_preference_distribution("plot_preference_distribution.pdf")

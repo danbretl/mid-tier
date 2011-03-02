@@ -10,6 +10,9 @@ Date Created: 2/26/2011
 """
 
 import sys
+import os
+import re
+import time
 from collections import defaultdict
 
 import numpy as np
@@ -23,6 +26,11 @@ import user_behavior
 from events.utils import CachedCategoryTree
 from events.models import Category
 
+# keep track of the preferences directory
+PREFERENCES_DIRECTORY = os.path.join(
+                            os.path.split(os.path.abspath( __file__ ))[0],
+                            "preferences")
+DEFAULT_PREFERENCES_FILE = os.path.join(PREFERENCES_DIRECTORY, "default.txt")
 
 ### FUNCTIONS ###
 
@@ -89,32 +97,73 @@ class PreferenceTransitionMatrix:
     distribution of preferences at the top level and a transition matrix
     showing how one parent's preference affects its children
     """
-    def __init__(self):
-        """initialize the matrix and distribution, right now with defaults"""
-        self.love = SimulatedPreference("Love", .5, .3, .2, 0)
-        self.indifferent = SimulatedPreference("Indifferent", .1, .2, .5, .2)
-        self.hate = SimulatedPreference("Hate", 0, .1, .2, .7)
+    def __init__(self, preference_file=DEFAULT_PREFERENCES_FILE):
+        """
+        initialize the matrix and distribution from the given preference
+        file. The format of the file is tab or space delimited (with #
+        for comments). Should documentation of this format go somewhere else?
         
-        self.original_distribution = [(self.love, 0.04), 
-                                      (self.indifferent, .56), 
-                                      (self.hate, .4)]
+        # each preference and its GVIX distribution
+        Preference1Name G   V   I   X
+        Preference2Name G   V   I   X
+        ...
         
-        # thought- there is a way to write this much more succinctly. For
-        # example, could be imported as a tab delimited matrix. Not yet
-        # important at all, but if we make our simulation more complicated,
-        # something to think about it.
+        # original distribution at top level, in order
+        Preference1    Preference2    Preference3
+        
+        # transition matrix
+        .8  .1  .1
+        ...
+        """
+        # parse from a preference file
+        # I've tried to cover a lot of common syntax errors, but there could
+        # be others out there
+        lines = [l[:-1] for l in open(preference_file) if not l.startswith("#")]
+        
+        # get simulated preferences
+        preferences = []
+        i = 0
+        while i < len(lines):
+            if lines[i] == "":
+                if len(preferences) == 0:
+                    raise ParseError("Must be at least one preference")
+                i = i + 1
+                break
+            spl = re.split("\s+", lines[i])
+            if len(spl) != 5:
+                raise ParseError("Could not parse preference line")
+            preferences.append(SimulatedPreference(spl[0], *map(float, spl[1:])))
+            i += 1
+        
+        num_prefs = len(preferences)
+        
+        # get original distribution
+        spl = re.split("\s+", lines[i])
+        if len(spl) != num_prefs:
+            raise ParseError("Number of preferences " + str(len(preferences)) +
+                             " is not equal to length of original " +
+                             "distribution " + str(len(spl)))
+        self.original_distribution = zip(preferences, map(float, spl))
+         
+        # check for blank line (if you forgot it then matrix could be wrong)
+        if lines[i+1] != "":
+            raise ParseError("Need blank line between original distribution " +
+                             "and transition matrix")
+         
+        matrix = [re.split("\s+", l) for l in lines[i+2:]]
+        lengths = list(set(map(len, matrix)))
+        
+        # check if matrix is either wrong size or jagged
+        print matrix, lengths
+        if (len(matrix) != num_prefs or len(lengths) != 1 or 
+            lengths[0] != num_prefs):
+            raise ParseError("Number of preferences " + str(num_prefs) +
+                             " is not equal to size of matrix")
         
         self.transition_matrix = {}
-        self.transition_matrix[self.love] = [(self.love, .65), 
-                                             (self.indifferent, .3), 
-                                             (self.hate, 0.05)]
-        self.transition_matrix[self.indifferent] = [(self.love, .15), 
-                                                    (self.indifferent, .5), 
-                                                    (self.hate, .35)]
-        self.transition_matrix[self.hate] = [(self.love, 0.005), 
-                                             (self.indifferent, .295), 
-                                             (self.hate, .7)]
-        
+        for pref, row in zip(preferences, matrix):
+            self.transition_matrix[pref] = zip(preferences, map(float, row))
+     
     def get_preference_dictionary(self, ct):
         """passed a CachedCategoryTree, return category->preference dict"""
         # pass around a dictionary to add
@@ -357,9 +406,10 @@ class TransitionSimulatedPerson(DiscretePreferencePerson):
     categories. This one has preferences for each that are generated
     from a transition matrix
     """
-    def __init__(self, user=None, db=None):
+    def __init__(self, user=None, db=None, 
+                        preference_file=DEFAULT_PREFERENCES_FILE):
         """initialize this user's behavior as a category->preference mapping"""
-        transition_matrix = PreferenceTransitionMatrix()
+        transition_matrix = PreferenceTransitionMatrix(preference_file)
         ct = CachedCategoryTree()
         pref_map = transition_matrix.get_preference_dictionary(ct)
         DiscretePreferencePerson.__init__(self, pref_map, user, db=db)
