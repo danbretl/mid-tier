@@ -26,12 +26,13 @@ class Event(models.Model):
         managed = False
 
 class EventCategory(models.Model):
-    event_id = models.IntegerField(null=True, blank=True)
+    event_id = models.IntegerField(null=True, blank=True, primary_key=True)
     category_id = models.IntegerField(null=True, blank=True)
     objects = MGR()
     class Meta:
         db_table = u'event_category'
         managed = False
+        unique_together = (('event_id', 'category_id'),)
 
 class Location(models.Model):
     guid = models.CharField(unique=True, max_length=255, blank=True)
@@ -54,12 +55,12 @@ class Location(models.Model):
 
 class Occurrence(models.Model):
     guid = models.CharField(unique=True, max_length=255, blank=True)
-    event = models.ForeignKey(Event, related_name='occurrences')
+    event_id = models.IntegerField(null=True, blank=True)
     timestamp = models.DateTimeField()
     start_date = models.DateField()
-    start_time = models.TextField(blank=True) # This field type is a guess.
+    start_time = models.TimeField(blank=True) # This field type is a guess.
     end_date = models.DateField(null=True, blank=True)
-    end_time = models.TextField(blank=True) # This field type is a guess.
+    end_time = models.TimeField(blank=True) # This field type is a guess.
     one_off_location = models.CharField(max_length=1800, blank=True)
     location_id = models.IntegerField(null=True, blank=True)
     is_soldout = models.IntegerField()
