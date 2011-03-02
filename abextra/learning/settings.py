@@ -4,7 +4,7 @@ import math
 
 #from django.contrib.auth.models import User
 
-Gm = 5                # G Multiplier in the scoring function
+Gm = 15                # G Multiplier in the scoring function
 Vm = 1                 # V Multiplier in the scoring function
 Im = 1                 # I Multiplier in the scoring function
 Xp = 0.4               # X's power in scoring function
