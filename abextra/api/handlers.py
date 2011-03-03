@@ -89,6 +89,7 @@ class EventHandler(BaseHandler):
         try:
             category_id = int(request.GET.get('category_id'))
         except (ValueError, TypeError):
+            # import ipdb; ipdb.set_trace()
             recommended_events = ml.recommend_events(request.user, events_qs)
         else:
             all_children = ctree.children_recursive(ctree.get(id=category_id))
@@ -98,12 +99,15 @@ class EventHandler(BaseHandler):
         # FIXME a little unreliable and prolly outta place
 
         # FIXME optimization (should refactor with batch select?)
-        occurrences = Occurrence.objects.select_related() \
+        occurrences = Occurrence.objects.select_related('place__point__city') \
             .filter(event__in=recommended_events)
         occurrences_by_event_id = defaultdict(lambda: [])
         for occurrence in occurrences:
             occurrence_dict = model_to_dict(occurrence, exclude=('event',))
             place_dict = model_to_dict(occurrence.place, exclude=('place_types',))
+            point_dict = model_to_dict(occurrence.place.point)
+            point_dict.update(city=model_to_dict(occurrence.place.point.city))
+            place_dict.update(point=point_dict)
             occurrence_dict.update(place=place_dict)
             occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
 
