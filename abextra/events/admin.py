@@ -16,7 +16,7 @@ class CategoryAdmin(admin.ModelAdmin):
     form = CategoryAdminForm
     search_fields = ('title',)
     list_filter = ('category_type',)
-    list_display = ('title', 'parent_title', 'category_type', 'is_associative')
+    list_display = ('title', 'parent_title', 'category_type', 'is_associative', 'icon')
     fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width', 'color')
     readonly_fields = ('icon_height', 'icon_width')
     inlines = [

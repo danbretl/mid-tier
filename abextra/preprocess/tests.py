@@ -1,10 +1,11 @@
 from django.test import TestCase
+from django.template.defaultfilters import slugify
 
 from preprocess.utils import MockInitializer
 from events.utils import CachedCategoryTree
 
 class InitializerTest(TestCase):
-    fixtures = ['categories', 'auth', 'places']
+    fixtures = ['auth', 'categories', 'places']
 
     def setUp(self):
         self.n = 5

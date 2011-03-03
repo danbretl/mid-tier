@@ -36,10 +36,6 @@ DATABASES = {
     }
 }
 
-# FIXME this router breakes tests during fixture loading, don't really need it right now
-# custom db routers
-# DATABASE_ROUTERS = ['preprocess.utils.PreprocessRouter']
-
 # don't run south migrations to setup test dbs
 SOUTH_TESTS_MIGRATE = False
 
@@ -162,3 +158,10 @@ STATIC_DOC_ROOT = MEDIA_ROOT
 
 
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
+
+# FIXME this router breakes tests during fixture loading, don't really need it right now
+# FIXME hence, this ugly face hack
+import sys
+# if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
+#     # custom db routers
+#     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
