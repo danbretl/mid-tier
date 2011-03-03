@@ -1,12 +1,16 @@
+from collections import defaultdict
+
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
-from events.models import Event, Category
+from events.models import Event, Category, Occurrence
 from events.utils import CachedCategoryTree
 
 from behavior.models import EventAction
 
 from learning import ml
+
+from django.forms.models import model_to_dict
 
 # Events
 
@@ -91,12 +95,28 @@ class EventHandler(BaseHandler):
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
 
-        # TODO hack :: mucking with a persistent obj
-        for recommended_event in recommended_events:
-            recommended_event.concrete_category = \
-                ctree.surface_parent(recommended_event.concrete_category)
+        # FIXME a little unreliable and prolly outta place
 
-        return recommended_events
+        # FIXME optimization (should refactor with batch select?)
+        occurrences = Occurrence.objects.select_related() \
+            .filter(event__in=recommended_events)
+        occurrences_by_event_id = defaultdict(lambda: [])
+        for occurrence in occurrences:
+            occurrence_dict = model_to_dict(occurrence, exclude=('event',))
+            place_dict = model_to_dict(occurrence.place, exclude=('place_types',))
+            occurrence_dict.update(place=place_dict)
+            occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
+
+        def to_dict(event):
+            event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences'))
+            event_dict.update(occurrences=occurrences_by_event_id[event.id])
+            event_dict.update(categories=[1,2,3])
+            event_dict.update(concrete_category=ctree.surface_parent(
+                ctree.get(id=event.concrete_category_id)
+            ))
+            return event_dict
+
+        return [to_dict(event) for event in recommended_events]
 
 class CategoryHandler(BaseHandler):
     allowed_methods = ('GET')
