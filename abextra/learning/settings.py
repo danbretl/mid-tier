@@ -5,10 +5,10 @@ import math
 #from django.contrib.auth.models import User
 
 Gm = 15                # G Multiplier in the scoring function
-Vm = 1                 # V Multiplier in the scoring function
+Vm = 4                 # V Multiplier in the scoring function
 Im = 1                 # I Multiplier in the scoring function
 Xp = 0.4               # X's power in scoring function
-learning_constant = 500 # learning constant. Affects learning speed.
+learning_constant = 50 # learning constant. Affects learning speed.
                        # Higher values result in slower learning
 #resistance is a measure of how stubborn a category is in getting selected.
 #This number should always be less than the learning_constant otherwise
@@ -65,5 +65,5 @@ top3Score = topN_function(3)
 #top3Score = mod_topN_function(3)
 
 #This caps the probability of any CategoryTree node getting selected in a probabilistic walk.
-max_probability = 0.20
+max_probability = 0.25
 

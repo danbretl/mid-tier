@@ -56,6 +56,17 @@ class Command(NoArgsCommand):
         gv.layout(gvv, 'dot')
         gv.render(gvv, 'pdf', os.path.join(output_dir, 'abstract.pdf'))
 
+        st, order = breadth_first_search(gr, root=Category.objects.get(title="Concrete"))
+        gst = digraph()
+        gst.add_spanning_tree(st)
+
+        dot = write(gst)
+        gvv = gv.readstring(dot)
+
+        gv.layout(gvv, 'dot')
+        gv.render(gvv, 'pdf', os.path.join(output_dir, 'concrete.pdf'))
+
+
         # # Individual trees from
         # for c in Category.objects.filter(parent__exact=None):
         #     gr.del_edge((c, ROOT_NODE))
