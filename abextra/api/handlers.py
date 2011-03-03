@@ -89,7 +89,6 @@ class EventHandler(BaseHandler):
         try:
             category_id = int(request.GET.get('category_id'))
         except (ValueError, TypeError):
-            # import ipdb; ipdb.set_trace()
             recommended_events = ml.recommend_events(request.user, events_qs)
         else:
             all_children = ctree.children_recursive(ctree.get(id=category_id))
@@ -97,8 +96,9 @@ class EventHandler(BaseHandler):
             recommended_events = ml.recommend_events(request.user, events_qs)
 
         # FIXME a little unreliable and prolly outta place
+        recommended_events.insert(0, Event.objects.get(id=1))
 
-        # FIXME optimization (should refactor with batch select?)
+        # occurrence optimizations
         occurrences = Occurrence.objects.select_related('place__point__city') \
             .filter(event__in=recommended_events)
         occurrences_by_event_id = defaultdict(lambda: [])
@@ -106,18 +106,35 @@ class EventHandler(BaseHandler):
             occurrence_dict = model_to_dict(occurrence, exclude=('event',))
             place_dict = model_to_dict(occurrence.place, exclude=('place_types',))
             point_dict = model_to_dict(occurrence.place.point)
-            point_dict.update(city=model_to_dict(occurrence.place.point.city))
+            point_dict.update(city=model_to_dict(occurrence.place.point.city, fields=('id', 'city', 'state')))
             place_dict.update(point=point_dict)
             occurrence_dict.update(place=place_dict)
             occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
 
+        # abstract categories
+        recommended_event_ids = map(lambda e: e.id, recommended_events)
+        abstract_category_ids_by_event_id = Category.objects \
+            .for_events(recommended_event_ids, 'A')
+
         def to_dict(event):
+            # occurrences
             event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences'))
             event_dict.update(occurrences=occurrences_by_event_id[event.id])
-            event_dict.update(categories=[1,2,3])
-            event_dict.update(concrete_category=ctree.surface_parent(
+
+            # concrete category
+            concrete_category = model_to_dict(ctree.surface_parent(
                 ctree.get(id=event.concrete_category_id)
-            ))
+            ), fields=('id', 'title'))
+            event_dict.update(concrete_category=concrete_category)
+
+            # abstract categories
+            abstract_category_ids = abstract_category_ids_by_event_id[event.id]
+            abstract_categories = [
+                model_to_dict(ctree.get(id=c_id), fields=('id', 'title')) \
+                    for c_id in abstract_category_ids
+            ]
+            event_dict.update(categories=abstract_categories)
+
             return event_dict
 
         return [to_dict(event) for event in recommended_events]

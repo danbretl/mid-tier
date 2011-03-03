@@ -265,7 +265,11 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
-    returned_events = Event.objects.filter(id__in=selected_events)
+
+    # FIXME select related is an ugly fix, because it costs us 1 JOIN.
+    # FIXME look into refactoring your category_dict to have category_id keys
+    # FIXME then lookup using event.category_id which won't hit the db
+    returned_events = Event.objects.filter(id__in=selected_events).select_related('concrete_category')
     #this can be made more efficient with a single query. Leaving out for now. 
     return fuzzy_sort(semi_sort([(categories_dict[event.concrete_category],event)
                                  for event in returned_events], min(3,len(returned_events))))
