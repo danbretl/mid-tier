@@ -79,6 +79,7 @@ class Place(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     place_types = models.ManyToManyField(PlaceType, blank=True)
+    image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
 
     class Meta:
         verbose_name = _('place')

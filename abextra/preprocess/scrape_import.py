@@ -98,7 +98,8 @@ class ImportScrapeData(object):
             # nickname=models.CharField(_('nickname'), blank=True, max_length=100),
             # unit=models.CharField(_('unit'), blank=True, max_length=100, help_text='Suite or Apartment #'),
             phone=x_location.phone if x_location.phone and (not ':' in x_location.phone) else None or '',
-            url=x_location.url or x_location.guid # FIXME source (villagevoice) specific
+            url=x_location.url or x_location.guid, # FIXME source (villagevoice) specific
+            image_url=x_location.image_url or ''
             # email=models.EmailField(_('email'), blank=True),
             # description = models.TextField(_('description'), blank=True),
             # status = models.IntegerField(_('status'), choices=STATUS_CHOICES, default=1)

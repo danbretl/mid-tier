@@ -35,6 +35,7 @@ class EventHandler(BaseHandler):
                 'unit',
                 'phone',
                 'url',
+                'image_url',
                 'email',
                 'description',
                 'created',
