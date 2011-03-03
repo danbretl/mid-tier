@@ -14,9 +14,9 @@ MANAGERS = ADMINS
 
 INTERNAL_IPS = ('192.168.1.107:8001',)
 
-DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
-DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
-DB_HOST = getattr(settings_local, 'DB_HOST', 'localhost')
+DB_USER = getattr(settings_local, 'DB_USER', 'abexuper')
+DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abeX11!')
+DB_HOST = getattr(settings_local, 'DB_HOST', 'testsv.abextratech.com')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',

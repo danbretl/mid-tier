@@ -39,16 +39,18 @@ DJANGO_DB = user_behavior.UserBehaviorDjangoDB()
 def recommend_events(user, events=None, number=settings.N):
     """
     This is the primary api for the mid-tier to connect to.
-    Input: User, Categories (optional) : The list of categories the user is interested in.
-    If provided, only 
-    number is the number of recommendations requested. This is defaulted to N in settings.py
+    Input: User, query set representing events to be recommended from. 
+    If provided, only number is the number of recommendations requested.
+        - This is defaulted to N in settings.py
     """
     categories_dict = random_tree_walk_algorithm(user, number)
 
+    #Debugging statements
     # print "Recommended categories: ",[c.title for c in categories]
     # print len(filter_events(user, events, categories_dict, number))
+    # t = filter_events(user, events, categories_dict, number, set())
+    # import pdb; pdb.set_trace()
     return filter_events(user, events, categories_dict, number, set())
-
 
 # NOTE: What is the purpose of this wrapper function?
 
@@ -263,7 +265,8 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     if missing_count > 0 and len(events) > 0:
         # This is "hopefully" unlikely to happen if there are enough events in each category.
         # If we get to this point, it means we don't have enough events for the categories sampled
-        # resample from the categories and recommend more events. This is one place where we could break the settings.max_probability cap.
+        # resample from the categories and recommend more events.
+        # This is one place where we could break the settings.max_probability cap.
         # But this could be necessary for example if you are in Waukeesha, Wisconsin and only have movies to go to.
         # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you.
         selected_events.union(set([ev.id for ev in
