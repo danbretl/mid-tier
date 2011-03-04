@@ -161,7 +161,7 @@ AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
 
 # FIXME this router breakes tests during fixture loading, don't really need it right now
 # FIXME hence, this ugly face hack
-import sys
+# import sys
 # if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
 #     # custom db routers
 #     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
