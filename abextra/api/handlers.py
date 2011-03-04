@@ -95,6 +95,16 @@ class EventHandler(BaseHandler):
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
 
+        non_actioned_events = Event.objects.raw(
+            """SELECT `events_event`.`id` FROM `events_event`
+                LEFT JOIN `behavior_eventaction`
+                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
+            """, [request.user.id, [e.id for e in recommended_events]]
+        )
+        for event in non_actioned_events:
+            EventAction(event=event, user=request.user, action='I').save()
+
         # occurrence optimizations
         occurrences = Occurrence.objects.select_related('place__point__city') \
             .filter(event__in=recommended_events)
@@ -153,7 +163,7 @@ class CategoryHandler(BaseHandler):
 # Behavior
 
 class EventActionHandler(BaseHandler):
-    allowed_methods = ('GET', 'POST')
+    allowed_methods = ('GET')
     model = EventAction
     fields = ('action',
         ('user', ('id',)),
@@ -169,10 +179,3 @@ class EventActionHandler(BaseHandler):
             response = rc.NOT_FOUND
             response.write(u'No user action exists for event [%s].' % event_id)
         return response
-
-    # @validate(EventActionForm)
-    # @require_extended
-    def create(self, request):
-        print 'tada'
-        # import ipdb; ipdb.set_trace()
-        return rc.CREATED
