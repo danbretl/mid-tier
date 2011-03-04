@@ -1,6 +1,7 @@
 from django.db import models
 
 MGR = lambda: models.Manager().db_manager('scrape')
+# FIXME look into http://docs.djangoproject.com/en/1.2/topics/db/managers/#set-use-for-related-fields-when-you-define-the-class
 
 class Category(models.Model):
     xid = models.IntegerField(null=True, blank=True)
