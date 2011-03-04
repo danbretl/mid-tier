@@ -255,7 +255,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         else:
             #This category has no more events. If it comes down to it, Don't sample it ever again.
             missing_count += 1
-            del categories_dict[category]
+            # del categories_dict[category]
 
         if len(events[category]) == 0 :
             del events[category]
