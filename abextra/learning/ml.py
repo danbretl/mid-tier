@@ -182,7 +182,7 @@ def generate_category_mapping(event_query_set, categories_dict=None):
     return category_event_map
 
 
-def filter_events(user, event_query_set=None, categories_dict=None, number=settings.N, selected_events=set()):
+def filter_events(user, event_query_set=None, categories_dict=None, number=settings.N, selected_events=set(), selected_event_score={}):
     """
     Input: User,
            List of categories
@@ -215,6 +215,11 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     for key in set(categories_dict.keys()) - set(events.keys()):
             del categories_dict[key]
     categories = sample_distribution(categories_dict.items(), number)
+
+    # Remove already selected events from the list of events. 
+    for category in categories:
+        # Select only those events that have not yet been selected.
+        events[category] = events[category] - selected_events
     
     # This is an optimization.
     # Prepare in advance all the users behavior for the categories under consideration. 
@@ -222,8 +227,6 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     dictionary_category_eaa = defaultdict(lambda :(0, 0, 0, 0))
     for ea in eaa:
         dictionary_category_eaa[ea.category_id] = (ea.g, ea.v, ea.i, ea.x)
-
-    # This contains the selected events to be returned. 
 
     #This is an optimization
     #Stores the score for every event id.
@@ -241,15 +244,16 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     missing_count = 0
     for category in categories:
         # Next sample an event based on the abstract score.
-        # Select only those events that have not yet been selected. 
-        event = sample_distribution([(event_id, event_abstract_score[event_id]) for event_id in (events[category] - selected_events)],1)
+        event = sample_distribution([(event_id, event_abstract_score[event_id]) for event_id in events[category]],1)
         if event:
             selected_events.add(event[0])
+            selected_event_score[event[0]] = categories_dict[category] 
             # This ensures an already selected event does not get selected again.
             events[category].discard(event[0])
         else:
             #This category has no more events. If it comes down to it, Don't sample it ever again.
             missing_count += 1
+            del categories_dict[category]
 
         if len(events[category]) == 0 :
             del events[category]
@@ -261,13 +265,13 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
         # But this could be necessary for example if you are in Waukeesha, Wisconsin and only have movies to go to.
         # Or worse, if you are in Wahkon, Wisconsin and have no events or literally  nothing around you.
         selected_events.union(set([ev.id for ev in
-                                   filter_events(user, event_query_set, categories_dict, missing_count, selected_events)]))
-        
+                                   filter_events(user, event_query_set, categories_dict, missing_count, selected_events, selected_event_score)]))
+
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
     returned_events = Event.objects.filter(id__in=selected_events)
     #this can be made more efficient with a single query. Leaving out for now. 
-    return fuzzy_sort(semi_sort([(categories_dict[event.concrete_category],event)
+    return fuzzy_sort(semi_sort([(selected_event_score[event.id],event)
                                  for event in returned_events], min(3,len(returned_events))))
     
 
