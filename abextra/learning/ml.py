@@ -23,12 +23,13 @@
 from collections import defaultdict
 import operator
 import math
+import itertools
 
 import numpy
 
 import random
 import settings
-from events.models import Event, Category, CategoryManager
+from events.models import Event, Category
 from category_tree import CategoryTree
 from behavior.models import EventActionAggregate
 import user_behavior
@@ -231,14 +232,15 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
     #This is an optimization
     #Stores the score for every event id.
     event_abstract_score = defaultdict(lambda :0)
-    for category, event_ids in events.iteritems():
-        #Mapping between event ids and all abstract categories.
-        event_cat_dict = get_categories(list(event_ids), ('A'))
-        for event_id, abstract_categories in event_cat_dict.items():
-            event_abstract_score[event_id] = max(abstract_scoring_function(abstract_categories, dictionary_category_eaa),
-                                                 event_abstract_score[event_id])
 
-    
+    #Mapping between event ids and all abstract categories.
+    all_event_ids = itertools.chain(*events.values())
+    event_cat_dict = Category.objects.for_events(tuple(all_event_ids), 'A')
+
+    for event_id, abstract_categories in event_cat_dict.items():
+        event_abstract_score[event_id] = max(abstract_scoring_function(abstract_categories, dictionary_category_eaa),
+                                             event_abstract_score[event_id])
+
     # First sample a category (already sampled and available in categories).
     # This maintains a count of all categories that were sampled from but didn't have enough events and need to be asked for again. 
     missing_count = 0
@@ -559,23 +561,3 @@ def sample_distribution(distribution, trials=1, category_count=None):
                 
     # import pdb; pdb.set_trace()
     return return_list
-
-
-def get_categories(event_ids=None, categories='E'):
-    """
-    Input: Event_ids, categories which may be 
-    'E' - Everything, 'A' - Abstract or 'C' - Concrete
-    Output: Dictionary of events corresponding to list of category ids 
-    """
-    category_manager = CategoryManager()
-    eid_categories = None
-    if categories == 'E':
-        eid_categories = category_manager.for_events(event_ids, 'AC')
-    elif categories == 'A':
-        eid_categories = category_manager.for_events(event_ids, 'A')
-    elif categories == 'C':
-        eid_categories = category_manager.for_events(event_ids, 'C')
-    else:
-        print "Invalid input to function ml.get_categories."
-
-    return eid_categories

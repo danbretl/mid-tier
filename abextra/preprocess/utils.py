@@ -51,8 +51,8 @@ class MockInitializer(object):
                     today = datetime.date.today()
                     Occurrence(
                         event = e,
-                        place = village_vanguard if n_occurences % 2 else None,
-                        one_off_place = "" if n_occurences % 2 else "AbextraTech @ 93 Leonard St., New York, NY 10013",
+                        place = village_vanguard,
+                        one_off_place = "AbextraTech @ 93 Leonard St., New York, NY 10013",
                         start_date = today,
                         start_time = datetime.datetime.now().time(),
                         end_date = today,
