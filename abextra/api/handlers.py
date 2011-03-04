@@ -83,7 +83,7 @@ class EventHandler(BaseHandler):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
-        events_qs = Event.future.filter_user_actions(request.user, 'GX')
+        events_qs = Event.future.filter_user_actions(request.user, 'VI')
         ctree = CachedCategoryTree()
 
         try:
