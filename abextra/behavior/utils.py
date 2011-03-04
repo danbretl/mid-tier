@@ -7,3 +7,4 @@ def reset_user_behavior(user, nuke_event_actions=False):
     if nuke_event_actions:
         EventAction.objects.filter(user=user).delete()
     EventActionAggregate.objects.filter(user=user).delete()
+    

@@ -55,3 +55,14 @@ def reset_behavior(request):
         return HttpResponseNotAllowed(['GET'])
     reset_user_behavior(request.user)
     return rc.ALL_OK
+
+# Adding a handler to delete all behavior
+@require_auth
+def reset_behavior_all(request):
+    """
+    Resets behavior similart to reset_behavior but also resets event actions. 
+    """
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    reset_user_behavior(request.user, True)
+    return rc.ALL_OK

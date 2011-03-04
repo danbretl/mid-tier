@@ -32,4 +32,5 @@ urlpatterns = patterns('',
     # url(r'^actions(/(?P<event_id>[^/]+))?/$', event_actions),
     url(r'^actions/$', 'behavior.views.create_eventaction'),    # TODO temp hack to go around weirdness with piston's POST
     url(r'^actions/reset/$', 'behavior.views.reset_behavior'),  # TODO temp hack - use piston
+    url(r'^actions/reset_all/$', 'behavior.views.reset_behavior_all'),  # TODO temp hack - use piston
 )

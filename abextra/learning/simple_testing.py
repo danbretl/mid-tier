@@ -20,7 +20,9 @@ u = User.objects.get(id=1)
 def runtests():
     """some really basic tests"""
     behavior_db = user_behavior.UserBehaviorDict()
-    category_ids = map(testing_simulation.get_category_id, ['Bars','Clubs', 'Plays','Sculpture','Fallon','Wine','Sculpture'])
+    category_ids = map(testing_simulation.get_category_id,
+                       ['Bars', 'Clubs', 'Plays', 'Sculpture Events',
+                        'Fallon', 'Wine', 'Shopping Event'])
     #person = testing_simulation.DeterministicPerson(category_ids)
     #pref_file = "learning/preferences/twotypes.txt"
     pref_file = "learning/preferences/default.txt"

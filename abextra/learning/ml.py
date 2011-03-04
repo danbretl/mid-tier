@@ -8,11 +8,11 @@
      b) Each function works on a parent and its children.
      c) Each function may be applied top_down_recursive or bottom_up_recursive.
      d) Each function only writes to the CategoryTree dictionary.
- The most main function is get_event_recommendations(user) which is called by 
+ The most main function is get_event_recommendations(user) which is called by.
  the middle tier.
  It returns a set of events as recommendations.
  All default values and functions are defined in settings.py.
- #ToDo: 
+ #ToDo:
  Migrate all default values and functions from settings.py into LiveSettings
 
  Assumptions:
@@ -21,7 +21,6 @@
 """
 
 from collections import defaultdict
-import operator
 import math
 import itertools
 

@@ -9,7 +9,7 @@ the database and the dictionary
 import collections
 
 from simulation_shared import *
-from behavior.models import EventActionAggregate
+from behavior.models import EventActionAggregate, EventAction
 from django.contrib.auth.models import User
 from events.models import Category
 
@@ -116,4 +116,4 @@ class UserBehaviorDjangoDB(UserBehaviorDB):
 
 # Normally I wouldn't create a global variable like this, but it's used in a
 # lot of function defaults
-DJANGO_DB = UserBehaviorDjangoDB()
+DJANGO_DB = UserBehaviorDjangoDB() 
