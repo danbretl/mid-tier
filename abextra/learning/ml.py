@@ -214,7 +214,7 @@ def filter_events(user, event_query_set=None, categories_dict=None, number=setti
 
     # Remove all categories that are not present in the set of events so we only sample categories for which we have events. 
     for key in set(categories_dict.keys()) - set(events.keys()):
-            del categories_dict[key]
+        del categories_dict[key]
     categories = sample_distribution(categories_dict.items(), number)
 
     # Remove already selected events from the list of events. 
