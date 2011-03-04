@@ -112,7 +112,7 @@ class Event(models.Model):
 class Occurrence(models.Model):
     """Models a particular occurance of an event"""
     event = models.ForeignKey(Event, related_name='occurrences')
-    place = models.ForeignKey(Place, blank=True, null=True)
+    place = models.ForeignKey(Place, related_name='occurrences')
     one_off_place = models.CharField(max_length=200, blank=True)
     start_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
