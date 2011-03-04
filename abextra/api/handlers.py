@@ -95,9 +95,6 @@ class EventHandler(BaseHandler):
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
 
-        # FIXME a little unreliable and prolly outta place
-        recommended_events.insert(0, Event.objects.get(id=1))
-
         # occurrence optimizations
         occurrences = Occurrence.objects.select_related('place__point__city') \
             .filter(event__in=recommended_events)
