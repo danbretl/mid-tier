@@ -91,10 +91,11 @@ class EventHandler(BaseHandler):
         except (ValueError, TypeError):
             recommended_events = ml.recommend_events(request.user, events_qs)
         else:
-            all_children = ctree.children_recursive(ctree.get(id=category_id))
+            category = ctree.get(id=category_id)
+            all_children = ctree.children_recursive(category)
+            all_children.append(category)
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
-
         if recommended_events:  # could be none for a category filter
             non_actioned_events = Event.objects.raw(
                 """SELECT `events_event`.`id` FROM `events_event`
