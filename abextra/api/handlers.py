@@ -96,13 +96,15 @@ class EventHandler(BaseHandler):
             all_children.append(category)
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
-        if recommended_events:  # could be none for a category filter
+
+        # preprocess ignores
+        if recommended_events:
             non_actioned_events = Event.objects.raw(
                 """SELECT `events_event`.`id` FROM `events_event`
                     LEFT JOIN `behavior_eventaction`
                     ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
                     WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
-                """, [request.user.id, [e.id for e in recommended_events] if recommended_events else []]
+                """, [request.user.id, [e.id for e in recommended_events]]
             )
             if non_actioned_events:
                 for event in non_actioned_events:
