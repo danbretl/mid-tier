@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.template.defaultfilters import slugify
-from events.models import Category, Event, Occurrence
-from events.forms import CategoryAdminForm
+from events.models import Event, Category, Occurrence
+from events.forms import EventAdminForm, CategoryAdminForm
 
 
 class CategoriesInline(admin.TabularInline):
@@ -35,6 +35,7 @@ class OccurrenceInline(admin.StackedInline):
 
 class EventCategorizer(admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
+    form = EventAdminForm
     search_fields = ('title',)
     fields = ('title', 'description', 'categories', 'url', 'image_url', 'video_url')
     readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')

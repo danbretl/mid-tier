@@ -12,8 +12,6 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-INTERNAL_IPS = ('127.0.0.1',)
-
 DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
 DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
 DB_HOST = getattr(settings_local, 'DB_HOST', 'localhost')
@@ -113,12 +111,13 @@ INSTALLED_APPS = (
     'south',                        # migrations managements
     'registration',                 # user registration app
     'piston',                       # api assistance
+    'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
     'events',                       # ABEX events
-    'places',                       # ABEX places | helps normalize places
-    'behavior',                     # ABEX behavior | user actions
     'learning',                     # ABEX machine learning | recommendations
+    'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
+    'prices',                       # ABEX prices
 )
 
 #########################
@@ -129,12 +128,12 @@ INSTALLED_APPS = (
 # TODO clearly needs refactoring, this belongs directly in the settings_local
 DEBUG = bool(settings_local)
 TEMPLATE_DEBUG = DEBUG
-if settings_local:
-    MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+if TEMPLATE_DEBUG:
+    # MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
     INSTALLED_APPS += ('debug_toolbar',)
-    NTERNAL_IPS = ('127.0.0.1',)
+    INTERNAL_IPS = ('127.0.0.1',)
     DEBUG_TOOLBAR_PANELS = (
-        # 'debug_toolbar.panels.version.VersionDebugPanel',
+        'debug_toolbar.panels.version.VersionDebugPanel',
         # 'debug_toolbar.panels.timer.TimerDebugPanel',
         # 'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
         # 'debug_toolbar.panels.headers.HeaderDebugPanel',

@@ -1,7 +1,8 @@
 from django import forms
 from django.template.defaultfilters import slugify
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
-from events.models import Category
+from events.models import Event, Category
 from events.utils import CachedCategoryTree
 
 class CategoryAdminForm(forms.ModelForm):
@@ -32,3 +33,12 @@ class CategoryAdminForm(forms.ModelForm):
                 c.save()
 
         return super(CategoryAdminForm, self).save(commit=commit)
+
+class EventAdminForm(forms.ModelForm):
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(),
+        widget=FilteredSelectMultiple(u'abstract categories', is_stacked=False),
+        required=False
+    )
+    class Meta:
+        model = Event
