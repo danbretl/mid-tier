@@ -118,20 +118,9 @@ class EventHandler(BaseHandler):
             .filter(event__in=recommended_events)
 
         # prices
-        occurrences = list(occurrences)
-        if occurrences:
-            max_price_by_occurrence_id = {}
-            max_prices = Price.objects.raw(
-            """SELECT p.* FROM (
-                   SELECT `id` , max(`quantity`) FROM `prices_price`
-                   GROUP BY `occurrence_id`
-                   HAVING `occurrence_id` IN %s
-                ) AS x
-                JOIN `prices_price` AS p ON x.`id` = p.`id`
-            """, [[o.id for o in occurrences]]
-            )
-            for max_price in max_prices:
-                max_price_by_occurrence_id[max_price.occurrence_id] = max_price
+        prices_by_occurrence_id = defaultdict(lambda: [])
+        for price in Price.objects.filter(occurrence__in=occurrences):
+            prices_by_occurrence_id[price.occurrence_id].append(price)
 
         occurrences_by_event_id = defaultdict(lambda: [])
         for occurrence in occurrences:
@@ -141,12 +130,11 @@ class EventHandler(BaseHandler):
             point_dict.update(city=model_to_dict(occurrence.place.point.city, fields=('id', 'city', 'state')))
             place_dict.update(point=point_dict)
             occurrence_dict.update(place=place_dict)
-            max_price = max_price_by_occurrence_id.get(occurrence.id)
-            if max_price:
-                max_price_dict = model_to_dict(max_price)
-                occurrence_dict.update(price=max_price_dict)
-            else:
-                occurrence_dict.update(price=None)
+            prices = prices_by_occurrence_id.get(occurrence.id)
+            if prices: prices.sort(key=lambda p: p.quantity)
+            occurrence_dict.update(
+                prices=map(lambda p: model_to_dict(p, fields=('quantity','units','remark')), prices or [])
+            )
             occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
 
         # abstract categories
