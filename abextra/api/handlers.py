@@ -1,16 +1,14 @@
 from collections import defaultdict
 
+from django.forms.models import model_to_dict
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
 from events.models import Event, Category, Occurrence
 from events.utils import CachedCategoryTree
-
 from behavior.models import EventAction
-
+from prices.models import Price
 from learning import ml
-
-from django.forms.models import model_to_dict
 
 # Events
 
@@ -118,6 +116,23 @@ class EventHandler(BaseHandler):
         # occurrence optimizations
         occurrences = Occurrence.objects.select_related('place__point__city') \
             .filter(event__in=recommended_events)
+
+        # prices
+        occurrences = list(occurrences)
+        if occurrences:
+            max_price_by_occurrence_id = {}
+            max_prices = Price.objects.raw(
+            """SELECT p.* FROM (
+                   SELECT `id` , max(`quantity`) FROM `prices_price`
+                   GROUP BY `occurrence_id`
+                   HAVING `occurrence_id` IN %s
+                ) AS x
+                JOIN `prices_price` AS p ON x.`id` = p.`id`
+            """, [[o.id for o in occurrences]]
+            )
+            for max_price in max_prices:
+                max_price_by_occurrence_id[max_price.occurrence_id] = max_price
+
         occurrences_by_event_id = defaultdict(lambda: [])
         for occurrence in occurrences:
             occurrence_dict = model_to_dict(occurrence, exclude=('event',))
@@ -126,6 +141,12 @@ class EventHandler(BaseHandler):
             point_dict.update(city=model_to_dict(occurrence.place.point.city, fields=('id', 'city', 'state')))
             place_dict.update(point=point_dict)
             occurrence_dict.update(place=place_dict)
+            max_price = max_price_by_occurrence_id.get(occurrence.id)
+            if max_price:
+                max_price_dict = model_to_dict(max_price)
+                occurrence_dict.update(price=max_price_dict)
+            else:
+                occurrence_dict.update(price=None)
             occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
 
         # abstract categories
