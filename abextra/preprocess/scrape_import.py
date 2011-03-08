@@ -5,6 +5,7 @@ from preprocess import models_external as x_models
 from preprocess.models import ExternalCategory
 from events.models import Event, Occurrence
 from places.models import Place, Point, City
+from prices.models import Price
 from events.utils import CachedCategoryTree
 
 class ImportScrapeData(object):
@@ -13,6 +14,7 @@ class ImportScrapeData(object):
         self.x_event_categories = defaultdict(lambda: [])
         self.places_by_xid = {}
         self.occurrences_by_xid = {}
+        self.prices_by_xid = {}
         self.events_by_xid = {}
         self.x_categories_by_xid = {}
         self.ctree = CachedCategoryTree()
@@ -32,6 +34,20 @@ class ImportScrapeData(object):
 
         for x_occurrence in x_models.Occurrence.objects.all():
             self.add_occurrence(x_occurrence)
+
+        for x_price in x_models.Price.objects.all():
+            self.add_price(x_price)
+
+    def add_price(self, x_price):
+        occurrence = self.occurrences_by_xid.get(x_price.occurrence_id)
+        if occurrence:
+            price, created = Price.objects.get_or_create(
+                quantity=x_price.quantity,
+                units=x_price.units,
+                remark=x_price.remark or '',
+                occurrence=occurrence
+            )
+            self.prices_by_xid[x_price.id] = price
 
     def add_occurrence(self, x_occurrence):
         event = self.events_by_xid.get(x_occurrence.event_id)
@@ -58,7 +74,9 @@ class ImportScrapeData(object):
                 .values_list('category_id', flat=True) \
                 .filter(xid__in=x_category_xids)
 
-            concrete_category = self.ctree.get(id=category_ids[0])
+            concrete_category = self.ctree.deepest_category(
+                self.ctree.get(id=category_id) for category_id in category_ids
+            )
 
             event, created = Event.objects.get_or_create(
                 xid=x_event.guid,

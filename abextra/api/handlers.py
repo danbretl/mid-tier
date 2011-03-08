@@ -56,6 +56,11 @@ class EventHandler(BaseHandler):
                         'state')
                     )
                 ))
+            )),
+            ('prices', (
+                'quantity',
+                'units',
+                'remark',
             ))
         )),
         ('concrete_category', (

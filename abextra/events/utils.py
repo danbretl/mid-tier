@@ -33,6 +33,7 @@ class CachedCategoryTree(object):
 
         # memoizers
         self._abstracts = self._concretes = None
+        self._bfs_concretes = None
 
     def get(self, **kwargs):
         id = kwargs.get('id')
@@ -83,21 +84,18 @@ class CachedCategoryTree(object):
             self._concretes = self.children_recursive(self.concrete_node)
         return self._concretes
 
-    def bfs(self, start):
+    def bfs(self, start, with_parent=False):
         queue, enqueued = deque([(None, start)]), set([start])
         while queue:
             parent, n = queue.popleft()
-            yield parent, n
+            yield (parent, n) if with_parent else n
             new = set(self._graph[n]) - enqueued
             enqueued |= new
             queue.extend([(n, child) for child in new])
 
-    # def deepest_heuristic(self, categories):
-    #     categories = set(categories)
-    #     child_categories_by_category = {}
-    #     for category in categories:
-    #         child_categories = self.children_recursive(category)
-    #         for child_categories:
-    #         child_categories_by_category[category] = categories & children_recursive
-    #     for category
-    #
+    def deepest_category(self, categories):
+        if not self._bfs_concretes:
+            self._bfs_concretes = dict(
+                (c, i) for i, c in enumerate(self.bfs(self.concrete_node))
+            )
+        return max(categories, key=lambda c: self._bfs_concretes[c])
