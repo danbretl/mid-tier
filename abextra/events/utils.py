@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 from django.template.defaultfilters import slugify
 from events.models import Category
 
@@ -82,3 +82,22 @@ class CachedCategoryTree(object):
         if not self._concretes:
             self._concretes = self.children_recursive(self.concrete_node)
         return self._concretes
+
+    def bfs(self, start):
+        queue, enqueued = deque([(None, start)]), set([start])
+        while queue:
+            parent, n = queue.popleft()
+            yield parent, n
+            new = set(self._graph[n]) - enqueued
+            enqueued |= new
+            queue.extend([(n, child) for child in new])
+
+    # def deepest_heuristic(self, categories):
+    #     categories = set(categories)
+    #     child_categories_by_category = {}
+    #     for category in categories:
+    #         child_categories = self.children_recursive(category)
+    #         for child_categories:
+    #         child_categories_by_category[category] = categories & children_recursive
+    #     for category
+    #
