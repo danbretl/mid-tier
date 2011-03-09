@@ -56,4 +56,4 @@ event_ids = [e.id for e in Event.objects.filter(id__lt=10)]
 dictionary = a.for_events(event_ids,category_types='C')
 
 print dictionary
-"""
+"""    

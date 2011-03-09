@@ -528,6 +528,8 @@ def sample_distribution(distribution, trials=1, category_count=None):
     """
     Given a distribution of [(item,score)] samples items.
     Items are first normalized by scores and then sampled from it.
+    NOTE: Rewrite this function. Factor out the sampling from any of the
+    category tree or event sampling logic. 
     """
     #    Convert into a cumulative distribution
     cumulative_distribution = numpy.cumsum(normalize([x[1] for x in distribution]))
