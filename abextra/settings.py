@@ -109,6 +109,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # 'django.contrib.admindocs',   # admin documentation
     'south',                        # migrations managements
+    'fabtastic',                    # deployments
     'registration',                 # user registration app
     'piston',                       # api assistance
     'behavior',                     # ABEX behavior | user actions
