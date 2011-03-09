@@ -17,7 +17,7 @@ class ExternalCategoryAutocomplete(AutocompleteSettings):
     search_fields = ('^title',)
 autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomplete)
 
-class ExternalCategoryAdmin(AutocompleteAdmin,admin.ModelAdmin):
+class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
     # form = forms.ExternalCategoryAdminForm
     list_select_related = True
     list_display = ('name', 'xid', 'source', 'category_title')

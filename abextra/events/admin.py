@@ -1,5 +1,9 @@
 from django.contrib import admin
 from django.template.defaultfilters import slugify
+
+from autocomplete.views import autocomplete, AutocompleteSettings
+from autocomplete.admin import AutocompleteAdmin
+
 from events.models import Event, Category, Occurrence
 from events.forms import EventAdminForm, CategoryAdminForm
 
@@ -32,12 +36,17 @@ class OccurrenceInline(admin.StackedInline):
     # fields = ('one_off_place',)
     # readonly_fields = ('one_off_place',)
 
+class CategoryAutocomplete(AutocompleteSettings):
+    login_required = True
+    queryset = Category.concrete.all()
+    search_fields = ('^title',)
+autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
-class EventCategorizer(admin.ModelAdmin):
+class EventCategorizer(AutocompleteAdmin, admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
     form = EventAdminForm
     search_fields = ('title',)
-    fields = ('title', 'description', 'categories', 'url', 'image_url', 'video_url')
+    fields = ('title','description', 'concrete_category', 'categories', 'url', 'image_url', 'video_url')
     readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')
     list_display = ('title', 'created', '_concrete_category', '_abstract_categories')
     list_filter = ('concrete_category',)
