@@ -148,10 +148,15 @@ class EventHandler(BaseHandler):
             event_dict.update(occurrences=occurrences_by_event_id[event.id])
 
             # concrete category
-            concrete_category = model_to_dict(ctree.surface_parent(
+            concrete_category = model_to_dict(
+                ctree.get(id=event.concrete_category_id),
+                fields=('id', 'title')
+            )
+            event_dict.update(concrete_category=concrete_category)
+            parent_concrete_category = model_to_dict(ctree.surface_parent(
                 ctree.get(id=event.concrete_category_id)
             ), fields=('id', 'title'))
-            event_dict.update(concrete_category=concrete_category)
+            event_dict.update(parent_concrete_category=parent_concrete_category)
 
             # abstract categories
             abstract_category_ids = abstract_category_ids_by_event_id[event.id]
