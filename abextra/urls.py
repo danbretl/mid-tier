@@ -1,8 +1,11 @@
+from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.conf import settings
-
+from django.views.static import serve
 from autocomplete.views import autocomplete
+
+from api import urls as api_urls
+
 
 admin.autodiscover()
 
@@ -15,15 +18,11 @@ urlpatterns = patterns('',
 
     url(r'^admin/', include(admin.site.urls)),          # admin
 
-    url(r'^api/', include('abextra.api.urls')),         # piston api
+    url(r'^api/', include(api_urls)),                   # piston api
 
     url('^autocomplete/', include(autocomplete.urls)),  # autocomplete
 
+    url(r'^static/(?P<path>.*)$', serve, {              # statics
+        'document_root': settings.STATIC_DOC_ROOT
+    }),
 )
-
-if settings.DEBUG:
-    urlpatterns += (
-        url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-            'document_root': settings.STATIC_DOC_ROOT
-        }),
-    )
