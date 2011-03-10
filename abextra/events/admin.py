@@ -15,7 +15,8 @@ class CategoriesInline(admin.TabularInline):
     extra = 0
     fields = ('title', 'is_associative', 'association_coefficient', 'icon')
 
-class CategoryAdmin(admin.ModelAdmin):
+from sorl.thumbnail.admin import AdminImageMixin
+class CategoryAdmin(AdminImageMixin, admin.ModelAdmin):
     """Admin for categories"""
     form = CategoryAdminForm
     search_fields = ('title',)

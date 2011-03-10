@@ -5,6 +5,8 @@ from collections import defaultdict
 from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from sorl.thumbnail import ImageField
+
 from places.models import Place
 
 class CategoryManager(models.Manager):
@@ -44,7 +46,7 @@ class Category(models.Model):
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
     # TODO bring this out into a OneToOne CategoryGraphics class
-    icon = models.ImageField(upload_to='category_icons', height_field='icon_height', width_field='icon_width', blank=True, null=True)
+    icon = ImageField(upload_to='category_icons', blank=True, null=True)
     icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
     icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
