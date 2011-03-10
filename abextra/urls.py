@@ -19,7 +19,11 @@ urlpatterns = patterns('',
 
     url('^autocomplete/', include(autocomplete.urls)),  # autocomplete
 
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.STATIC_DOC_ROOT
-    }),
 )
+
+if settings.DEBUG:
+    urlpatterns += (
+        url(r'^static/(?P<path>.*)$', 'django.views.static.serve', {
+            'document_root': settings.STATIC_DOC_ROOT
+        }),
+    )
