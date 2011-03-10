@@ -1,4 +1,5 @@
-# Django settings for abextra project.
+"""Django settings for abextra project."""
+import os
 
 # try to load local.settings used to override common settings
 try:
@@ -93,8 +94,14 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'abextra.urls'
 
+PROJECT_ROOT = os.path.dirname(__file__)
+
+FIXTURE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'fixtures'),
+)
+
 TEMPLATE_DIRS = (
-    'templates',
+    os.path.join(PROJECT_ROOT, 'templates'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -145,17 +152,10 @@ if TEMPLATE_DEBUG:
         # 'debug_toolbar.panels.logger.LoggingPanel',
     )
 
-import os
-PROJECT_ROOT = os.path.dirname(__file__)
-FIXTURE_DIRS = (
-    os.path.join(PROJECT_ROOT,'fixtures'),
-)
-
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_DOC_ROOT = MEDIA_ROOT
-
 
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
 
