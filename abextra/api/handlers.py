@@ -168,16 +168,10 @@ class EventHandler(BaseHandler):
 class CategoryHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Category
-    fields = ('id', 'title', 'icon_path', 'color')
+    fields = ('id', 'title', 'color')
 
-    def read(self, request, parent_node_slug='concrete'):
-        """
-        Returns immediate children of the parent category node
-        """
-        # FIXME shameless plug to fix nulled opt param - fix url handler
-        if not parent_node_slug: parent_node_slug = 'concrete'
-        ctree = CachedCategoryTree()
-        return ctree.children(ctree.get(slug=parent_node_slug))
+    def read(self, request):
+        return Category.concrete.all()
 
 # Behavior
 
