@@ -108,17 +108,20 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.admin',
+    'django.contrib.auth',          # authentication
+    'django.contrib.contenttypes',  # content types
+    'django.contrib.sessions',      # sessions
+    'django.contrib.sites',         # sites
+    'django.contrib.messages',      # user messages
+    'django.contrib.admin',         # admin
     # 'django.contrib.admindocs',   # admin documentation
+
     'south',                        # migrations managements
     'fabtastic',                    # deployments
     'registration',                 # user registration app
     'piston',                       # api assistance
+    'sorl.thumbnail',               # thumbnails
+
     'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
     'events',                       # ABEX events
