@@ -72,6 +72,15 @@ class CachedCategoryTree(object):
         if not category.parent: return None
         return self.surface_parent(category.parent) if category.parent.parent else category
 
+    def _parents(self, category, l):
+        parent = category.parent
+        if parent.parent:
+            l.append(parent)
+            self._parents(parent, l)
+        return l
+    def parents(self, category):
+        return self._parents(category, [])
+
     @property
     def abstracts(self):
         if not self._abstracts:

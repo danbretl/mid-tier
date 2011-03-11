@@ -142,26 +142,36 @@ class EventHandler(BaseHandler):
         abstract_category_ids_by_event_id = Category.objects \
             .for_events(recommended_event_ids, 'A')
 
+        category_to_dict = lambda c: model_to_dict(c, fields=('id',))
+
         def to_dict(event):
-            # occurrences
             event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences'))
+
+            # occurrences
             event_dict.update(occurrences=occurrences_by_event_id[event.id])
 
             # concrete category
-            concrete_category = model_to_dict(
-                ctree.get(id=event.concrete_category_id),
-                fields=('id', 'title')
-            )
-            event_dict.update(concrete_category=concrete_category)
-            parent_concrete_category = model_to_dict(ctree.surface_parent(
-                ctree.get(id=event.concrete_category_id)
-            ), fields=('id', 'title'))
-            event_dict.update(parent_concrete_category=parent_concrete_category)
+            concrete_category = ctree.get(id=event.concrete_category_id)
+            concrete_category_dict = category_to_dict(concrete_category)
+            event_dict.update(concrete_category=concrete_category_dict)
+
+            # concrete parent
+            parent_concrete_category = ctree.surface_parent(concrete_category)
+            parent_concrete_category_dict = category_to_dict(parent_concrete_category)
+            event_dict.update(parent_concrete_category=parent_concrete_category_dict)
+
+            # concrete breadcrumbs :)
+            concrete_breadcrumbs = ctree.parents(concrete_category)
+            concrete_breadcrumb_dicts = []
+            for concrete_breadcrumb in concrete_breadcrumbs:
+                concrete_breadcrumb_dict = category_to_dict(concrete_breadcrumb)
+                concrete_breadcrumb_dicts.append(concrete_breadcrumb_dict)
+            event_dict.update(concrete_breadcrumbs = concrete_breadcrumb_dicts)
 
             # abstract categories
             abstract_category_ids = abstract_category_ids_by_event_id[event.id]
             abstract_categories = [
-                model_to_dict(ctree.get(id=c_id), fields=('id', 'title')) \
+                model_to_dict(ctree.get(id=c_id), fields=('id',)) \
                     for c_id in abstract_category_ids
             ]
             event_dict.update(categories=abstract_categories)
