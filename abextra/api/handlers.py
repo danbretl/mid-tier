@@ -145,28 +145,22 @@ class EventHandler(BaseHandler):
         category_to_dict = lambda c: model_to_dict(c, fields=('id',))
 
         def to_dict(event):
-            event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences'))
+            event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences', 'slug', 'submitted_by', 'xid'))
 
             # occurrences
             event_dict.update(occurrences=occurrences_by_event_id[event.id])
 
             # concrete category
             concrete_category = ctree.get(id=event.concrete_category_id)
-            concrete_category_dict = category_to_dict(concrete_category)
-            event_dict.update(concrete_category=concrete_category_dict)
+            event_dict.update(concrete_category_id=concrete_category.id)
 
             # concrete parent
-            parent_concrete_category = ctree.surface_parent(concrete_category)
-            parent_concrete_category_dict = category_to_dict(parent_concrete_category)
-            event_dict.update(parent_concrete_category=parent_concrete_category_dict)
+            concrete_parent_category = ctree.surface_parent(concrete_category)
+            event_dict.update(concrete_parent_category_id=concrete_parent_category.id)
 
             # concrete breadcrumbs :)
             concrete_breadcrumbs = ctree.parents(concrete_category)
-            concrete_breadcrumb_dicts = []
-            for concrete_breadcrumb in concrete_breadcrumbs:
-                concrete_breadcrumb_dict = category_to_dict(concrete_breadcrumb)
-                concrete_breadcrumb_dicts.append(concrete_breadcrumb_dict)
-            event_dict.update(concrete_breadcrumbs = concrete_breadcrumb_dicts)
+            event_dict.update(concrete_breadcrumb_ids=[c.id for c in concrete_breadcrumbs])
 
             # abstract categories
             abstract_category_ids = abstract_category_ids_by_event_id[event.id]
