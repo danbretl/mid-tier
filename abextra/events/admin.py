@@ -4,6 +4,8 @@ from django.template.defaultfilters import slugify
 from autocomplete.views import autocomplete, AutocompleteSettings
 from autocomplete.admin import AutocompleteAdmin
 
+from sorl.thumbnail.admin import AdminImageMixin
+
 from events.models import Event, Category, Occurrence
 from events.forms import EventAdminForm, CategoryAdminForm
 
@@ -15,7 +17,6 @@ class CategoriesInline(admin.TabularInline):
     extra = 0
     fields = ('title', 'is_associative', 'association_coefficient', 'icon')
 
-from sorl.thumbnail.admin import AdminImageMixin
 class CategoryAdmin(AdminImageMixin, admin.ModelAdmin):
     """Admin for categories"""
     form = CategoryAdminForm

@@ -4,8 +4,8 @@ from django.core.files import File
 from django.core.management.base import NoArgsCommand, CommandError
 from django.conf import settings
 
-from events.models import Event
-from preprocess.models_external import Event as EventExt
+from places.models import Place
+from preprocess.models_external import Location as PlaceExt
 
 
 class Command(NoArgsCommand):
@@ -14,16 +14,16 @@ class Command(NoArgsCommand):
     def handle(self, **options):
         try:
 
-            for event in Event.objects.all():
-                event_ext = EventExt.objects.get(guid=event.xid)
-                if event_ext.image_path:
+            for place in Place.objects.all():
+                place_ext = PlaceExt.objects.get(id=place.id)
+                if place_ext.image_path:
                     path = os.path.join(
                         settings.SCRAPE_IMAGES_PATH,
-                        event_ext.image_path
+                        place_ext.image_path
                     )
                     with open(path) as f:
-                        event.image.save(os.path.split(f.name)[1], File(f))
+                        place.image.save(os.path.split(f.name)[1], File(f))
 
         except Exception, e:
             raise CommandError(e)
-        self.stdout.write('Successfully loaded event images.\n')
+        self.stdout.write('Successfully loaded place images.\n')

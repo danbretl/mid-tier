@@ -1,4 +1,7 @@
 from django.contrib import admin
+
+from sorl.thumbnail.admin import AdminImageMixin
+
 from places.models import *
 
 
@@ -19,7 +22,7 @@ class PointAdmin(admin.ModelAdmin):
 admin.site.register(Point, PointAdmin)
 
 
-class PlaceAdmin(admin.ModelAdmin):
+class PlaceAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('title', 'point', 'city', 'status')
     list_filter = ('status', 'place_types')
     search_fields = ('title',)

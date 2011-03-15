@@ -170,3 +170,6 @@ AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
 # if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
 #     # custom db routers
 #     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
+
+# SCRAPE_IMAGES_PATH = '/home/pkatsev/src/scrapery/scrapery/images'
+SCRAPE_IMAGES_PATH = '/devel/abextra/scrapery/scrapery/images'
