@@ -7,7 +7,7 @@ class CachedCategoryTree(object):
         # prepare the initial db queryset
         category_qs = Category.objects
         if skinny:
-            category_qs = category_qs.defer('icon', 'icon_height', 'icon_width')
+            category_qs = category_qs.defer('icon')
             category_qs = category_qs.defer('is_associative', 'association_coefficient')
         category_qs = category_qs.all()
 
