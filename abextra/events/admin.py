@@ -22,8 +22,7 @@ class CategoryAdmin(AdminImageMixin, admin.ModelAdmin):
     search_fields = ('title',)
     list_filter = ('category_type',)
     list_display = ('title', 'parent_title', 'category_type', 'is_associative', 'icon')
-    fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'icon_height', 'icon_width', 'color')
-    readonly_fields = ('icon_height', 'icon_width')
+    fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'color')
     inlines = [
         CategoriesInline
     ]
@@ -43,12 +42,12 @@ class CategoryAutocomplete(AutocompleteSettings):
     search_fields = ('^title',)
 autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
-class EventCategorizer(AutocompleteAdmin, admin.ModelAdmin):
+class EventCategorizer(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
     form = EventAdminForm
     search_fields = ('title',)
-    fields = ('title','description', 'concrete_category', 'categories', 'url', 'image_url', 'video_url')
-    readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url')
+    fields = ('title','description', 'concrete_category', 'categories', 'url', 'image', 'video_url')
+    readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url', 'image')
     list_display = ('title', 'created', '_concrete_category', '_abstract_categories')
     list_filter = ('concrete_category',)
     filter_horizontal = ('categories',)

@@ -47,8 +47,6 @@ class Category(models.Model):
     association_coefficient = models.FloatField(default=0)
     # TODO bring this out into a OneToOne CategoryGraphics class
     icon = ImageField(upload_to='category_icons', blank=True, null=True)
-    icon_height = models.PositiveSmallIntegerField(blank=True, null=True)
-    icon_width = models.PositiveSmallIntegerField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
 
     objects = CategoryManager()
@@ -91,6 +89,7 @@ class Event(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     url = models.URLField(verify_exists=False, max_length=300)
+    image = ImageField(upload_to='event_images', blank=True, null=True)
     image_url = models.URLField(verify_exists=False, max_length=300, blank=True)
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     concrete_category = models.ForeignKey(Category, related_name='events_concrete')

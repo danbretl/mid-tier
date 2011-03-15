@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us.models import PhoneNumberField
+from sorl.thumbnail import ImageField
 
 class PlaceType(models.Model):
     """Place types model."""
@@ -79,6 +80,7 @@ class Place(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     place_types = models.ManyToManyField(PlaceType, blank=True)
+    image = ImageField(upload_to='location_images', blank=True, null=True)
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
 
     class Meta:

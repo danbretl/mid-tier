@@ -116,6 +116,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',         # admin
     # 'django.contrib.admindocs',   # admin documentation
 
+    'gunicorn',                     # gunicorn | app server
+
     'south',                        # migrations managements
     'fabtastic',                    # deployments
     'registration',                 # user registration app
