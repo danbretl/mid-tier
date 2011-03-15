@@ -122,7 +122,7 @@ INSTALLED_APPS = (
     'fabtastic',                    # deployments
     'registration',                 # user registration app
     'piston',                       # api assistance
-    # 'sorl.thumbnail',               # thumbnails
+    'sorl.thumbnail',               # thumbnails
 
     'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
