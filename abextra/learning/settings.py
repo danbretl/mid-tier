@@ -7,7 +7,7 @@ import math
 
 Gm = 15                # G Multiplier in the scoring function
 Vm = 4                 # V Multiplier in the scoring function
-Im = 1                 # I Multiplier in the scoring function
+Im = 0                 # I Multiplier in the scoring function
 Xp = 0.4               # X's power in scoring function
 learning_constant = 50 # learning constant. Affects learning speed.
                        # Higher values result in slower learning
