@@ -162,6 +162,8 @@ if TEMPLATE_DEBUG:
 MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
 STATIC_DOC_ROOT = MEDIA_ROOT
 
+IPHONE_THUMB_GEOMETRY = '320x200'
+
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
 
 # FIXME this router breakes tests during fixture loading, don't really need it right now

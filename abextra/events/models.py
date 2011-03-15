@@ -107,11 +107,29 @@ class Event(models.Model):
         """Used only by the admin site"""
         return ', '.join(self.categories.values_list('title', flat=True))
 
+    # FIXME hacked up api
+    def image_chain(self, ctree):
+        if self.image:
+            return self.image
+
+        occurrences_with_place_image = list(self.occurrences.select_related('place') \
+            .only('place__image').filter(place__image__isnull=False)[:1])
+        if occurrences_with_place_image:
+            return occurrences_with_place_image[0].place.image
+
+        concrete_category = ctree.get(id=self.concrete_category_id)
+        if concrete_category.icon:
+            return concrete_category.icon
+
+        concrete_parent_category = ctree.surface_parent(concrete_category)
+        if concrete_parent_category and concrete_parent_category.icon:
+            return concrete_parent_category.icon
+
     class Meta:
         verbose_name_plural = _('events')
 
 class Occurrence(models.Model):
-    """Models a particular occurance of an event"""
+    """Models a particular occurrence of an event"""
     event = models.ForeignKey(Event, related_name='occurrences')
     place = models.ForeignKey(Place, related_name='occurrences')
     one_off_place = models.CharField(max_length=200, blank=True)

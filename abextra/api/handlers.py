@@ -9,6 +9,7 @@ from events.utils import CachedCategoryTree
 from behavior.models import EventAction
 from prices.models import Price
 from learning import ml
+from api.utils import get_iphone_thumb
 
 # Events
 
@@ -125,7 +126,7 @@ class EventHandler(BaseHandler):
         occurrences_by_event_id = defaultdict(lambda: [])
         for occurrence in occurrences:
             occurrence_dict = model_to_dict(occurrence, exclude=('event',))
-            place_dict = model_to_dict(occurrence.place, exclude=('place_types',))
+            place_dict = model_to_dict(occurrence.place, exclude=('place_types', 'image', 'image_url'))
             point_dict = model_to_dict(occurrence.place.point)
             point_dict.update(city=model_to_dict(occurrence.place.point.city, fields=('id', 'city', 'state')))
             place_dict.update(point=point_dict)
@@ -133,7 +134,7 @@ class EventHandler(BaseHandler):
             prices = prices_by_occurrence_id.get(occurrence.id)
             if prices: prices.sort(key=lambda p: p.quantity)
             occurrence_dict.update(
-                prices=map(lambda p: model_to_dict(p, fields=('quantity','units','remark')), prices or [])
+                prices=map(lambda p: model_to_dict(p, fields=('quantity', 'units', 'remark')), prices or [])
             )
             occurrences_by_event_id[occurrence.event_id].append(occurrence_dict)
 
@@ -145,7 +146,7 @@ class EventHandler(BaseHandler):
         category_to_dict = lambda c: model_to_dict(c, fields=('id',))
 
         def to_dict(event):
-            event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences', 'slug', 'submitted_by', 'xid'))
+            event_dict = model_to_dict(event, exclude=('categories', 'concrete_category', 'occurrences', 'slug', 'submitted_by', 'xid', 'image', 'image_url'))
 
             # occurrences
             event_dict.update(occurrences=occurrences_by_event_id[event.id])
@@ -169,6 +170,11 @@ class EventHandler(BaseHandler):
                     for c_id in abstract_category_ids
             ]
             event_dict.update(categories=abstract_categories)
+
+            # image url
+            image = event.image_chain(ctree)
+            thumb = get_iphone_thumb(image)
+            event_dict.update(image_url=thumb.url)
 
             return event_dict
 
