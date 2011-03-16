@@ -3,8 +3,8 @@ from settings import *
 # ==========================
 # = database configuration =
 # ==========================
-DB_USER = 'root'
-DB_PASSWD = 'bj200ex'
+DB_USER = ''
+DB_PASSWD = ''
 
 DATABASES['default'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
 DATABASES['scrape'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
