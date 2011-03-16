@@ -1,0 +1,15 @@
+from settings import *
+
+# ==========================
+# = database configuration =
+# ==========================
+DB_USER = 'abex_dev'
+DB_PASSWD = 'abex113'
+
+DATABASES['default'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
+DATABASES['scrape'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
+
+# =================
+# = miscellaneous =
+# =================
+SCRAPE_IMAGES_PATH = '/home/pkatsev/src/scrapery/scrapery/images'

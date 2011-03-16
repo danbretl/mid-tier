@@ -1,39 +1,35 @@
 """Django settings for abextra project."""
-import os
+import os, sys
 
-# try to load local.settings used to override common settings
-try:
-    import settings_local
-except ImportError:
-    settings_local = None
-    print u'File settings_local.py is not found. Continuing with production settings.'
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Pavel Katsev', 'pkatsev@abextratech.com'),
 )
 MANAGERS = ADMINS
 
-DB_USER = getattr(settings_local, 'DB_USER', 'abex_dev')
-DB_PASSWD = getattr(settings_local, 'DB_PASSWD', 'abex113')
-DB_HOST = getattr(settings_local, 'DB_HOST', 'localhost')
+# db connections and credentials should be defined in higher-level settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'abexmid',
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWD,
-        'HOST': DB_HOST,                        # Set to empty string for localhost.
-        'PORT': '',                             # Set to empty string for default.
+        'HOST': '',                     # Set to empty string for localhost.
+        'PORT': '',                     # Set to empty string for default.
     },
     'scrape': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'scrape',
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWD,
-        'HOST': DB_HOST,                        # Set to empty string for localhost.
-        'PORT': '',                             # Set to empty string for default.
+        'HOST': '',                     # Set to empty string for localhost.
+        'PORT': '',                     # Set to empty string for default.
     }
 }
+
+# FIXME this router breakes tests during fixture loading, don't really need it right now
+# FIXME hence, this ugly face hack
+# if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
+#     # custom db routers
+#     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
 
 # don't run south migrations to setup test dbs
 SOUTH_TESTS_MIGRATE = False
@@ -61,6 +57,14 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+# Convenience variable for absolute path definitions to the project
+PROJECT_ROOT = os.path.dirname(__file__)
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_DOC_ROOT = MEDIA_ROOT
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -70,6 +74,9 @@ MEDIA_URL = '/static/'
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
+
+# URL that handles the autocomplete's required front-end resources
+AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '3xh0mi2n)pvri!l^-8-@-xkjn^uc#q!79!yfdc-@qe&!4e4_em'
@@ -83,6 +90,12 @@ TEMPLATE_LOADERS = (
     )),
 )
 
+TEMPLATE_DIRS = (
+    os.path.join(PROJECT_ROOT, 'templates'),
+    # Put strings here, like "/home/html/django_templates"
+    # Don't forget to use absolute paths, not relative paths.
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -94,17 +107,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'abextra.urls'
 
-PROJECT_ROOT = os.path.dirname(__file__)
-
 FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
-)
-
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
 )
 
 INSTALLED_APPS = (
@@ -133,45 +137,7 @@ INSTALLED_APPS = (
     'prices',                       # ABEX prices
 )
 
-#########################
-######### DEBUG #########
-#########################
-
-# assume that if local settings are present, that we're in dev debug mode
-# TODO clearly needs refactoring, this belongs directly in the settings_local
-DEBUG = bool(settings_local)
-TEMPLATE_DEBUG = DEBUG
-if TEMPLATE_DEBUG:
-    # MIDDLEWARE_CLASSES += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
-    INSTALLED_APPS += ('debug_toolbar',)
-    INTERNAL_IPS = ('127.0.0.1',)
-    DEBUG_TOOLBAR_PANELS = (
-        'debug_toolbar.panels.version.VersionDebugPanel',
-        # 'debug_toolbar.panels.timer.TimerDebugPanel',
-        # 'debug_toolbar.panels.settings_vars.SettingsVarsDebugPanel',
-        # 'debug_toolbar.panels.headers.HeaderDebugPanel',
-        # 'debug_toolbar.panels.request_vars.RequestVarsDebugPanel',
-        # 'debug_toolbar.panels.template.TemplateDebugPanel',
-        # 'debug_toolbar.panels.sql.SQLDebugPanel',
-        # 'debug_toolbar.panels.signals.SignalDebugPanel',
-        # 'debug_toolbar.panels.logger.LoggingPanel',
-    )
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
-STATIC_DOC_ROOT = MEDIA_ROOT
-
+# ==============================
+# = eventure specific settings =
+# ==============================
 IPHONE_THUMB_GEOMETRY = '320x200'
-
-AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
-
-# FIXME this router breakes tests during fixture loading, don't really need it right now
-# FIXME hence, this ugly face hack
-# import sys
-# if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
-#     # custom db routers
-#     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
-
-# SCRAPE_IMAGES_PATH = '/home/pkatsev/src/scrapery/scrapery/images'
-SCRAPE_IMAGES_PATH = '/devel/abextra/scrapery/scrapery/images'
