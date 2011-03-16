@@ -1,6 +1,6 @@
 .bzr*
 *.pyc
-settings_local.py
+settings_*.py
 *~
 biketextmate.log
 .ropeproject/
