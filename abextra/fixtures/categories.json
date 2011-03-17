@@ -4,12 +4,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Sports & Recreation",
-            "is_associative": false,
+            "title": "Sports & Recreation", 
+            "color": "#50b849", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sports-recreation", 
-            "color": "#50b849", 
             "icon": "category_icons/sports.jpg"
         }
     }, 
@@ -18,12 +18,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 1, 
-            "title": "Spectator",
-            "is_associative": false,
+            "title": "Spectator", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "spectator", 
-            "color": "", 
             "icon": "category_icons/Spectator.jpg"
         }
     }, 
@@ -32,12 +32,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 1, 
-            "title": "Participation",
-            "is_associative": false,
+            "title": "Participation", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "participation", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -46,12 +46,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 1, 
-            "title": "Activities",
-            "is_associative": false,
+            "title": "Activities", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "activities", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -60,12 +60,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "Cycling",
-            "is_associative": false,
+            "title": "Cycling", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "cycling", 
-            "color": "", 
             "icon": "category_icons/cycling.jpg"
         }
     }, 
@@ -74,26 +74,26 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "Walks",
-            "is_associative": false,
+            "title": "Walks", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "walks", 
-            "color": "", 
             "icon": "category_icons/walks.jpg"
         }
     }, 
     {
-        "pk": 8, 
+        "pk": 202, 
         "model": "events.category", 
         "fields": {
-            "parent": 3, 
-            "title": "Marathons",
-            "is_associative": false,
-            "category_type": "C", 
-            "association_coefficient": 0.0, 
-            "slug": "marathons", 
+            "parent": 56, 
+            "title": "Sport Genres", 
             "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "sport-genres", 
             "icon": ""
         }
     }, 
@@ -102,12 +102,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Gatherings",
-            "is_associative": false,
+            "title": "Gatherings", 
+            "color": "#d80b8c", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "gatherings", 
-            "color": "#d80b8c", 
             "icon": "category_icons/Gatherings_1.png"
         }
     }, 
@@ -116,12 +116,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Conventions",
-            "is_associative": false,
+            "title": "Conventions", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conventions", 
-            "color": "", 
             "icon": "category_icons/Conventions.JPG"
         }
     }, 
@@ -130,12 +130,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Conferences",
-            "is_associative": false,
+            "title": "Conferences", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conferences", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -144,12 +144,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 140, 
-            "title": "Rallies",
-            "is_associative": false,
+            "title": "Rallies", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "rallies", 
-            "color": "", 
             "icon": "category_icons/Rally.jpg"
         }
     }, 
@@ -158,12 +158,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 140, 
-            "title": "Fundraising",
-            "is_associative": false,
+            "title": "Fundraising", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fundraising", 
-            "color": "", 
             "icon": "category_icons/fundraising.jpg"
         }
     }, 
@@ -172,12 +172,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Appearances",
-            "is_associative": false,
+            "title": "Appearances", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "appearances", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -186,12 +186,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Nightlife",
-            "is_associative": false,
+            "title": "Nightlife", 
+            "color": "#812991", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "nightlife", 
-            "color": "#812991", 
             "icon": "category_icons/nightlife.jpg"
         }
     }, 
@@ -200,12 +200,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 16, 
-            "title": "Clubs",
-            "is_associative": false,
+            "title": "Clubs", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "clubs", 
-            "color": "", 
             "icon": "category_icons/Clubs.jpg"
         }
     }, 
@@ -214,12 +214,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 16, 
-            "title": "Bars",
-            "is_associative": false,
+            "title": "Bars", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "bars", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -228,12 +228,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Amateur Performances",
-            "is_associative": false,
+            "title": "Amateur Performances", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "amateur-performances", 
-            "color": "", 
             "icon": "category_icons/A-Performances.jpg"
         }
     }, 
@@ -242,12 +242,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 17, 
-            "title": "Openings",
-            "is_associative": false,
+            "title": "Openings", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "openings", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -256,12 +256,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 17, 
-            "title": "DJs",
-            "is_associative": false,
+            "title": "DJs", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "djs", 
-            "color": "", 
             "icon": "category_icons/Djing.jpg"
         }
     }, 
@@ -270,12 +270,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 17, 
-            "title": "Celebrity",
-            "is_associative": false,
+            "title": "Celebrity", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "celebrity", 
-            "color": "", 
             "icon": "category_icons/Celeberity.jpg"
         }
     }, 
@@ -284,12 +284,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 18, 
-            "title": "Trivia Night",
-            "is_associative": false,
+            "title": "Trivia Night", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "trivia-night", 
-            "color": "", 
             "icon": "category_icons/Trivia_Night.jpg"
         }
     }, 
@@ -298,12 +298,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 18, 
-            "title": "Karaoke Night",
-            "is_associative": false,
+            "title": "Karaoke Night", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "karaoke-night", 
-            "color": "", 
             "icon": "category_icons/Karaoke.jpg"
         }
     }, 
@@ -312,12 +312,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 19, 
-            "title": "Amateur Music",
-            "is_associative": false,
+            "title": "Amateur Music", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "amateur-music", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -326,12 +326,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 19, 
-            "title": "Amateur Comedy",
-            "is_associative": false,
+            "title": "Amateur Comedy", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "amateur-comedy", 
-            "color": "", 
             "icon": "category_icons/comedy-shows.jpg"
         }
     }, 
@@ -340,12 +340,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 19, 
-            "title": "Poetry ",
-            "is_associative": false,
+            "title": "Poetry ", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "poetry", 
-            "color": "", 
             "icon": "category_icons/Poetry2.jpg"
         }
     }, 
@@ -354,12 +354,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 139, 
-            "title": "Shows",
-            "is_associative": false,
+            "title": "Shows", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "shows", 
-            "color": "", 
             "icon": "category_icons/shows_1.jpg"
         }
     }, 
@@ -368,12 +368,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 136, 
-            "title": "Movies",
-            "is_associative": false,
+            "title": "Movies", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "movies", 
-            "color": "", 
             "icon": "category_icons/movie.jpg"
         }
     }, 
@@ -382,12 +382,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 137, 
-            "title": "Concerts",
-            "is_associative": false,
+            "title": "Concerts", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "concerts", 
-            "color": "", 
             "icon": "category_icons/concert1.jpg"
         }
     }, 
@@ -396,12 +396,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 175, 
-            "title": "Plays",
-            "is_associative": false,
+            "title": "Plays", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "plays", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -410,12 +410,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 175, 
-            "title": "Musicals",
-            "is_associative": false,
+            "title": "Musicals", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "musicals", 
-            "color": "", 
             "icon": "category_icons/Musicals.jpg"
         }
     }, 
@@ -424,12 +424,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 16, 
-            "title": "Stand-up",
-            "is_associative": false,
+            "title": "Stand-up", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "stand-up", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -438,12 +438,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Talks",
-            "is_associative": false,
+            "title": "Talks", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "talks", 
-            "color": "", 
             "icon": "category_icons/TALKS_1.jpg"
         }
     }, 
@@ -452,12 +452,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 34, 
-            "title": "Lectures",
-            "is_associative": false,
+            "title": "Lectures", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "lectures", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -466,12 +466,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 34, 
-            "title": "Panels",
-            "is_associative": false,
+            "title": "Panels", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "panels", 
-            "color": "", 
             "icon": "category_icons/Panel.jpg"
         }
     }, 
@@ -480,12 +480,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 34, 
-            "title": "Book Signings",
-            "is_associative": false,
+            "title": "Book Signings", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "book-signings", 
-            "color": "", 
             "icon": "category_icons/booksignings.jpg"
         }
     }, 
@@ -494,12 +494,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Food & Drink",
-            "is_associative": false,
+            "title": "Food & Drink", 
+            "color": "#d2be07", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "food-drink", 
-            "color": "#d2be07", 
             "icon": "category_icons/food_and_drink.jpeg"
         }
     }, 
@@ -508,12 +508,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 38, 
-            "title": "Tastings",
-            "is_associative": false,
+            "title": "Tastings", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tastings", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -522,12 +522,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 38, 
-            "title": "Street Fairs",
-            "is_associative": false,
+            "title": "Street Fairs", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "street-fairs", 
-            "color": "", 
             "icon": "category_icons/street_fairs.jpg"
         }
     }, 
@@ -536,12 +536,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 38, 
-            "title": "Restaurant opening",
-            "is_associative": false,
+            "title": "Restaurant opening", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "restaurant-opening", 
-            "color": "", 
             "icon": "category_icons/rest_opening.jpg"
         }
     }, 
@@ -550,12 +550,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 39, 
-            "title": "Wine",
-            "is_associative": false,
+            "title": "Wine", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "wine", 
-            "color": "", 
             "icon": "category_icons/wine_tasting.jpg"
         }
     }, 
@@ -564,12 +564,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 40, 
-            "title": "Farmers Market",
-            "is_associative": false,
+            "title": "Farmers Market", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "farmers-market", 
-            "color": "", 
             "icon": "category_icons/farmers_market_1.jpg"
         }
     }, 
@@ -578,12 +578,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 136, 
-            "title": "Television Tapings",
-            "is_associative": false,
+            "title": "Television Tapings", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "television-tapings", 
-            "color": "", 
             "icon": "category_icons/tv-shows.jpg"
         }
     }, 
@@ -592,12 +592,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 44, 
-            "title": "Late Night",
-            "is_associative": false,
+            "title": "Late Night", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "late-night", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -606,12 +606,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 44, 
-            "title": "Morning Shows",
-            "is_associative": false,
+            "title": "Morning Shows", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "morning-shows", 
-            "color": "", 
             "icon": "category_icons/morning_shows.jpg"
         }
     }, 
@@ -620,12 +620,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 45, 
-            "title": "Colbert report",
-            "is_associative": false,
+            "title": "Colbert report", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "colbert-report", 
-            "color": "", 
             "icon": "category_icons/colbert.jpg"
         }
     }, 
@@ -634,12 +634,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 45, 
-            "title": "Daily Show",
-            "is_associative": false,
+            "title": "Daily Show", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "daily-show", 
-            "color": "", 
             "icon": "category_icons/The_Daily_Show.jpg"
         }
     }, 
@@ -648,12 +648,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 45, 
-            "title": "Letterman",
-            "is_associative": false,
+            "title": "Letterman", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "letterman", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -662,12 +662,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 45, 
-            "title": "Fallon",
-            "is_associative": false,
+            "title": "Fallon", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fallon", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -676,12 +676,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 46, 
-            "title": "Regis",
-            "is_associative": false,
+            "title": "Regis", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "regis", 
-            "color": "", 
             "icon": "category_icons/Regis_Show.jpg"
         }
     }, 
@@ -690,12 +690,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 46, 
-            "title": "The View",
-            "is_associative": false,
+            "title": "The View", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "the-view", 
-            "color": "", 
             "icon": "category_icons/the_view.jpg"
         }
     }, 
@@ -704,12 +704,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 46, 
-            "title": "Today Show",
-            "is_associative": false,
+            "title": "Today Show", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "today-show", 
-            "color": "", 
             "icon": "category_icons/Today_Show.jpg"
         }
     }, 
@@ -718,12 +718,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 46, 
-            "title": "Good Morning America",
-            "is_associative": false,
+            "title": "Good Morning America", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "good-morning-america", 
-            "color": "", 
             "icon": "category_icons/GoodMorningAmerica.jpg"
         }
     }, 
@@ -732,26 +732,26 @@
         "model": "events.category", 
         "fields": {
             "parent": null, 
-            "title": "Abstract",
-            "is_associative": false,
+            "title": "Abstract", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "abstract", 
-            "color": "", 
             "icon": ""
         }
     }, 
     {
-        "pk": 57, 
+        "pk": 367, 
         "model": "events.category", 
         "fields": {
-            "parent": 56, 
-            "title": "Show Genres",
-            "is_associative": false,
+            "parent": 272, 
+            "title": "Adventure", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "show-genres", 
-            "color": "", 
+            "slug": "adventure", 
             "icon": ""
         }
     }, 
@@ -759,13 +759,13 @@
         "pk": 58, 
         "model": "events.category", 
         "fields": {
-            "parent": 56, 
-            "title": "Music Genres",
-            "is_associative": false,
+            "parent": 271, 
+            "title": "Music Genres", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "music-genres", 
-            "color": "", 
             "icon": "category_icons/music.jpg"
         }
     }, 
@@ -774,12 +774,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "LGBT",
-            "is_associative": false,
+            "title": "LGBT", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "lgbt", 
-            "color": "", 
             "icon": "category_icons/Gay.png"
         }
     }, 
@@ -788,12 +788,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Religion",
-            "is_associative": false,
+            "title": "Religions", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "religion", 
-            "color": "", 
+            "slug": "religions", 
             "icon": ""
         }
     }, 
@@ -802,12 +802,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Political",
-            "is_associative": false,
+            "title": "Political", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "political", 
-            "color": "", 
             "icon": "category_icons/Politics.jpg"
         }
     }, 
@@ -816,12 +816,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Health",
-            "is_associative": false,
+            "title": "Health", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "health", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -830,12 +830,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Ages",
-            "is_associative": false,
+            "title": "Ages", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "ages", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -844,12 +844,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Informative",
-            "is_associative": true,
+            "title": "Informative", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "informative", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -858,12 +858,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 56, 
-            "title": "Charity",
-            "is_associative": true,
+            "title": "Charities", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "charity", 
-            "color": "", 
+            "slug": "charities", 
             "icon": ""
         }
     }, 
@@ -872,12 +872,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 65, 
-            "title": "Diseases",
-            "is_associative": false,
+            "title": "Diseases", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "diseases", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -886,12 +886,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 65, 
-            "title": "Poverty",
-            "is_associative": false,
+            "title": "Poverty", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "poverty", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -900,12 +900,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 65, 
-            "title": "Environmental",
-            "is_associative": false,
+            "title": "Environmental Charity", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "environmental", 
-            "color": "", 
+            "slug": "environmental-charity", 
             "icon": "category_icons/Environmental-Charity.png"
         }
     }, 
@@ -914,12 +914,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 64, 
-            "title": "Math and Science",
-            "is_associative": false,
+            "title": "Math and Science", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "math-and-science", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -928,12 +928,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 64, 
-            "title": "History",
-            "is_associative": false,
+            "title": "History", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "history", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -941,13 +941,13 @@
         "pk": 71, 
         "model": "events.category", 
         "fields": {
-            "parent": 64, 
-            "title": "The Arts",
-            "is_associative": true,
+            "parent": 56, 
+            "title": "Arts", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "the-arts", 
-            "color": "", 
+            "slug": "arts", 
             "icon": ""
         }
     }, 
@@ -956,12 +956,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 64, 
-            "title": "Current Events",
-            "is_associative": false,
+            "title": "Current Events", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "current-events", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -970,12 +970,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 64, 
-            "title": "Business",
-            "is_associative": false,
+            "title": "Business", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "business", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -984,12 +984,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 64, 
-            "title": "Technology",
-            "is_associative": false,
+            "title": "Technology", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "technology", 
-            "color": "", 
             "icon": "category_icons/Technology.jpg"
         }
     }, 
@@ -998,12 +998,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Math",
-            "is_associative": false,
+            "title": "Math", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "math", 
-            "color": "", 
             "icon": "category_icons/math.jpg"
         }
     }, 
@@ -1012,12 +1012,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Physics",
-            "is_associative": false,
+            "title": "Physics", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "physics", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1026,12 +1026,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Biology",
-            "is_associative": false,
+            "title": "Biology", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "biology", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1040,12 +1040,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Chemistry",
-            "is_associative": false,
+            "title": "Chemistry", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "chemistry", 
-            "color": "", 
             "icon": "category_icons/Chemistry.jpg"
         }
     }, 
@@ -1054,12 +1054,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Astronomy",
-            "is_associative": true,
+            "title": "Astronomy", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "astronomy", 
-            "color": "", 
             "icon": "category_icons/astronomy.jpeg"
         }
     }, 
@@ -1068,12 +1068,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Computer Science",
-            "is_associative": true,
+            "title": "Computer Science", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "computer-science", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1082,26 +1082,26 @@
         "model": "events.category", 
         "fields": {
             "parent": 69, 
-            "title": "Anthropology",
-            "is_associative": true,
+            "title": "Anthropology", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "anthropology", 
-            "color": "", 
             "icon": "category_icons/Anthropology.jpg"
         }
     }, 
     {
-        "pk": 82, 
+        "pk": 414, 
         "model": "events.category", 
         "fields": {
             "parent": 71, 
-            "title": "Film",
-            "is_associative": false,
+            "title": "Plastic Arts", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "film", 
-            "color": "", 
+            "slug": "plastic-arts", 
             "icon": ""
         }
     }, 
@@ -1110,12 +1110,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 71, 
-            "title": "Literature",
-            "is_associative": false,
+            "title": "Literature", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "literature", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1124,13 +1124,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Music",
-            "is_associative": true,
+            "title": "Music", 
+            "color": "#00aec6", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "music", 
-            "color": "#00aec6", 
-            "icon": ""
+            "icon": "category_icons/music_1.jpg"
         }
     }, 
     {
@@ -1138,12 +1138,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 63, 
-            "title": "Under 13",
-            "is_associative": false,
+            "title": "Under 13", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "under-13", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1152,12 +1152,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 63, 
-            "title": "13-17",
-            "is_associative": false,
+            "title": "13-17", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "13-17", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1166,12 +1166,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 63, 
-            "title": "18-20",
-            "is_associative": true,
+            "title": "18-20", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "18-20", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1180,12 +1180,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 63, 
-            "title": "21+",
-            "is_associative": true,
+            "title": "21+", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "21", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1194,12 +1194,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 61, 
-            "title": "Democrat",
-            "is_associative": false,
+            "title": "Democrat", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "democrat", 
-            "color": "", 
             "icon": "category_icons/Democratic.jpg"
         }
     }, 
@@ -1208,12 +1208,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 61, 
-            "title": "Republican",
-            "is_associative": false,
+            "title": "Republican", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "republican", 
-            "color": "", 
             "icon": "category_icons/republican.jpg"
         }
     }, 
@@ -1222,12 +1222,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Christianity",
-            "is_associative": false,
+            "title": "Christianity", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "christianity", 
-            "color": "", 
             "icon": "category_icons/bible.jpg"
         }
     }, 
@@ -1236,12 +1236,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Hinduism",
-            "is_associative": false,
+            "title": "Hinduism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "hinduism", 
-            "color": "", 
             "icon": "category_icons/hinduism.jpg"
         }
     }, 
@@ -1250,12 +1250,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Judaism",
-            "is_associative": false,
+            "title": "Judaism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "judaism", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1264,12 +1264,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Islam",
-            "is_associative": false,
+            "title": "Islam", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "islam", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1278,12 +1278,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Buddhism",
-            "is_associative": false,
+            "title": "Buddhism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "buddhism", 
-            "color": "", 
             "icon": "category_icons/buddism.jpg"
         }
     }, 
@@ -1292,12 +1292,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Jainism",
-            "is_associative": false,
+            "title": "Jainism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "jainism", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1306,12 +1306,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 60, 
-            "title": "Sikhism",
-            "is_associative": false,
+            "title": "Sikhism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "sikhism", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1320,12 +1320,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 59, 
-            "title": "Lesbian",
-            "is_associative": false,
+            "title": "Lesbian", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "lesbian", 
-            "color": "", 
             "icon": "category_icons/Lesbian.jpg"
         }
     }, 
@@ -1334,12 +1334,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 59, 
-            "title": "Gay",
-            "is_associative": false,
+            "title": "Gay", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "gay", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1348,12 +1348,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 59, 
-            "title": "Bisexual",
-            "is_associative": false,
+            "title": "Bisexual", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "bisexual", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1362,12 +1362,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 59, 
-            "title": "Transgender",
-            "is_associative": false,
+            "title": "Transgender", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "transgender", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1375,13 +1375,13 @@
         "pk": 102, 
         "model": "events.category", 
         "fields": {
-            "parent": 56, 
-            "title": "Family",
-            "is_associative": false,
+            "parent": 63, 
+            "title": "Family", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "family", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1390,12 +1390,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 102, 
-            "title": "For Kids",
-            "is_associative": false,
+            "title": "For Kids", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "for-kids", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1404,12 +1404,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 103, 
-            "title": "Under 10",
-            "is_associative": false,
+            "title": "Under 10", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "under-10", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1418,12 +1418,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 103, 
-            "title": "Teenage",
-            "is_associative": false,
+            "title": "Teenage", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "teenage", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1432,12 +1432,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 58, 
-            "title": "Rock",
-            "is_associative": false,
+            "title": "Rock", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "rock", 
-            "color": "", 
             "icon": "category_icons/rock1.jpg"
         }
     }, 
@@ -1446,12 +1446,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 58, 
-            "title": "Blues",
-            "is_associative": false,
+            "title": "Blues", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "blues", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1460,12 +1460,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 58, 
-            "title": "Jazz",
-            "is_associative": false,
+            "title": "Jazz", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "jazz", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1474,54 +1474,26 @@
         "model": "events.category", 
         "fields": {
             "parent": 58, 
-            "title": "Western Classical",
-            "is_associative": false,
+            "title": "Western Classical", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "western-classical", 
-            "color": "", 
             "icon": ""
         }
     }, 
     {
-        "pk": 110, 
+        "pk": 366, 
         "model": "events.category", 
         "fields": {
-            "parent": 57, 
-            "title": "Comedy",
-            "is_associative": false,
+            "parent": 272, 
+            "title": "Action", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "comedy", 
-            "color": "", 
-            "icon": ""
-        }
-    }, 
-    {
-        "pk": 111, 
-        "model": "events.category", 
-        "fields": {
-            "parent": 57, 
-            "title": "Drama",
-            "is_associative": false,
-            "category_type": "A", 
-            "association_coefficient": 0.0, 
-            "slug": "drama", 
-            "color": "", 
-            "icon": ""
-        }
-    }, 
-    {
-        "pk": 112, 
-        "model": "events.category", 
-        "fields": {
-            "parent": 71, 
-            "title": "Gallery",
-            "is_associative": false,
-            "category_type": "A", 
-            "association_coefficient": 0.0, 
-            "slug": "gallery", 
-            "color": "", 
+            "slug": "action", 
             "icon": ""
         }
     }, 
@@ -1530,12 +1502,12 @@
         "model": "events.category", 
         "fields": {
             "parent": null, 
-            "title": "Discount",
-            "is_associative": false,
+            "title": "Discount", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "discount", 
-            "color": "", 
             "icon": "category_icons/discounts.jpg"
         }
     }, 
@@ -1544,12 +1516,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Festivals",
-            "is_associative": false,
+            "title": "Festivals", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "festivals", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1558,12 +1530,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 28, 
-            "title": "Circus",
-            "is_associative": false,
+            "title": "Circus", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "circus", 
-            "color": "", 
             "icon": "category_icons/Circus.jpg"
         }
     }, 
@@ -1572,12 +1544,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Tourism",
-            "is_associative": false,
+            "title": "Tourism", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tourism", 
-            "color": "", 
             "icon": "category_icons/Tourists1.jpg"
         }
     }, 
@@ -1586,12 +1558,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 116, 
-            "title": "Tour",
-            "is_associative": false,
+            "title": "Tour", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tour", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1600,12 +1572,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 58, 
-            "title": "Alternative",
-            "is_associative": false,
+            "title": "Alternative", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "alternative", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1613,13 +1585,13 @@
         "pk": 119, 
         "model": "events.category", 
         "fields": {
-            "parent": 71, 
-            "title": "Photography",
-            "is_associative": true,
+            "parent": 414, 
+            "title": "Photography", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
             "slug": "photography", 
-            "color": "", 
             "icon": "category_icons/Photography.jpg"
         }
     }, 
@@ -1628,12 +1600,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Museum",
-            "is_associative": true,
+            "title": "Museum", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "museum", 
-            "color": "", 
             "icon": "category_icons/Museums2.jpg"
         }
     }, 
@@ -1641,13 +1613,13 @@
         "pk": 122, 
         "model": "events.category", 
         "fields": {
-            "parent": 71, 
-            "title": "Dance",
-            "is_associative": true,
+            "parent": 271, 
+            "title": "Dance Genres", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "dance", 
-            "color": "", 
+            "slug": "dance-genres", 
             "icon": "category_icons/Dancing.jpg"
         }
     }, 
@@ -1656,12 +1628,12 @@
         "model": "events.category", 
         "fields": {
             "parent": null, 
-            "title": "Invalid",
-            "is_associative": false,
+            "title": "Invalid", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "invalid", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1670,12 +1642,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 32, 
-            "title": "Broadway",
-            "is_associative": false,
+            "title": "Broadway", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "broadway", 
-            "color": "", 
             "icon": "category_icons/Broadway.gif"
         }
     }, 
@@ -1684,12 +1656,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 32, 
-            "title": "Off-Broadway",
-            "is_associative": false,
+            "title": "Off-Broadway", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "off-broadway", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1698,12 +1670,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 139, 
-            "title": "Visual Arts",
-            "is_associative": true,
+            "title": "Visual Arts", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "visual-arts", 
-            "color": "", 
             "icon": "category_icons/VisualArts.jpg"
         }
     }, 
@@ -1712,12 +1684,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Painting Events",
-            "is_associative": true,
+            "title": "Painting Events", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "painting-events", 
-            "color": "", 
             "icon": "category_icons/Paintings.jpg"
         }
     }, 
@@ -1726,41 +1698,55 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Sculpture Events",
-            "is_associative": true,
+            "title": "Sculpture Events", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sculpture-events", 
-            "color": "", 
             "icon": "category_icons/Sculpture.jpg"
         }
     }, 
     {
-        "pk": 130, 
+        "pk": 364, 
         "model": "events.category", 
         "fields": {
-            "parent": 57, 
-            "title": "Fantasy",
-            "is_associative": false,
+            "parent": 272, 
+            "title": "Drama", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "fantasy", 
-            "color": "", 
-            "icon": "category_icons/Fantasy-Show_Genres.jpg"
+            "slug": "drama", 
+            "icon": ""
         }
     }, 
     {
-        "pk": 131, 
+        "pk": 365, 
         "model": "events.category", 
         "fields": {
-            "parent": 57, 
-            "title": "Adventure",
-            "is_associative": true,
+            "parent": 272, 
+            "title": "Film-Musical", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "A", 
             "association_coefficient": 0.0, 
-            "slug": "adventure", 
+            "slug": "film-musical", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 363, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Comedy", 
             "color": "", 
-            "icon": "category_icons/Hiking.jpg"
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "comedy", 
+            "icon": ""
         }
     }, 
     {
@@ -1768,12 +1754,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 28, 
-            "title": "Opera",
-            "is_associative": false,
+            "title": "Opera", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "opera", 
-            "color": "", 
             "icon": "category_icons/opera_1.jpg"
         }
     }, 
@@ -1782,12 +1768,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 45, 
-            "title": "Conan o'brien",
-            "is_associative": true,
+            "title": "Conan o'brien", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "conan-obrien", 
-            "color": "", 
             "icon": "category_icons/conan_1.jpg"
         }
     }, 
@@ -1795,13 +1781,13 @@
         "pk": 134, 
         "model": "events.category", 
         "fields": {
-            "parent": 8, 
-            "title": "Running",
-            "is_associative": true,
+            "parent": 4, 
+            "title": "Running", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "running", 
-            "color": "", 
             "icon": "category_icons/marathon.jpg"
         }
     }, 
@@ -1810,12 +1796,12 @@
         "model": "events.category", 
         "fields": {
             "parent": null, 
-            "title": "Concrete",
-            "is_associative": true,
+            "title": "Concrete", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "O", 
             "association_coefficient": 0.0, 
             "slug": "concrete", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1824,13 +1810,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Movies & Media",
-            "is_associative": true,
+            "title": "Movies & Media", 
+            "color": "#446ab3", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "movies-media", 
-            "color": "#446ab3", 
-            "icon": ""
+            "icon": "category_icons/movies_and_medi.jpg"
         }
     }, 
     {
@@ -1838,13 +1824,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Hobbies & Interest",
-            "is_associative": true,
+            "title": "Hobbies & Interest", 
+            "color": "#f15c72", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "hobbies-interest", 
-            "color": "#f15c72", 
-            "icon": ""
+            "icon": "category_icons/hobbies_and_i.jpg"
         }
     }, 
     {
@@ -1852,13 +1838,13 @@
         "model": "events.category", 
         "fields": {
             "parent": 135, 
-            "title": "Arts & Theater",
-            "is_associative": true,
+            "title": "Arts & Theater", 
+            "color": "#e5a714", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "arts-theater", 
-            "color": "#e5a714", 
-            "icon": ""
+            "icon": "category_icons/arts_and_theater.jpg"
         }
     }, 
     {
@@ -1866,12 +1852,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Causes",
-            "is_associative": true,
+            "title": "Causes", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "causes", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1880,12 +1866,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 140, 
-            "title": "Volunteering",
-            "is_associative": false,
+            "title": "Volunteering", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "volunteering", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1894,12 +1880,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 16, 
-            "title": "Adult",
-            "is_associative": false,
+            "title": "Adult", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "adult", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1908,12 +1894,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Animal",
-            "is_associative": false,
+            "title": "Animal", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "animal", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1922,12 +1908,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Parades",
-            "is_associative": false,
+            "title": "Parades", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "parades", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1936,12 +1922,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "Hiking",
-            "is_associative": false,
+            "title": "Hiking", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "hiking", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1950,12 +1936,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Expos",
-            "is_associative": false,
+            "title": "Expos", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "expos", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1964,12 +1950,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 34, 
-            "title": "Classes & Seminars",
-            "is_associative": false,
+            "title": "Classes & Seminars", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "classes-seminars", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1978,12 +1964,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Shopping Event",
-            "is_associative": false,
+            "title": "Shopping Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "shopping-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -1992,12 +1978,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 116, 
-            "title": "Sightseeing",
-            "is_associative": false,
+            "title": "Sightseeing", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "sightseeing", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2006,12 +1992,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "St Patricks Day",
-            "is_associative": false,
+            "title": "St Patricks Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "st-patricks-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2020,12 +2006,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Valentine's Day",
-            "is_associative": false,
+            "title": "Valentine's Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "valentines-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2034,12 +2020,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 114, 
-            "title": "Holiday Celebration",
-            "is_associative": true,
+            "title": "Holiday Celebration", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "holiday-celebration", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2048,12 +2034,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Christmas",
-            "is_associative": false,
+            "title": "Christmas", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "christmas", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2062,12 +2048,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "New Year's",
-            "is_associative": false,
+            "title": "New Year's", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "new-years", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2076,12 +2062,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Father's Day",
-            "is_associative": false,
+            "title": "Father's Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fathers-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2090,12 +2076,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Halloween",
-            "is_associative": false,
+            "title": "Halloween", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "halloween", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2104,12 +2090,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Mardi Gras",
-            "is_associative": false,
+            "title": "Mardi Gras", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "mardi-gras", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2118,12 +2104,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Kwanzaa",
-            "is_associative": false,
+            "title": "Kwanzaa", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "kwanzaa", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2132,12 +2118,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Chanukah",
-            "is_associative": false,
+            "title": "Chanukah", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "chanukah", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2146,12 +2132,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Dia de los Muertos",
-            "is_associative": false,
+            "title": "Dia de los Muertos", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "dia-de-los-muertos", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2160,12 +2146,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "MLK Day",
-            "is_associative": false,
+            "title": "MLK Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "mlk-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2174,12 +2160,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Fourth of July",
-            "is_associative": false,
+            "title": "Fourth of July", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fourth-of-july", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2188,12 +2174,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Labor Day",
-            "is_associative": false,
+            "title": "Labor Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "labor-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2202,12 +2188,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Cinco de Mayo",
-            "is_associative": false,
+            "title": "Cinco de Mayo", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "cinco-de-mayo", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2216,12 +2202,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Thanksgiving",
-            "is_associative": false,
+            "title": "Thanksgiving", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "thanksgiving", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2230,12 +2216,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Mother's Day",
-            "is_associative": false,
+            "title": "Mother's Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "mothers-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2244,12 +2230,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Memorial Day",
-            "is_associative": false,
+            "title": "Memorial Day", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "memorial-day", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2258,12 +2244,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "LGBT Events",
-            "is_associative": false,
+            "title": "LGBT Events", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "lgbt-events", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2272,12 +2258,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 16, 
-            "title": "Game Nights",
-            "is_associative": false,
+            "title": "Game Nights", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "game-nights", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2286,12 +2272,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Gallery Opening",
-            "is_associative": true,
+            "title": "Gallery Opening", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "gallery-opening", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2300,12 +2286,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 29, 
-            "title": "Special Screening",
-            "is_associative": true,
+            "title": "Special Screening", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "special-screening", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2314,12 +2300,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Fashion Event",
-            "is_associative": false,
+            "title": "Fashion Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "fashion-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2328,12 +2314,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 28, 
-            "title": "Theater Event",
-            "is_associative": false,
+            "title": "Theater Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "theater-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2342,12 +2328,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 175, 
-            "title": "Childrens's Theater",
-            "is_associative": false,
+            "title": "Childrens's Theater", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "childrenss-theater", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2356,12 +2342,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Religious Event",
-            "is_associative": false,
+            "title": "Religious Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "religious-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2370,12 +2356,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 3, 
-            "title": "Participation Golf",
-            "is_associative": false,
+            "title": "Participation Golf", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "participation-golf", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2384,12 +2370,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 3, 
-            "title": "Participation Skateboarding",
-            "is_associative": true,
+            "title": "Participation Skateboarding", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "participation-skateboarding", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2398,12 +2384,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "Ice Skating",
-            "is_associative": false,
+            "title": "Ice Skating", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "ice-skating", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2412,12 +2398,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "Health & Wellness",
-            "is_associative": false,
+            "title": "Health & Wellness", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "health-wellness", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2426,12 +2412,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 181, 
-            "title": "Yoga",
-            "is_associative": false,
+            "title": "Yoga", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "yoga", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2440,12 +2426,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Automotive Event",
-            "is_associative": false,
+            "title": "Automotive Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "automotive-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2454,12 +2440,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 183, 
-            "title": "Motorcycle Event",
-            "is_associative": true,
+            "title": "Motorcycle Event", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "motorcycle-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2468,12 +2454,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 183, 
-            "title": "Car Event",
-            "is_associative": true,
+            "title": "Car Event", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "car-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2482,12 +2468,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 121, 
-            "title": "Historical",
-            "is_associative": false,
+            "title": "Historical", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "historical", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2496,12 +2482,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 28, 
-            "title": "Dance Performance",
-            "is_associative": false,
+            "title": "Dance Performance", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "dance-performance", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2510,12 +2496,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Tech Event",
-            "is_associative": false,
+            "title": "Tech Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "tech-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2524,12 +2510,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 153, 
-            "title": "Juneteenth",
-            "is_associative": false,
+            "title": "Juneteenth", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "juneteenth", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2538,12 +2524,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 127, 
-            "title": "Photography Event",
-            "is_associative": true,
+            "title": "Photography Event", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "photography-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2552,12 +2538,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 18, 
-            "title": "Happy Hour",
-            "is_associative": false,
+            "title": "Happy Hour", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "happy-hour", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2566,12 +2552,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 11, 
-            "title": "Business Conference",
-            "is_associative": true,
+            "title": "Business Conference", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "business-conference", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2580,12 +2566,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 116, 
-            "title": "Cultural Event",
-            "is_associative": false,
+            "title": "Cultural Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "cultural-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2594,26 +2580,26 @@
         "model": "events.category", 
         "fields": {
             "parent": 9, 
-            "title": "Public Event",
-            "is_associative": false,
+            "title": "Public Event", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "public-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
     {
-        "pk": 195, 
+        "pk": 203, 
         "model": "events.category", 
         "fields": {
-            "parent": 138, 
-            "title": "For the Frugal",
-            "is_associative": false,
-            "category_type": "C", 
-            "association_coefficient": 0.0, 
-            "slug": "for-the-frugal", 
+            "parent": 202, 
+            "title": "Basketball", 
             "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "basketball", 
             "icon": ""
         }
     }, 
@@ -2622,12 +2608,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 114, 
-            "title": "Seasonal Event",
-            "is_associative": true,
+            "title": "Seasonal Event", 
+            "color": "", 
+            "is_associative": true, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "seasonal-event", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2636,12 +2622,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 4, 
-            "title": "The Great Outdoors",
-            "is_associative": false,
+            "title": "The Great Outdoors", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "the-great-outdoors", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2650,12 +2636,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 197, 
-            "title": "Float Trips",
-            "is_associative": false,
+            "title": "Float Trips", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "float-trips", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2664,12 +2650,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 139, 
-            "title": "Auditions & Casting",
-            "is_associative": false,
+            "title": "Auditions & Casting", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "auditions-casting", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2678,12 +2664,12 @@
         "model": "events.category", 
         "fields": {
             "parent": 138, 
-            "title": "Educational",
-            "is_associative": false,
+            "title": "Educational", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "educational", 
-            "color": "", 
             "icon": ""
         }
     }, 
@@ -2692,12 +2678,3610 @@
         "model": "events.category", 
         "fields": {
             "parent": 34, 
-            "title": "Support Groups",
-            "is_associative": false,
+            "title": "Support Groups", 
+            "color": "", 
+            "is_associative": false, 
             "category_type": "C", 
             "association_coefficient": 0.0, 
             "slug": "support-groups", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 204, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Football", 
             "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "football", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 205, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Tennis", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "tennis", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 206, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Soccer", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "soccer", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 207, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Lacrosse", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "lacrosse", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 208, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Baseball", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "baseball", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 209, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Volleyball", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "volleyball", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 210, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Cricket", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cricket", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 211, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Motorsports", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "motorsports", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 212, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 211, 
+            "title": "Nascar", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "nascar", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 213, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 211, 
+            "title": "F-1", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "f-1", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 214, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Afghan Classical Music (Klasik)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "afghan-classical-music-klasik", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 215, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Andalusian classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "andalusian-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 216, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Azerbaijani Mugham", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "azerbaijani-mugham", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 217, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Cambodian ceremonial music (Pinpeat)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cambodian-ceremonial-music-pinpeat", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 218, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Chinese traditional music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "chinese-traditional-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 219, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "European classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "european-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 220, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Indian classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "indian-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 221, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Indonesian art music (Gamelan)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "indonesian-art-music-gamelan", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 222, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Persian classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "persian-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 223, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Japanese court music (Gagaku)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "japanese-court-music-gagaku", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 224, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Korean court music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "korean-court-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 225, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Lao classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "lao-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 226, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Mand\u00e9 art music (Griot)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mande-art-music-griot", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 227, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Ottoman classical music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "ottoman-classical-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 228, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Philippine art songs (Kundiman)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "philippine-art-songs-kundiman", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 229, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Scottish Pibroch (Ce\u00f2l M\u00f3r)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "scottish-pibroch-ceol-mor", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 230, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 231, 
+            "title": "Thai classical music (Piphat)", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "thai-classical-music-piphat", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 231, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Classical & Art Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "classical-art-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 232, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Acid Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "acid-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 233, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Blues Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "blues-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 234, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Boogie-woogie", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "boogie-woogie", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 235, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Blues Shouter", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "blues-shouter", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 236, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "British Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "british-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 237, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Canadian Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "canadian-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 238, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Chicago Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "chicago-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 239, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Classic Female Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "classic-female-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 240, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Contemprory R&B", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "contemprory-rb", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 241, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Country Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "country-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 242, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Delta Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "delta-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 243, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Detroit Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "detroit-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 244, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Electric Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "electric-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 245, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Gospel Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "gospel-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 246, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Hokum Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hokum-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 247, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Jazz Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "jazz-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 248, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Jump Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "jump-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 249, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Kansas City Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "kansas-city-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 250, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Lousiana Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "lousiana-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 251, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Memphis Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "memphis-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 252, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Piano Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "piano-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 253, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Piedmont Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "piedmont-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 254, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Punk Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "punk-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 439, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Rhythm & Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rhythm-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 256, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Soul Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "soul-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 257, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "St. Louis Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "st-louis-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 258, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Swamp Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "swamp-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 259, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "Texas Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "texas-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 260, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 107, 
+            "title": "West Coast Blues", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "west-coast-blues", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 261, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 444, 
+            "title": "African Popular Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "african-popular-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 262, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Avant-Garde", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "avant-garde", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 263, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 264, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Easy Listening", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "easy-listening", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 265, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Electronic", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "electronic", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 266, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Hip-Hop & Rap", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hip-hop-rap", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 267, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Latin American", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "latin-american", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 268, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Pop", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "pop", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 269, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Modern Folk", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "modern-folk", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 270, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Ska", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "ska", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 271, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 71, 
+            "title": "Performance Arts", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "performance-arts", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 272, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 271, 
+            "title": "Theatre & Cinema Genres", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "theatre-cinema-genres", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 273, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Afrobeat", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "afrobeat", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 274, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Apala", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "apala", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 275, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Benga", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "benga", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 276, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Bikutsi", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "bikutsi", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 277, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Cape Jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cape-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 278, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Chimurenga", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "chimurenga", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 279, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Fuji Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "fuji-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 280, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Highlife", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "highlife", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 281, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Hiplife", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hiplife", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 282, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Isicthamiya", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "isicthamiya", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 283, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Jit", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "jit", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 284, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Juju", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "juju", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 285, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Kizomba", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "kizomba", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 286, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Kudoro", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "kudoro", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 287, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Kwaito", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "kwaito", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 288, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Kwela", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "kwela", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 289, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Makossa", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "makossa", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 290, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Marrabenta", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "marrabenta", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 291, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Mbalax", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mbalax", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 292, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Museve aka Sungura", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "museve-aka-sungura", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 293, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Mbaqanga", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mbaqanga", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 294, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Mbube", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mbube", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 295, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Morna", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "morna", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 296, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Palm-wine", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "palm-wine", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 297, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Rai", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rai", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 298, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Sakara", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "sakara", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 299, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Salegy", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "salegy", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 300, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Soukous", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "soukous", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 301, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 261, 
+            "title": "Taarab", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "taarab", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 302, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 271, 
+            "title": "Circus Genres", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "circus-genres", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 303, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 271, 
+            "title": "Opera Genres", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "opera-genres", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 304, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Alternative country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "alternative-country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 305, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Americana", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "americana", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 306, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Bluegrass", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "bluegrass", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 307, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Close harmony", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "close-harmony", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 308, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Country pop", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "country-pop", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 309, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Country rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "country-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 310, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Bakersfield Sound", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "bakersfield-sound", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 311, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Nashville sound/Countrypolitan", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "nashville-soundcountrypolitan", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 312, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Neotraditional country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "neotraditional-country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 313, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Outlaw country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "outlaw-country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 314, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Progressive country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "progressive-country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 315, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Rockabilly", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rockabilly", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 316, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Western Country", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "western-country", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 317, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 263, 
+            "title": "Western Swing", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "western-swing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 330, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Latin Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "latin-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 329, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Ballroom Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "ballroom-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 320, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Jazz Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "jazz-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 321, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Afro-Carribean Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "afro-carribean-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 322, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Dancehall Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "dancehall-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 323, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Experimental & Freestyle Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "experimental-freestyle-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 324, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Folk Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "folk-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 325, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Hip-Hop & Funk Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hip-hop-funk-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 326, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "House Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "house-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 327, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Punk Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "punk-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 328, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Rave Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rave-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 331, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Swing Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "swing-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 332, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Traditional Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "traditional-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 333, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Liturgical dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "liturgical-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 334, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Improvisational Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "improvisational-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 336, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Performance Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "performance-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 337, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Belly Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "belly-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 338, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Ballet", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "ballet", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 339, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Tap Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "tap-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 340, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Flamenco", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "flamenco", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 341, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Acro dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "acro-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 342, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Contemporary dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "contemporary-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 343, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Modern dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "modern-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 344, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 336, 
+            "title": "Historical dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "historical-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 345, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Acid jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "acid-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 346, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Big band", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "big-band", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 347, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Crossover jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "crossover-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 348, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Dixieland", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "dixieland", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 349, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Cool jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cool-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 350, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Hard bop", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hard-bop", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 351, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Jazz-funk", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "jazz-funk", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 461, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 459, 
+            "title": "Pole Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "pole-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 460, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 459, 
+            "title": "Chair Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "chair-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 459, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 457, 
+            "title": "Striptease", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "striptease", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 458, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 457, 
+            "title": "Go-Go Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "go-go-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 457, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 122, 
+            "title": "Erotic Dance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "erotic-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 357, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 303, 
+            "title": "Contemporary Opera", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "contemporary-opera", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 358, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Mainstream jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mainstream-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 359, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Smooth jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "smooth-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 360, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Soul jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "soul-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 361, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 108, 
+            "title": "Vocal jazz", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "vocal-jazz", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 362, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 302, 
+            "title": "Cirque du Soleil", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cirque-du-soleil", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 368, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Disaster", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "disaster", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 369, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Documentary", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "documentary", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 370, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Epic", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "epic", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 371, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-Family", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-family", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 372, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Fantasy", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "fantasy", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 373, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-Noir", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-noir", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 374, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-LGBT", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-lgbt", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 375, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Horror", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "horror", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 376, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Mystery", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mystery", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 377, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Romance", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "romance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 378, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Science Fiction", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "science-fiction", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 379, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-Sport", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-sport", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 380, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Thriller", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "thriller", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 381, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "War", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "war", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 382, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-Western", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-western", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 383, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Alternative Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "alternative-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 384, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Indie Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "indie-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 385, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 268, 
+            "title": "Indie Pop", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "indie-pop", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 386, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Industrial Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "industrial-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 387, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Folk Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "folk-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 388, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Glam Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "glam-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 389, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Hard Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hard-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 390, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Heavy Metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "heavy-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 391, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Christian metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "christian-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 392, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Death metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "death-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 393, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Folk metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "folk-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 394, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Gothic metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "gothic-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 395, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Grindcore", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "grindcore", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 396, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Sludge metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "sludge-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 397, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Thrash metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "thrash-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 398, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 390, 
+            "title": "Speed metal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "speed-metal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 399, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Pop Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "pop-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 400, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 106, 
+            "title": "Punk Rock", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "punk-rock", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 401, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 264, 
+            "title": "Elevator music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "elevator-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 402, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 264, 
+            "title": "Background music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "background-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 403, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 264, 
+            "title": "Lounge music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "lounge-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 404, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Golf", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "golf", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 405, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Swimming", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "swimming", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 406, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Cheerleading", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cheerleading", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 407, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Extreme Sports", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "extreme-sports", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 408, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Snowboarding", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "snowboarding", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 409, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Skateboarding", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "skateboarding", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 410, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Skiing", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "skiing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 411, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Surfing", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "surfing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 412, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Rock Climbing", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rock-climbing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 413, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 407, 
+            "title": "Skydiving", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "skydiving", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 415, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Architechture", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "architechture", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 416, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Ceramics", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "ceramics", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 417, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Collage", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "collage", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 418, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Conceptual Art", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "conceptual-art", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 419, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Drawing", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "drawing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 420, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Glass Art", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "glass-art", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 421, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Land Art", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "land-art", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 422, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Metalworking", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "metalworking", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 423, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Mosaic", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "mosaic", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 424, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Painting", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "painting", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 425, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Paper Art", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "paper-art", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 426, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Printmaking", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "printmaking", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 427, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Sculpture", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "sculpture", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 428, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Textile Arts", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "textile-arts", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 429, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Woodworking", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "woodworking", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 430, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "New Media Art", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "new-media-art", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 431, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Film", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 433, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "Vocal", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "vocal", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 434, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 268, 
+            "title": "Operatic Pop", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "operatic-pop", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 462, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 56, 
+            "title": "Decades", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "decades", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 436, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 444, 
+            "title": "Celtic Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "celtic-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 437, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 332, 
+            "title": "Celtic Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "celtic-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 438, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 265, 
+            "title": "Dance Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "dance-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 440, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Table Tennis", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "table-tennis", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 441, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Burlesque", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "burlesque", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 442, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Cabaret", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cabaret", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 443, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 363, 
+            "title": "Improvisational Comedy", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "improvisational-comedy", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 444, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 58, 
+            "title": "World Music", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "world-music", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 447, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 330, 
+            "title": "Salsa Dance", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "salsa-dance", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 448, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 444, 
+            "title": "Rumba", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "rumba", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 449, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 270, 
+            "title": "Reggae", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "reggae", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 450, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 71, 
+            "title": "Cultural Movements", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "cultural-movements", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 451, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 450, 
+            "title": "Expressionism", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "expressionism", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 452, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 56, 
+            "title": "Languages", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "languages", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 453, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 452, 
+            "title": "Russian", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "russian", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 454, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 452, 
+            "title": "German", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "german", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 455, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 452, 
+            "title": "Italian", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "italian", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 456, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 452, 
+            "title": "French", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "french", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 463, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 462, 
+            "title": "70's", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "70s", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 464, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 462, 
+            "title": "80's", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "80s", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 465, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 462, 
+            "title": "90's", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "90s", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 466, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 444, 
+            "title": "Samba", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "samba", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 467, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 439, 
+            "title": "Soul", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "soul", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 468, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 272, 
+            "title": "Film-Silent", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "film-silent", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 469, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 439, 
+            "title": "Gospel", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "gospel", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 470, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 444, 
+            "title": "Gypsy", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "gypsy", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 471, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 472, 
+            "title": "Boxing", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "boxing", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 472, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Martial Arts", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "martial-arts", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 473, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 472, 
+            "title": "Tai Chi", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "tai-chi", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 474, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Fashion", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "fashion", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 475, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 452, 
+            "title": "Japanese", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "japanese", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 476, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Pool", 
+            "color": "", 
+            "is_associative": false, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "pool", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 477, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Bike Polo", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "bike-polo", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 478, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 414, 
+            "title": "Illustration", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "illustration", 
+            "icon": ""
+        }
+    }, 
+    {
+        "pk": 479, 
+        "model": "events.category", 
+        "fields": {
+            "parent": 202, 
+            "title": "Hockey", 
+            "color": "", 
+            "is_associative": true, 
+            "category_type": "A", 
+            "association_coefficient": 0.0, 
+            "slug": "hockey", 
             "icon": ""
         }
     }
