@@ -140,4 +140,8 @@ INSTALLED_APPS = (
 # ==============================
 # = eventure specific settings =
 # ==============================
-IPHONE_THUMB_GEOMETRY = '320x200'
+IPHONE_THUMB_OPTIONS = {
+    'geometry_string': '320x150',
+    'reflection_amount': 0.2,
+    'reflection_opacity': 0.8
+}
