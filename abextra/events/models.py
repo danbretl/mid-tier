@@ -9,6 +9,9 @@ from sorl.thumbnail import ImageField
 
 from places.models import Place
 
+# ============
+# = Category =
+# ============
 class CategoryManager(models.Manager):
     def for_events(self, event_ids, category_types='CA'):
         if not event_ids:
@@ -67,17 +70,33 @@ class Category(models.Model):
     def __unicode__(self):
         return self.title
 
-class EventManager(models.Manager):
+# =========
+# = Event =
+# =========
+class EventMixin(object):
+    """
+    see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
+    """
+    def future(self):
+        instant = datetime.date.today()
+        return self.distinct().filter(occurrences__start_date__gte=instant)
+
     def filter_user_actions(self, user, actions='GVI'):
         user_q = models.Q(actions__user=user)
         actions_q = models.Q(actions__action__in=actions)
-        return self.get_query_set() \
-            .filter((user_q & actions_q) | models.Q(actions__isnull=True))
+        q = (user_q & actions_q) | models.Q(actions__isnull=True)
+        return self.filter(q)
 
-class EventFutureManager(EventManager):
+class EventQuerySet(models.query.QuerySet, EventMixin):
+    pass
+
+class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
-        return super(EventFutureManager, self).get_query_set().distinct() \
-            .filter(occurrences__start_date__gte=datetime.date.today())
+        return EventQuerySet(self.model)
+
+class EventActiveManager(EventManager):
+    def get_query_set(self):
+        return super(EventActiveManager, self).get_query_set().filter(is_active=True)
 
 class Event(models.Model):
     """Event model"""
@@ -94,9 +113,10 @@ class Event(models.Model):
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     concrete_category = models.ForeignKey(Category, related_name='events_concrete')
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
+    is_active = models.BooleanField(default=True)
 
     objects = EventManager()
-    future = EventFutureManager()
+    active = EventActiveManager()
 
     def _concrete_category(self):
         """Used only by the admin site"""

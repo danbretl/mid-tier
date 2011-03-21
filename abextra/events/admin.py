@@ -43,11 +43,11 @@ class CategoryAutocomplete(AutocompleteSettings):
     search_fields = ('^title',)
 autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
-class EventCategorizer(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
+class EventAdmin(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
     form = EventAdminForm
     search_fields = ('title',)
-    fields = ('title','description', 'concrete_category', 'categories', 'url', 'image', 'video_url')
+    fields = ('title', 'description', 'concrete_category', 'categories', 'is_active', 'url', 'image', 'video_url')
     readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url',)
     list_display = ('title', 'created', '_concrete_category', '_abstract_categories')
     list_filter = ('concrete_category',)
@@ -55,4 +55,4 @@ class EventCategorizer(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
     inlines = [
         OccurrenceInline
     ]
-admin.site.register(Event, EventCategorizer)
+admin.site.register(Event, EventAdmin)
