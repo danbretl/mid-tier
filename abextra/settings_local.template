@@ -12,6 +12,7 @@ DATABASES['scrape'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
 # =================
 # = miscellaneous =
 # =================
+SCRAPE_FEED_PATH = '/private/tmp/scrape.feed'
 SCRAPE_IMAGES_PATH = '/devel/abextra/scrapery/scrapery/images'
 
 # ======================

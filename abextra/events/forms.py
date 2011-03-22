@@ -5,6 +5,9 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from events.models import Event, Category
 from events.utils import CachedCategoryTree
 
+# ===============
+# = Admin Forms =
+# ===============
 class CategoryAdminForm(forms.ModelForm):
     color = forms.RegexField(regex=r'^#(?:[0-9a-fA-F]{3}){1,2}$', required=False)
 
@@ -42,3 +45,10 @@ class EventAdminForm(forms.ModelForm):
     )
     class Meta:
         model = Event
+
+# ================
+# = Import Forms =
+# ================
+class CategoryImportForm(forms.ModelForm):
+    class Meta:
+        model = Category
