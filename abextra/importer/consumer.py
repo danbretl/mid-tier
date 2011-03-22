@@ -9,7 +9,10 @@ class ScrapeFeedConsumer(object):
     """
     registry = {}
 
-    def __init__(self):
+    def __init__(self, feed_path=None):
+        self.feed_path = feed_path or settings.SCRAPE_FEED_PATH
+
+        # load the registry
         for item in self._read_feed():
             self._register(item)
 
@@ -20,7 +23,7 @@ class ScrapeFeedConsumer(object):
                 yield event
 
     def _read_feed(self):
-        with open(settings.SCRAPE_FEED_PATH) as feed:
+        with open(self.feed_path) as feed:
             for jsonline in feed:
                 yield simplejson.loads(jsonline)
 
