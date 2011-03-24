@@ -36,6 +36,8 @@ def summarize_event(event, commit=False):
 
     #Get occurrence related information. 
     occurrence_objs = event.occurrences.all()
+    # If there are no occurrence objects, then the event hasn't been
+    # scheduled for a date, time and place. Forget this event. 
     if not occurrence_objs:
         return
     dates = [o_obj.start_date for o_obj in occurrence_objs]
