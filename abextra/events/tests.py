@@ -3,8 +3,13 @@ from django.contrib.auth.models import User
 from events.models import Event, EventSummary, Category
 from events import summarizer
 from events.utils import CachedCategoryTree
-from matplotlib import pyplot as plt
-from learning import ml, settings, CategoryTree, testing_framework, testing_simulation
+try:
+    from matplotlib import pyplot as plt
+except ImportError:
+    pass
+else:
+    from learning import testing_simulation, testing_framework
+from learning import ml, settings, category_tree
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
@@ -41,7 +46,7 @@ class CachedCategoryTreeTest(TestCase):
 class EventSummaryTest(TestCase):
     """
     """
-    fixture = ['events']
+    fixtures = ['events']
 
     def test_summarize_events(self):
         """
