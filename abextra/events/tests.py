@@ -9,7 +9,7 @@ except ImportError:
     pass
 else:
     from learning import testing_simulation, testing_framework
-from learning import ml, settings, category_tree
+from learning import ml, settings, category_tree, user_behavior, simulation_shared
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
@@ -46,21 +46,9 @@ class CachedCategoryTreeTest(TestCase):
 class EventSummaryTest(TestCase):
     """
     """
-    fixtures = ['events', 'auth']
+    fixtures = ['events']
 
     def test_summarize_events(self):
-        """
-        
-        Arguments:
-        - `self`:
-        """
-        # inefficient but fine for running a test
-        # is there a better way to efficiently select random elements
-        # from a MySQL DB?
-        event_objs = Event.objects.all().order_by('?')[:30]
-        
-
-    def test_summarize_event(self):
         """
         
         Arguments:
@@ -206,7 +194,7 @@ class PersonTest(TestCase):
                                                         db=self.db)
         for c in all_categories:
             self.assertEqual(simple_p.get_action(c), 
-                             GO if c in liked else XOUT)
+                             simulation_shared.GO if c in liked else XOUT)
         
         # now more realistic tests with real category IDs
         categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine', 
@@ -224,7 +212,7 @@ class PersonTest(TestCase):
             for r in rlst:
                 for c, a in zip(r.recommendations, r.actions):
                     if c in category_ids:
-                        self.assertEquals(a, GO)
+                        self.assertEquals(a, simulation_shared.GO)
                     else:
                         self.assertEquals(a, XOUT)
 
@@ -262,16 +250,16 @@ class UserBehaviorDBTest(TestCase):
         c1, c2, c3 = self.category_ids[:3]
         
         for i in range(10):
-            db.perform_action(u, c1, GO)
+            db.perform_action(u, c1, simulation_shared.GO)
         self.assertEqual(db.gvix_dict(u)[c1], [10, 0, 0, 0])
         
         for i in range(20):
-            db.perform_action(u, c1, VIEW)
+            db.perform_action(u, c1, simulation_shared.VIEW)
         self.assertEqual(db.gvix_dict(u)[c1], [10, 20, 0, 0])
         
         for i in range(50):
-            db.perform_action(u, c2, IGNORE)
-            db.perform_action(u, c2, XOUT)
+            db.perform_action(u, c2, simulation_shared.IGNORE)
+            db.perform_action(u, c2, simulation_shared.XOUT)
         self.assertEqual(db.gvix_dict(u)[c2], [0, 0, 50, 50])
         
         # check that this hasn't affected others
@@ -448,16 +436,6 @@ class AlgorithmTest(TestCase):
         plt.savefig("learning/test_results/test.pdf")
         plt.cla() 
         self.assertTrue(True)
-
-
-class CategoryTest(TestCase):
-
-    def setUp(self):
-        pass
-
-    def test_scoring_function(self):
-        pass
-        
 
         
 
