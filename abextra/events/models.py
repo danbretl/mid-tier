@@ -170,3 +170,37 @@ class Occurrence(models.Model):
 
     @property
     def is_now(self): pass
+
+
+class EventSummary(models.Model):
+    """
+    To do.
+    Everything is a text, string or URL (for front end use)
+    """
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+    url = models.URLField(verify_exists=False, max_length=300)
+    concrete_category = models.CharField(max_length=50)
+    date_range = models.CharField(max_length=25)
+    price_range = models.CharField(max_length=25)
+    time = models.CharField(max_length=25)
+    place = models.CharField(max_length=200, blank=True)
+
+
+    # Crashes with unicode encoder errors in some cases.
+    """
+    def __repr__(self):
+        str_obj =  "\nTitle      : " + self.title
+        str_obj += "\nDescription: " + self.description
+        str_obj += "\nDate Range : " + self.date_range
+        str_obj += "\nTime       : " + self.time
+        str_obj += "\nPrice Range: " + self.price_range
+        str_obj += "\nPlace      : " + self.place
+        str_obj += "\nURL        : " + self.url
+        return str_obj
+    """ 
+
+    
+    
+    

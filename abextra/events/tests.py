@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
-from events.models import Category
+from events.models import Event, EventSummary, Category
+from events import summarizer
 from events.utils import CachedCategoryTree
 from matplotlib import pyplot as plt
 from learning import ml, settings, CategoryTree, testing_framework, testing_simulation
@@ -36,6 +37,78 @@ class CachedCategoryTreeTest(TestCase):
         self.assertTrue(self.ctree.concretes)
         self.assertTrue(self.ctree.abstracts)
         self.assertFalse(set(self.ctree.concretes) & set(self.ctree.abstracts))
+
+class EventSummaryTest(TestCase):
+    """
+    """
+    fixture = ['events']
+
+    def test_summarize_events(self):
+        """
+        
+        Arguments:
+        - `self`:
+        """
+        # inefficient but fine for running a test
+        # is there a better way to efficiently select random elements
+        # from a MySQL DB?
+        event_objs = Event.objects.all().order_by('?')[:30]
+        
+
+    def test_summarize_event(self):
+        """
+        
+        Arguments:
+        - `self`:
+        """
+        event = None
+        x = summarizer.summarize_event(event, False)
+        self.assertEquals(None, x)
+        x = summarizer.summarize_event(event, True)
+        self.assertEquals(None, x)
+
+        # Confirm that event_summary information gets populated
+        events = Event.objects.all().order_by('?')[:10]
+        all_es = []
+        for event in events:
+            e_s = summarizer.summarize_event(event)
+            occurrences = event.occurrences.all()
+            if occurrences:
+                self.assertNotEqual(e_s, None)
+                #check if event related information is valid)
+                self.assertEqual(e_s.title, event.title)
+                self.assertEqual(e_s.id, event.id)
+                self.assertEqual(e_s.concrete_category,
+                                 event.concrete_category.title)
+                self.assertEqual(e_s.title, event.title)
+                self.assertEqual(e_s.url, event.url)
+                self.assertEqual(e_s.description, event.description)
+
+                #check if occurrence related information exists:
+                self.assertNotEqual(e_s.time, None)
+                self.assertNotEqual(e_s.place, None)
+                self.assertNotEqual(e_s.date_range, None)
+                self.assertNotEqual(e_s.price_range, None)
+                all_es.append(e_s)
+            else:
+                self.assertEquals(None, e_s)
+
+        # Confirm that event_summary information gets saved in DB
+        all_inserted_es_set = set(all_es)
+        all_DB_es_set = set(EventSummary.objects.all())
+        self.assertEqual(all_inserted_es_set, all_DB_es_set)
+        
+                         
+        
+             
+        
+        
+
+        
+
+        
+
+
 
 
 
