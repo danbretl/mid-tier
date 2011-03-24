@@ -1,10 +1,24 @@
-from django.db.models.query import CollectedObjects
-from django.db import models
-from events.models import Event, Occurrence, EventSummary
-from prices.models import Price
+"""
+Author: Vikas Menon
+Created: Mar 24, 2011
+"""
+
+from events.models import Event, EventSummary
 
 
 def summarize_event(event, commit=False):
+    """
+    Arguments:
+     'event' : A django event object.
+     'commit': A flag that saves the event summary if set. Mostly for debugging.
+    Summarize a single event for the UI.
+    Why: Performance. This ensure when a user makes a request, we don't need
+    to perform any joins and can return information from a single table.
+    When: This is performed after a scrape and before the information gets
+    stored on the event database.
+    """
+    if not event:
+        return
     e_s = EventSummary()
     # This is interesting: http://djangosnippets.org/snippets/1258/
     #related_objs = CollectedObjects()
@@ -12,18 +26,27 @@ def summarize_event(event, commit=False):
     #Event.objects.select_related()
     e_s.id = event.id
     e_s.concrete_category = event.concrete_category.title
-    occurrence_objs = event.occurrences.all()
-    dates = [o_obj.start_date for o_obj in occurrence_objs]
-    date_range = [min(dates),max(dates)]
-    e_s.date_range = ' - '.join([dt.strftime('%x') for dt in date_range])
     e_s.title = event.title
     e_s.url = event.url
     e_s.description = event.description
-    
+
+    # ToDo: We could potentially filter out any events here that do not have
+    # future occurrences. Since we are using this for scrape, the
+    # expectations is that past events don't get scraped. 
+
+    #Get occurrence related information. 
+    occurrence_objs = event.occurrences.all()
+    if not occurrence_objs:
+        return
+    dates = [o_obj.start_date for o_obj in occurrence_objs]
+    date_range = [min(dates), max(dates)]
+    e_s.date_range = ' - '.join([dt.strftime('%x') for dt in date_range])
     occ_obj = None
     try:
+        #min could potentially be run on an empty list
         time, occ_obj = min([(o_obj.start_time, o_obj)
                              for o_obj in occurrence_objs if o_obj.start_time])
+        e_s.time = time.strftime('%X')
     except:
         e_s.time = 'N/A'
         occ_obj = occurrence_objs[0]
@@ -32,10 +55,18 @@ def summarize_event(event, commit=False):
     price_objs = [price.quantity for price in occ_obj.prices.all()]
     e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
     if commit:
-             e_s.save()
+        # Here we can also check if the event_summary already exists and
+        # update relevant information accordingly. 
+        e_s.save()
     return e_s
 
 def summarize_events(events):
+    """
+    Argument:
+     'events' : A list of event ids
+    This is a wrapper to summarize_event and gets called for
+    all ids passed in events 
+    """
     event_objs = Event.objects.filter(id__in=events)
     lst = []
     for event in event_objs:
@@ -43,8 +74,5 @@ def summarize_events(events):
 
     return lst
 
-# This will be the general form of the event_summarizer and should be able
-# to summarize any django object into a summary list. 
-# class Summarizer(models.Model):
 
  
