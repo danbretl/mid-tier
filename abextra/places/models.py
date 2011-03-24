@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
-from django.contrib.localflavor.us.models import PhoneNumberField
+from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
 
 class PlaceType(models.Model):
@@ -21,10 +21,11 @@ class PlaceType(models.Model):
         return ('place_type_detail', None, {'slug': self.slug})
 
 
+# FIXME two unique constraints impose two db checks for 'exists' validation
 class City(models.Model):
     """City model."""
     city = models.CharField(_('city'), max_length=100)
-    state = models.CharField(_('state'), max_length=100)
+    state = us_models.USStateField(_('state'))
     slug = models.SlugField(_('slug'), unique=True)
 
     class Meta:
@@ -72,7 +73,7 @@ class Place(models.Model):
     slug = models.SlugField(_('slug'))
     nickname = models.CharField(_('nickname'), blank=True, max_length=100)
     unit = models.CharField(_('unit'), blank=True, max_length=100, help_text='Suite or Apartment #')
-    phone = PhoneNumberField(_('phone'), blank=True)
+    phone = us_models.PhoneNumberField(_('phone'), blank=True)
     url = models.URLField(_('url'), blank=True, verify_exists=False)
     email = models.EmailField(_('email'), blank=True)
     description = models.TextField(_('description'), blank=True)

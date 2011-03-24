@@ -1,6 +1,15 @@
 from django.utils import simplejson
 from django.conf import settings
 
+class ScrapeFeedReader(object):
+    def __init__(self, path=None):
+        self.path = path or settings.SCRAPE_FEED_PATH
+
+    def read(self):
+        with open(self.path) as feed:
+            for jsonline in feed:
+                yield simplejson.loads(jsonline)
+
 class ScrapeFeedConsumer(object):
     """
     Consumer reads the feed file one line at time.  Every line is a json
@@ -10,22 +19,31 @@ class ScrapeFeedConsumer(object):
     registry = {}
 
     def __init__(self, feed_path=None):
-        self.feed_path = feed_path or settings.SCRAPE_FEED_PATH
-
-        # load the registry
-        for item in self._read_feed():
+        feed_reader = ScrapeFeedReader(feed_path)
+        for item in feed_reader.read():
             self._register(item)
-
-    def events(self):
         self._wire_all()
-        for source_registry in self.registry.itervalues():
-            for event in source_registry['event'].itervalues():
-                yield event
 
-    def _read_feed(self):
-        with open(self.feed_path) as feed:
-            for jsonline in feed:
-                yield simplejson.loads(jsonline)
+    def _items(self, item_type):
+        for source_registry in self.registry.itervalues():
+            for item in source_registry[item_type].itervalues():
+                yield item
+
+    @property
+    def categories(self):
+        return self._items('category')
+
+    @property
+    def events(self):
+        return self._items('event')
+
+    @property
+    def occurrences(self):
+        return self._items('occurrence')
+
+    @property
+    def locations(self):
+        return self._items('location')
 
     def _register(self, item):
         item_source = item['source']
