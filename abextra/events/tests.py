@@ -46,7 +46,7 @@ class CachedCategoryTreeTest(TestCase):
 class EventSummaryTest(TestCase):
     """
     """
-    fixtures = ['events']
+    fixtures = ['events', 'auth']
 
     def test_summarize_events(self):
         """
@@ -76,7 +76,7 @@ class EventSummaryTest(TestCase):
         events = Event.objects.all().order_by('?')[:10]
         all_es = []
         for event in events:
-            e_s = summarizer.summarize_event(event)
+            e_s = summarizer.summarize_event(event, True)
             occurrences = event.occurrences.all()
             if occurrences:
                 self.assertNotEqual(e_s, None)
@@ -100,22 +100,10 @@ class EventSummaryTest(TestCase):
 
         # Confirm that event_summary information gets saved in DB
         all_inserted_es_set = set(all_es)
-        all_DB_es_set = set(EventSummary.objects.all())
+        event_ids = [ev.id for ev in events]
+        all_DB_es_set = set(EventSummary.objects.filter(id__in=event_ids))
         self.assertEqual(all_inserted_es_set, all_DB_es_set)
         
-                         
-        
-             
-        
-        
-
-        
-
-        
-
-
-
-
 
 class MLModuleTest(TestCase):
     """

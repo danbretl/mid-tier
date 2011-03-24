@@ -43,7 +43,8 @@ def summarize_event(event, commit=False):
     dates = [o_obj.start_date for o_obj in occurrence_objs]
     date_range = [min(dates), max(dates)]
     e_s.date_range = ' - '.join([dt.strftime('%x') for dt in date_range])
-    occ_obj = None
+    occ_obj = None 
+
     try:
         # min could potentially be run on an empty list (since invalid times get
         # filtered out)
@@ -53,14 +54,21 @@ def summarize_event(event, commit=False):
     except:
         e_s.time = 'N/A'
         occ_obj = occurrence_objs[0]
-    
-    e_s.place = occ_obj.place.full_title + ',' + occ_obj.place.address
+        
+    try:
+        e_s.place = occ_obj.place.full_title + ',' + occ_obj.place.address
+    except:
+        # This also imples a bad scrape. We have an occurrence
+        # without a place/location.
+        e_s.place = 'Unavailable'
+
     price_objs = [price.quantity for price in occ_obj.prices.all()]
     try:
         #min could potentially be run on an empty list of price objs. 
         e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
     except:
         e_s.price_range = 'N/A'
+        
     if commit:
         # Here we can also check if the event_summary already exists and
         # update relevant information accordingly. 

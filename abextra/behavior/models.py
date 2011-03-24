@@ -95,10 +95,10 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
 pre_save.connect(update_aggregate_on_event_action_save, sender=EventAction)
 
 
-def add_default_behavior(sender, instance, **kwargs):
-    user = User.objects.get(username='default_behavior')
-    EventActionAggregate.objects.get_or_create(user=user, category=instance)
-post_save.connect(add_default_behavior, sender=Category)
+#def add_default_behavior(sender, instance, **kwargs):
+#    user = User.objects.get(username='default_behavior')
+#    EventActionAggregate.objects.get_or_create(user=user, category=instance)
+#post_save.connect(add_default_behavior, sender=Category)
 
 # def update_aggregate_on_event_action_delete(sender, instance, **kwargs):
 #     """Decreases aggregates after a deletion of event action."""
