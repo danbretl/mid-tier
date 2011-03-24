@@ -45,7 +45,8 @@ def summarize_event(event, commit=False):
     e_s.date_range = ' - '.join([dt.strftime('%x') for dt in date_range])
     occ_obj = None
     try:
-        #min could potentially be run on an empty list
+        # min could potentially be run on an empty list (since invalid times get
+        # filtered out)
         time, occ_obj = min([(o_obj.start_time, o_obj)
                              for o_obj in occurrence_objs if o_obj.start_time])
         e_s.time = time.strftime('%X')
@@ -55,7 +56,11 @@ def summarize_event(event, commit=False):
     
     e_s.place = occ_obj.place.full_title + ',' + occ_obj.place.address
     price_objs = [price.quantity for price in occ_obj.prices.all()]
-    e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
+    try:
+        #min could potentially be run on an empty list of price objs. 
+        e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
+    except:
+        e_s.price_range = 'N/A'
     if commit:
         # Here we can also check if the event_summary already exists and
         # update relevant information accordingly. 

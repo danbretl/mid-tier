@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 
-from api.handlers import EventHandler, EventActionHandler, CategoryHandler
+from api.handlers import EventHandler, EventActionHandler, CategoryHandler, EventListDetailHandler
+
 
 from emitters import Emitter, JSONEmitterMinified  # FIXME hack to register the emitter
 Emitter.register('json', JSONEmitterMinified, 'application/json; charset=utf-8')
@@ -14,6 +15,7 @@ ad = { 'authentication': auth }
 events = Resource(handler=EventHandler, **ad)
 event_actions = Resource(handler=EventActionHandler, **ad)
 categories = Resource(handler=CategoryHandler, **ad)
+event_list_detail = Resource(handler=EventListDetailHandler, **ad)
 
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
 
@@ -26,6 +28,7 @@ categories = Resource(handler=CategoryHandler, **ad)
 urlpatterns = patterns('',
     # url(r'^events/$', events),
     url(r'^events/$', events),
+    url(r'^event_list_detail/$', event_list_detail),                       
     url(r'^categories/$', categories),
 
     # url(r'^actions/$', event_actions),

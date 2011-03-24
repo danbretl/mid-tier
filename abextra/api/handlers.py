@@ -4,7 +4,7 @@ from django.forms.models import model_to_dict
 from piston.handler import BaseHandler
 from piston.utils import rc, validate, require_mime, require_extended
 
-from events.models import Event, Category, Occurrence
+from events.models import Event, Category, Occurrence, EventSummary
 from events.utils import CachedCategoryTree
 from behavior.models import EventAction
 from prices.models import Price
@@ -187,6 +187,48 @@ class CategoryHandler(BaseHandler):
 
     def read(self, request):
         return Category.concrete.all()
+
+class EventListDetailHandler(BaseHandler):
+    """
+    """
+    allowed_methods = ('GET')
+    model = EventSummary
+    fields = ('id', 'title', 'description', 'url', 'concrete_category',
+              'date_range', 'price_range', 'time', 'place')
+    
+    def read(self, request):
+        """
+        Returns a single event if 'event_id' is given, otherwise a subset.
+        """
+        events_qs = Event.active.future().filter_user_actions(request.user, 'VI')
+        ctree = CachedCategoryTree()
+
+        try:
+            category_id = int(request.GET.get('category_id'))
+        except (ValueError, TypeError):
+            recommended_events = ml.recommend_events(request.user, events_qs)
+        else:
+            category = ctree.get(id=category_id)
+            all_children = ctree.children_recursive(category)
+            all_children.append(category)
+            events_qs = events_qs.filter(concrete_category__in=all_children)
+            recommended_events = ml.recommend_events(request.user, events_qs)
+
+        # preprocess ignores
+        if recommended_events:
+            non_actioned_events = Event.objects.raw(
+                """SELECT `events_event`.`id` FROM `events_event`
+                    LEFT JOIN `behavior_eventaction`
+                    ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                    WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
+                """, [request.user.id, [e.id for e in recommended_events]]
+            )
+            if non_actioned_events:
+                for event in non_actioned_events:
+                    EventAction(event=event, user=request.user, action='I').save()
+        recommended_event_ids = [event.id for event in recommended_events]
+
+        return EventSummary.objects.filter(id__in=recommended_event_ids)
 
 # Behavior
 
