@@ -4,9 +4,9 @@ Created: Mar 24, 2011
 """
 
 from events.models import Event, EventSummary
+from events.utils import CachedCategoryTree
 
-
-def summarize_event(event, commit=False):
+def summarize_event(event, ctree, commit=False):
     """
     Arguments:
      'event' : A django event object.
@@ -19,13 +19,16 @@ def summarize_event(event, commit=False):
     """
     if not event:
         return
+    if not ctree:
+        ctree = CachedCategoryTree()
+    
     e_s = EventSummary()
     # This is interesting: http://djangosnippets.org/snippets/1258/
     #related_objs = CollectedObjects()
     #event._collect_sub_objects(related_objs)
     #Event.objects.select_related()
     e_s.id = event.id
-    e_s.concrete_category = event.concrete_category.title
+    e_s.concrete_category = ctree.surface_parent(event.concrete_category)
     e_s.title = event.title
     e_s.url = event.url
     e_s.description = event.description
@@ -84,8 +87,9 @@ def summarize_events(events):
     """
     event_objs = Event.objects.filter(id__in=events)
     lst = []
+    ctree = CachedCategoryTree()
     for event in event_objs:
-        lst.append(summarize_event(event, True))
+        lst.append(summarize_event(event, ctree, True))
 
     return lst
 

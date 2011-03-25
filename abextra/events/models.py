@@ -179,9 +179,7 @@ class EventSummary(models.Model):
     """
     id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    url = models.URLField(verify_exists=False, max_length=300)
-    concrete_category = models.CharField(max_length=50)
+    concrete_category = models.ForeignKey(Category, related_name='event_summary_concrete')
     date_range = models.CharField(max_length=25)
     price_range = models.CharField(max_length=25)
     time = models.CharField(max_length=25)

@@ -3,7 +3,8 @@ from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 
-from api.handlers import EventHandler, EventActionHandler, CategoryHandler, EventListDetailHandler
+from api.handlers import EventHandler, EventActionHandler, CategoryHandler
+from api.handlers import MobileEventListHandler, EventDetailHandler
 
 
 
@@ -16,7 +17,8 @@ ad = { 'authentication': auth }
 events = Resource(handler=EventHandler, **ad)
 event_actions = Resource(handler=EventActionHandler, **ad)
 categories = Resource(handler=CategoryHandler, **ad)
-event_list_detail = Resource(handler=EventListDetailHandler, **ad)
+event_list = Resource(handler=MobileEventListHandler, **ad)
+event_detail = Resource(handler=EventDetailHandler, **ad)
 
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
 
@@ -29,8 +31,8 @@ event_list_detail = Resource(handler=EventListDetailHandler, **ad)
 urlpatterns = patterns('',
     # url(r'^events/$', events),
     url(r'^events/$', events),
-    url(r'^event_list_detail/(?P<event_id>\d+)/$',events),
-    url(r'^event_list_detail/$', event_list_detail),                       
+    url(r'^event_detail/(?P<event_id>\d+)/$', event_detail),
+    url(r'^mobile/events_recommendation/$', event_list),
     url(r'^categories/$', categories),
 
     # url(r'^actions/$', event_actions),

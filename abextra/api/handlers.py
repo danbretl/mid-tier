@@ -13,6 +13,82 @@ from api.utils import get_iphone_thumb
 
 # Events
 
+class EventDetailHandler(BaseHandler):
+    allowed_methods = ('GET')
+    model = Event
+    fields = (
+        'id',
+        'title',
+        'description',
+        'url',
+        'image_url',
+        'video_url',
+        ('occurrences', (
+            'id',
+            'place',
+            'one_off_place',
+            'start_date',
+            'start_time',
+            'end_date',
+            'end_time',
+            'is_all_day',
+            ('place', (
+                'id',
+                'title',
+                'unit',
+                'phone',
+                'url',
+                'image_url',
+                'email',
+                'description',
+                'created',
+                ('point', (
+                    'id',
+                    'latitude',
+                    'longitude',
+                    'address',
+                    'zip',
+                    'country',
+                    ('city', (
+                        'id',
+                        'city',
+                        'state')
+                    )
+                ))
+            )),
+            ('prices', (
+                'quantity',
+                'units',
+                'remark',
+            ))
+        )),
+        ('concrete_category', (
+            'id',
+            'title')
+        ),
+        ('categories', (
+            'id',
+            'title')
+        ),
+        ('place', (
+            'title',
+            'description',
+            'url',
+            'email',
+            'phone',
+            ('point', (
+                'latitude',
+                'longitute')
+            )
+        )),
+    )
+
+
+    def read(self, request, event_id):
+        return [Event.objects.get(id=event_id)]
+
+
+
 class EventHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Event
@@ -203,18 +279,21 @@ class CategoryHandler(BaseHandler):
     def read(self, request):
         return Category.concrete.all()
 
-class EventListDetailHandler(BaseHandler):
+class MobileEventListHandler(BaseHandler):
     """
     """
     allowed_methods = ('GET')
     model = EventSummary
-    fields = ('id', 'title', 'description', 'url', 'concrete_category',
+    fields = ('id', 'title', 'description', 'url', 'concrete_category_id',
               'date_range', 'price_range', 'time', 'place')
     
-    def read(self, request):
+    def read(self, request, event_id=None):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
+        if event_id:
+            return [EventSummary.objects.get(id=event_id)]
+        
         events_qs = Event.active.future().filter_user_actions(request.user, 'VI')
         ctree = CachedCategoryTree()
 
@@ -228,7 +307,6 @@ class EventListDetailHandler(BaseHandler):
             all_children.append(category)
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
-
         # preprocess ignores
         if recommended_events:
             non_actioned_events = Event.objects.raw(
