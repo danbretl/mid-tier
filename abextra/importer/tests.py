@@ -4,37 +4,38 @@ from places.forms import CityImportForm
 from places.models import City
 
 class BaseParser(object):
-    def __init__(self, obj_dict):
-        self.obj_dict = obj_dict
+    def __init__(self):
+        self.model = self.model_form._meta.model
+        self.cache = {}
 
-    def parse(self):
+    def parse(self, obj_dict):
         form_data = self.parse_form_data()
-        form = self.model_form(data=form_data)
-        if form.is_valid():
-            return form.instance
+        try:
+            instance = self.model.objects.get(**form_data)
+        except self.model.DoesNotExist:
+            form = self.model_form(form_data)
+            # this will raise a ValueError, if not valid
+            instance = form.save(commit=False)
+        return instance
 
     def parse_form_data(self):
         raise NotImplementedError()
 
-class LocationParser(object):
-    def parse_form_data(self):
-        return self.obj_dict
+# class LocationParser(object):
+#     def parse_form_data(self):
+#         city = self.parse_city()
+# 
+#     def parse_city(self):
 
-    def parse_city(self):
+class CityParser(BaseParser):
+    model_form = CityImportForm
+
+    def parse_form_data(self):
         city, state = location['city'], location['state']
         slug = slugify(u'-'.join((city, state)))
-        form_data = dict(city=city, state=state, slug=slug)
-
-        try:
-            city = City.objects.get(**form_data)
-        except City.DoesNotExist:
-            form = CityImportForm(form_data)
-        else:
-            form = CityImportForm(form_data, instance=city)
-
-        if form.is_valid():
-            form.save()
+        return dict(city=city, state=state, slug=slug)
 
 consumer = ScrapeFeedConsumer()
 for location in consumer.locations:
-    parse_city(location)
+    city_parser = CityParser(location)
+    print city_parser.parse()
