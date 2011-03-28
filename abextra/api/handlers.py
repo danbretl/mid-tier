@@ -85,7 +85,7 @@ class EventDetailHandler(BaseHandler):
 
 
     def read(self, request, event_id):
-        return [Event.objects.get(id=event_id)]
+        return Event.objects.get(id=event_id)
 
 
 
