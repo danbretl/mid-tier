@@ -23,6 +23,34 @@ class PointParser(BaseParser):
         form_data['longitude'] = data['longitude']
         form_data['address'] = data['address']
         form_data['zip'] = data['zipcode']
-        form_data['city'] = self.city_parser.parse(data).id
         form_data['country'] = 'US'
+
+        created, city = self.city_parser.parse(data)
+        if city:
+            form_data['city'] = city.id
+
         return form_data
+
+class PlaceParser(BaseParser):
+    model_form = PlaceImportForm
+    # fields = 
+    point_parser = PointParser()
+
+    def parse_form_data(self, data):
+        form_data = {}
+
+        created, point = self.point_parser.parse(data)
+        if point:
+            form_data['point'] = point.id
+
+        form_data['title'] = data['title']
+        form_data['phone'] = data['phone']
+        form_data['url'] = data['url']
+
+        images = data.get('images')
+        if images:
+            image = images[0]
+            form_data['image_url'] = image['url']
+            # form_data['']
+
+        image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)

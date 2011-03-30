@@ -9,16 +9,17 @@ class BaseParser(object):
     def parse(self, data):
         form_data = self.parse_form_data(data)
         key = self.cache_key(form_data)
-        instance = self.cache.get(key)
+        created, instance = False, self.cache.get(key)
         if not instance:
             try:
-                instance = self.model.objects.get(**key._asdict())
-                self.cache[key] = instance
+                created, instance = False, self.model.objects.get(**key._asdict())
             except self.model.DoesNotExist:
                 form = self.model_form(form_data)
-                # this will raise a ValueError, if not valid
-                instance = form.save(commit=True)
-        return instance
+                if form.is_valid():
+                    created, instance = True, form.save(commit=True)
+            if instance:
+                self.cache[key] = instance
+        return created, instance
 
     def cache_key(self, form_data):
         return self.key_tuple(
@@ -27,4 +28,3 @@ class BaseParser(object):
 
     def parse_form_data(self, obj_dict):
         raise NotImplementedError()
-

@@ -14,21 +14,24 @@ class PointForm(forms.ModelForm):
 
 class CityForm(forms.ModelForm):
     state = us_forms.USStateField()
+
+    class Meta:
+        model = City
+
+class PlaceImportForm(PlaceForm):
+    slug = forms.SlugField(required=False)
+
+    def clean_slug(self):
+        title = self.cleaned_data['title']
+        return slugify(title)[:50]
+
+class PointImportForm(PointForm):
+    pass
+
+class CityImportForm(CityForm):
     slug = forms.SlugField(required=False)
 
     def clean_slug(self):
         city = self.cleaned_data['city']
         state = self.cleaned_data['state']
         return slugify(u'-'.join((city, state)))
-
-    class Meta:
-        model = City
-
-class PlaceImportForm(PlaceForm):
-    pass
-
-class PointImportForm(PointForm):
-    pass
-
-class CityImportForm(CityForm):
-    pass
