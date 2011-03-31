@@ -1,3 +1,6 @@
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from importer.base import BaseParser
 from events.forms import CategoryImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
@@ -7,10 +10,10 @@ class CityParser(BaseParser):
     fields = ['city', 'state']
 
     def parse_form_data(self, data):
-        form_data = {}
+        form_data, file_data = {}, {}
         form_data['city'] = data['city']
         form_data['state'] = data['state']
-        return form_data
+        return form_data, file_data
 
 class PointParser(BaseParser):
     model_form = PointImportForm
@@ -18,7 +21,7 @@ class PointParser(BaseParser):
     city_parser = CityParser()
 
     def parse_form_data(self, data):
-        form_data = {}
+        form_data, file_data = {}, {}
         form_data['latitude'] = data['latitude']
         form_data['longitude'] = data['longitude']
         form_data['address'] = data['address']
@@ -29,15 +32,15 @@ class PointParser(BaseParser):
         if city:
             form_data['city'] = city.id
 
-        return form_data
+        return form_data, {}
 
 class PlaceParser(BaseParser):
     model_form = PlaceImportForm
-    # fields = 
+    fields = ['title', 'point']
     point_parser = PointParser()
 
     def parse_form_data(self, data):
-        form_data = {}
+        form_data, file_data = {}, {}
 
         created, point = self.point_parser.parse(data)
         if point:
@@ -45,12 +48,18 @@ class PlaceParser(BaseParser):
 
         form_data['title'] = data['title']
         form_data['phone'] = data['phone']
-        form_data['url'] = data['url']
+
+        url = data.get('url')
+        if url:
+            form_data['url'] = url
 
         images = data.get('images')
         if images:
             image = images[0]
             form_data['image_url'] = image['url']
-            # form_data['']
 
-        image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
+            path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
+            with open(path, 'rb') as f:
+                file_data['file'] = SimpleUploadedFile(os.path.split(f.name)[1], f.read())
+
+        return form_data, file_data

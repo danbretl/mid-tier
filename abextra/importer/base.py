@@ -7,16 +7,19 @@ class BaseParser(object):
         self.cache = {}
 
     def parse(self, data):
-        form_data = self.parse_form_data(data)
+        form_data, file_data = self.parse_form_data(data)
         key = self.cache_key(form_data)
         created, instance = False, self.cache.get(key)
         if not instance:
             try:
                 created, instance = False, self.model.objects.get(**key._asdict())
             except self.model.DoesNotExist:
-                form = self.model_form(form_data)
+                form = self.model_form(data=form_data, files=file_data)
                 if form.is_valid():
                     created, instance = True, form.save(commit=True)
+                else:
+                    print form.errors
+                    # import ipdb; ipdb.set_trace()
             if instance:
                 self.cache[key] = instance
         return created, instance
