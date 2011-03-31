@@ -279,6 +279,7 @@ class CategoryHandler(BaseHandler):
     def read(self, request):
         return Category.concrete.all()
 
+
 class MobileEventListHandler(BaseHandler):
     """
     """
@@ -287,16 +288,17 @@ class MobileEventListHandler(BaseHandler):
     fields = ('id', 'title', 'description', 'url', 'concrete_category_id',
               'date_range', 'price_range', 'time', 'place')
     
-    def read(self, request, event_id=None):
+    def read(self, request, search_terms=None):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
-        if event_id:
-            return [EventSummary.objects.get(id=event_id)]
-        
-        events_qs = Event.active.future().filter_user_actions(request.user, 'VI')
-        ctree = CachedCategoryTree()
+        events_qs = []
+        if search_terms:
+            events_qs = Event.objects.filter(title__search=search_terms)
+        else:
+            events_qs = Event.active.future().filter_user_actions(request.user, 'VI')
 
+        ctree = CachedCategoryTree()
         try:
             category_id = int(request.GET.get('category_id'))
         except (ValueError, TypeError):
@@ -307,15 +309,29 @@ class MobileEventListHandler(BaseHandler):
             all_children.append(category)
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
+
+
+            
         # preprocess ignores
         if recommended_events:
-            non_actioned_events = Event.objects.raw(
-                """SELECT `events_event`.`id` FROM `events_event`
+            if len(recommended_events) > 1:
+                non_actioned_events = Event.objects.raw(
+                    """SELECT `events_event`.`id` FROM `events_event`
                     LEFT JOIN `behavior_eventaction`
                     ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
                     WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
-                """, [request.user.id, [e.id for e in recommended_events]]
+                    """, [request.user.id, [e.id for e in recommended_events]]
             )
+            else:
+                non_actioned_events = Event.objects.raw(
+                    """SELECT `events_event`.`id` FROM `events_event`
+                    LEFT JOIN `behavior_eventaction`
+                    ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                    WHERE (`events_event`.`id` = %s) AND (`behavior_eventaction`.`id` IS NULL)
+                    """, [request.user.id, recommended_events[0].id]
+            )
+                
+                
             if non_actioned_events:
                 for event in non_actioned_events:
                     EventAction(event=event, user=request.user, action='I').save()

@@ -1,41 +1,65 @@
-from importer import parser_registry
-from parser_base import BaseParser
+import os
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
+from importer.base import BaseParser
 from events.forms import CategoryImportForm
+from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 
-class BaseParser(object):
-    def __init__(self, obj_dict):
-        self.obj_dict = obj_dict
+class CityParser(BaseParser):
+    model_form = CityImportForm
+    fields = ['city', 'state']
 
-    def parse(self):
-        form_data = self.parse_form_data()
-        form = self.model_form(data=form_data)
-        if form.is_valid():
-            return form.instance
+    def parse_form_data(self, data):
+        form_data, file_data = {}, {}
+        form_data['city'] = data['city']
+        form_data['state'] = data['state']
+        return form_data, file_data
 
-    def parse_form_data(self):
-        raise NotImplementedError()
+class PointParser(BaseParser):
+    model_form = PointImportForm
+    fields = ['latitude', 'longitude', 'address']
+    city_parser = CityParser()
 
+    def parse_form_data(self, data):
+        form_data, file_data = {}, {}
+        form_data['latitude'] = data['latitude']
+        form_data['longitude'] = data['longitude']
+        form_data['address'] = data['address']
+        form_data['zip'] = data['zipcode']
+        form_data['country'] = 'US'
 
-class CategoryParser(BaseParser):
-    model_form = CategoryImportForm
-    def parse_form_data(self):
-        return self.obj_dict
-parser_registry.register('category', CategoryParser)
+        created, city = self.city_parser.parse(data)
+        if city:
+            form_data['city'] = city.id
 
+        return form_data, {}
 
-class EventParser(BaseParser):
-    def parse_form_data(self):
-        return self.obj_dict
-parser_registry.register('event', EventParser)
+class PlaceParser(BaseParser):
+    model_form = PlaceImportForm
+    fields = ['title', 'point']
+    point_parser = PointParser()
 
+    def parse_form_data(self, data):
+        form_data, file_data = {}, {}
 
-class OccurrenceParser(BaseParser):
-    def parse_form_data(self):
-        return self.obj_dict
-parser_registry.register('occurrence', OccurrenceParser)
+        created, point = self.point_parser.parse(data)
+        if point:
+            form_data['point'] = point.id
 
+        form_data['title'] = data['title']
+        form_data['phone'] = data['phone']
 
-class LocationParser(BaseParser):
-    def parse_form_data(self):
-        return self.obj_dict
-parser_registry.register('location', LocationParser)
+        url = data.get('url')
+        if url:
+            form_data['url'] = url
+
+        images = data.get('images')
+        if images:
+            image = images[0]
+            form_data['image_url'] = image['url']
+
+            path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
+            with open(path, 'rb') as f:
+                file_data['file'] = SimpleUploadedFile(os.path.split(f.name)[1], f.read())
+
+        return form_data, file_data

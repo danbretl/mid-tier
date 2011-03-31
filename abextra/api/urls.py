@@ -17,7 +17,7 @@ ad = { 'authentication': auth }
 events = Resource(handler=EventHandler, **ad)
 event_actions = Resource(handler=EventActionHandler, **ad)
 categories = Resource(handler=CategoryHandler, **ad)
-event_list = Resource(handler=MobileEventListHandler, **ad)
+mobile_event_list = Resource(handler=MobileEventListHandler, **ad)
 event_detail = Resource(handler=EventDetailHandler, **ad)
 
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
@@ -32,7 +32,8 @@ urlpatterns = patterns('',
     # url(r'^events/$', events),
     url(r'^events/$', events),
     url(r'^event_detail/(?P<event_id>\d+)/$', event_detail),
-    url(r'^mobile/events_recommendation/$', event_list),
+    url(r'^mobile/search_events/(?P<search_terms>.*?)/$', mobile_event_list),
+    url(r'^mobile/events_recommendation/$', mobile_event_list),
     url(r'^categories/$', categories),
 
     # url(r'^actions/$', event_actions),
