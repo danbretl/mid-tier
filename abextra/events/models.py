@@ -180,9 +180,9 @@ class EventSummary(models.Model):
     id = models.OneToOneField(Event, primary_key=True)
     title = models.CharField(max_length=200)
     concrete_category = models.ForeignKey(Category, related_name='event_summary_concrete')
-    date_range = models.CharField(max_length=25)
-    price_range = models.CharField(max_length=25)
-    time = models.CharField(max_length=25)
+    date_range = models.CharField(max_length=25, blank=True)
+    price_range = models.CharField(max_length=25, blank=True, null=False)
+    time = models.CharField(max_length=25, blank=True)
     place = models.CharField(max_length=200, blank=True)
 
 

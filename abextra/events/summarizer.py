@@ -55,7 +55,7 @@ def summarize_event(event, ctree, commit=False):
                              for o_obj in occurrence_objs if o_obj.start_time])
         e_s.time = time.strftime('%X')
     except:
-        e_s.time = 'N/A'
+        #e_s.time = None
         occ_obj = occurrence_objs[0]
         
     try:
@@ -63,14 +63,14 @@ def summarize_event(event, ctree, commit=False):
     except:
         # This also imples a bad scrape. We have an occurrence
         # without a place/location.
-        e_s.place = 'Unavailable'
+        pass
 
     price_objs = [price.quantity for price in occ_obj.prices.all()]
     try:
         #min could potentially be run on an empty list of price objs. 
         e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
     except:
-        e_s.price_range = 'N/A'
+        pass
         
     if commit:
         # Here we can also check if the event_summary already exists and
