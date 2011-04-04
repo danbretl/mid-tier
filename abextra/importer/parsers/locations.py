@@ -1,8 +1,7 @@
 import os
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from importer.base import BaseParser
-from events.forms import CategoryImportForm
+from importer.parsers.base import BaseParser
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 
 class CityParser(BaseParser):
