@@ -3,7 +3,7 @@ from collections import namedtuple
 class BaseParser(object):
     def __init__(self):
         self.model = self.model_form._meta.model
-        self.key_tuple = namedtuple('key_tuple', self.fields)
+        self.KeyTuple = namedtuple('KeyTuple', self.fields)
         self.cache = {}
 
     def parse(self, data):
@@ -25,7 +25,7 @@ class BaseParser(object):
         return created, instance
 
     def cache_key(self, form_data):
-        return self.key_tuple(
+        return self.KeyTuple(
             **dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
         )
 
