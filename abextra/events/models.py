@@ -177,7 +177,7 @@ class EventSummary(models.Model):
     To do.
     Everything is a text, string or URL (for front end use)
     """
-    id = models.IntegerField(primary_key=True)
+    id = models.OneToOneField(Event, primary_key=True)
     title = models.CharField(max_length=200)
     concrete_category = models.ForeignKey(Category, related_name='event_summary_concrete')
     date_range = models.CharField(max_length=25)

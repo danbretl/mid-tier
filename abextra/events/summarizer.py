@@ -27,7 +27,7 @@ def summarize_event(event, ctree, commit=False):
     #related_objs = CollectedObjects()
     #event._collect_sub_objects(related_objs)
     #Event.objects.select_related()
-    e_s.id = event.id
+    e_s.id = event
     e_s.concrete_category = ctree.surface_parent(event.concrete_category)
     e_s.title = event.title
     e_s.url = event.url
