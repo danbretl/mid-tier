@@ -6,7 +6,6 @@ from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
-#from events.utils import CachedCategoryTree
 from places.models import Place
 
 # ============
@@ -99,33 +98,6 @@ class EventActiveManager(EventManager):
         return super(EventActiveManager, self).get_query_set().filter(is_active=True)
 
 
-class EventSummary(models.Model):
-    """
-    To do.
-    Everything is a text, string or URL (for front end use)
-    """
-    title = models.CharField(max_length=200)
-    concrete_category = models.ForeignKey(Category, related_name='event_summary_concrete')
-    date_range = models.CharField(max_length=25, blank=True)
-    price_range = models.CharField(max_length=25, blank=True, null=False)
-    time = models.CharField(max_length=25, blank=True)
-    place = models.CharField(max_length=200, blank=True)
-
-
-    # Crashes with unicode encoder errors in some cases.
-    """
-    def __repr__(self):
-        str_obj =  "\nTitle      : " + self.title
-        str_obj += "\nDescription: " + self.description
-        str_obj += "\nDate Range : " + self.date_range
-        str_obj += "\nTime       : " + self.time
-        str_obj += "\nPrice Range: " + self.price_range
-        str_obj += "\nPlace      : " + self.place
-        str_obj += "\nURL        : " + self.url
-        return str_obj
-    """ 
-
-
 class Event(models.Model):
     """Event model"""
     xid = models.CharField(_('external id'), max_length=200, blank=True)
@@ -142,11 +114,12 @@ class Event(models.Model):
     concrete_category = models.ForeignKey(Category, related_name='events_concrete')
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     is_active = models.BooleanField(default=True)
-    summary = models.OneToOneField(EventSummary, null=True)
 
     objects = EventManager()
     active = EventActiveManager()
 
+    class Meta:
+        verbose_name_plural = _('events')
 
     def _concrete_category(self):
         """Used only by the admin site"""
@@ -176,43 +149,28 @@ class Event(models.Model):
             return concrete_parent_category.icon
 
 
-    def summarize_event(self, ctree=None, commit=False):
+class EventSummaryManager(models.Manager):
+    def from_event(self, event, commit):
         """
         Arguments:
-            'self' :  A django event object.
+            'event':  Event to be summarized.
             'commit': A flag that saves the self summary if set. Mostly for debugging.
         Summarize a single self for the UI.
         Why: Performance. This ensure when a user makes a request, we don't need
         to perform any joins and can return information from a single table.
-        When: This is performed after a scrape and before the information gets
-        stored on the self database.
         """
-        if not ctree:
-            ctree = CachedCategoryTree()
-
-        e_s = EventSummary()
-        # This is interesting: http://djangosnippets.org/snippets/1258/
-        #related_objs = CollectedObjects()
-        #self._collect_sub_objects(related_objs)
-        #Event.objects.select_related()
-        e_s.concrete_category = ctree.surface_parent(self.concrete_category)
-        e_s.title = self.title
-        e_s.url = self.url
-        e_s.description = self.description
-
-        # ToDo: We could potentially filter out any events here that do not have
-        # future occurrences. Since we are using this for scrape, the
-        # expectations is that past events don't get scraped. 
-
-        #Get occurrence related information. 
+        #Get occurrence related information.
         occurrence_objs = self.occurrences.all()
         # If there are no occurrence objects, then the self hasn't been
-        # scheduled for a date, time and place. Forget this self. 
+        # scheduled for a date, time and place. Forget this self.
+        # TODO FIXME this would be a rather outstanding case, if we actually
+        # allow something like this - we would prolly want some dummy TBA 
+        # (to be announced) occurrence.
         if not occurrence_objs:
             return
-        dates = [o_obj.start_date for o_obj in occurrence_objs]
-        date_range = [min(dates), max(dates)]
-        e_s.date_range = ' - '.join([dt.strftime('%x') for dt in date_range])
+        dates = sorted(o_obj.start_date for o_obj in occurrence_objs)
+        date_range = dates[0], dates[-1]
+        summary.date_range = ' - '.join(dt.strftime('%x') for dt in date_range)
         occ_obj = None 
 
         try:
@@ -220,13 +178,13 @@ class Event(models.Model):
             # filtered out)
             time, occ_obj = min([(o_obj.start_time, o_obj)
                                  for o_obj in occurrence_objs if o_obj.start_time])
-            e_s.time = time.strftime('%X')
+            summary.time = time.strftime('%X')
         except:
             #e_s.time = None
             occ_obj = occurrence_objs[0]
 
         try:
-            e_s.place = occ_obj.place.full_title + ',' + occ_obj.place.address
+            summary.place = occ_obj.place.full_title + ',' + occ_obj.place.address
         except:
             # This also imples a bad scrape. We have an occurrence
             # without a place/location.
@@ -235,21 +193,26 @@ class Event(models.Model):
         price_objs = [price.quantity for price in occ_obj.prices.all()]
         try:
             #min could potentially be run on an empty list of price objs. 
-            e_s.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
+            summary.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
         except:
             pass
 
         if commit:
             # Here we can also check if the event_summary already exists and
             # update relevant informat
-            e_s.id = self.id
-            self.summary = e_s 
-            e_s.save()
+            summary.id = self.id
+            self.summary = summary 
+            summary.save()
             self.save()
             #self.save()
 
-    class Meta:
-        verbose_name_plural = _('events')
+class EventSummary(models.Model):
+    """Everything is a text, string or URL (for front end use)"""
+    event = models.OneToOneField(Event, null=True)
+    date_range = models.CharField(max_length=25, blank=True)
+    price_range = models.CharField(max_length=25, blank=True, null=False)
+    time = models.CharField(max_length=25, blank=True)
+    place = models.CharField(max_length=200, blank=True)
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
