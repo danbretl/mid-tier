@@ -64,16 +64,33 @@ class ScrapeFeedConsumer(object):
         guid_category, guid_event, guid_occurrence, guid_location = \
             map(l, ('category', 'event', 'occurrence', 'location'))
 
+        # The goal is to wire up as much as we can ignoring any errors.
+        # The minimum requirements include:
+        # a) Each occurrence must have a corresponding event, else ignore.
+        # b) Each occurrence must have a location, else ignore.
+        # c) Each occurrence may have categories.
+        #    - This is a questionable design. Will leave for discussion later.
         for guid, occurrence in guid_occurrence.iteritems():
-            location_guid = occurrence['location_guid']
-            location = guid_location[location_guid]
+            try:
+                location_guid = occurrence['location_guid']
+                location = guid_location[location_guid]
+            except:
+                continue
+            
             occurrence['location'] = location
+            
+            try:
+                event_guid = occurrence['event_guid']
+                event = guid_event[event_guid]
+            except:
+                continue
 
-            event_guid = occurrence['event_guid']
-            event = guid_event[event_guid]
             event.setdefault('occurrences', []).append(occurrence)
 
-            category_guids = event['category_guids']
-            for category_guid in category_guids:
-                category = guid_category[category_guid]
-                event.setdefault('categories', []).append(category)
+            try:
+                category_guids = event['category_guids']
+                for category_guid in category_guids:
+                    category = guid_category[category_guid]
+                    event.setdefault('categories', []).append(category)
+            except:
+                continue
