@@ -71,26 +71,24 @@ class ScrapeFeedConsumer(object):
         # c) Each occurrence may have categories.
         #    - This is a questionable design. Will leave for discussion later.
         for guid, occurrence in guid_occurrence.iteritems():
-            try:
-                location_guid = occurrence['location_guid']
-                location = guid_location[location_guid]
-            except:
+            location_guid = occurrence.get('location_guid')
+            location = guid_location.get(location_guid)
+            if not location:
+                #This means we have an occurrence with no corresponding location
                 continue
             
             occurrence['location'] = location
-            
-            try:
-                event_guid = occurrence['event_guid']
-                event = guid_event[event_guid]
-            except:
+            event_guid = occurrence.get('event_guid')
+            event = guid_event.get(event_guid)
+            if not event:
+                # This means we have an occurrence with no corresponding event.
                 continue
 
             event.setdefault('occurrences', []).append(occurrence)
 
-            try:
-                category_guids = event['category_guids']
+            category_guids = event.get('category_guids')
+            if category_guids:
                 for category_guid in category_guids:
-                    category = guid_category[category_guid]
-                    event.setdefault('categories', []).append(category)
-            except:
-                continue
+                    category = guid_category.get(category_guid)
+                    if category:
+                        event.setdefault('categories', []).append(category)
