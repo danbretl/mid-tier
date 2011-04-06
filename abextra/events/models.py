@@ -148,6 +148,21 @@ class Event(models.Model):
         if concrete_parent_category and concrete_parent_category.icon:
             return concrete_parent_category.icon
 
+    @property
+    def date_range(self):
+        """Min and max dates of event occurrences"""
+        dates = self.occurrences.values_list('start_date', flat=True) \
+            .filter(start_date__isnull=False)
+        has_other_dates = len(dates) > 2
+        return min(dates), max(dates), has_other_dates
+
+    @property
+    def times(self):
+        times = self.occurrences.values_list('start_time', flat=True) \
+            .filter(start_date__isnull=False) \
+            .filter(start_time__isnull=False)
+        has_other_times = len(times) > 2
+        return min(times), max(times), has_other_times
 
 class EventSummaryManager(models.Manager):
     def from_event(self, event, commit):
@@ -160,31 +175,18 @@ class EventSummaryManager(models.Manager):
         to perform any joins and can return information from a single table.
         """
         #Get occurrence related information.
-        occurrence_objs = self.occurrences.all()
+        occurrences = event.occurrences.all()
         # If there are no occurrence objects, then the self hasn't been
         # scheduled for a date, time and place. Forget this self.
-        # TODO FIXME this would be a rather outstanding case, if we actually
-        # allow something like this - we would prolly want some dummy TBA 
-        # (to be announced) occurrence.
-        if not occurrence_objs:
-            return
-        dates = sorted(o_obj.start_date for o_obj in occurrence_objs)
-        date_range = dates[0], dates[-1]
-        summary.date_range = ' - '.join(dt.strftime('%x') for dt in date_range)
-        occ_obj = None 
+        # TODO FIXME this would be a rather outstanding case.  If we actually
+        # allow something like this, we would prolly want some dummy TBA
+        # (to be announced) occurrence to get assigned.
+        if not occurrences:
+            raise Exception('Event has no occurrences.')
 
-        try:
-            # min could potentially be run on an empty list (since invalid times get
-            # filtered out)
-            time, occ_obj = min([(o_obj.start_time, o_obj)
-                                 for o_obj in occurrence_objs if o_obj.start_time])
-            summary.time = time.strftime('%X')
-        except:
-            #e_s.time = None
-            occ_obj = occurrence_objs[0]
+        summary = self.model()
 
-        try:
-            summary.place = occ_obj.place.full_title + ',' + occ_obj.place.address
+        summary.place = occ_obj.place.title + ',' + occ_obj.place.address
         except:
             # This also imples a bad scrape. We have an occurrence
             # without a place/location.
@@ -208,11 +210,17 @@ class EventSummaryManager(models.Manager):
 
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
-    event = models.OneToOneField(Event, null=True)
-    date_range = models.CharField(max_length=25, blank=True)
-    price_range = models.CharField(max_length=25, blank=True, null=False)
-    time = models.CharField(max_length=25, blank=True)
-    place = models.CharField(max_length=200, blank=True)
+    event = models.OneToOneField(Event)
+    start_date_earliest = models.DateField()
+    start_date_latest = models.DateField(blank=True, null=True)
+    has_other_dates = models.BooleanField(default=False)
+    start_time_earliest = models.TimeField(blank=True, null=True)
+    start_time_latest = models.TimeField(blank=True, null=True)
+    has_other_times = models.BooleanField(default=False)
+    price_quantity_min = models.FloatField(null=True)
+    price_quantity_max = models.FloatField(null=True)
+    place_title = models.CharField(max_length=255, blank=True)
+    place_address = models.CharField(max_length=200, blank=True)
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
@@ -236,9 +244,3 @@ class Occurrence(models.Model):
 
     @property
     def is_now(self): pass
-
-
-
-    
-    
-    
