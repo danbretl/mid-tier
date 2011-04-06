@@ -1,6 +1,7 @@
 """
 Author: Vikas Menon
 Date: April 6th, 2011
+#################################################
 -------------------------------------------------
 Test case design:
 -------------------------------------------------
@@ -24,6 +25,7 @@ b) Test the parsers
 -------------------------------------------------
 Building a simple test_scrape.feed
 
+Criteria: 
 1) 5 Events
    - Most events have a unique guid, but some events share the same guid.
        - !What should the behavior be in this case?
@@ -39,10 +41,31 @@ Building a simple test_scrape.feed
    - Each occurrence corresponds to 1 or no location.
 3) 6 Locations
    - !Most locations have a unique guid, but some share the same.
+     - In the case where they share the same guid:
+       - In some cases, locations are identical
+       - In the rest, locationss are distinct
 4) 8 categories
    - !Most categories have a unique guid, but some share the same. 
 -------------------------------------------------
-
-
+#################################################
 """
 
+from django.test import TestCase
+
+
+class SimpleTest(TestCase):
+
+
+    def test_load_fee(self):
+        """
+        
+        Arguments:
+        - `self`:
+        """
+        consumer = ScrapeFeedConsumer('./test.feed')
+        """
+        parser = PlaceParser()
+        for location in consumer.locations:
+            yield parser.parse(location)
+        """
+    
