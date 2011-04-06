@@ -135,6 +135,8 @@ INSTALLED_APPS = (
     'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
     'prices',                       # ABEX prices
+
+    'importer',                     # part of the scrape pipeline
 )
 
 # ==============================

@@ -46,14 +46,17 @@ class ScrapeFeedConsumer(object):
         return self._items('location')
 
     def _register(self, item):
-        item_source = item['source']
-        source_registry = self.registry.setdefault(item_source, {})
+        item_source = item.get('source')
+        if item_source:
+            source_registry = self.registry.setdefault(item_source, {})
 
-        item_type = item['type']
-        source_type_registry = source_registry.setdefault(item_type, {})
+        item_type = item.get('type')
+        if item_type:
+            source_type_registry = source_registry.setdefault(item_type, {})
 
-        item_guid = item['guid']
-        source_type_registry[item_guid] = item
+        item_guid = item.get('guid')
+        if item_guid:
+            source_type_registry[item_guid] = item
 
     def _wire_all(self):
         for item_source in self.registry.iterkeys():
