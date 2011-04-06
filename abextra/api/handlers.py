@@ -310,8 +310,6 @@ class MobileEventListHandler(BaseHandler):
             events_qs = events_qs.filter(concrete_category__in=all_children)
             recommended_events = ml.recommend_events(request.user, events_qs)
 
-
-            
         # preprocess ignores
         if recommended_events:
             if len(recommended_events) > 1:
@@ -330,8 +328,7 @@ class MobileEventListHandler(BaseHandler):
                     WHERE (`events_event`.`id` = %s) AND (`behavior_eventaction`.`id` IS NULL)
                     """, [request.user.id, recommended_events[0].id]
             )
-                
-                
+
             if non_actioned_events:
                 for event in non_actioned_events:
                     EventAction(event=event, user=request.user, action='I').save()

@@ -44,16 +44,9 @@ class CachedCategoryTreeTest(TestCase):
         self.assertFalse(set(self.ctree.concretes) & set(self.ctree.abstracts))
 
 class EventSummaryTest(TestCase):
-    """
-    """
     fixtures = ['events']
 
     def test_summarize_events(self):
-        """
-        
-        Arguments:
-        - `self`:
-        """
         event = None
         x = summarizer.summarize_event(event, False)
         self.assertEquals(None, x)

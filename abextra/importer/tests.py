@@ -1,5 +1,5 @@
 from importer.consumer import ScrapeFeedConsumer
-from importer.parsers import PlaceParser
+from importer.parsers.locations import PlaceParser
 
 def importd():
     consumer = ScrapeFeedConsumer()

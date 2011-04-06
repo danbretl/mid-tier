@@ -6,7 +6,6 @@ from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
-
 from places.models import Place
 
 # ============
@@ -98,6 +97,7 @@ class EventActiveManager(EventManager):
     def get_query_set(self):
         return super(EventActiveManager, self).get_query_set().filter(is_active=True)
 
+
 class Event(models.Model):
     """Event model"""
     xid = models.CharField(_('external id'), max_length=200, blank=True)
@@ -117,6 +117,9 @@ class Event(models.Model):
 
     objects = EventManager()
     active = EventActiveManager()
+
+    class Meta:
+        verbose_name_plural = _('events')
 
     def _concrete_category(self):
         """Used only by the admin site"""
@@ -145,8 +148,71 @@ class Event(models.Model):
         if concrete_parent_category and concrete_parent_category.icon:
             return concrete_parent_category.icon
 
-    class Meta:
-        verbose_name_plural = _('events')
+
+class EventSummaryManager(models.Manager):
+    def from_event(self, event, commit):
+        """
+        Arguments:
+            'event':  Event to be summarized.
+            'commit': A flag that saves the self summary if set. Mostly for debugging.
+        Summarize a single self for the UI.
+        Why: Performance. This ensure when a user makes a request, we don't need
+        to perform any joins and can return information from a single table.
+        """
+        #Get occurrence related information.
+        occurrence_objs = self.occurrences.all()
+        # If there are no occurrence objects, then the self hasn't been
+        # scheduled for a date, time and place. Forget this self.
+        # TODO FIXME this would be a rather outstanding case, if we actually
+        # allow something like this - we would prolly want some dummy TBA 
+        # (to be announced) occurrence.
+        if not occurrence_objs:
+            return
+        dates = sorted(o_obj.start_date for o_obj in occurrence_objs)
+        date_range = dates[0], dates[-1]
+        summary.date_range = ' - '.join(dt.strftime('%x') for dt in date_range)
+        occ_obj = None 
+
+        try:
+            # min could potentially be run on an empty list (since invalid times get
+            # filtered out)
+            time, occ_obj = min([(o_obj.start_time, o_obj)
+                                 for o_obj in occurrence_objs if o_obj.start_time])
+            summary.time = time.strftime('%X')
+        except:
+            #e_s.time = None
+            occ_obj = occurrence_objs[0]
+
+        try:
+            summary.place = occ_obj.place.full_title + ',' + occ_obj.place.address
+        except:
+            # This also imples a bad scrape. We have an occurrence
+            # without a place/location.
+            pass
+
+        price_objs = [price.quantity for price in occ_obj.prices.all()]
+        try:
+            #min could potentially be run on an empty list of price objs. 
+            summary.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
+        except:
+            pass
+
+        if commit:
+            # Here we can also check if the event_summary already exists and
+            # update relevant informat
+            summary.id = self.id
+            self.summary = summary 
+            summary.save()
+            self.save()
+            #self.save()
+
+class EventSummary(models.Model):
+    """Everything is a text, string or URL (for front end use)"""
+    event = models.OneToOneField(Event, null=True)
+    date_range = models.CharField(max_length=25, blank=True)
+    price_range = models.CharField(max_length=25, blank=True, null=False)
+    time = models.CharField(max_length=25, blank=True)
+    place = models.CharField(max_length=200, blank=True)
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
@@ -172,32 +238,6 @@ class Occurrence(models.Model):
     def is_now(self): pass
 
 
-class EventSummary(models.Model):
-    """
-    To do.
-    Everything is a text, string or URL (for front end use)
-    """
-    id = models.IntegerField(primary_key=True)
-    title = models.CharField(max_length=200)
-    concrete_category = models.ForeignKey(Category, related_name='event_summary_concrete')
-    date_range = models.CharField(max_length=25)
-    price_range = models.CharField(max_length=25)
-    time = models.CharField(max_length=25)
-    place = models.CharField(max_length=200, blank=True)
-
-
-    # Crashes with unicode encoder errors in some cases.
-    """
-    def __repr__(self):
-        str_obj =  "\nTitle      : " + self.title
-        str_obj += "\nDescription: " + self.description
-        str_obj += "\nDate Range : " + self.date_range
-        str_obj += "\nTime       : " + self.time
-        str_obj += "\nPrice Range: " + self.price_range
-        str_obj += "\nPlace      : " + self.place
-        str_obj += "\nURL        : " + self.url
-        return str_obj
-    """ 
 
     
     

@@ -12,7 +12,7 @@
         "model": "places.city", 
         "fields": {
             "city": "New York", 
-            "state": "New York", 
+            "state": "NY", 
             "slug": "new-york-new-york"
         }
     }, 
