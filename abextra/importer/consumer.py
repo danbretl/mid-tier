@@ -46,14 +46,17 @@ class ScrapeFeedConsumer(object):
         return self._items('location')
 
     def _register(self, item):
-        item_source = item['source']
-        source_registry = self.registry.setdefault(item_source, {})
+        item_source = item.get('source')
+        if item_source:
+            source_registry = self.registry.setdefault(item_source, {})
 
-        item_type = item['type']
-        source_type_registry = source_registry.setdefault(item_type, {})
+        item_type = item.get('type')
+        if item_type:
+            type_registry = source_registry.setdefault(item_type, {})
 
-        item_guid = item['guid']
-        source_type_registry[item_guid] = item
+        item_guid = item.get('guid')
+        if item_guid:
+            type_registry[item_guid] = item
 
     def _wire_all(self):
         for item_source in self.registry.iterkeys():
@@ -64,16 +67,31 @@ class ScrapeFeedConsumer(object):
         guid_category, guid_event, guid_occurrence, guid_location = \
             map(l, ('category', 'event', 'occurrence', 'location'))
 
+        # The goal is to wire up as much as we can ignoring any errors.
+        # The minimum requirements include:
+        # a) Each occurrence must have a corresponding event, else ignore.
+        # b) Each occurrence must have a location, else ignore.
+        # c) Each occurrence may have categories.
+        #    - This is a questionable design. Will leave for discussion later.
         for guid, occurrence in guid_occurrence.iteritems():
-            location_guid = occurrence['location_guid']
-            location = guid_location[location_guid]
+            location_guid = occurrence.get('location_guid')
+            location = guid_location.get(location_guid)
+            if not location:
+                #This means we have an occurrence with no corresponding location
+                continue
+            
             occurrence['location'] = location
+            event_guid = occurrence.get('event_guid')
+            event = guid_event.get(event_guid)
+            if not event:
+                # This means we have an occurrence with no corresponding event.
+                continue
 
-            event_guid = occurrence['event_guid']
-            event = guid_event[event_guid]
             event.setdefault('occurrences', []).append(occurrence)
 
-            category_guids = event['category_guids']
-            for category_guid in category_guids:
-                category = guid_category[category_guid]
-                event.setdefault('categories', []).append(category)
+            category_guids = event.get('category_guids')
+            if category_guids:
+                for category_guid in category_guids:
+                    category = guid_category.get(category_guid)
+                    if category:
+                        event.setdefault('categories', []).append(category)
