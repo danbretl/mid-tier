@@ -12,6 +12,7 @@ class CityParser(BaseParser):
     def parse_form_data(self, data, form_data):
         form_data['city'] = data['city']
         form_data['state'] = data['state']
+        #TODO: Try and get this from geocoding information.
         return form_data
 
 class PointParser(BaseParser):
@@ -81,7 +82,7 @@ class PlaceParser(BaseParser):
         form_data['title'] = data['title']
         phone = data.get('phone')
         if phone:        
-            form_data['phone'] = data['phone']
+            form_data['phone'] = phone
         else:
             # This is a bad place to be in.
             # Find a better way to get a phone number.

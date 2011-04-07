@@ -52,11 +52,11 @@ class ScrapeFeedConsumer(object):
 
         item_type = item.get('type')
         if item_type:
-            source_type_registry = source_registry.setdefault(item_type, {})
+            type_registry = source_registry.setdefault(item_type, {})
 
         item_guid = item.get('guid')
         if item_guid:
-            source_type_registry[item_guid] = item
+            type_registry[item_guid] = item
 
     def _wire_all(self):
         for item_source in self.registry.iterkeys():
