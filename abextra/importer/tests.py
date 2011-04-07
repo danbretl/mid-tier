@@ -57,5 +57,4 @@ class ScrapeTest(TestCase):
         for location in consumer.locations:
             X.append(parser.parse(location))
         print X
-        import ipdb;ipdb.set_trace()
         
