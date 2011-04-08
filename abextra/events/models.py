@@ -150,22 +150,45 @@ class Event(models.Model):
 
     @property
     def date_range(self):
-        """Min and max dates of event occurrences"""
+        """Min and max of event dates and distinct count"""
+        # FIXME refactor into SQL aggregation
         dates = self.occurrences.values_list('start_date', flat=True) \
-            .filter(start_date__isnull=False)
-        has_other_dates = len(dates) > 2
-        return min(dates), max(dates), has_other_dates
+            .distinct()
+        return min(dates), max(dates), len(dates)
 
     @property
-    def times(self):
+    def time_range(self):
+        """Min and max of event times and distinct count"""
+        # FIXME refactor into SQL aggregation
+        # FIXME naive in assumption of at least one start_time
         times = self.occurrences.values_list('start_time', flat=True) \
-            .filter(start_date__isnull=False) \
-            .filter(start_time__isnull=False)
-        has_other_times = len(times) > 2
-        return min(times), max(times), has_other_times
+            .filter(start_time__isnull=False).distinct()
+        return min(times), max(times), len(times)
+
+    @property
+    def price_range(self):
+        """Min and max of event prices"""
+        # FIXME refactor into SQL aggregation
+        # FIXME circular import is bothersome
+        # FIXME naive in regards to units
+        from prices.models import Price
+        prices = Price.objects.filter(occurrence__in=self.occurrences.all()) \
+            .values_list('quantity', flat=True).distinct()
+        if prices:
+            return min(prices), max(prices), len(prices)
+
+    @property
+    def place(self):
+        """Title and address of the most common place and distinct count"""
+        place_counts = self.occurrences.values('place') \
+            .annotate(place_count=models.Count('place')).order_by('-place_count')
+        place_id = place_counts[0]['place']
+        place = Place.objects.select_related('point__city').get(id=place_id)
+        return place.title, place.address, len(place_counts)
+
 
 class EventSummaryManager(models.Manager):
-    def from_event(self, event, commit):
+    def for_event(self, event, ctree, commit=True):
         """
         Arguments:
             'event':  Event to be summarized.
@@ -174,53 +197,48 @@ class EventSummaryManager(models.Manager):
         Why: Performance. This ensure when a user makes a request, we don't need
         to perform any joins and can return information from a single table.
         """
-        #Get occurrence related information.
-        occurrences = event.occurrences.all()
-        # If there are no occurrence objects, then the self hasn't been
-        # scheduled for a date, time and place. Forget this self.
-        # TODO FIXME this would be a rather outstanding case.  If we actually
-        # allow something like this, we would prolly want some dummy TBA
-        # (to be announced) occurrence to get assigned.
-        if not occurrences:
+        occurrence_count = event.occurrences.count()
+        if not occurrence_count:
             raise Exception('Event has no occurrences.')
 
         summary = self.model()
-
-        summary.place = occ_obj.place.title + ',' + occ_obj.place.address
-        except:
-            # This also imples a bad scrape. We have an occurrence
-            # without a place/location.
-            pass
-
-        price_objs = [price.quantity for price in occ_obj.prices.all()]
-        try:
-            #min could potentially be run on an empty list of price objs. 
-            summary.price_range = str(min(price_objs)) + ' - ' + str(max(price_objs))
-        except:
-            pass
+        summary.event = event
+        summary.concrete_category_id = event.concrete_category_id
+        summary.concrete_parent_category_id = ctree \
+            .surface_parent(ctree.get(id=event.concrete_category_id)).id
+        summary.occurrence_count = occurrence_count
+        summary.start_date_earliest, summary.start_date_latest, \
+            summary.start_date_distinct_count = event.date_range
+        summary.start_time_earliest, summary.start_time_latest, \
+            summary.start_time_distinct_count = event.time_range
+        summary.price_quantity_min, summary.price_quantity_max, _ = \
+            event.price_range
+        summary.place_title, summary.place_address, \
+            summary.place_distinct_count = event.place
 
         if commit:
-            # Here we can also check if the event_summary already exists and
-            # update relevant informat
-            summary.id = self.id
-            self.summary = summary 
             summary.save()
-            self.save()
-            #self.save()
+        return summary
 
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
-    event = models.OneToOneField(Event)
+    event = models.OneToOneField(Event, related_name='summary', primary_key=True)
+    concrete_category_id = models.IntegerField()
+    concrete_parent_category_id = models.IntegerField()
+    occurrence_count = models.IntegerField()
     start_date_earliest = models.DateField()
     start_date_latest = models.DateField(blank=True, null=True)
-    has_other_dates = models.BooleanField(default=False)
+    start_date_distinct_count = models.IntegerField()
     start_time_earliest = models.TimeField(blank=True, null=True)
     start_time_latest = models.TimeField(blank=True, null=True)
-    has_other_times = models.BooleanField(default=False)
+    start_time_distinct_count = models.IntegerField()
     price_quantity_min = models.FloatField(null=True)
     price_quantity_max = models.FloatField(null=True)
     place_title = models.CharField(max_length=255, blank=True)
     place_address = models.CharField(max_length=200, blank=True)
+    place_distinct_count = models.IntegerField()
+
+    objects = EventSummaryManager()
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
