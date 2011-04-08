@@ -8,30 +8,12 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Deleting field 'EventSummary.concrete_parent_category'
-        db.delete_column('events_eventsummary', 'concrete_parent_category')
-
-        # Deleting field 'EventSummary.concrete_category'
-        db.delete_column('events_eventsummary', 'concrete_category')
-
-        # Adding field 'EventSummary.concrete_category_id'
-        db.add_column('events_eventsummary', 'concrete_category_id', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
-
         # Adding field 'EventSummary.concrete_parent_category_id'
         db.add_column('events_eventsummary', 'concrete_parent_category_id', self.gf('django.db.models.fields.IntegerField')(default=0), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # User chose to not deal with backwards NULL issues for 'EventSummary.concrete_parent_category'
-        raise RuntimeError("Cannot reverse this migration. 'EventSummary.concrete_parent_category' and its values cannot be restored.")
-
-        # User chose to not deal with backwards NULL issues for 'EventSummary.concrete_category'
-        raise RuntimeError("Cannot reverse this migration. 'EventSummary.concrete_category' and its values cannot be restored.")
-
-        # Deleting field 'EventSummary.concrete_category_id'
-        db.delete_column('events_eventsummary', 'concrete_category_id')
-
         # Deleting field 'EventSummary.concrete_parent_category_id'
         db.delete_column('events_eventsummary', 'concrete_parent_category_id')
 
