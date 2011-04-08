@@ -11,84 +11,10 @@ from prices.models import Price
 from learning import ml
 from api.utils import get_iphone_thumb
 
-# Events
-
-class EventDetailHandler(BaseHandler):
-    allowed_methods = ('GET')
-    model = Event
-    fields = (
-        'id',
-        'title',
-        'description',
-        'url',
-        'image_url',
-        'video_url',
-        ('occurrences', (
-            'id',
-            'place',
-            'one_off_place',
-            'start_date',
-            'start_time',
-            'end_date',
-            'end_time',
-            'is_all_day',
-            ('place', (
-                'id',
-                'title',
-                'unit',
-                'phone',
-                'url',
-                'image_url',
-                'email',
-                'description',
-                'created',
-                ('point', (
-                    'id',
-                    'latitude',
-                    'longitude',
-                    'address',
-                    'zip',
-                    'country',
-                    ('city', (
-                        'id',
-                        'city',
-                        'state')
-                    )
-                ))
-            )),
-            ('prices', (
-                'quantity',
-                'units',
-                'remark',
-            ))
-        )),
-        ('concrete_category', (
-            'id',
-            'title')
-        ),
-        ('categories', (
-            'id',
-            'title')
-        ),
-        ('place', (
-            'title',
-            'description',
-            'url',
-            'email',
-            'phone',
-            ('point', (
-                'latitude',
-                'longitute')
-            )
-        )),
-    )
-
-
-    def read(self, request, event_id):
-        return Event.objects.get(id=event_id)
-
-
-
+# ==========
+# = Events =
+# ==========
+# FIXME DEPRECATED
 class EventHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Event
@@ -271,23 +197,83 @@ class EventHandler(BaseHandler):
 
         return [to_dict(event) for event in recommended_events]
 
-class CategoryHandler(BaseHandler):
+class EventDetailHandler(BaseHandler):
     allowed_methods = ('GET')
-    model = Category
-    fields = ('id', 'title', 'color')
+    model = Event
+    fields = (
+        'id',
+        'title',
+        'description',
+        'url',
+        'image_url',
+        'video_url',
+        ('occurrences', (
+            'id',
+            'place',
+            'one_off_place',
+            'start_date',
+            'start_time',
+            'end_date',
+            'end_time',
+            'is_all_day',
+            ('place', (
+                'id',
+                'title',
+                'unit',
+                'phone',
+                'url',
+                'image_url',
+                'email',
+                'description',
+                'created',
+                ('point', (
+                    'id',
+                    'latitude',
+                    'longitude',
+                    'address',
+                    'zip',
+                    'country',
+                    ('city', (
+                        'id',
+                        'city',
+                        'state')
+                    )
+                ))
+            )),
+            ('prices', (
+                'quantity',
+                'units',
+                'remark',
+            ))
+        )),
+        ('concrete_category', (
+            'id',
+            'title')
+        ),
+        ('categories', (
+            'id',
+            'title')
+        ),
+        ('place', (
+            'title',
+            'description',
+            'url',
+            'email',
+            'phone',
+            ('point', (
+                'latitude',
+                'longitute')
+            )
+        )),
+    )
 
-    def read(self, request):
-        return Category.concrete.all()
+    def read(self, request, event_id):
+        return Event.objects.get(id=event_id)
 
-
-class MobileEventListHandler(BaseHandler):
-    """
-    """
+class EventListHandler(BaseHandler):
     allowed_methods = ('GET')
     model = EventSummary
-    fields = ('id', 'title', 'description', 'url', 'concrete_category_id',
-              'date_range', 'price_range', 'time', 'place')
-    
+
     def read(self, request, search_terms=None):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
@@ -336,8 +322,22 @@ class MobileEventListHandler(BaseHandler):
 
         return EventSummary.objects.filter(id__in=recommended_event_ids)
 
-# Behavior
 
+# ==============
+# = Categories =
+# ==============
+class CategoryHandler(BaseHandler):
+    allowed_methods = ('GET')
+    model = Category
+    fields = ('id', 'title', 'color')
+
+    def read(self, request):
+        return Category.concrete.all()
+
+
+# ============
+# = Behavior =
+# ============
 class EventActionHandler(BaseHandler):
     allowed_methods = ('GET')
     model = EventAction

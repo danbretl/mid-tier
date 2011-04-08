@@ -202,19 +202,25 @@ class EventSummaryManager(models.Manager):
             raise Exception('Event has no occurrences.')
 
         summary = self.model()
-        summary.event = event
+        summary.id = event
+        summary.occurrence_count = occurrence_count
+
         summary.concrete_category_id = event.concrete_category_id
         summary.concrete_parent_category_id = ctree \
             .surface_parent(ctree.get(id=event.concrete_category_id)).id
-        summary.occurrence_count = occurrence_count
+
         summary.start_date_earliest, summary.start_date_latest, \
             summary.start_date_distinct_count = event.date_range
+
         summary.start_time_earliest, summary.start_time_latest, \
             summary.start_time_distinct_count = event.time_range
-        summary.price_quantity_min, summary.price_quantity_max, _ = \
-            event.price_range
+
         summary.place_title, summary.place_address, \
             summary.place_distinct_count = event.place
+
+        price_range = event.price_range
+        if price_range:
+            summary.price_quantity_min, summary.price_quantity_max, _ = price_range
 
         if commit:
             summary.save()
@@ -222,7 +228,7 @@ class EventSummaryManager(models.Manager):
 
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
-    event = models.OneToOneField(Event, related_name='summary', primary_key=True)
+    id = models.OneToOneField(Event, related_name='summary', primary_key=True)
     concrete_category_id = models.IntegerField()
     concrete_parent_category_id = models.IntegerField()
     occurrence_count = models.IntegerField()
