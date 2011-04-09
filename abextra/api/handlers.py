@@ -200,72 +200,73 @@ class EventHandler(BaseHandler):
 class EventDetailHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = Event
-    fields = (
-        'id',
-        'title',
-        'description',
-        'url',
-        'image_url',
-        'video_url',
-        ('occurrences', (
-            'id',
-            'place',
-            'one_off_place',
-            'start_date',
-            'start_time',
-            'end_date',
-            'end_time',
-            'is_all_day',
-            ('place', (
-                'id',
-                'title',
-                'unit',
-                'phone',
-                'url',
-                'image_url',
-                'email',
-                'description',
-                'created',
-                ('point', (
-                    'id',
-                    'latitude',
-                    'longitude',
-                    'address',
-                    'zip',
-                    'country',
-                    ('city', (
-                        'id',
-                        'city',
-                        'state')
-                    )
-                ))
-            )),
-            ('prices', (
-                'quantity',
-                'units',
-                'remark',
-            ))
-        )),
-        ('concrete_category', (
-            'id',
-            'title')
-        ),
-        ('categories', (
-            'id',
-            'title')
-        ),
-        ('place', (
-            'title',
-            'description',
-            'url',
-            'email',
-            'phone',
-            ('point', (
-                'latitude',
-                'longitute')
-            )
-        )),
-    )
+    exclude = ('summary',)
+    # fields = (
+    #     'id',
+    #     'title',
+    #     'description',
+    #     'url',
+    #     'image_url',
+    #     'video_url',
+    #     # ('occurrences', (
+    #     #     'id',
+    #     #     'place',
+    #     #     'one_off_place',
+    #     #     'start_date',
+    #     #     'start_time',
+    #     #     'end_date',
+    #     #     'end_time',
+    #     #     'is_all_day',
+    #     #     ('place', (
+    #     #         'id',
+    #     #         'title',
+    #     #         'unit',
+    #     #         'phone',
+    #     #         'url',
+    #     #         'image_url',
+    #     #         'email',
+    #     #         'description',
+    #     #         'created',
+    #     #         ('point', (
+    #     #             'id',
+    #     #             'latitude',
+    #     #             'longitude',
+    #     #             'address',
+    #     #             'zip',
+    #     #             'country',
+    #     #             ('city', (
+    #     #                 'id',
+    #     #                 'city',
+    #     #                 'state')
+    #     #             )
+    #     #         ))
+    #     #     )),
+    #     #     ('prices', (
+    #     #         'quantity',
+    #     #         'units',
+    #     #         'remark',
+    #     #     ))
+    #     # )),
+    #     # ('concrete_category', (
+    #     #     'id',
+    #     #     'title')
+    #     # ),
+    #     # ('categories', (
+    #     #     'id',
+    #     #     'title')
+    #     # ),
+    #     # ('place', (
+    #     #     'title',
+    #     #     'description',
+    #     #     'url',
+    #     #     'email',
+    #     #     'phone',
+    #     #     ('point', (
+    #     #         'latitude',
+    #     #         'longitute')
+    #     #     )
+    #     # )),
+    # )
 
     def read(self, request, event_id):
         return Event.objects.get(id=event_id)
@@ -275,7 +276,7 @@ class EventListHandler(BaseHandler):
     model = EventSummary
     fields = (
         'event_id', 'occurrence_count',
-        'concrete_category_id', 'concrete_parent_category_id',
+        'concrete_category_id', 'concrete_parent_category_idee',
         'start_date_earliest', 'start_date_latest', 'start_date_distinct_count',
         'start_time_earliest', 'start_time_latest', 'start_time_distinct_count',
         'place_title', 'place_address', 'place_distinct_count',
@@ -285,11 +286,11 @@ class EventListHandler(BaseHandler):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
         """
-        events_qs = []
+        events_qs = Event.active.future()
         if search_terms:
-            events_qs = Event.objects.filter(title__search=search_terms)
+            events_qs = events_qs.filter(title__search=search_terms)
         else:
-            events_qs = Event.active.future().filter_user_actions(request.user, 'VI')
+            events_qs = events_qs.filter_user_actions(request.user, 'VI')
 
         ctree = CachedCategoryTree()
         try:
@@ -304,28 +305,20 @@ class EventListHandler(BaseHandler):
             recommended_events = ml.recommend_events(request.user, events_qs)
 
         # preprocess ignores
-        if recommended_events:
-            if len(recommended_events) > 1:
-                non_actioned_events = Event.objects.raw(
-                    """SELECT `events_event`.`id` FROM `events_event`
-                    LEFT JOIN `behavior_eventaction`
-                    ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
-                    WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
-                    """, [request.user.id, [e.id for e in recommended_events]]
+        recommended_event_ids = [event.id for event in recommended_events]
+        if recommended_event_ids:
+            ids_param = recommended_event_ids \
+                if len(recommended_event_ids) > 1 else recommended_event_ids[0]
+            non_actioned_events = Event.objects.raw(
+                """SELECT `events_event`.`id` FROM `events_event`
+                LEFT JOIN `behavior_eventaction`
+                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
+                """, [request.user.id, ids_param]
             )
-            else:
-                non_actioned_events = Event.objects.raw(
-                    """SELECT `events_event`.`id` FROM `events_event`
-                    LEFT JOIN `behavior_eventaction`
-                    ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
-                    WHERE (`events_event`.`id` = %s) AND (`behavior_eventaction`.`id` IS NULL)
-                    """, [request.user.id, recommended_events[0].id]
-            )
-
             if non_actioned_events:
                 for event in non_actioned_events:
                     EventAction(event=event, user=request.user, action='I').save()
-        recommended_event_ids = [event.id for event in recommended_events]
 
         return EventSummary.objects.filter(event__in=recommended_event_ids)
 
