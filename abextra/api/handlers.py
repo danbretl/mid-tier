@@ -276,7 +276,7 @@ class EventListHandler(BaseHandler):
     model = EventSummary
     fields = (
         'event_id', 'occurrence_count',
-        'concrete_category_id', 'concrete_parent_category_idee',
+        'concrete_category_id', 'concrete_parent_category_id',
         'start_date_earliest', 'start_date_latest', 'start_date_distinct_count',
         'start_time_earliest', 'start_time_latest', 'start_time_distinct_count',
         'place_title', 'place_address', 'place_distinct_count',
