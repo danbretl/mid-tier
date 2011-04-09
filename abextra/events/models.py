@@ -202,7 +202,7 @@ class EventSummaryManager(models.Manager):
             raise Exception('Event has no occurrences.')
 
         summary = self.model()
-        summary.id = event
+        summary.event = event
         summary.occurrence_count = occurrence_count
 
         summary.concrete_category_id = event.concrete_category_id
@@ -228,9 +228,9 @@ class EventSummaryManager(models.Manager):
 
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
-    id = models.OneToOneField(Event, related_name='summary', primary_key=True)
-    concrete_category_id = models.IntegerField()
-    concrete_parent_category_id = models.IntegerField()
+    event = models.OneToOneField(Event, related_name='summary', primary_key=True)
+    concrete_category = models.ForeignKey(Category, related_name='event_summaries')
+    concrete_parent_category = models.ForeignKey(Category)
     occurrence_count = models.IntegerField()
     start_date_earliest = models.DateField()
     start_date_latest = models.DateField(blank=True, null=True)

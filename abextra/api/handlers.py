@@ -198,7 +198,7 @@ class EventHandler(BaseHandler):
         return [to_dict(event) for event in recommended_events]
 
 class EventDetailHandler(BaseHandler):
-    allowed_methods = ('GET')
+    allowed_methods = ('GET',)
     model = Event
     fields = (
         'id',
@@ -271,9 +271,16 @@ class EventDetailHandler(BaseHandler):
         return Event.objects.get(id=event_id)
 
 class EventListHandler(BaseHandler):
-    allowed_methods = ('GET')
+    allowed_methods = ('GET',)
     model = EventSummary
-
+    fields = (
+        'event_id', 'occurrence_count',
+        'concrete_category_id', 'concrete_parent_category_id',
+        'start_date_earliest', 'start_date_latest', 'start_date_distinct_count',
+        'start_time_earliest', 'start_time_latest', 'start_time_distinct_count',
+        'place_title', 'place_address', 'place_distinct_count',
+        'price_quantity_min', 'price_quantity_max',
+    )
     def read(self, request, search_terms=None):
         """
         Returns a single event if 'event_id' is given, otherwise a subset.
@@ -320,7 +327,7 @@ class EventListHandler(BaseHandler):
                     EventAction(event=event, user=request.user, action='I').save()
         recommended_event_ids = [event.id for event in recommended_events]
 
-        return EventSummary.objects.filter(id__in=recommended_event_ids)
+        return EventSummary.objects.filter(event__in=recommended_event_ids)
 
 
 # ==============
