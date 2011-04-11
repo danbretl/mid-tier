@@ -9,12 +9,12 @@ from events.utils import CachedCategoryTree
 from behavior.models import EventAction
 from prices.models import Price
 from learning import ml
-from api.utils import get_iphone_thumb
+from api.utils import get_iphone_thumb, event_dict
 
 # ==========
 # = Events =
 # ==========
-# FIXME DEPRECATED
+# FIXME DEPRECATED :: remove as soon as UI is independent of this poop
 class EventHandler(BaseHandler):
     allowed_methods = ('GET')
     model = Event
@@ -199,77 +199,10 @@ class EventHandler(BaseHandler):
 
 class EventDetailHandler(BaseHandler):
     allowed_methods = ('GET',)
-    model = Event
-    exclude = ('summary',)
-    # fields = (
-    #     'id',
-    #     'title',
-    #     'description',
-    #     'url',
-    #     'image_url',
-    #     'video_url',
-    #     # ('occurrences', (
-    #     #     'id',
-    #     #     'place',
-    #     #     'one_off_place',
-    #     #     'start_date',
-    #     #     'start_time',
-    #     #     'end_date',
-    #     #     'end_time',
-    #     #     'is_all_day',
-    #     #     ('place', (
-    #     #         'id',
-    #     #         'title',
-    #     #         'unit',
-    #     #         'phone',
-    #     #         'url',
-    #     #         'image_url',
-    #     #         'email',
-    #     #         'description',
-    #     #         'created',
-    #     #         ('point', (
-    #     #             'id',
-    #     #             'latitude',
-    #     #             'longitude',
-    #     #             'address',
-    #     #             'zip',
-    #     #             'country',
-    #     #             ('city', (
-    #     #                 'id',
-    #     #                 'city',
-    #     #                 'state')
-    #     #             )
-    #     #         ))
-    #     #     )),
-    #     #     ('prices', (
-    #     #         'quantity',
-    #     #         'units',
-    #     #         'remark',
-    #     #     ))
-    #     # )),
-    #     # ('concrete_category', (
-    #     #     'id',
-    #     #     'title')
-    #     # ),
-    #     # ('categories', (
-    #     #     'id',
-    #     #     'title')
-    #     # ),
-    #     # ('place', (
-    #     #     'title',
-    #     #     'description',
-    #     #     'url',
-    #     #     'email',
-    #     #     'phone',
-    #     #     ('point', (
-    #     #         'latitude',
-    #     #         'longitute')
-    #     #     )
-    #     # )),
-    # )
-
     def read(self, request, event_id):
-        return Event.objects.get(id=event_id)
+        ctree = CachedCategoryTree()
+        event = Event.objects.get(id=event_id)
+        return event_dict((event,), ctree)[0]
 
 class EventListHandler(BaseHandler):
     allowed_methods = ('GET',)
