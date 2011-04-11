@@ -1,5 +1,6 @@
 from django.utils import simplejson
 from django.conf import settings
+from core.utils import Bunch
 
 class ScrapeFeedReader(object):
     def __init__(self, path=None):
@@ -8,7 +9,7 @@ class ScrapeFeedReader(object):
     def read(self):
         with open(self.path) as feed:
             for jsonline in feed:
-                yield simplejson.loads(jsonline)
+                yield Bunch(simplejson.loads(jsonline))
 
 class ScrapeFeedConsumer(object):
     """
@@ -79,7 +80,7 @@ class ScrapeFeedConsumer(object):
             if not location:
                 #This means we have an occurrence with no corresponding location
                 continue
-            
+
             occurrence['location'] = location
             event_guid = occurrence.get('event_guid')
             event = guid_event.get(event_guid)
