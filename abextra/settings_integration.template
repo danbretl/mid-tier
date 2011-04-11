@@ -7,7 +7,6 @@ DB_USER = 'abex_dev'
 DB_PASSWD = 'abex113'
 
 DATABASES['default'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
-DATABASES['scrape'].update({'USER': DB_USER, 'PASSWORD': DB_PASSWD})
 
 # =================
 # = miscellaneous =

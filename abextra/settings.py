@@ -17,12 +17,6 @@ DATABASES = {
         'HOST': '',                     # Set to empty string for localhost.
         'PORT': '',                     # Set to empty string for default.
     },
-    'scrape': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'scrape',
-        'HOST': '',                     # Set to empty string for localhost.
-        'PORT': '',                     # Set to empty string for default.
-    }
 }
 
 # FIXME this router breakes tests during fixture loading, don't really need it right now
