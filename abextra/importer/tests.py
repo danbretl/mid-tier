@@ -47,14 +47,12 @@ Building a simple test_scrape.feed
    - !Most categories have a unique guid, but some share the same. 
 -------------------------------------------------
 """
-class ScrapeTest(TestCase):
-    """
-    """
-    def test_import(self):
-        consumer = ScrapeFeedConsumer('test.feed')
-        parser = PlaceParser()
-        X = []
-        for location in consumer.locations:
-            X.append(parser.parse(location))
-        print X
-        
+class PlaceParserTest(TestCase):
+    consumer = ScrapeFeedConsumer()
+    parser = PlaceParser()
+
+    def test_parse(self):
+        for location in self.consumer.locations:
+            self.parser.parse(location)
+        import ipdb; ipdb.set_trace()
+        self.assertTrue(True)

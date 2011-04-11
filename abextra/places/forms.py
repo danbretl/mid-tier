@@ -34,7 +34,7 @@ class PlaceImportForm(PlaceForm):
         return slugify(title)[:50]
 
 class PointImportForm(PointForm):
-    pass
+    zip = us_forms.USZipCodeField()
 
 class CityImportForm(CityForm):
     slug = forms.SlugField(required=False)
