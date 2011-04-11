@@ -4,7 +4,7 @@ from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication, OAuthAuthentication
 
 from api.handlers import EventHandler, EventActionHandler, CategoryHandler
-from api.handlers import EventDetailHandler, EventListHandler
+from api.handlers import EventFeaturedHandler, EventDetailHandler, EventListHandler
 
 
 
@@ -14,11 +14,12 @@ Emitter.register('json', JSONEmitterMinified, 'application/json; charset=utf-8')
 auth = HttpBasicAuthentication()
 ad = { 'authentication': auth }
 
+categories = Resource(handler=CategoryHandler, **ad)
 events = Resource(handler=EventHandler, **ad)
 event_actions = Resource(handler=EventActionHandler, **ad)
-categories = Resource(handler=CategoryHandler, **ad)
 event_list = Resource(handler=EventListHandler, **ad)
 event_detail = Resource(handler=EventDetailHandler, **ad)
+event_featured = Resource(handler=EventFeaturedHandler, **ad)
 
 # event_resource = Resource(handler=EventHandler, authentication=OAuthAuthentication())
 
@@ -32,6 +33,7 @@ urlpatterns = patterns('',
     # url(r'^events/$', events),
     url(r'^events/$', events),
     url(r'^event_detail/(?P<event_id>\d+)/$', event_detail),
+    url(r'^featured/$', event_featured),
     url(r'^event_list/$', event_list),
     url(r'^search/(?P<search_terms>.*?)/$', event_list),
     url(r'^categories/$', categories),

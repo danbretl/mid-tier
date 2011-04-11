@@ -204,6 +204,13 @@ class EventDetailHandler(BaseHandler):
         event = Event.objects.get(id=event_id)
         return event_dict((event,), ctree)[0]
 
+class EventFeaturedHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    def read(self, request):
+        ctree = CachedCategoryTree()
+        event = Event.objects.get(id=703)
+        return event_dict((event,), ctree)[0]
+
 class EventListHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = EventSummary
