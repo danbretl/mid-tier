@@ -6,10 +6,12 @@ from autocomplete.admin import AutocompleteAdmin
 
 from sorl.thumbnail.admin import AdminImageMixin
 
-from events.models import Event, Category, Occurrence
+from events.models import Event, Category, Occurrence, Source
 from events.forms import EventAdminForm, CategoryAdminForm
 
-
+# ============
+# = Category =
+# ============
 class CategoriesInline(admin.TabularInline):
     """Inline forms for subcategories"""
     model = Category
@@ -29,19 +31,21 @@ class CategoryAdmin(AdminImageMixin, admin.ModelAdmin):
     ]
 admin.site.register(Category, CategoryAdmin)
 
+class CategoryAutocomplete(AutocompleteSettings):
+    login_required = True
+    queryset = Category.concrete.all()
+    search_fields = ('^title',)
+autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
+# ==============================
+# = Event / Occurrence(inline) =
+# ==============================
 class OccurrenceInline(admin.StackedInline):
     model = Occurrence
     fk = 'event'
     extra = 0
     # fields = ('one_off_place',)
     # readonly_fields = ('one_off_place',)
-
-class CategoryAutocomplete(AutocompleteSettings):
-    login_required = True
-    queryset = Category.concrete.all()
-    search_fields = ('^title',)
-autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
 class EventAdmin(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
@@ -56,3 +60,13 @@ class EventAdmin(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
         OccurrenceInline
     ]
 admin.site.register(Event, EventAdmin)
+
+# ==========
+# = Source =
+# ==========
+class SourceAdmin(admin.ModelAdmin):
+    list_display = ('name', 'domain', 'default_concrete_category')
+    fields = ('name', 'domain',
+        'default_concrete_category', 'default_abstract_categories',
+    )
+admin.site.register(Source, SourceAdmin)

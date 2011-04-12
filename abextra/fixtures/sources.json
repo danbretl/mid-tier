@@ -1,1 +1,32 @@
-[{"pk": 1, "model": "preprocess.source", "fields": {"domain": "www.villagevoice.com", "name": "villagevoice"}}, {"pk": 2, "model": "preprocess.source", "fields": {"domain": "eventful.com", "name": "eventful"}}, {"pk": 3, "model": "preprocess.source", "fields": {"domain": "www.fandango.com", "name": "fandango"}}]
+[
+    {
+        "pk": 1, 
+        "model": "events.source", 
+        "fields": {
+            "default_abstract_categories": [], 
+            "domain": "www.villagevoice.com", 
+            "default_concrete_category": 1, 
+            "name": "villagevoice"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "events.source", 
+        "fields": {
+            "default_abstract_categories": [], 
+            "domain": "eventful.com", 
+            "default_concrete_category": 1, 
+            "name": "eventful"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "events.source", 
+        "fields": {
+            "default_abstract_categories": [], 
+            "domain": "www.fandango.com", 
+            "default_concrete_category": 1, 
+            "name": "fandango"
+        }
+    }
+]

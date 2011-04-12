@@ -268,3 +268,46 @@ class Occurrence(models.Model):
 
     @property
     def is_now(self): pass
+
+# ==========
+# = Source =
+# ==========
+SOURCE_CACHE = {}
+
+class SourceManager(models.Manager):
+
+    def by_name(self, name):
+        try:
+            source = SOURCE_CACHE[name]
+        except KeyError:
+            source = self.get(name=name)
+            SOURCE_CACHE[name] = source
+        return source
+
+    def clear_cache(self):
+        global SOURCE_CACHE
+        SOURCE_CACHE = {}
+
+    @property
+    def villagevoice(self):
+        return self.by_name('villagevoice')
+
+    @property
+    def eventful(self):
+        return self.by_name('eventful')
+
+class Source(models.Model):
+    """By convention, the source and spider name(s) will be correlated"""
+    name = models.CharField(max_length=50, unique=True)
+    domain = models.CharField(max_length=100)
+    default_concrete_category = models.ForeignKey(Category,
+        related_name='sources_with_default_concrete'
+    )
+    default_abstract_categories = models.ManyToManyField(Category,
+        related_name='sources_with_default_abstract'
+    )
+
+    objects = SourceManager()
+
+    def __unicode__(self):
+        return self.name

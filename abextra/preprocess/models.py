@@ -38,8 +38,8 @@ class Source(models.Model):
 class ExternalCategory(models.Model):
     name = models.CharField(max_length=100)
     xid = models.CharField(max_length=300)
-    source = models.ForeignKey(Source, related_name='external_categories')
-    category = models.ForeignKey(Category, related_name='external_categories', blank=True, null=True)
+    source = models.ForeignKey(Source, related_name='external_categories_')
+    category = models.ForeignKey(Category, related_name='external_categories_', blank=True, null=True)
 
     def category_title(self):
         return self.category.title
