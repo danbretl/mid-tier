@@ -1,0 +1,1 @@
+[{"pk": 1, "model": "preprocess.source", "fields": {"domain": "www.villagevoice.com", "name": "villagevoice"}}, {"pk": 2, "model": "preprocess.source", "fields": {"domain": "eventful.com", "name": "eventful"}}, {"pk": 3, "model": "preprocess.source", "fields": {"domain": "www.fandango.com", "name": "fandango"}}]

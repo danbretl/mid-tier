@@ -63,6 +63,7 @@ class EventImportForm(EventForm):
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.abstract.all(), required=False
     )
+    external_categories = forms.MultipleChoiceField()
 
     def clean_slug(self):
         title = self.cleaned_data['title']

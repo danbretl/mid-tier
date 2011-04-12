@@ -38,7 +38,7 @@ class OccurrenceParserTest(TestCase):
             print self.parser.parse(occurrence)
 
 class EventParserTest(TestCase):
-    fixtures = ['categories']
+    fixtures = ['categories', 'sources', 'external_categories']
     consumer = ScrapeFeedConsumer()
     parser = EventParser()
 
