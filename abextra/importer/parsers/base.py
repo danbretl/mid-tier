@@ -22,6 +22,7 @@ class BaseParser(object):
                     print form.errors
             if instance:
                 self.cache[key] = instance
+                self.post_parse(data, instance)
         return created, instance
 
     def cache_key(self, form_data):
@@ -34,3 +35,6 @@ class BaseParser(object):
 
     def parse_file_data(self, obj_dict, file_data={}):
         return
+
+    def post_parse(self, obj_dict, instance):
+        pass

@@ -1,7 +1,7 @@
+from importer.parsers.tests import *
+
 from django.test import TestCase
 from importer.consumer import ScrapeFeedConsumer
-from importer.parsers.locations import PlaceParser
-
 """
 Author: Vikas Menon
 Date: April 6th, 2011
@@ -47,12 +47,3 @@ Building a simple test_scrape.feed
    - !Most categories have a unique guid, but some share the same. 
 -------------------------------------------------
 """
-class PlaceParserTest(TestCase):
-    consumer = ScrapeFeedConsumer()
-    parser = PlaceParser()
-
-    def test_parse(self):
-        for location in self.consumer.locations:
-            self.parser.parse(location)
-        import ipdb; ipdb.set_trace()
-        self.assertTrue(True)

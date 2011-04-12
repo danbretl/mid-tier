@@ -2,8 +2,19 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
-from events.models import Event, Category
+from events.models import Event, Occurrence, Category
 from events.utils import CachedCategoryTree
+
+# ==============
+# = Base Forms =
+# ==============
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+
+class OccurrenceForm(forms.ModelForm):
+    class Meta:
+        model = Occurrence
 
 # ===============
 # = Admin Forms =
@@ -37,18 +48,25 @@ class CategoryAdminForm(forms.ModelForm):
 
         return super(CategoryAdminForm, self).save(commit=commit)
 
-class EventAdminForm(forms.ModelForm):
+class EventAdminForm(EventForm):
     categories = forms.ModelMultipleChoiceField(
         queryset=Category.abstract.all(),
         widget=FilteredSelectMultiple(u'abstract categories', is_stacked=False),
         required=False
     )
-    class Meta:
-        model = Event
 
 # ================
 # = Import Forms =
 # ================
-class CategoryImportForm(forms.ModelForm):
-    class Meta:
-        model = Category
+class EventImportForm(EventForm):
+    slug = forms.SlugField(required=False)
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(), required=False
+    )
+
+    def clean_slug(self):
+        title = self.cleaned_data['title']
+        return slugify(title)[:50]
+
+class OccurrenceImportForm(OccurrenceForm):
+    pass
