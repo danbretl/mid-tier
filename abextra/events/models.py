@@ -65,6 +65,7 @@ class Category(models.Model):
 
     class Meta:
         verbose_name_plural = _('categories')
+        ordering = ['title']
 
     def __unicode__(self):
         return self.title
