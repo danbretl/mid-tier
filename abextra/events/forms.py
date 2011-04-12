@@ -2,7 +2,7 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
-from events.models import Event, Occurrence, Category
+from events.models import Event, Occurrence, Category, Source
 from events.utils import CachedCategoryTree
 
 # ==============
@@ -54,6 +54,19 @@ class EventAdminForm(EventForm):
         widget=FilteredSelectMultiple(u'abstract categories', is_stacked=False),
         required=False
     )
+
+class SourceAdminForm(forms.ModelForm):
+    default_concrete_category = forms.ModelChoiceField(
+        queryset=Category.concrete.all()
+    )
+    default_abstract_categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(),
+        widget=FilteredSelectMultiple(u'default abstract categories', is_stacked=False),
+        required=False
+    )
+
+    class Meta:
+        model = Source
 
 # ================
 # = Import Forms =

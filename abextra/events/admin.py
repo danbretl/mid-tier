@@ -7,7 +7,7 @@ from autocomplete.admin import AutocompleteAdmin
 from sorl.thumbnail.admin import AdminImageMixin
 
 from events.models import Event, Category, Occurrence, Source
-from events.forms import EventAdminForm, CategoryAdminForm
+from events.forms import EventAdminForm, CategoryAdminForm, SourceAdminForm
 
 # ============
 # = Category =
@@ -65,6 +65,7 @@ admin.site.register(Event, EventAdmin)
 # = Source =
 # ==========
 class SourceAdmin(admin.ModelAdmin):
+    form = SourceAdminForm
     list_display = ('name', 'domain', 'default_concrete_category')
     fields = ('name', 'domain',
         'default_concrete_category', 'default_abstract_categories',

@@ -11,7 +11,7 @@ class ExternalCategoryAutocomplete(AutocompleteSettings):
     login_required = True
     queryset = Category.objects.filter(category_type__in='CA')
     search_fields = ('^title',)
-autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomplete)
+autocomplete.register(ExternalCategory.category, ExternalCategoryAutocomplete)
 
 class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
     # form = ExternalCategoryAdminForm
@@ -23,4 +23,4 @@ class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
     # def category(self, external_category):
     #     return external_category.category.title
 
-admin.site.register(models.ExternalCategory, ExternalCategoryAdmin)
+admin.site.register(ExternalCategory, ExternalCategoryAdmin)
