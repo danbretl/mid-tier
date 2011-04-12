@@ -8,14 +8,14 @@ from events.models import Category
 
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('name', 'domain')
-admin.site.register(models.Source, SourceAdmin)
+# admin.site.register(models.Source, SourceAdmin)
 
 
 class ExternalCategoryAutocomplete(AutocompleteSettings):
     login_required = True
     queryset = Category.objects.filter(category_type__in='CA')
     search_fields = ('^title',)
-autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomplete)
+# autocomplete.register(models.ExternalCategory.category, ExternalCategoryAutocomplete)
 
 class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
     # form = forms.ExternalCategoryAdminForm
@@ -27,4 +27,4 @@ class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
     # def category(self, external_category):
     #     return external_category.category.title
 
-admin.site.register(models.ExternalCategory, ExternalCategoryAdmin)
+# admin.site.register(models.ExternalCategory, ExternalCategoryAdmin)
