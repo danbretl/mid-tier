@@ -1,6 +1,3 @@
-import os
-from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
 from importer.parsers.base import BaseParser
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 
@@ -51,15 +48,6 @@ class PlaceParser(BaseParser):
         if images:
             image = images[0]
             form_data['image_url'] = image['url']
-        return form_data
 
-    def parse_file_data(self, data, file_data):
-        images = data.get('images')
-        if images:
-            image = images[0]
-            path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
-            with open(path, 'rb') as f:
-                filename = os.path.split(f.name)[1]
-                file_data['image'] = SimpleUploadedFile(filename, f.read())
-        return file_data
+        return form_data
 

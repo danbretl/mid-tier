@@ -1,6 +1,12 @@
+import os
+import logging
 from collections import namedtuple
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BaseParser(object):
+    logger = logging.getLogger('abextra.importer')
+
     def __init__(self):
         self.model = self.model_form._meta.model
         self.KeyTuple = namedtuple('KeyTuple', self.fields)
@@ -19,11 +25,13 @@ class BaseParser(object):
                 if form.is_valid():
                     created, instance = True, form.save(commit=True)
                 else:
-                    print form.errors
+                    self.logger.error(form.errors)
             if instance:
                 self.cache[key] = instance
                 self.post_parse(data, instance)
-        return created, instance
+        result = (created, instance)
+        self.logger.debug(result)
+        return result
 
     def cache_key(self, form_data):
         return self.KeyTuple(
@@ -33,8 +41,15 @@ class BaseParser(object):
     def parse_form_data(self, obj_dict, form_data={}):
         raise NotImplementedError()
 
-    def parse_file_data(self, obj_dict, file_data={}):
-        return
+    def parse_file_data(self, data, file_data):
+        images = data.get('images')
+        if images:
+            image = images[0]
+            path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
+            with open(path, 'rb') as f:
+                filename = os.path.split(f.name)[1]
+                file_data['image'] = SimpleUploadedFile(filename, f.read())
+        return file_data
 
     def post_parse(self, obj_dict, instance):
         pass

@@ -133,6 +133,53 @@ INSTALLED_APPS = (
     'importer',                     # part of the scrape pipeline
 )
 
+# ===========
+# = Logging =
+# ===========
+LOGGING = {
+    'version': 1,
+    # 'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(name)s %(message)s'
+        },
+    },
+    'handlers': {
+        'console':{
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        }
+    },
+    'loggers': {
+        # 'django': {
+        #     'handlers': ['console'],
+        #     # 'propagate': True,
+        #     'level': 'DEBUG',
+        # },
+        # 'django.request': {
+        #     'handlers': ['console'],
+        #     'level': 'DEBUG',
+        #     'propagate': False,
+        # },
+        'abextra.importer': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
+    }
+}
+
 # ==============================
 # = eventure specific settings =
 # ==============================

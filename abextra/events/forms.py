@@ -73,10 +73,18 @@ class SourceAdminForm(forms.ModelForm):
 # ================
 class EventImportForm(EventForm):
     slug = forms.SlugField(required=False)
-    categories = forms.ModelMultipleChoiceField(
-        queryset=Category.abstract.all(), required=False
+    concrete_category = forms.ModelChoiceField(
+        queryset=Category.concrete.all(), required=False,
+        cache_choices=True
     )
-    external_categories = forms.MultipleChoiceField()
+    categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(), required=False,
+        cache_choices=True
+    )
+    # external_categories = forms.MultipleChoiceField()
+
+    def clean_concrete_category(self):
+        return Category.concrete.get(slug='movies')
 
     def clean_slug(self):
         title = self.cleaned_data['title']
