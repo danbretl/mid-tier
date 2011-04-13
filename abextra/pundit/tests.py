@@ -96,20 +96,14 @@ class ArbiterTest(TestCase):
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
-    """
+
     def test_concrete_filters(self):
         arbiter = Arbiter([
             SourceCategoryRule(),
             SourceRule()
         ])
-        for event in Event.objects.all():
-            objs = ExternalCategory.objects.filter(category=event.concrete_category)
-            concrete = arbiter.concrete_categories(event,
-                                                   source,
-                                                   [obj.xid for obj in objs])
-            self.assertEqual(event.concrete_category,
-                             arbiter.concrete_categories(event,
-                                                         source,
-                                                         [ext_cat_objs.xids]))
-    """
-
+        source = 'villagevoice'
+        xids = ['1134089', '1134052', '1134052']
+        for event in Event.objects.filter(concrete_category__id=28):
+            concrete = arbiter.concrete_categories(event, source, xids)
+            self.assertEqual(event.concrete_category,concrete)
