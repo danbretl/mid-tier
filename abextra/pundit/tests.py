@@ -81,10 +81,16 @@ class ArbiterTest(TestCase):
             SourceCategoryRule(),
             SourceRule()
         ])
-        source = Source.objects.villagevoice
-        event = Event.objects.get(id=1)
+        source = 'villagevoice'
         for event in Event.objects.all():
-            concrete, abstracts = arbiter.apply_rules(event, source, ['34'])
+            ext_cat_objs = ExternalCategory.objects.filter(category=event.concrete_category)
+            for ext_cat_obj in ext_cat_objs:
+                concrete, abstracts = arbiter.apply_rules(event,
+                                                          source,
+                                                          [ext_cat_obj.xid])
+                if concrete:
+                    break
+            
             self.assertEqual(concrete, [event.concrete_category])
             # Confirm that this does not compare a list of events to a
             # Manager
