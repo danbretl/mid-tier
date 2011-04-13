@@ -11,6 +11,7 @@ Each chain has an optional output_manipulator which can be implemented
 to massage the output for the next rule.
 """
 from importer.models import ExternalCategory
+from events.utils import CachedCategoryTree
 
 class Arbiter(object):
     """
@@ -25,6 +26,7 @@ class Arbiter(object):
         self.raw_abstracts = None
         self.filtered_concrete = None
         self.filtered_abstract = None
+        self.cachedcategorytree = CachedCategoryTree()
 
     def apply_rules(self, event, source, external_category_xids):
         """
@@ -74,4 +76,3 @@ class Arbiter(object):
     def concrete_categories(self, event, source=None, ext_category_xids=None):
         self._apply_filters(event, source, ext_category_xids)
         return self.filtered_concrete
-    
