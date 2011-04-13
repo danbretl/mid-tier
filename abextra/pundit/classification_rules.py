@@ -90,9 +90,11 @@ class SourceCategoryRule(BaseRule):
         for ext_cat in ExternalCategory.objects.all():
             name_xid = (ext_cat.source.name, ext_cat.xid)
             if ext_cat.category.category_type == 'C':
-                self.concrete[name_xid].append(ext_cat.category)
+                if ext_cat.category:
+                    self.concrete[name_xid].append(ext_cat.category)
             elif ext_cat.category.category_type == 'A':
-                self.abstract[name_xid].append(ext_cat.category)
+                if ext_cat.category:
+                    self.abstract[name_xid].append(ext_cat.category)
             
     def classify(self, event, spider=None, external_categories=None,
                  *args, **kwargs):
