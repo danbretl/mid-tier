@@ -1,14 +1,21 @@
 from django import forms
 
-from preprocess.models import ExternalCategory
-from events.models import Category
+from importer.models import ExternalCategory
+from events.models import Category, Source
 
-class ExternalCategoryAdminForm(forms.ModelForm):
+class ExternalCategoryForm(forms.ModelForm):
+    class Meta:
+        model = ExternalCategory
+
+class ExternalCategoryAdminForm(ExternalCategoryForm):
     category = forms.ModelChoiceField(
         queryset=Category.objects.all(),
         empty_label="Select an internal category",
         required=False
     )
 
-    class Meta:
-        model = ExternalCategory
+class ExternalCategoryImportForm(ExternalCategoryForm):
+    source = forms.ModelChoiceField(
+        queryset=Source.objects.all(),
+        cache_choices=True
+    )

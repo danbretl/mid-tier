@@ -1,7 +1,16 @@
 from django.test import TestCase
 from importer.consumer import ScrapeFeedConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
-from importer.parsers.event import OccurrenceParser, EventParser
+from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
+
+class ExternalCategoryParserTest(TestCase):
+    fixtures = ['sources'] # ,'external_categories']
+    consumer = ScrapeFeedConsumer()
+    parser = ExternalCategoryParser()
+
+    def test_parse(self):
+        for category in self.consumer.categories:
+            print self.parser.parse(category)
 
 class CityParserTest(TestCase):
     consumer = ScrapeFeedConsumer()
