@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     'prices',                       # ABEX prices
 
     'importer',                     # part of the scrape pipeline
+    'pundit',                       # Pundit categorizes/annotates events
 )
 
 # ===========
