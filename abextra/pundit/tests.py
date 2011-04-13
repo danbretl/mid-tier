@@ -1,18 +1,16 @@
 from django.test import TestCase
-from pundit.base import BaseRule
-from pundit.arbiter import Arbiter
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SourceCategoryRule
-
+from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
     """
     """
     fixtures = ['events', 'categories', 'sources', 'external_categories.json']
-    
+
     def test_classify(self):
         """
         """
@@ -31,8 +29,8 @@ class RulesTest(TestCase):
                 abstracts = event.categories.get()
             except:
                 pass
-            
-            
+
+
             ext_cat_obj = ExternalCategory.objects.filter(
                 source__name='fandango',
                 category=event.concrete_category)[0]
@@ -64,11 +62,13 @@ class RulesTest(TestCase):
             result = source_category_rule.classify(event, source_name,[xid])
             event_category = ([event.concrete_category], [])
             self.assertEqual(event_category, result)
-                             
-                              
+
 
 class ArbiterTest(TestCase):
     """
+    Test cases:
+    -  If an external category object has no category assigned, the source
+       category rule should not get applied.
     """
 
     fixtures = ['events', 'categories', 'sources', 'external_categories']
@@ -90,9 +90,26 @@ class ArbiterTest(TestCase):
                                                           [ext_cat_obj.xid])
                 if concrete:
                     break
-            
+
             self.assertEqual(concrete, [event.concrete_category])
             # Confirm that this does not compare a list of events to a
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
+    """
+    def test_concrete_filters(self):
+        arbiter = Arbiter([
+            SourceCategoryRule(),
+            SourceRule()
+        ])
+        for event in Event.objects.all():
+            objs = ExternalCategory.objects.filter(category=event.concrete_category)
+            concrete = arbiter.concrete_categories(event,
+                                                   source,
+                                                   [obj.xid for obj in objs])
+            self.assertEqual(event.concrete_category,
+                             arbiter.concrete_categories(event,
+                                                         source,
+                                                         [ext_cat_objs.xids]))
+    """
+
