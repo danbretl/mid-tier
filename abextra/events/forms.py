@@ -3,6 +3,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from events.models import Event, Occurrence, Category, Source
+from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
 
 # ==============
@@ -81,14 +82,26 @@ class EventImportForm(EventForm):
         queryset=Category.abstract.all(), required=False,
         cache_choices=True
     )
-    # external_categories = forms.MultipleChoiceField()
-
-    def clean_concrete_category(self):
-        return Category.concrete.get(slug='movies')
-
+    source = forms.ModelChoiceField(
+        queryset=Source.objects.all(),
+        cache_choices=True,
+        to_field_name='name'
+    )
+    external_categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(), required=False,
+        cache_choices=True,
+        to_field_name='xid'
+    )
     def clean_slug(self):
         title = self.cleaned_data['title']
         return slugify(title)[:50]
+
+    def clean_concrete_category(self):
+        return Category.concrete.get(id=2)
+
+    # def clean(self):
+    #     self.cleaned_data['concrete_category'] = 2
+    #     
 
 class OccurrenceImportForm(OccurrenceForm):
     pass
