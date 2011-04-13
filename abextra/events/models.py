@@ -204,6 +204,7 @@ class EventSummaryManager(models.Manager):
 
         summary = self.model()
         summary.event = event
+        summary.title = event.title
         summary.occurrence_count = occurrence_count
 
         summary.concrete_category_id = event.concrete_category_id
@@ -230,6 +231,7 @@ class EventSummaryManager(models.Manager):
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
     event = models.OneToOneField(Event, related_name='summary', primary_key=True)
+    title = models.CharField(max_length=200)
     concrete_category = models.ForeignKey(Category, related_name='event_summaries')
     concrete_parent_category = models.ForeignKey(Category)
     occurrence_count = models.IntegerField()
