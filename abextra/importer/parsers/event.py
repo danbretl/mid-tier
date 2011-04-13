@@ -46,12 +46,13 @@ class EventParser(BaseParser):
         form_data['title'] = data.get('title').encode('unicode-escape')
         form_data['description'] = data.get('description').encode('unicode-escape')
         form_data['url'] = data.get('url')
-        # import ipdb; ipdb.set_trace()
-        # form_data['']
 
         categories = data.get('categories') or []
+        external_category_ids = []
         for category_data in categories:
-            self.external_category_parser.parse(category_data)
+            created, external_category = self.external_category_parser.parse(category_data)
+            external_category_ids.append(external_category.id)
+        form_data['external_categories'] = external_category_ids
 
         images = data.get('images')
         if images:
