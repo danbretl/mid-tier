@@ -58,8 +58,9 @@ class RulesTest(TestCase):
                 category=event.concrete_category)[0]
 
             source_name = ext_cat_obj.source.name
-            xid =  ext_cat_obj.xid
-            result = source_category_rule.classify(event, source_name,[xid])
+            result = source_category_rule.classify(event,
+                                                   source_name,
+                                                   [ext_cat_obj])
             event_category = ([event.concrete_category], [])
             self.assertEqual(event_category, result)
 
@@ -87,7 +88,7 @@ class ArbiterTest(TestCase):
             for ext_cat_obj in ext_cat_objs:
                 concrete, abstracts = arbiter.apply_rules(event,
                                                           source,
-                                                          [ext_cat_obj.xid])
+                                                          [ext_cat_obj])
                 if concrete:
                     break
 
@@ -103,7 +104,8 @@ class ArbiterTest(TestCase):
             SourceRule()
         ])
         source = 'villagevoice'
-        xids = ['1134089', '1134052', '1134052']
+        xid_list = ['1134089', '1134052', '1134052']
+        xids = ExternalCategory.objects.filter(xid__in=xid_list)
         for event in Event.objects.filter(concrete_category__id=28):
             concrete = arbiter.concrete_categories(event, source, xids)
             self.assertEqual(event.concrete_category,concrete)
