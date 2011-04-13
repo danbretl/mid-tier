@@ -215,7 +215,7 @@ class EventListHandler(BaseHandler):
     allowed_methods = ('GET',)
     model = EventSummary
     fields = (
-        'event_id', 'occurrence_count',
+        'event_id', 'title', 'occurrence_count',
         'concrete_category_id', 'concrete_parent_category_id',
         'start_date_earliest', 'start_date_latest', 'start_date_distinct_count',
         'start_time_earliest', 'start_time_latest', 'start_time_distinct_count',
