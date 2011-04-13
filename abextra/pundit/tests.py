@@ -71,23 +71,22 @@ class ArbiterTest(TestCase):
     """
     """
 
-    fixtures = ['events', 'categories', 'sources', 'external_categories.json']
-    
+    fixtures = ['events', 'categories', 'sources', 'external_categories']
+
     def test_chain(self):
         """
         """
         # Broad check
-        arbiter = Arbiter([SourceCategoryRule(), SourceRule()])
+        arbiter = Arbiter([
+            SourceCategoryRule(),
+            SourceRule()
+        ])
+        source = Source.objects.villagevoice
+        event = Event.objects.get(id=1)
         for event in Event.objects.all():
-            concrete, abstracts = arbiter.apply_rules(event)
+            concrete, abstracts = arbiter.apply_rules(event, source, ['34'])
             self.assertEqual(concrete, [event.concrete_category])
             # Confirm that this does not compare a list of events to a
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
-
-
-
-
-    
-            
