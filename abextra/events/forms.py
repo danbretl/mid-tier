@@ -5,6 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from events.models import Event, Occurrence, Category, Source
 from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
+from pundit import default_arbiter
 
 # ==============
 # = Base Forms =
@@ -82,26 +83,31 @@ class EventImportForm(EventForm):
         queryset=Category.abstract.all(), required=False,
         cache_choices=True
     )
+    external_categories = forms.ModelMultipleChoiceField(
+        queryset=ExternalCategory.objects.all(), required=False,
+        cache_choices=True
+    )
     source = forms.ModelChoiceField(
         queryset=Source.objects.all(),
         cache_choices=True,
         to_field_name='name'
     )
-    external_categories = forms.ModelMultipleChoiceField(
-        queryset=Category.abstract.all(), required=False,
-        cache_choices=True,
-        to_field_name='xid'
-    )
+
     def clean_slug(self):
         title = self.cleaned_data['title']
         return slugify(title)[:50]
 
-    def clean_concrete_category(self):
-        return Category.concrete.get(id=2)
+    # def clean_concrete_category(self):
+    #     return Category.concrete.get(id=2)
 
-    # def clean(self):
-    #     self.cleaned_data['concrete_category'] = 2
-    #     
+    def clean(self):
+        event = self.instance
+        source = self.cleaned_data['source'].name
+        ext_category_ids = map(lambda c: c.xid, self.cleaned_data['external_categories'])
+        concrete_category = default_arbiter \
+            .concrete_categories(event, source, ext_category_ids)
+        self.cleaned_data['concrete_category'] = concrete_category
+        return self.cleaned_data
 
 class OccurrenceImportForm(OccurrenceForm):
     pass
