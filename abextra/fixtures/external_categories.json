@@ -5,8 +5,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Activism", 
-            "name": "471321"
+            "xid": "471321", 
+            "name": "Activism"
         }
     }, 
     {
@@ -15,8 +15,8 @@
         "fields": {
             "category": 142, 
             "source": 1, 
-            "xid": "Adult", 
-            "name": "1133854"
+            "xid": "1133854", 
+            "name": "Adult"
         }
     }, 
     {
@@ -25,8 +25,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Announcements", 
-            "name": "1133855"
+            "xid": "1133855", 
+            "name": "Announcements"
         }
     }, 
     {
@@ -35,8 +35,8 @@
         "fields": {
             "category": 127, 
             "source": 1, 
-            "xid": "Art - Announcements", 
-            "name": "1133856"
+            "xid": "1133856", 
+            "name": "Art - Announcements"
         }
     }, 
     {
@@ -45,8 +45,8 @@
         "fields": {
             "category": 171, 
             "source": 1, 
-            "xid": "Art - Galleries", 
-            "name": "538260"
+            "xid": "538260", 
+            "name": "Art - Galleries"
         }
     }, 
     {
@@ -55,8 +55,8 @@
         "fields": {
             "category": 121, 
             "source": 1, 
-            "xid": "Art - Museums", 
-            "name": "1133857"
+            "xid": "1133857", 
+            "name": "Art - Museums"
         }
     }, 
     {
@@ -65,8 +65,8 @@
         "fields": {
             "category": 127, 
             "source": 1, 
-            "xid": "Art - Ongoings", 
-            "name": "1133858"
+            "xid": "1133858", 
+            "name": "Art - Ongoings"
         }
     }, 
     {
@@ -75,8 +75,8 @@
         "fields": {
             "category": 171, 
             "source": 1, 
-            "xid": "Art - Openings & Events", 
-            "name": "1133862"
+            "xid": "1133862", 
+            "name": "Art - Openings & Events"
         }
     }, 
     {
@@ -85,8 +85,8 @@
         "fields": {
             "category": 139, 
             "source": 1, 
-            "xid": "Arts", 
-            "name": "155018"
+            "xid": "155018", 
+            "name": "Arts"
         }
     }, 
     {
@@ -95,8 +95,8 @@
         "fields": {
             "category": 199, 
             "source": 1, 
-            "xid": "Auditions", 
-            "name": "1133863"
+            "xid": "1133863", 
+            "name": "Auditions"
         }
     }, 
     {
@@ -105,8 +105,8 @@
         "fields": {
             "category": 185, 
             "source": 1, 
-            "xid": "Auto", 
-            "name": "1133864"
+            "xid": "1133864", 
+            "name": "Auto"
         }
     }, 
     {
@@ -115,8 +115,8 @@
         "fields": {
             "category": 18, 
             "source": 1, 
-            "xid": "Barhopping", 
-            "name": "1133865"
+            "xid": "1133865", 
+            "name": "Barhopping"
         }
     }, 
     {
@@ -125,8 +125,8 @@
         "fields": {
             "category": 14, 
             "source": 1, 
-            "xid": "Benefits", 
-            "name": "1133870"
+            "xid": "1133870", 
+            "name": "Benefits"
         }
     }, 
     {
@@ -135,8 +135,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Black History Month", 
-            "name": "1133867"
+            "xid": "1133867", 
+            "name": "Black History Month"
         }
     }, 
     {
@@ -145,8 +145,8 @@
         "fields": {
             "category": 124, 
             "source": 1, 
-            "xid": "Broadway: Now Playing", 
-            "name": "296690"
+            "xid": "296690", 
+            "name": "Broadway: Now Playing"
         }
     }, 
     {
@@ -155,8 +155,8 @@
         "fields": {
             "category": 124, 
             "source": 1, 
-            "xid": "Broadway: Opening", 
-            "name": "296689"
+            "xid": "296689", 
+            "name": "Broadway: Opening"
         }
     }, 
     {
@@ -165,8 +165,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Burlesque", 
-            "name": "471311"
+            "xid": "471311", 
+            "name": "Burlesque"
         }
     }, 
     {
@@ -175,8 +175,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Cabaret", 
-            "name": "1133868"
+            "xid": "1133868", 
+            "name": "Cabaret"
         }
     }, 
     {
@@ -185,8 +185,8 @@
         "fields": {
             "category": 199, 
             "source": 1, 
-            "xid": "Call for Entries", 
-            "name": "1138302"
+            "xid": "1138302", 
+            "name": "Call for Entries"
         }
     }, 
     {
@@ -195,8 +195,8 @@
         "fields": {
             "category": 15, 
             "source": 1, 
-            "xid": "Celebrity Appearances", 
-            "name": "1482837"
+            "xid": "1482837", 
+            "name": "Celebrity Appearances"
         }
     }, 
     {
@@ -205,8 +205,8 @@
         "fields": {
             "category": 160, 
             "source": 1, 
-            "xid": "Chanukah", 
-            "name": "1133869"
+            "xid": "1133869", 
+            "name": "Chanukah"
         }
     }, 
     {
@@ -215,8 +215,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Cheap Thrills", 
-            "name": "1133871"
+            "xid": "1133871", 
+            "name": "Cheap Thrills"
         }
     }, 
     {
@@ -225,8 +225,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Children's Events", 
-            "name": "1133872"
+            "xid": "1133872", 
+            "name": "Children's Events"
         }
     }, 
     {
@@ -235,8 +235,8 @@
         "fields": {
             "category": 176, 
             "source": 1, 
-            "xid": "Children's Theater", 
-            "name": "1133873"
+            "xid": "1133873", 
+            "name": "Children's Theater"
         }
     }, 
     {
@@ -245,8 +245,8 @@
         "fields": {
             "category": 154, 
             "source": 1, 
-            "xid": "Christmas", 
-            "name": "1133875"
+            "xid": "1133875", 
+            "name": "Christmas"
         }
     }, 
     {
@@ -255,8 +255,8 @@
         "fields": {
             "category": 165, 
             "source": 1, 
-            "xid": "Cinco de Mayo", 
-            "name": "1133876"
+            "xid": "1133876", 
+            "name": "Cinco de Mayo"
         }
     }, 
     {
@@ -265,8 +265,8 @@
         "fields": {
             "category": 115, 
             "source": 1, 
-            "xid": "Circus", 
-            "name": "1482838"
+            "xid": "1482838", 
+            "name": "Circus"
         }
     }, 
     {
@@ -275,8 +275,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Civic Events", 
-            "name": "1133877"
+            "xid": "1133877", 
+            "name": "Civic Events"
         }
     }, 
     {
@@ -285,8 +285,8 @@
         "fields": {
             "category": 148, 
             "source": 1, 
-            "xid": "Classes & Seminars", 
-            "name": "1133878"
+            "xid": "1133878", 
+            "name": "Classes & Seminars"
         }
     }, 
     {
@@ -295,8 +295,8 @@
         "fields": {
             "category": 17, 
             "source": 1, 
-            "xid": "Club Events", 
-            "name": "1133879"
+            "xid": "1133879", 
+            "name": "Club Events"
         }
     }, 
     {
@@ -305,8 +305,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Clubs (Community)", 
-            "name": "1133890"
+            "xid": "1133890", 
+            "name": "Clubs (Community)"
         }
     }, 
     {
@@ -315,8 +315,8 @@
         "fields": {
             "category": 33, 
             "source": 1, 
-            "xid": "Comedy", 
-            "name": "258631"
+            "xid": "258631", 
+            "name": "Comedy"
         }
     }, 
     {
@@ -325,8 +325,8 @@
         "fields": {
             "category": 194, 
             "source": 1, 
-            "xid": "Community Events", 
-            "name": "1133881"
+            "xid": "1133881", 
+            "name": "Community Events"
         }
     }, 
     {
@@ -335,8 +335,8 @@
         "fields": {
             "category": 2, 
             "source": 1, 
-            "xid": "Competitions", 
-            "name": "1133883"
+            "xid": "1133883", 
+            "name": "Competitions"
         }
     }, 
     {
@@ -345,8 +345,8 @@
         "fields": {
             "category": 11, 
             "source": 1, 
-            "xid": "Conferences", 
-            "name": "1133884"
+            "xid": "1133884", 
+            "name": "Conferences"
         }
     }, 
     {
@@ -355,8 +355,8 @@
         "fields": {
             "category": 170, 
             "source": 1, 
-            "xid": "Contests", 
-            "name": "1133885"
+            "xid": "1133885", 
+            "name": "Contests"
         }
     }, 
     {
@@ -365,8 +365,8 @@
         "fields": {
             "category": 10, 
             "source": 1, 
-            "xid": "Conventions", 
-            "name": "1133886"
+            "xid": "1133886", 
+            "name": "Conventions"
         }
     }, 
     {
@@ -375,8 +375,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Craft Events", 
-            "name": "1133887"
+            "xid": "1133887", 
+            "name": "Craft Events"
         }
     }, 
     {
@@ -385,8 +385,8 @@
         "fields": {
             "category": 193, 
             "source": 1, 
-            "xid": "Cultural Events", 
-            "name": "1133992"
+            "xid": "1133992", 
+            "name": "Cultural Events"
         }
     }, 
     {
@@ -395,8 +395,8 @@
         "fields": {
             "category": 187, 
             "source": 1, 
-            "xid": "Dance", 
-            "name": "229372"
+            "xid": "229372", 
+            "name": "Dance"
         }
     }, 
     {
@@ -405,8 +405,8 @@
         "fields": {
             "category": 150, 
             "source": 1, 
-            "xid": "Daytripper", 
-            "name": "1133888"
+            "xid": "1133888", 
+            "name": "Daytripper"
         }
     }, 
     {
@@ -415,8 +415,8 @@
         "fields": {
             "category": 148, 
             "source": 1, 
-            "xid": "Defensive Driving", 
-            "name": "1133889"
+            "xid": "1133889", 
+            "name": "Defensive Driving"
         }
     }, 
     {
@@ -425,8 +425,8 @@
         "fields": {
             "category": 161, 
             "source": 1, 
-            "xid": "Dia de los Muertos", 
-            "name": "1133891"
+            "xid": "1133891", 
+            "name": "Dia de los Muertos"
         }
     }, 
     {
@@ -435,8 +435,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Disabled Programs & Services", 
-            "name": "1133892"
+            "xid": "1133892", 
+            "name": "Disabled Programs & Services"
         }
     }, 
     {
@@ -445,8 +445,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "DIY", 
-            "name": "1138304"
+            "xid": "1138304", 
+            "name": "DIY"
         }
     }, 
     {
@@ -455,8 +455,8 @@
         "fields": {
             "category": 169, 
             "source": 1, 
-            "xid": "Drag", 
-            "name": "1482840"
+            "xid": "1482840", 
+            "name": "Drag"
         }
     }, 
     {
@@ -465,8 +465,8 @@
         "fields": {
             "category": 200, 
             "source": 1, 
-            "xid": "Education", 
-            "name": "1133893"
+            "xid": "1133893", 
+            "name": "Education"
         }
     }, 
     {
@@ -475,8 +475,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Environmental", 
-            "name": "1133894"
+            "xid": "1133894", 
+            "name": "Environmental"
         }
     }, 
     {
@@ -485,8 +485,8 @@
         "fields": {
             "category": 147, 
             "source": 1, 
-            "xid": "Expos", 
-            "name": "1133896"
+            "xid": "1133896", 
+            "name": "Expos"
         }
     }, 
     {
@@ -495,8 +495,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Family Events", 
-            "name": "1133897"
+            "xid": "1133897", 
+            "name": "Family Events"
         }
     }, 
     {
@@ -505,8 +505,8 @@
         "fields": {
             "category": 40, 
             "source": 1, 
-            "xid": "Farmers' Markets", 
-            "name": "1133898"
+            "xid": "1133898", 
+            "name": "Farmers' Markets"
         }
     }, 
     {
@@ -515,8 +515,8 @@
         "fields": {
             "category": 174, 
             "source": 1, 
-            "xid": "Fashion & Style", 
-            "name": "471316"
+            "xid": "471316", 
+            "name": "Fashion & Style"
         }
     }, 
     {
@@ -525,8 +525,8 @@
         "fields": {
             "category": 156, 
             "source": 1, 
-            "xid": "Father's Day", 
-            "name": "1133899"
+            "xid": "1133899", 
+            "name": "Father's Day"
         }
     }, 
     {
@@ -535,8 +535,8 @@
         "fields": {
             "category": 114, 
             "source": 1, 
-            "xid": "Festivals", 
-            "name": "471317"
+            "xid": "471317", 
+            "name": "Festivals"
         }
     }, 
     {
@@ -545,8 +545,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film", 
-            "name": "1133900"
+            "xid": "1133900", 
+            "name": "Film"
         }
     }, 
     {
@@ -555,8 +555,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film - Art House", 
-            "name": "1133901"
+            "xid": "1133901", 
+            "name": "Film - Art House"
         }
     }, 
     {
@@ -565,8 +565,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film - Events", 
-            "name": "1133902"
+            "xid": "1133902", 
+            "name": "Film - Events"
         }
     }, 
     {
@@ -575,8 +575,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film - Festivals", 
-            "name": "1138305"
+            "xid": "1138305", 
+            "name": "Film - Festivals"
         }
     }, 
     {
@@ -585,8 +585,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film - IMAX", 
-            "name": "1133903"
+            "xid": "1133903", 
+            "name": "Film - IMAX"
         }
     }, 
     {
@@ -595,8 +595,8 @@
         "fields": {
             "category": 29, 
             "source": 1, 
-            "xid": "Film - Picks", 
-            "name": "471318"
+            "xid": "471318", 
+            "name": "Film - Picks"
         }
     }, 
     {
@@ -605,8 +605,8 @@
         "fields": {
             "category": 173, 
             "source": 1, 
-            "xid": "Film - Repertory & Special Screenings", 
-            "name": "155017"
+            "xid": "155017", 
+            "name": "Film - Repertory & Special Screenings"
         }
     }, 
     {
@@ -615,8 +615,8 @@
         "fields": {
             "category": 40, 
             "source": 1, 
-            "xid": "Flea Markets", 
-            "name": "1133866"
+            "xid": "1133866", 
+            "name": "Flea Markets"
         }
     }, 
     {
@@ -625,8 +625,8 @@
         "fields": {
             "category": 198, 
             "source": 1, 
-            "xid": "Float Trips", 
-            "name": "1133904"
+            "xid": "1133904", 
+            "name": "Float Trips"
         }
     }, 
     {
@@ -635,8 +635,8 @@
         "fields": {
             "category": 38, 
             "source": 1, 
-            "xid": "Food & Drink", 
-            "name": "155019"
+            "xid": "155019", 
+            "name": "Food & Drink"
         }
     }, 
     {
@@ -645,8 +645,8 @@
         "fields": {
             "category": 36, 
             "source": 1, 
-            "xid": "Forums", 
-            "name": "1133905"
+            "xid": "1133905", 
+            "name": "Forums"
         }
     }, 
     {
@@ -655,8 +655,8 @@
         "fields": {
             "category": 163, 
             "source": 1, 
-            "xid": "Fourth of July", 
-            "name": "1133906"
+            "xid": "1133906", 
+            "name": "Fourth of July"
         }
     }, 
     {
@@ -665,8 +665,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Free Events", 
-            "name": "1094971"
+            "xid": "1094971", 
+            "name": "Free Events"
         }
     }, 
     {
@@ -675,8 +675,8 @@
         "fields": {
             "category": 170, 
             "source": 1, 
-            "xid": "Games", 
-            "name": "1133907"
+            "xid": "1133907", 
+            "name": "Games"
         }
     }, 
     {
@@ -685,8 +685,8 @@
         "fields": {
             "category": 178, 
             "source": 1, 
-            "xid": "Golf Courses", 
-            "name": "1133908"
+            "xid": "1133908", 
+            "name": "Golf Courses"
         }
     }, 
     {
@@ -695,8 +695,8 @@
         "fields": {
             "category": 14, 
             "source": 1, 
-            "xid": "Grants", 
-            "name": "1133909"
+            "xid": "1133909", 
+            "name": "Grants"
         }
     }, 
     {
@@ -705,8 +705,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Green Events", 
-            "name": "1133910"
+            "xid": "1133910", 
+            "name": "Green Events"
         }
     }, 
     {
@@ -715,8 +715,8 @@
         "fields": {
             "category": 192, 
             "source": 1, 
-            "xid": "Groups - Professional", 
-            "name": "1133911"
+            "xid": "1133911", 
+            "name": "Groups - Professional"
         }
     }, 
     {
@@ -725,8 +725,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Groups - Social", 
-            "name": "1133912"
+            "xid": "1133912", 
+            "name": "Groups - Social"
         }
     }, 
     {
@@ -735,8 +735,8 @@
         "fields": {
             "category": 157, 
             "source": 1, 
-            "xid": "Halloween", 
-            "name": "1133913"
+            "xid": "1133913", 
+            "name": "Halloween"
         }
     }, 
     {
@@ -745,8 +745,8 @@
         "fields": {
             "category": 191, 
             "source": 1, 
-            "xid": "Happy Hours", 
-            "name": "1133914"
+            "xid": "1133914", 
+            "name": "Happy Hours"
         }
     }, 
     {
@@ -755,8 +755,8 @@
         "fields": {
             "category": 157, 
             "source": 1, 
-            "xid": "Haunted Houses", 
-            "name": "1338358"
+            "xid": "1338358", 
+            "name": "Haunted Houses"
         }
     }, 
     {
@@ -765,8 +765,8 @@
         "fields": {
             "category": 181, 
             "source": 1, 
-            "xid": "Health & Fitness", 
-            "name": "1133915"
+            "xid": "1133915", 
+            "name": "Health & Fitness"
         }
     }, 
     {
@@ -775,8 +775,8 @@
         "fields": {
             "category": 197, 
             "source": 1, 
-            "xid": "High Country", 
-            "name": "1133916"
+            "xid": "1133916", 
+            "name": "High Country"
         }
     }, 
     {
@@ -785,8 +785,8 @@
         "fields": {
             "category": 146, 
             "source": 1, 
-            "xid": "Hiking", 
-            "name": "1133917"
+            "xid": "1133917", 
+            "name": "Hiking"
         }
     }, 
     {
@@ -795,8 +795,8 @@
         "fields": {
             "category": 153, 
             "source": 1, 
-            "xid": "Hispanic Heritage Month", 
-            "name": "1482841"
+            "xid": "1482841", 
+            "name": "Hispanic Heritage Month"
         }
     }, 
     {
@@ -805,8 +805,8 @@
         "fields": {
             "category": 186, 
             "source": 1, 
-            "xid": "History", 
-            "name": "1133918"
+            "xid": "1133918", 
+            "name": "History"
         }
     }, 
     {
@@ -815,8 +815,8 @@
         "fields": {
             "category": 153, 
             "source": 1, 
-            "xid": "Holiday", 
-            "name": "1138306"
+            "xid": "1138306", 
+            "name": "Holiday"
         }
     }, 
     {
@@ -825,8 +825,8 @@
         "fields": {
             "category": 154, 
             "source": 1, 
-            "xid": "Holiday - Lights", 
-            "name": "1133919"
+            "xid": "1133919", 
+            "name": "Holiday - Lights"
         }
     }, 
     {
@@ -835,8 +835,8 @@
         "fields": {
             "category": 153, 
             "source": 1, 
-            "xid": "Holiday - Parties", 
-            "name": "1133920"
+            "xid": "1133920", 
+            "name": "Holiday - Parties"
         }
     }, 
     {
@@ -845,8 +845,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Home & Garden", 
-            "name": "1133921"
+            "xid": "1133921", 
+            "name": "Home & Garden"
         }
     }, 
     {
@@ -855,8 +855,8 @@
         "fields": {
             "category": 180, 
             "source": 1, 
-            "xid": "Ice Skating Rinks", 
-            "name": "1133922"
+            "xid": "1133922", 
+            "name": "Ice Skating Rinks"
         }
     }, 
     {
@@ -865,8 +865,8 @@
         "fields": {
             "category": 189, 
             "source": 1, 
-            "xid": "Juneteenth", 
-            "name": "1138307"
+            "xid": "1138307", 
+            "name": "Juneteenth"
         }
     }, 
     {
@@ -875,8 +875,8 @@
         "fields": {
             "category": 159, 
             "source": 1, 
-            "xid": "Kwanzaa", 
-            "name": "1133923"
+            "xid": "1133923", 
+            "name": "Kwanzaa"
         }
     }, 
     {
@@ -885,8 +885,8 @@
         "fields": {
             "category": 164, 
             "source": 1, 
-            "xid": "Labor Day", 
-            "name": "1133924"
+            "xid": "1133924", 
+            "name": "Labor Day"
         }
     }, 
     {
@@ -895,8 +895,8 @@
         "fields": {
             "category": 116, 
             "source": 1, 
-            "xid": "Landmarks", 
-            "name": "1133925"
+            "xid": "1133925", 
+            "name": "Landmarks"
         }
     }, 
     {
@@ -905,8 +905,8 @@
         "fields": {
             "category": 35, 
             "source": 1, 
-            "xid": "Lectures", 
-            "name": "1133926"
+            "xid": "1133926", 
+            "name": "Lectures"
         }
     }, 
     {
@@ -915,8 +915,8 @@
         "fields": {
             "category": 169, 
             "source": 1, 
-            "xid": "LGBT Events", 
-            "name": "471319"
+            "xid": "471319", 
+            "name": "LGBT Events"
         }
     }, 
     {
@@ -925,8 +925,8 @@
         "fields": {
             "category": 38, 
             "source": 1, 
-            "xid": "Libations", 
-            "name": "1133927"
+            "xid": "1133927", 
+            "name": "Libations"
         }
     }, 
     {
@@ -935,8 +935,8 @@
         "fields": {
             "category": 200, 
             "source": 1, 
-            "xid": "Library", 
-            "name": "1133928"
+            "xid": "1133928", 
+            "name": "Library"
         }
     }, 
     {
@@ -945,8 +945,8 @@
         "fields": {
             "category": 34, 
             "source": 1, 
-            "xid": "Literary Events", 
-            "name": "1133929"
+            "xid": "1133929", 
+            "name": "Literary Events"
         }
     }, 
     {
@@ -955,8 +955,8 @@
         "fields": {
             "category": 38, 
             "source": 1, 
-            "xid": "Luncheons", 
-            "name": "1133972"
+            "xid": "1133972", 
+            "name": "Luncheons"
         }
     }, 
     {
@@ -965,8 +965,8 @@
         "fields": {
             "category": 158, 
             "source": 1, 
-            "xid": "Mardi Gras", 
-            "name": "1133977"
+            "xid": "1133977", 
+            "name": "Mardi Gras"
         }
     }, 
     {
@@ -975,8 +975,8 @@
         "fields": {
             "category": 162, 
             "source": 1, 
-            "xid": "Martin Luther King, Jr. Day", 
-            "name": "1133978"
+            "xid": "1133978", 
+            "name": "Martin Luther King, Jr. Day"
         }
     }, 
     {
@@ -985,8 +985,8 @@
         "fields": {
             "category": 157, 
             "source": 1, 
-            "xid": "Mazes and Pumpkin Patches", 
-            "name": "1133979"
+            "xid": "1133979", 
+            "name": "Mazes and Pumpkin Patches"
         }
     }, 
     {
@@ -995,8 +995,8 @@
         "fields": {
             "category": 15, 
             "source": 1, 
-            "xid": "Meet & Greets", 
-            "name": "1133982"
+            "xid": "1133982", 
+            "name": "Meet & Greets"
         }
     }, 
     {
@@ -1005,8 +1005,8 @@
         "fields": {
             "category": 168, 
             "source": 1, 
-            "xid": "Memorial Day", 
-            "name": "1133983"
+            "xid": "1133983", 
+            "name": "Memorial Day"
         }
     }, 
     {
@@ -1015,8 +1015,8 @@
         "fields": {
             "category": 181, 
             "source": 1, 
-            "xid": "Mind & Body", 
-            "name": "1133984"
+            "xid": "1133984", 
+            "name": "Mind & Body"
         }
     }, 
     {
@@ -1025,8 +1025,8 @@
         "fields": {
             "category": 167, 
             "source": 1, 
-            "xid": "Mother's Day", 
-            "name": "1133985"
+            "xid": "1133985", 
+            "name": "Mother's Day"
         }
     }, 
     {
@@ -1035,8 +1035,8 @@
         "fields": {
             "category": 184, 
             "source": 1, 
-            "xid": "Motorcycles", 
-            "name": "1133991"
+            "xid": "1133991", 
+            "name": "Motorcycles"
         }
     }, 
     {
@@ -1045,8 +1045,8 @@
         "fields": {
             "category": 127, 
             "source": 1, 
-            "xid": "Multimedia", 
-            "name": "1133997"
+            "xid": "1133997", 
+            "name": "Multimedia"
         }
     }, 
     {
@@ -1055,8 +1055,8 @@
         "fields": {
             "category": 121, 
             "source": 1, 
-            "xid": "Museum Exhibits & Events", 
-            "name": "309987"
+            "xid": "309987", 
+            "name": "Museum Exhibits & Events"
         }
     }, 
     {
@@ -1065,8 +1065,8 @@
         "fields": {
             "category": 137, 
             "source": 1, 
-            "xid": "Music", 
-            "name": "310677"
+            "xid": "310677", 
+            "name": "Music"
         }
     }, 
     {
@@ -1075,8 +1075,8 @@
         "fields": {
             "category": 4, 
             "source": 1, 
-            "xid": "Nature", 
-            "name": "1133998"
+            "xid": "1133998", 
+            "name": "Nature"
         }
     }, 
     {
@@ -1085,8 +1085,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Networking", 
-            "name": "1482842"
+            "xid": "1482842", 
+            "name": "Networking"
         }
     }, 
     {
@@ -1095,8 +1095,8 @@
         "fields": {
             "category": 181, 
             "source": 1, 
-            "xid": "New Age", 
-            "name": "1133999"
+            "xid": "1133999", 
+            "name": "New Age"
         }
     }, 
     {
@@ -1105,8 +1105,8 @@
         "fields": {
             "category": 155, 
             "source": 1, 
-            "xid": "New Year's Day", 
-            "name": "1134012"
+            "xid": "1134012", 
+            "name": "New Year's Day"
         }
     }, 
     {
@@ -1115,8 +1115,8 @@
         "fields": {
             "category": 155, 
             "source": 1, 
-            "xid": "New Year's Eve", 
-            "name": "1134013"
+            "xid": "1134013", 
+            "name": "New Year's Eve"
         }
     }, 
     {
@@ -1125,8 +1125,8 @@
         "fields": {
             "category": 16, 
             "source": 1, 
-            "xid": "Nightlife", 
-            "name": "1134018"
+            "xid": "1134018", 
+            "name": "Nightlife"
         }
     }, 
     {
@@ -1135,8 +1135,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Off The Wall", 
-            "name": "1134024"
+            "xid": "1134024", 
+            "name": "Off The Wall"
         }
     }, 
     {
@@ -1145,8 +1145,8 @@
         "fields": {
             "category": 125, 
             "source": 1, 
-            "xid": "Off-Broadway: Now Playing", 
-            "name": "296692"
+            "xid": "296692", 
+            "name": "Off-Broadway: Now Playing"
         }
     }, 
     {
@@ -1155,8 +1155,8 @@
         "fields": {
             "category": 125, 
             "source": 1, 
-            "xid": "Off-Broadway: Opening", 
-            "name": "296691"
+            "xid": "296691", 
+            "name": "Off-Broadway: Opening"
         }
     }, 
     {
@@ -1165,8 +1165,8 @@
         "fields": {
             "category": 125, 
             "source": 1, 
-            "xid": "Off-Off-Broadway: Now Playing", 
-            "name": "296694"
+            "xid": "296694", 
+            "name": "Off-Off-Broadway: Now Playing"
         }
     }, 
     {
@@ -1175,8 +1175,8 @@
         "fields": {
             "category": 125, 
             "source": 1, 
-            "xid": "Off-Off-Broadway: Opening", 
-            "name": "296693"
+            "xid": "296693", 
+            "name": "Off-Off-Broadway: Opening"
         }
     }, 
     {
@@ -1185,8 +1185,8 @@
         "fields": {
             "category": 19, 
             "source": 1, 
-            "xid": "Open Mic", 
-            "name": "1482843"
+            "xid": "1482843", 
+            "name": "Open Mic"
         }
     }, 
     {
@@ -1195,8 +1195,8 @@
         "fields": {
             "category": 132, 
             "source": 1, 
-            "xid": "Opera", 
-            "name": "471313"
+            "xid": "471313", 
+            "name": "Opera"
         }
     }, 
     {
@@ -1205,8 +1205,8 @@
         "fields": {
             "category": 150, 
             "source": 1, 
-            "xid": "Out of Town", 
-            "name": "1134025"
+            "xid": "1134025", 
+            "name": "Out of Town"
         }
     }, 
     {
@@ -1215,8 +1215,8 @@
         "fields": {
             "category": 197, 
             "source": 1, 
-            "xid": "Outdoors", 
-            "name": "1094972"
+            "xid": "1094972", 
+            "name": "Outdoors"
         }
     }, 
     {
@@ -1225,8 +1225,8 @@
         "fields": {
             "category": 145, 
             "source": 1, 
-            "xid": "Parades", 
-            "name": "1134027"
+            "xid": "1134027", 
+            "name": "Parades"
         }
     }, 
     {
@@ -1235,8 +1235,8 @@
         "fields": {
             "category": 150, 
             "source": 1, 
-            "xid": "Parks & Preserves", 
-            "name": "1134036"
+            "xid": "1134036", 
+            "name": "Parks & Preserves"
         }
     }, 
     {
@@ -1245,8 +1245,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Parties & Receptions", 
-            "name": "1134038"
+            "xid": "1134038", 
+            "name": "Parties & Receptions"
         }
     }, 
     {
@@ -1255,8 +1255,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Performance Art", 
-            "name": "1482844"
+            "xid": "1482844", 
+            "name": "Performance Art"
         }
     }, 
     {
@@ -1265,8 +1265,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Performing Arts", 
-            "name": "1145585"
+            "xid": "1145585", 
+            "name": "Performing Arts"
         }
     }, 
     {
@@ -1275,8 +1275,8 @@
         "fields": {
             "category": 143, 
             "source": 1, 
-            "xid": "Pets", 
-            "name": "1134039"
+            "xid": "1134039", 
+            "name": "Pets"
         }
     }, 
     {
@@ -1285,8 +1285,8 @@
         "fields": {
             "category": 127, 
             "source": 1, 
-            "xid": "Photography", 
-            "name": "309994"
+            "xid": "309994", 
+            "name": "Photography"
         }
     }, 
     {
@@ -1295,8 +1295,8 @@
         "fields": {
             "category": 121, 
             "source": 1, 
-            "xid": "Planetariums", 
-            "name": "1134044"
+            "xid": "1134044", 
+            "name": "Planetariums"
         }
     }, 
     {
@@ -1305,8 +1305,8 @@
         "fields": {
             "category": 27, 
             "source": 1, 
-            "xid": "Poetry", 
-            "name": "1134045"
+            "xid": "1134045", 
+            "name": "Poetry"
         }
     }, 
     {
@@ -1315,8 +1315,8 @@
         "fields": {
             "category": 16, 
             "source": 1, 
-            "xid": "Poker Nights", 
-            "name": "1134046"
+            "xid": "1134046", 
+            "name": "Poker Nights"
         }
     }, 
     {
@@ -1325,8 +1325,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Politics", 
-            "name": "1134051"
+            "xid": "1134051", 
+            "name": "Politics"
         }
     }, 
     {
@@ -1335,8 +1335,8 @@
         "fields": {
             "category": 139, 
             "source": 1, 
-            "xid": "Pop Culture", 
-            "name": "1134052"
+            "xid": "1134052", 
+            "name": "Pop Culture"
         }
     }, 
     {
@@ -1345,8 +1345,8 @@
         "fields": {
             "category": 9, 
             "source": 1, 
-            "xid": "Promotional Events", 
-            "name": "1134057"
+            "xid": "1134057", 
+            "name": "Promotional Events"
         }
     }, 
     {
@@ -1355,8 +1355,8 @@
         "fields": {
             "category": 140, 
             "source": 1, 
-            "xid": "Public Interest", 
-            "name": "1134058"
+            "xid": "1134058", 
+            "name": "Public Interest"
         }
     }, 
     {
@@ -1365,8 +1365,8 @@
         "fields": {
             "category": 141, 
             "source": 1, 
-            "xid": "Public Service", 
-            "name": "1134059"
+            "xid": "1134059", 
+            "name": "Public Service"
         }
     }, 
     {
@@ -1375,8 +1375,8 @@
         "fields": {
             "category": 4, 
             "source": 1, 
-            "xid": "Recreation", 
-            "name": "471323"
+            "xid": "471323", 
+            "name": "Recreation"
         }
     }, 
     {
@@ -1385,8 +1385,8 @@
         "fields": {
             "category": 177, 
             "source": 1, 
-            "xid": "Religion & Spirituality", 
-            "name": "1134060"
+            "xid": "1134060", 
+            "name": "Religion & Spirituality"
         }
     }, 
     {
@@ -1395,8 +1395,8 @@
         "fields": {
             "category": 154, 
             "source": 1, 
-            "xid": "Santa Sightings", 
-            "name": "1138308"
+            "xid": "1138308", 
+            "name": "Santa Sightings"
         }
     }, 
     {
@@ -1405,8 +1405,8 @@
         "fields": {
             "category": 196, 
             "source": 1, 
-            "xid": "Seasonal Events", 
-            "name": "1134064"
+            "xid": "1134064", 
+            "name": "Seasonal Events"
         }
     }, 
     {
@@ -1415,8 +1415,8 @@
         "fields": {
             "category": 116, 
             "source": 1, 
-            "xid": "See & Be Seen", 
-            "name": "1134066"
+            "xid": "1134066", 
+            "name": "See & Be Seen"
         }
     }, 
     {
@@ -1425,8 +1425,8 @@
         "fields": {
             "category": 142, 
             "source": 1, 
-            "xid": "Sex & Fetish Events", 
-            "name": "471322"
+            "xid": "471322", 
+            "name": "Sex & Fetish Events"
         }
     }, 
     {
@@ -1435,8 +1435,8 @@
         "fields": {
             "category": 149, 
             "source": 1, 
-            "xid": "Shopping", 
-            "name": "1134067"
+            "xid": "1134067", 
+            "name": "Shopping"
         }
     }, 
     {
@@ -1445,8 +1445,8 @@
         "fields": {
             "category": 16, 
             "source": 1, 
-            "xid": "Singles Events", 
-            "name": "1134068"
+            "xid": "1134068", 
+            "name": "Singles Events"
         }
     }, 
     {
@@ -1455,8 +1455,8 @@
         "fields": {
             "category": 179, 
             "source": 1, 
-            "xid": "Skate Parks", 
-            "name": "1134069"
+            "xid": "1134069", 
+            "name": "Skate Parks"
         }
     }, 
     {
@@ -1465,8 +1465,8 @@
         "fields": {
             "category": 27, 
             "source": 1, 
-            "xid": "Spoken Word", 
-            "name": "471320"
+            "xid": "471320", 
+            "name": "Spoken Word"
         }
     }, 
     {
@@ -1475,8 +1475,8 @@
         "fields": {
             "category": 3, 
             "source": 1, 
-            "xid": "Sports - Participatory", 
-            "name": "1134070"
+            "xid": "1134070", 
+            "name": "Sports - Participatory"
         }
     }, 
     {
@@ -1485,8 +1485,8 @@
         "fields": {
             "category": 2, 
             "source": 1, 
-            "xid": "Sports - Spectator", 
-            "name": "1134072"
+            "xid": "1134072", 
+            "name": "Sports - Spectator"
         }
     }, 
     {
@@ -1495,8 +1495,8 @@
         "fields": {
             "category": 151, 
             "source": 1, 
-            "xid": "St. Patrick's Day", 
-            "name": "1134073"
+            "xid": "1134073", 
+            "name": "St. Patrick's Day"
         }
     }, 
     {
@@ -1505,8 +1505,8 @@
         "fields": {
             "category": 196, 
             "source": 1, 
-            "xid": "Summer Camps", 
-            "name": "1134078"
+            "xid": "1134078", 
+            "name": "Summer Camps"
         }
     }, 
     {
@@ -1515,8 +1515,8 @@
         "fields": {
             "category": 196, 
             "source": 1, 
-            "xid": "Summer Guide", 
-            "name": "1134079"
+            "xid": "1134079", 
+            "name": "Summer Guide"
         }
     }, 
     {
@@ -1525,8 +1525,8 @@
         "fields": {
             "category": 201, 
             "source": 1, 
-            "xid": "Support Groups & Hotlines", 
-            "name": "1134081"
+            "xid": "1134081", 
+            "name": "Support Groups & Hotlines"
         }
     }, 
     {
@@ -1535,8 +1535,8 @@
         "fields": {
             "category": 34, 
             "source": 1, 
-            "xid": "Talks", 
-            "name": "1134270"
+            "xid": "1134270", 
+            "name": "Talks"
         }
     }, 
     {
@@ -1545,8 +1545,8 @@
         "fields": {
             "category": 188, 
             "source": 1, 
-            "xid": "Technology Events", 
-            "name": "1482845"
+            "xid": "1482845", 
+            "name": "Technology Events"
         }
     }, 
     {
@@ -1555,8 +1555,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Teen Events", 
-            "name": "1134082"
+            "xid": "1134082", 
+            "name": "Teen Events"
         }
     }, 
     {
@@ -1565,8 +1565,8 @@
         "fields": {
             "category": 44, 
             "source": 1, 
-            "xid": "Television", 
-            "name": "1134084"
+            "xid": "1134084", 
+            "name": "Television"
         }
     }, 
     {
@@ -1575,8 +1575,8 @@
         "fields": {
             "category": 166, 
             "source": 1, 
-            "xid": "Thanksgiving", 
-            "name": "1134085"
+            "xid": "1134085", 
+            "name": "Thanksgiving"
         }
     }, 
     {
@@ -1585,8 +1585,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater", 
-            "name": "155016"
+            "xid": "155016", 
+            "name": "Theater"
         }
     }, 
     {
@@ -1595,8 +1595,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater - Dinner", 
-            "name": "1134086"
+            "xid": "1134086", 
+            "name": "Theater - Dinner"
         }
     }, 
     {
@@ -1605,8 +1605,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater - Large", 
-            "name": "1134087"
+            "xid": "1134087", 
+            "name": "Theater - Large"
         }
     }, 
     {
@@ -1615,8 +1615,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater - Ongoing", 
-            "name": "1134088"
+            "xid": "1134088", 
+            "name": "Theater - Ongoing"
         }
     }, 
     {
@@ -1625,8 +1625,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater - Openings", 
-            "name": "1134089"
+            "xid": "1134089", 
+            "name": "Theater - Openings"
         }
     }, 
     {
@@ -1635,8 +1635,8 @@
         "fields": {
             "category": 28, 
             "source": 1, 
-            "xid": "Theater - Small", 
-            "name": "1134090"
+            "xid": "1134090", 
+            "name": "Theater - Small"
         }
     }, 
     {
@@ -1645,8 +1645,8 @@
         "fields": {
             "category": 117, 
             "source": 1, 
-            "xid": "Tours", 
-            "name": "471325"
+            "xid": "471325", 
+            "name": "Tours"
         }
     }, 
     {
@@ -1655,8 +1655,8 @@
         "fields": {
             "category": 152, 
             "source": 1, 
-            "xid": "Valentine's Day", 
-            "name": "1134091"
+            "xid": "1134091", 
+            "name": "Valentine's Day"
         }
     }, 
     {
@@ -1665,8 +1665,8 @@
         "fields": {
             "category": 127, 
             "source": 1, 
-            "xid": "Visual Art", 
-            "name": "1992646"
+            "xid": "1992646", 
+            "name": "Visual Art"
         }
     }, 
     {
@@ -1675,8 +1675,8 @@
         "fields": {
             "category": 141, 
             "source": 1, 
-            "xid": "Volunteer Opportunities", 
-            "name": "1134092"
+            "xid": "1134092", 
+            "name": "Volunteer Opportunities"
         }
     }, 
     {
@@ -1685,8 +1685,8 @@
         "fields": {
             "category": 42, 
             "source": 1, 
-            "xid": "Wineries", 
-            "name": "1134093"
+            "xid": "1134093", 
+            "name": "Wineries"
         }
     }, 
     {
@@ -1695,8 +1695,8 @@
         "fields": {
             "category": 138, 
             "source": 1, 
-            "xid": "Women's Events", 
-            "name": "1134096"
+            "xid": "1134096", 
+            "name": "Women's Events"
         }
     }, 
     {
@@ -1705,8 +1705,8 @@
         "fields": {
             "category": 143, 
             "source": 1, 
-            "xid": "Zoo & Animals", 
-            "name": "1134097"
+            "xid": "1134097", 
+            "name": "Zoo & Animals"
         }
     }, 
     {
