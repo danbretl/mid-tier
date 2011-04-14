@@ -259,6 +259,7 @@ class RegexRule(BaseRule):
         self.concrete_categories = self.abstract_categories = []
 
         # Apply the 2 dictionaries in order or precedence:
+        # TODO: see if there is any value in refactoring this. 
         #----------------------------------------------------------------------
 
         categories = []
