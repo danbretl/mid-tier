@@ -9,8 +9,80 @@ from pundit.base import BaseRule
 from events.models import Source
 from importer.models import ExternalCategory
 
+
+
+### NOTES ###
+"""
+What the SourceCategory model is going to look like:
+source   xids    concrete    abstract
+string   string  ForeignKey  ManyToMany
+
+TODO:
+Set up new SourceCategory table that fits with concrete and abstract
+Finish DirectMappingRule (abstract list setup, NULL handling)
+Write test cases
+
+Write Regex!
+"""
+
+
+class DirectMappingRule(BaseRule):
+    def __init__(self, rule_table, orderings):
+        """example ordering: (('Source', 'XID'), ('XID'))"""
+        mapping_dict = defaultdict(dict)
+        for row in rule_table.objects.all():
+            for ordering in orderings:
+                thiskey = tuple([row.getattr(o) for o in ordering])
+
+                # if any of them are null, this rule is too specific
+                # TODO: I do not know if NULL translates to None
+                if None in thiskey:
+                    continue
+                
+                mapping_dict[ordering][thiskey] = (row.concrete, row.abstracts)
+
+    def classify(self, event, source, xids):
+        # apply all rules to it in order
+        concrete, abstract = None, []
+
+        def get_event_field(name):
+            """
+            given the name of a field within an event ('title',
+            'description') or alternatively 'source' or 'xids', return
+            requested information for use in direct map
+            """
+            return (source if name == 'source' else
+                    (xids if name == 'xids' else
+                     event.getattr(name)))
+        
+        for ordering, mapping in self.mapping_dict.iteritems():
+            # get this key of this event
+            thiskey = tuple([get_event_field(o) for o in ordering])
+            result = mapping.get(thiskey)
+
+            if result:
+                # the mapping will be a tuple of concrete and abstracts
+                # suggestions
+                this_concrete, this_abstract = result
+                
+                # check that each are not null, and that we're not overwriting a
+                # better concrete
+                # TODO: NULL might be different from None. Check this!
+                if not concrete and this_concrete:
+                    concrete = this_concrete
+                if this_abstract:
+                    abstract.extend(this_abstract)
+
+
+class SourceCategoryMapRule(DirectMappingRule):
+    def __init__(self):
+        orderings = (('source', 'xids'), ('source'))
+        DirectMappingRule.__init__(self, SourceCategory, orderings)
+
+
 class SourceRule(BaseRule):
     """
+    TODO: the logic of this class should now be deprecated- remove it soon!
     """
 
     def __init__(self):
@@ -58,6 +130,7 @@ class SourceRule(BaseRule):
 
 class SourceCategoryRule(BaseRule):
     """
+    TODO: remove this too!
     """
 
     def __init__(self):
