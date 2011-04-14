@@ -3,7 +3,8 @@ from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
-from pundit.classification_rules import SourceRule, SourceCategoryRule
+from pundit.classification_rules import SourceRule,\
+     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
 from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
@@ -110,10 +111,40 @@ class ArbiterTest(TestCase):
 
 
 class RegexRulesTest(TestCase):
-          
+    """
+    Tests that need to be performed
+    - Test TitleRegexRule
+    - Test DescriptionRegexRule
+    - Test XIDRegexRule
+    """
     fixtures = ['events', 'categories', 'sources',
                 'external_categories', 'regexcategories']
 
-    def test_RegexRules(self):
-        import ipdb; ipdb.set_trace()
-    
+    def test_DescriptionRegexRules(self):
+        """
+        """
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        dregexrule = DescriptionRegexRule()
+        drr_category = dregexrule.get_concrete_category(event, source, ext)[0]
+        self.assertEqual(event.concrete_category, drr_category)
+
+    def test_TitleRegexRules(self):
+        """
+        """
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        tregexrule = TitleRegexRule()
+        trr_category = tregexrule.get_concrete_category(event, source, ext)[0]
+        self.assertEqual(event.concrete_category, trr_category)
+
+    def test_XIDRegexRule(self):
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        xregexrule = XIDRegexRule()
+        xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
+        self.assertEqual(event.concrete_category, xrr_category)
+        
