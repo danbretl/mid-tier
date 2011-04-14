@@ -32,4 +32,4 @@ class SourceRegexAdmin(admin.TabularInline):
     fields = ('source', 'regex', 'category')
     list_filter = ('source',)
     
-admin.site.register(RegexCategory, SourceRegexAdmin)
+#admin.site.register(RegexCategory, SourceRegexAdmin)
