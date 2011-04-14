@@ -7,9 +7,8 @@ from collections import defaultdict
 
 from pundit.base import BaseRule
 from events.models import Source
-from importer.models import ExternalCategory
-
-
+from importer.models import ExternalCategory, RegexCategory
+import re
 
 ### NOTES ###
 """
@@ -188,7 +187,7 @@ class RegexRule(BaseRule):
     Use a regular expression to map the external category text to internal
     categories
     """
-    def __init__(self, model, key):
+    def __init__(self, key, model):
         """
         # note: regexes are compiled here- they are not strings
         
@@ -198,10 +197,52 @@ class RegexRule(BaseRule):
         for row in model:
            key(row) -> category
 
-        """
-        
-        
+        each model is of the form:
+        regular_expression
 
+        We basically build 2 different types of dictionaries;
+        In order of precedence they are:
+        1) source_rules   -> When we have both Source specified
+        2) default_rules  -> When no source is specified. 
+        """
+        self.event = None
+        self.concrete_categories = None
+        self.abstract_categories = None
+        
+        self.key = key
+        source_dict = defaultdict(dict)
+        
+        if model:
+            regex_objs = RegexCategory.objects.filter(model_type=model)
+        else:
+            regex_objs = RegexCategory.objects.all()
+
+        self.default_rules = []
+        self.source_rules = defaultdict(list)            
+        for rgx_obj in regex_objs:
+            if rgx_obj.source:
+                self.source_rules[rgx_obj.source].append(
+                    (re.compile(rgx_obj.regex, re.IGNORECASE),
+                    rgx_obj.category)
+                    )
+            else:
+                self.default_rules.append(
+                    (re.compile(rgx_obj.regex, re.IGNORECASE),
+                                           rgx_obj.category)
+                    )
+
+    # TODO: This seems fairly useful and shouldn't belong only here.
+    #       This should be in some helper class
+    def separate_concretes_abstracts(self, categories):
+        concretes = []
+        abstracts = []
+        for category in categories:
+            if category.category_type == 'C':
+                concretes.append(category)
+            elif category.category_type == 'A':
+                abstracts.append(category)
+
+        return (concretes, abstracts)
     
     def classify(self, event, source, xids):
         """
@@ -210,22 +251,51 @@ class RegexRule(BaseRule):
             if regex.search(self.key(event,source,xids)):
               assign category
         """
+        input_string = self.key(event, source, xids)
+        if not input_string:
+            return
+
+        self.event = event
+        self.concrete_categories = self.abstract_categories = []
+
+        # Apply the 2 dictionaries in order or precedence:
+        #----------------------------------------------------------------------
+
+        categories = []
+        for regex,category in self.source_rules[source]:
+            if regex.search(input_string):
+                categories.append(category)
+        if categories:
+            self.concrete_categories, self.abstract_categories = \
+                                   self.separate_concretes_abstracts(categories)
+            return
+        #----------------------------------------------------------------------
+        for regex, category in self.default_rules:
+            if regex.search(input_string):
+                categories.append(category)
+        if  categories:
+            self.concrete_categories, self.abstract_categories = \
+                                   self.separate_concretes_abstracts(categories)
+
+        return            
+
 
 class TitleRegexRule(RegexRule):
     """Applies regexes to title of an event to discover
     concrete and abstract categories"""
     def __init__(self):
-        RegexRule.__init__(self, TextRegex, lambda e,s,x: e.title)
+        RegexRule.__init__(self, lambda e,s,x: e.title, 'TextRegex')
 
 class DescriptionRegexRule(RegexRule):
     """Applies regexes to description"""
     def __init__(self):
-        RegexRule.__init__(self, TextRegex, lambda e,s,x: e.description)
+        RegexRule.__init__(self, lambda e,s,x: e.description,'TextRegex')
 
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
-        RegexRule.__init__(self, XIDRegex, lambda e,s,x: x)
+        xkey = lambda e,s,x: " ".join([obj.xid for obj in x])
+        RegexRule.__init__(self, xkey, 'XIDRegex')
         
         
         

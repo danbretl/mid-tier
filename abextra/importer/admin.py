@@ -26,10 +26,11 @@ class ExternalCategoryAdmin(AutocompleteAdmin, admin.ModelAdmin):
 admin.site.register(ExternalCategory, ExternalCategoryAdmin)
 
 
-class SourceRegexAdmin(admin.TabularInline):
+class SourceRegexAdmin(admin.ModelAdmin):
     model = RegexCategory
-    list_display = ('source', 'regex', 'category')
-    fields = ('source', 'regex', 'category')
+    list_display = ('source', 'regex', 'category', 'model_type')
+    fields = ('source', 'regex', 'category', 'model_type')
     list_filter = ('source',)
+    search_fields = ('source',)
     
-#admin.site.register(RegexCategory, SourceRegexAdmin)
+admin.site.register(RegexCategory, SourceRegexAdmin)

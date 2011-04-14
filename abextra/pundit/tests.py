@@ -107,3 +107,13 @@ class ArbiterTest(TestCase):
         for event in Event.objects.filter(concrete_category__id=28):
             concrete = arbiter.concrete_categories(event, source, xids)
             self.assertEqual(event.concrete_category,concrete)
+
+
+class RegexRulesTest(TestCase):
+          
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories']
+
+    def test_RegexRules(self):
+        import ipdb; ipdb.set_trace()
+    
