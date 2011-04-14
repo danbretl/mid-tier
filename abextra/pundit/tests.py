@@ -57,9 +57,9 @@ class RulesTest(TestCase):
                 source__name='villagevoice',
                 category=event.concrete_category)[0]
 
-            source_name = ext_cat_obj.source.name
+            source = ext_cat_obj.source
             xid =  ext_cat_obj.xid
-            result = source_category_rule.classify(event, source_name,[xid])
+            result = source_category_rule.classify(event, source, [xid])
             event_category = ([event.concrete_category], [])
             self.assertEqual(event_category, result)
 
