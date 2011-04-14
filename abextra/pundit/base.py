@@ -46,7 +46,21 @@ class BaseRule(object):
         Any rule must implement this as its base class. 
         """
         raise NotImplementedError
-    
+
+
+    def concrete_category(self,event, spider, external_categories):
+        if event == self.event:
+            return self.concrete_categories
+        else:
+            self.classify(event, spider, external_categories, *args, **kwargs)
+            return self.concrete_categories
+
+    def abstract_category(self, event, spider, external_categories):
+        if event == self.event:
+            return self.abstract_categories
+        else:
+            self.classify(event, spider, external_categories, *args, **kwargs)
+            return self.abstract_categories
 
         
 
