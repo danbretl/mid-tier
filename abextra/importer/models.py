@@ -15,3 +15,22 @@ class ExternalCategory(models.Model):
     class Meta:
         unique_together = (('name', 'source'),)
         verbose_name_plural = _('external categories')
+
+
+class RegexCategory(models.Model):
+    """
+    Maps external categories to internal categories by checking with a regular
+    expression string. 
+    """
+    source = models.ForeignKey(Source, related_name='source_regex_categories')
+    regex = models.CharField(max_length=100)
+    category = models.ForeignKey(Category,
+                                 related_name='source_regex_categories',
+                                 blank=True, null=True)
+    
+    
+    
+    
+        
+        
+
