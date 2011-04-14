@@ -146,7 +146,7 @@ class SourceCategoryRule(BaseRule):
         #-------------------------------------
 
         for ext_cat in ExternalCategory.objects.all():
-            name_xid = (ext_cat.source, ext_cat.xid)
+            name_xid = (ext_cat.source, ext_cat)
             if ext_cat.category.category_type == 'C':
                 if ext_cat.category:
                     self.concrete[name_xid].append(ext_cat.category)
@@ -161,9 +161,9 @@ class SourceCategoryRule(BaseRule):
         results_abstract = []
         if source and external_categories:
             # Get all possible categories. 
-            for category in external_categories:
-                results_concrete += self.concrete[(source, category)]
-                results_abstract += self.abstract[(source, category)]
+            for ext_cat in external_categories:
+                results_concrete += self.concrete[(source, ext_cat)]
+                results_abstract += self.abstract[(source, ext_cat)]
         #------------------------------------------
         #Caching results
         self.event = event

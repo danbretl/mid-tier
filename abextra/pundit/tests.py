@@ -58,7 +58,7 @@ class RulesTest(TestCase):
                 category=event.concrete_category)[0]
 
             source = ext_cat_obj.source
-            xid =  ext_cat_obj.xid
+            xid =  ext_cat_obj
             result = source_category_rule.classify(event, source, [xid])
             event_category = ([event.concrete_category], [])
             self.assertEqual(event_category, result)
