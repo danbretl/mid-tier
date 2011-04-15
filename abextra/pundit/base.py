@@ -7,7 +7,7 @@ class BaseRule(object):
     """
     Each rule has a clause, input and output
     For a given input, if the clause evaluates to true, the rule gets applied
-    and an output is generated. 
+    and an output is generated.
     """
 
     def __init__(self):
@@ -21,7 +21,6 @@ class BaseRule(object):
         - `scraped_event`: This also includes outside information such as
         source of event, external categorization information, meta informatin
         about the location, etc.
-        
         The rules that was applied (for debugging), the confidence measure of
         that rule etc.
         info = None

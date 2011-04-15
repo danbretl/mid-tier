@@ -16,7 +16,7 @@ class RulesTest(TestCase):
         """
         """
         base_rule = BaseRule()
-        self.assertRaises(NotImplementedError, base_rule.classify, None)
+        self.assertRaises(NotImplementedError, base_rule.classify, None, None)
 
     def test_SourceRule(self):
         """
@@ -33,8 +33,7 @@ class RulesTest(TestCase):
 
 
             ext_cat_obj = ExternalCategory.objects.filter(
-                source__name='fandango',
-                category=event.concrete_category)[0]
+                source__name='fandango', category=event.concrete_category)[0]
 
             source_name = ext_cat_obj.source.name
             event_category = ([event.concrete_category], [abstracts])
@@ -82,7 +81,7 @@ class ArbiterTest(TestCase):
             SourceCategoryRule(),
             SourceRule()
         ])
-        source = 'villagevoice'
+        source = Source.objects.get(name='villagevoice')
         for event in Event.objects.all():
             ext_cat_objs = ExternalCategory.objects.filter(category=event.concrete_category)
             for ext_cat_obj in ext_cat_objs:
@@ -103,7 +102,7 @@ class ArbiterTest(TestCase):
             SourceCategoryRule(),
             SourceRule()
         ])
-        source = 'villagevoice'
+        source = Source.objects.get(name='villagevoice')
         xid_list = ['1134089', '1134052', '1134052']
         xids = ExternalCategory.objects.filter(xid__in=xid_list)
         for event in Event.objects.filter(concrete_category__id=28):
