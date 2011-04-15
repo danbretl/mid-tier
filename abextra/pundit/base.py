@@ -15,7 +15,7 @@ class BaseRule(object):
         """
         pass
 
-    def classify(self, scraped_event):
+    def classify(self, event, source, **kwargs):
         """
         Arguments:
         - `scraped_event`: This also includes outside information such as
