@@ -5,6 +5,8 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from events.models import Event, Occurrence, Category, Source
 from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
+# from pundit import default_arbiter
+import pundit
 
 # ==============
 # = Base Forms =
@@ -73,6 +75,8 @@ class SourceAdminForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class EventImportForm(EventForm):
+    arbiter = pundit.Arbiter([pundit.SourceCategoryRule(), pundit.SourceRule()])
+
     slug = forms.SlugField(required=False)
     concrete_category = forms.ModelChoiceField(
         queryset=Category.concrete.all(), required=False,
@@ -82,26 +86,36 @@ class EventImportForm(EventForm):
         queryset=Category.abstract.all(), required=False,
         cache_choices=True
     )
+    external_categories = forms.ModelMultipleChoiceField(
+        queryset=ExternalCategory.objects.all(), required=False,
+        cache_choices=True
+    )
     source = forms.ModelChoiceField(
         queryset=Source.objects.all(),
         cache_choices=True,
         to_field_name='name'
     )
-    external_categories = forms.ModelMultipleChoiceField(
-        queryset=Category.abstract.all(), required=False,
-        cache_choices=True,
-        to_field_name='xid'
-    )
-    def clean_slug(self):
-        title = self.cleaned_data['title']
-        return slugify(title)[:50]
 
-    def clean_concrete_category(self):
-        return Category.concrete.get(id=2)
+    # def clean_slug(self):
+    #     title = self.cleaned_data['title']
+    #     return self.fields['slug'].clean(slugify(title)[:50])
 
-    # def clean(self):
-    #     self.cleaned_data['concrete_category'] = 2
-    #     
+    def clean(self):
+        cleaned_data = self.cleaned_data
+
+        # slug
+        title = cleaned_data['title']
+        cleaned_data['slug'] = slugify(title)[:50]
+
+        # concrete category :: via pundit
+        event = self.instance
+        source = cleaned_data['source']
+        external_categories = cleaned_data['external_categories']
+        concrete_category = self.arbiter \
+            .concrete_categories(event, source, external_categories)
+        cleaned_data['concrete_category'] = self.fields['concrete_category'].clean(concrete_category.id)
+
+        return super(EventImportForm, self).clean()
 
 class OccurrenceImportForm(OccurrenceForm):
     pass

@@ -2,7 +2,8 @@ from importer.parsers.base import BaseParser
 from importer.parsers.locations import PlaceParser
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
-from events.models import Source
+from events.models import Source, EventSummary
+from events.utils import CachedCategoryTree
 
 class ExternalCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
@@ -39,6 +40,7 @@ class EventParser(BaseParser):
     fields = ['xid',]
     occurrence_parser = OccurrenceParser()
     external_category_parser = ExternalCategoryParser()
+    ctree = CachedCategoryTree()
 
     def parse_form_data(self, data, form_data):
         form_data['source'] = data.get('source')
@@ -46,12 +48,13 @@ class EventParser(BaseParser):
         form_data['title'] = data.get('title').encode('unicode-escape')
         form_data['description'] = data.get('description').encode('unicode-escape')
         form_data['url'] = data.get('url')
-        # import ipdb; ipdb.set_trace()
-        # form_data['']
 
         categories = data.get('categories') or []
+        external_category_ids = []
         for category_data in categories:
-            self.external_category_parser.parse(category_data)
+            created, external_category = self.external_category_parser.parse(category_data)
+            external_category_ids.append(external_category.id)
+        form_data['external_categories'] = external_category_ids
 
         images = data.get('images')
         if images:
@@ -61,6 +64,8 @@ class EventParser(BaseParser):
         return form_data
 
     def post_parse(self, data, instance):
+        event = instance
         for occurrence_data in data.occurrences:
-            occurrence_data['event'] = instance.id
+            occurrence_data['event'] = event.id
             self.occurrence_parser.parse(occurrence_data)
+        EventSummary.objects.for_event(event, self.ctree)

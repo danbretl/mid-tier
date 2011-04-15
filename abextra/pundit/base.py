@@ -15,18 +15,6 @@ class BaseRule(object):
         """
         pass
 
-    def gen_concrete_category(self,event):
-        """
-        """
-        if event.concrete_category:
-            return
-        else:
-            return self.classify(event)
-
-    def gen_abstract_category(self, event):
-        """
-        """
-        
     def classify(self, scraped_event):
         """
         Arguments:
@@ -46,7 +34,21 @@ class BaseRule(object):
         Any rule must implement this as its base class. 
         """
         raise NotImplementedError
-    
+
+
+    def get_concrete_category(self,event, spider, external_categories):
+        if event == self.event:
+            return self.concrete_categories
+        else:
+            self.classify(event, spider, external_categories)
+            return self.concrete_categories
+
+    def get_abstract_category(self, event, spider, external_categories):
+        if event == self.event:
+            return self.abstract_categories
+        else:
+            self.classify(event, spider, external_categories)
+            return self.abstract_categories
 
         
 

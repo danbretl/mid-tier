@@ -3,7 +3,8 @@ from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
-from pundit.classification_rules import SourceRule, SourceCategoryRule
+from pundit.classification_rules import SourceRule,\
+     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
 from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
@@ -57,10 +58,9 @@ class RulesTest(TestCase):
                 source__name='villagevoice',
                 category=event.concrete_category)[0]
 
-            source_name = ext_cat_obj.source.name
-            result = source_category_rule.classify(event,
-                                                   source_name,
-                                                   [ext_cat_obj])
+            source = ext_cat_obj.source
+            xid =  ext_cat_obj
+            result = source_category_rule.classify(event, source, [xid])
             event_category = ([event.concrete_category], [])
             self.assertEqual(event_category, result)
 
@@ -109,3 +109,43 @@ class ArbiterTest(TestCase):
         for event in Event.objects.filter(concrete_category__id=28):
             concrete = arbiter.concrete_categories(event, source, xids)
             self.assertEqual(event.concrete_category,concrete)
+
+
+class RegexRulesTest(TestCase):
+    """
+    Tests that need to be performed
+    - Test TitleRegexRule
+    - Test DescriptionRegexRule
+    - Test XIDRegexRule
+    """
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories']
+
+    def test_DescriptionRegexRules(self):
+        """
+        """
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        dregexrule = DescriptionRegexRule()
+        drr_category = dregexrule.get_concrete_category(event, source, ext)[0]
+        self.assertEqual(event.concrete_category, drr_category)
+
+    def test_TitleRegexRules(self):
+        """
+        """
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        tregexrule = TitleRegexRule()
+        trr_category = tregexrule.get_concrete_category(event, source, ext)[0]
+        self.assertEqual(event.concrete_category, trr_category)
+
+    def test_XIDRegexRule(self):
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        ext = ExternalCategory.objects.get(id=108)
+        xregexrule = XIDRegexRule()
+        xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
+        self.assertEqual(event.concrete_category, xrr_category)
+        
