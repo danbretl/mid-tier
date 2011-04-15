@@ -1,3 +1,5 @@
+import logging
+from itertools import ifilter
 from django.utils import simplejson
 from django.conf import settings
 from core.utils import Bunch
@@ -18,6 +20,7 @@ class ScrapeFeedConsumer(object):
         events() will also produce a generator of fully-related events.
     """
     registry = {}
+    logger = logging.getLogger('consumer.scrape')
 
     def __init__(self, feed_path=None):
         feed_reader = ScrapeFeedReader(feed_path)
@@ -35,8 +38,11 @@ class ScrapeFeedConsumer(object):
         return self._items('category')
 
     @property
-    def events(self):
-        return self._items('event')
+    def events(self, filter_incomplete=True):
+        events = self._items('event')
+        if not filter_incomplete:
+            return events
+        return ifilter(lambda e: e.get('occurrences'), events)
 
     @property
     def occurrences(self):
@@ -78,7 +84,7 @@ class ScrapeFeedConsumer(object):
             location_guid = occurrence.get('location_guid')
             location = guid_location.get(location_guid)
             if not location:
-                #This means we have an occurrence with no corresponding location
+                self.logger.warn('failed to relate: Occurrence to Location')
                 continue
 
             occurrence['location'] = location
@@ -86,8 +92,8 @@ class ScrapeFeedConsumer(object):
             event = guid_event.get(event_guid)
             if not event:
                 # This means we have an occurrence with no corresponding event.
+                self.logger.warn('failed to relate: Occurrence to Event')
                 continue
-
             event.setdefault('occurrences', []).append(occurrence)
 
             category_guids = event.get('category_guids')

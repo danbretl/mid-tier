@@ -174,7 +174,11 @@ LOGGING = {
         #     'level': 'DEBUG',
         #     'propagate': False,
         # },
-        'abextra.importer': {
+        'importer.parser': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'consumer.scrape': {
             'handlers': ['console'],
             'level': 'DEBUG',
         }
