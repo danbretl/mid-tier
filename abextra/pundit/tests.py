@@ -148,4 +148,3 @@ class RegexRulesTest(TestCase):
         xregexrule = XIDRegexRule()
         xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
         self.assertEqual(event.concrete_category, xrr_category)
-        

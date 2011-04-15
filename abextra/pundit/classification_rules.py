@@ -37,7 +37,6 @@ class DirectMappingRule(BaseRule):
                 # TODO: I do not know if NULL translates to None
                 if None in thiskey:
                     continue
-                
                 mapping_dict[ordering][thiskey] = (row.concrete, row.abstracts)
 
     def classify(self, event, source, xids):
@@ -53,7 +52,6 @@ class DirectMappingRule(BaseRule):
             return (source if name == 'source' else
                     (xids if name == 'xids' else
                      event.getattr(name)))
-        
         for ordering, mapping in self.mapping_dict.iteritems():
             # get this key of this event
             thiskey = tuple([get_event_field(o) for o in ordering])
@@ -63,7 +61,6 @@ class DirectMappingRule(BaseRule):
                 # the mapping will be a tuple of concrete and abstracts
                 # suggestions
                 this_concrete, this_abstract = result
-                
                 # check that each are not null, and that we're not overwriting a
                 # better concrete
                 # TODO: NULL might be different from None. Check this!
@@ -95,7 +92,7 @@ class SourceRule(BaseRule):
         self.concrete_categories = None
         self.abstract_categories = None
         #-------------------------------------
-        for src in Source.objects.all():
+        for src in Source.objects.select_related().all():
             self.concrete_dict[src.name].append(src.default_concrete_category)
             abstracts = None
             try:
@@ -110,7 +107,6 @@ class SourceRule(BaseRule):
         -  `event`: scraped event to be classified. This includes information
                     from the scrape to allow for better classifion like spider,
                     since the event django object does not support such fields.
-        
         """
         results_concrete = []
         results_abstract = []
@@ -144,7 +140,7 @@ class SourceCategoryRule(BaseRule):
         self.abstract_categories = None
         #-------------------------------------
 
-        for ext_cat in ExternalCategory.objects.all():
+        for ext_cat in ExternalCategory.objects.select_related().all():
             name_xid = (ext_cat.source, ext_cat)
             if ext_cat.category.category_type == 'C':
                 if ext_cat.category:
@@ -152,14 +148,14 @@ class SourceCategoryRule(BaseRule):
             elif ext_cat.category.category_type == 'A':
                 if ext_cat.category:
                     self.abstract[name_xid].append(ext_cat.category)
-            
+
     def classify(self, event, source, external_categories, *args, **kwargs):
         """
         """
         results_concrete = []
         results_abstract = []
         if source and external_categories:
-            # Get all possible categories. 
+            # Get all possible categories.
             for ext_cat in external_categories:
                 results_concrete += self.concrete[(source, ext_cat)]
                 results_abstract += self.abstract[(source, ext_cat)]
@@ -180,8 +176,7 @@ regex is a more general rule that gets applied to all sources if sourceregex
 fails when .
 source
 """
-    
-   
+
 class RegexRule(BaseRule):
     """
     Use a regular expression to map the external category text to internal
@@ -190,7 +185,6 @@ class RegexRule(BaseRule):
     def __init__(self, key, model):
         """
         # note: regexes are compiled here- they are not strings
-        
         self.source_rules = defaultdict(list) # built from a table
         self.null_rules = [] # from items in table with source NULL
 
@@ -203,22 +197,22 @@ class RegexRule(BaseRule):
         We basically build 2 different types of dictionaries;
         In order of precedence they are:
         1) source_rules   -> When we have both Source specified
-        2) default_rules  -> When no source is specified. 
+        2) default_rules  -> When no source is specified.
         """
         self.event = None
         self.concrete_categories = None
         self.abstract_categories = None
-        
+
         self.key = key
         source_dict = defaultdict(dict)
-        
+
         if model:
-            regex_objs = RegexCategory.objects.filter(model_type=model)
+            regex_objs = RegexCategory.objects.select_related().filter(model_type=model)
         else:
             regex_objs = RegexCategory.objects.all()
 
         self.default_rules = []
-        self.source_rules = defaultdict(list)            
+        self.source_rules = defaultdict(list)
         for rgx_obj in regex_objs:
             if rgx_obj.source:
                 self.source_rules[rgx_obj.source].append(
@@ -243,7 +237,7 @@ class RegexRule(BaseRule):
                 abstracts.append(category)
 
         return (concretes, abstracts)
-    
+
     def classify(self, event, source, xids):
         """
         rules = self.source_rules[source] + self.null_rules
@@ -259,7 +253,7 @@ class RegexRule(BaseRule):
         self.concrete_categories = self.abstract_categories = []
 
         # Apply the 2 dictionaries in order or precedence:
-        # TODO: see if there is any value in refactoring this. 
+        # TODO: see if there is any value in refactoring this.
         #----------------------------------------------------------------------
 
         categories = []
@@ -278,7 +272,7 @@ class RegexRule(BaseRule):
             self.concrete_categories, self.abstract_categories = \
                                    self.separate_concretes_abstracts(categories)
 
-        return            
+        return
 
 
 class TitleRegexRule(RegexRule):
@@ -297,25 +291,3 @@ class XIDRegexRule(RegexRule):
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.xid for obj in x])
         RegexRule.__init__(self, xkey, 'XIDRegex')
-        
-        
-        
-
-
-        
-        
-    
-                
-                
-                
-        
-        
-        
-
-        
-        
-
-    
-        
-        
-        
