@@ -274,5 +274,5 @@ class DescriptionRegexRule(RegexRule):
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
-        xkey = lambda e,s,x: " ".join([obj.xid for obj in x])
+        xkey = lambda e,s,x: " ".join([obj.name for obj in x])
         RegexRule.__init__(self, xkey, 'XIDRegex')
