@@ -85,13 +85,11 @@ class ScrapeFeedConsumer(object):
             location = guid_location.get(location_guid)
             if not location:
                 self.logger.warn('failed to relate: Occurrence to Location')
-                continue
 
             occurrence['location'] = location
             event_guid = occurrence.get('event_guid')
             event = guid_event.get(event_guid)
             if not event:
-                # This means we have an occurrence with no corresponding event.
                 self.logger.warn('failed to relate: Occurrence to Event')
                 continue
             event.setdefault('occurrences', []).append(occurrence)
