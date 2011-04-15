@@ -28,7 +28,7 @@ class Arbiter(object):
         self.filtered_abstract = None
         self.cachedcategorytree = CachedCategoryTree()
 
-    def apply_rules(self, event, source, external_category_xids):
+    def apply_rules(self, event, source, external_categories):
         """
         This function has no side effects.
         It applies all its rules to the event object and returns raw categories
@@ -37,9 +37,8 @@ class Arbiter(object):
         """
         raw_abstracts = []
         raw_concretes = None
-        xids = [obj.xid for obj in external_category_xids]
         for rule in self.rules:
-            concretes, abstracts = rule.classify(event, source, xids)
+            concretes, abstracts = rule.classify(event, source, external_categories=external_categories)
 
             # Special handling for event classification rules.
             # Could later put this into a special class and abstract out
@@ -50,7 +49,7 @@ class Arbiter(object):
 
         return (raw_concretes, raw_abstracts)
 
-    def _apply_filters(self, event, source=None, ext_category_xids=None):
+    def _apply_filters(self, event, source, ext_categories):
         """
         This function filters down the  concrete categories and returns
         """
@@ -62,16 +61,16 @@ class Arbiter(object):
         self.event = event
         raw_concretes, raw_abstracts = self.apply_rules(event,
                                                         source,
-                                                        ext_category_xids)
+                                                        ext_categories)
         #clean concrete and abstracts here
         self.filtered_abstract = raw_abstracts
         self.filtered_concrete = self.cachedcategorytree.deepest_category(\
             raw_concretes)
 
-    def abstract_categories(self, event, source=None, ext_category_xids=None):
+    def abstract_categories(self, event, source, ext_category_xids=None):
         self._apply_filters(event, source, ext_category_xids)
         return self.filtered_abstract
 
-    def concrete_categories(self, event, source=None, ext_category_xids=None):
+    def concrete_categories(self, event, source, ext_category_xids=None):
         self._apply_filters(event, source, ext_category_xids)
         return self.filtered_concrete

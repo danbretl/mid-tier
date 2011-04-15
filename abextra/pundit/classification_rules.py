@@ -101,7 +101,7 @@ class SourceRule(BaseRule):
                 pass
             self.abstract_dict[src.name].append(abstracts)
 
-    def classify(self, event, spider, xids):
+    def classify(self, event, source, **kwargs):
         """
         Arguments:
         -  `event`: scraped event to be classified. This includes information
@@ -110,9 +110,9 @@ class SourceRule(BaseRule):
         """
         results_concrete = []
         results_abstract = []
-        if spider:
-            results_concrete = self.concrete_dict[spider]
-            results_abstract = self.abstract_dict[spider]
+        if source:
+            results_concrete = self.concrete_dict[source]
+            results_abstract = self.abstract_dict[source]
 
         #------------------------------------------
         #Caching results
@@ -131,8 +131,8 @@ class SourceCategoryRule(BaseRule):
     def __init__(self):
         """
         """
-        self.concrete = defaultdict(list)
-        self.abstract = defaultdict(list)
+        self.concrete = {}
+        self.abstract = {}
         #-------------------------------------
         # These variables are used during caching
         self.event = None
@@ -141,24 +141,22 @@ class SourceCategoryRule(BaseRule):
         #-------------------------------------
 
         for ext_cat in ExternalCategory.objects.select_related('source', 'category').all():
-            name_xid = (ext_cat.source, ext_cat)
+            key = (ext_cat.source, ext_cat)
             if ext_cat.category.category_type == 'C':
-                if ext_cat.category:
-                    self.concrete[name_xid].append(ext_cat.category)
+                self.concrete.setdefault(key, []).append(ext_cat.category)
             elif ext_cat.category.category_type == 'A':
-                if ext_cat.category:
-                    self.abstract[name_xid].append(ext_cat.category)
+                self.abstract.setdefault(key, []).append(ext_cat.category)
 
-    def classify(self, event, source, external_categories, *args, **kwargs):
-        """
-        """
+    def classify(self, event, source, **kwargs):
+        external_categories = kwargs['external_categories']
         results_concrete = []
         results_abstract = []
         if source and external_categories:
             # Get all possible categories.
             for ext_cat in external_categories:
-                results_concrete += self.concrete[(source, ext_cat)]
-                results_abstract += self.abstract[(source, ext_cat)]
+                key = (source, ext_cat)
+                results_concrete += self.concrete.get(key, [])
+                results_abstract += self.abstract.get(key, [])
         #------------------------------------------
         #Caching results
         self.event = event
