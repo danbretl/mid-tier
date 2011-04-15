@@ -92,7 +92,7 @@ class SourceRule(BaseRule):
         self.concrete_categories = None
         self.abstract_categories = None
         #-------------------------------------
-        for src in Source.objects.select_related().all():
+        for src in Source.objects.select_related('default_concrete_category').all():
             self.concrete_dict[src.name].append(src.default_concrete_category)
             abstracts = None
             try:
@@ -140,7 +140,7 @@ class SourceCategoryRule(BaseRule):
         self.abstract_categories = None
         #-------------------------------------
 
-        for ext_cat in ExternalCategory.objects.select_related().all():
+        for ext_cat in ExternalCategory.objects.select_related('source', 'category').all():
             name_xid = (ext_cat.source, ext_cat)
             if ext_cat.category.category_type == 'C':
                 if ext_cat.category:
@@ -224,19 +224,6 @@ class RegexRule(BaseRule):
                     (re.compile(rgx_obj.regex, re.IGNORECASE),
                                            rgx_obj.category)
                     )
-
-    # TODO: This seems fairly useful and shouldn't belong only here.
-    #       This should be in some helper class
-    def separate_concretes_abstracts(self, categories):
-        concretes = []
-        abstracts = []
-        for category in categories:
-            if category.category_type == 'C':
-                concretes.append(category)
-            elif category.category_type == 'A':
-                abstracts.append(category)
-
-        return (concretes, abstracts)
 
     def classify(self, event, source, xids):
         """

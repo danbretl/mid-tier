@@ -27,11 +27,11 @@ class BaseRule(object):
         info = None
         This is a list of abstract categories and other information indicating
         abstract_info = ([None],info)
-        This is a two tuple indicating 
+        This is a two tuple indicating
         concrete_info = (None, info)
         return_tuple = (concrete_info, abstract_info)
 
-        Any rule must implement this as its base class. 
+        Any rule must implement this as its base class.
         """
         raise NotImplementedError
 
@@ -50,8 +50,15 @@ class BaseRule(object):
             self.classify(event, spider, external_categories)
             return self.abstract_categories
 
-        
+    # TODO: This seems fairly useful and shouldn't belong here.
+    #       This should be in some helper class
+    def separate_concretes_abstracts(self, categories):
+        concretes = []
+        abstracts = []
+        for category in categories:
+            if category.category_type == 'C':
+                concretes.append(category)
+            elif category.category_type == 'A':
+                abstracts.append(category)
 
-        
-
-        
+        return (concretes, abstracts)

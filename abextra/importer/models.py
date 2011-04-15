@@ -6,7 +6,8 @@ class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
     name = models.CharField(max_length=100)
     source = models.ForeignKey(Source, related_name='external_categories')
-    category = models.ForeignKey(Category, related_name='external_categories', blank=True, null=True)
+    category = models.ForeignKey(Category, related_name='external_categories',
+                                 blank=True, null=True)
 
     def category_title(self):
         return self.category.title
@@ -20,7 +21,7 @@ class ExternalCategory(models.Model):
 class RegexCategory(models.Model):
     """
     Maps external categories to internal categories by checking with a regular
-    expression string. 
+    expression string.
     """
     source = models.ForeignKey(Source, related_name='source_regex_categories')
     regex = models.CharField(max_length=100)
@@ -28,10 +29,3 @@ class RegexCategory(models.Model):
     category = models.ForeignKey(Category,
                                  related_name='source_regex_categories',
                                  blank=True, null=True)
-    
-    
-    
-    
-        
-        
-
