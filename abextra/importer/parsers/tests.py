@@ -64,4 +64,4 @@ class EventParserTest(TestCase):
     def test_parse(self):
         for event in self.consumer.events:
             self.parser.parse(event)
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()

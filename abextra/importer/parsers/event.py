@@ -1,5 +1,6 @@
 from importer.parsers.base import BaseParser
 from importer.parsers.locations import PlaceParser
+from importer.parsers.price import PriceParser
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from events.models import Source, EventSummary
@@ -21,6 +22,7 @@ class OccurrenceParser(BaseParser):
     model_form = OccurrenceImportForm
     fields = ['event', 'start_date']
     place_parser = PlaceParser()
+    price_parser = PriceParser()
 
     def parse_form_data(self, data, form_data):
         form_data['event'] = data.get('event')
@@ -34,6 +36,14 @@ class OccurrenceParser(BaseParser):
         form_data['place'] = place.id if place else None
 
         return form_data
+
+    def post_parse(self, data, instance):
+        occurrence = instance
+
+        # prices
+        for price_data in data.prices:
+            price_data['occurrence'] = occurrence.id
+            self.price_parser.parse(price_data)
 
 class EventParser(BaseParser):
     model_form = EventImportForm
@@ -65,7 +75,11 @@ class EventParser(BaseParser):
 
     def post_parse(self, data, instance):
         event = instance
+
+        # occurrences
         for occurrence_data in data.occurrences:
             occurrence_data['event'] = event.id
             self.occurrence_parser.parse(occurrence_data)
+
+        # event summary
         EventSummary.objects.for_event(event, self.ctree)
