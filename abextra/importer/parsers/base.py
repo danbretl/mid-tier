@@ -28,7 +28,8 @@ class BaseParser(object):
                     self.logger.error(form.errors)
             if instance:
                 self.cache[key] = instance
-                self.post_parse(data, instance)
+
+        self.post_parse(data, instance)
         result = (created, instance)
         self.logger.debug(result)
         return result

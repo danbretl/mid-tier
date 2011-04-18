@@ -24,8 +24,10 @@ class ScrapeFeedConsumer(object):
 
     def __init__(self, feed_path=None):
         feed_reader = ScrapeFeedReader(feed_path)
+        # register (add) all items to the registry
         for item in feed_reader.read():
             self._register(item)
+        # relate all items
         self._wire_all()
 
     def _items(self, item_type):
@@ -71,8 +73,14 @@ class ScrapeFeedConsumer(object):
 
     def _wire_source(self, item_source):
         l = lambda item_type: self.registry[item_source][item_type]
-        guid_category, guid_event, guid_occurrence, guid_location = \
-            map(l, ('category', 'event', 'occurrence', 'location'))
+        categories, events, prices, occurrences, locations = \
+            map(l, ('category', 'event', 'price', 'occurrence', 'location'))
+
+        # FIXME hacked in until proper M2M M2ONE ONE2M relaters
+        prices_by_occurrence_guid = {}
+        for guid, price in prices.iteritems():
+            prices_by_occurrence_guid.setdefault(price.occurrence_guid, []) \
+                .append(price)
 
         # The goal is to wire up as much as we can ignoring any errors.
         # The minimum requirements include:
@@ -80,23 +88,31 @@ class ScrapeFeedConsumer(object):
         # b) Each occurrence must have a location, else ignore.
         # c) Each occurrence may have categories.
         #    - This is a questionable design. Will leave for discussion later.
-        for guid, occurrence in guid_occurrence.iteritems():
+        for guid, occurrence in occurrences.iteritems():
+
+            # location to occurrence    (one to many)
             location_guid = occurrence.get('location_guid')
-            location = guid_location.get(location_guid)
+            location = locations.get(location_guid)
             if not location:
                 self.logger.warn('failed to relate: Occurrence to Location')
-
             occurrence['location'] = location
+
+            # prices to occurrence  (many to one)
+            occurrence['prices'] = prices_by_occurrence_guid \
+                .get(occurrence.guid, [])
+
+            # occurrence to event (many to one)
             event_guid = occurrence.get('event_guid')
-            event = guid_event.get(event_guid)
+            event = events.get(event_guid)
             if not event:
                 self.logger.warn('failed to relate: Occurrence to Event')
                 continue
             event.setdefault('occurrences', []).append(occurrence)
 
+            # categories to event (many to one)
             category_guids = event.get('category_guids')
             if category_guids:
                 for category_guid in category_guids:
-                    category = guid_category.get(category_guid)
+                    category = categories.get(category_guid)
                     if category:
                         event.setdefault('categories', []).append(category)
