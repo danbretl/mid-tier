@@ -40,6 +40,10 @@ class ScrapeFeedConsumer(object):
         return self._items('category')
 
     @property
+    def prices(self):
+        return self._items('price')
+
+    @property
     def events(self, filter_incomplete=True):
         events = self._items('event')
         if not filter_incomplete:
