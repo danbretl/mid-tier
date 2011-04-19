@@ -1,5 +1,5 @@
 import logging
-from itertools import ifilter
+from itertools import count, chain
 from django.utils import simplejson
 from django.conf import settings
 from core.utils import Bunch
@@ -13,6 +13,8 @@ class ScrapeFeedReader(object):
             for jsonline in feed:
                 yield Bunch(simplejson.loads(jsonline))
 
+class FeedIntegrityError(Exception): pass
+
 class ScrapeFeedConsumer(object):
     """
     Consumer reads the feed file one line at time.  Every line is a json
@@ -22,41 +24,38 @@ class ScrapeFeedConsumer(object):
     registry = {}
     logger = logging.getLogger('consumer.scrape')
 
-    def __init__(self, feed_path=None):
+    def __init__(self, feed_path=None, do_cleanup=True):
         feed_reader = ScrapeFeedReader(feed_path)
+        self.do_cleanup = do_cleanup
+
         # register (add) all items to the registry
         for item in feed_reader.read():
             self._register(item)
+
         # relate all items
         self._wire_all()
 
-    def _items(self, item_type):
-        for source_registry in self.registry.itervalues():
-            for item in source_registry[item_type].itervalues():
-                yield item
+    def items(self, item_type, source=None):
+        source_regs = (self.registry[source],) if source \
+            else self.registry.itervalues()
+        return chain(
+            *(source_reg[item_type].itervalues() for source_reg in source_regs)
+        )
 
-    @property
-    def categories(self):
-        return self._items('category')
+    def categories(self, source=None):
+        return self.items('category', source)
 
-    @property
-    def prices(self):
-        return self._items('price')
+    def prices(self, source=None):
+        return self.items('price', source)
 
-    @property
-    def events(self, filter_incomplete=True):
-        events = self._items('event')
-        if not filter_incomplete:
-            return events
-        return ifilter(lambda e: e.get('occurrences'), events)
+    def events(self, source=None):
+        return self.items('event', source)
 
-    @property
-    def occurrences(self):
-        return self._items('occurrence')
+    def occurrences(self, source=None):
+        return self.items('occurrence', source)
 
-    @property
-    def locations(self):
-        return self._items('location')
+    def locations(self, source=None):
+        return self.items('location', source)
 
     def _register(self, item):
         item_source = item.get('source')
@@ -86,37 +85,35 @@ class ScrapeFeedConsumer(object):
             prices_by_occurrence_guid.setdefault(price.occurrence_guid, []) \
                 .append(price)
 
-        # The goal is to wire up as much as we can ignoring any errors.
-        # The minimum requirements include:
-        # a) Each occurrence must have a corresponding event, else ignore.
-        # b) Each occurrence must have a location, else ignore.
-        # c) Each occurrence may have categories.
-        #    - This is a questionable design. Will leave for discussion later.
         for guid, occurrence in occurrences.iteritems():
+            try:
+                # location to occurrence    (one to many)
+                location_guid = occurrence.get('location_guid')
+                location = locations.get(location_guid)
+                if not location:
+                    if do_cleanup: del occurrences[guid]
+                    raise FeedIntegrityError('failed to relate: Occurrence to Location')
+                occurrence['location'] = location
 
-            # location to occurrence    (one to many)
-            location_guid = occurrence.get('location_guid')
-            location = locations.get(location_guid)
-            if not location:
-                self.logger.warn('failed to relate: Occurrence to Location')
-            occurrence['location'] = location
+                # prices to occurrence  (many to one)
+                occurrence['prices'] = prices_by_occurrence_guid \
+                    .get(occurrence.guid, [])
 
-            # prices to occurrence  (many to one)
-            occurrence['prices'] = prices_by_occurrence_guid \
-                .get(occurrence.guid, [])
+                # occurrence to event (many to one)
+                event_guid = occurrence.get('event_guid')
+                event = events.get(event_guid)
+                if not event:
+                    if do_cleanup: del events[event_guid]
+                    raise FeedIntegrityError('failed to relate: Occurrence to Event')
+                event.setdefault('occurrences', []).append(occurrence)
 
-            # occurrence to event (many to one)
-            event_guid = occurrence.get('event_guid')
-            event = events.get(event_guid)
-            if not event:
-                self.logger.warn('failed to relate: Occurrence to Event')
-                continue
-            event.setdefault('occurrences', []).append(occurrence)
+                # categories to event (many to one)
+                category_guids = event.get('category_guids')
+                if category_guids:
+                    for category_guid in category_guids:
+                        category = categories.get(category_guid)
+                        if category:
+                            event.setdefault('categories', []).append(category)
 
-            # categories to event (many to one)
-            category_guids = event.get('category_guids')
-            if category_guids:
-                for category_guid in category_guids:
-                    category = categories.get(category_guid)
-                    if category:
-                        event.setdefault('categories', []).append(category)
+            except FeedIntegrityError as error:
+                self.logger.warn(error)
