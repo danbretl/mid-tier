@@ -16,6 +16,7 @@ DATABASES = {
         'NAME': 'abexmid',
         'HOST': '',                     # Set to empty string for localhost.
         'PORT': '',                     # Set to empty string for default.
+        'TEST_CHARSET': 'utf8',
     },
 }
 
