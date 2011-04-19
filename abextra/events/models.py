@@ -187,6 +187,8 @@ class Event(models.Model):
         place = Place.objects.select_related('point__city').get(id=place_id)
         return place.title, place.address, len(place_counts)
 
+    def __unicode__(self):
+        return self.title
 
 class EventSummaryManager(models.Manager):
     def for_event(self, event, ctree, commit=True):
