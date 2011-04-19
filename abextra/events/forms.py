@@ -96,10 +96,6 @@ class EventImportForm(EventForm):
         to_field_name='name'
     )
 
-    # def clean_slug(self):
-    #     title = self.cleaned_data['title']
-    #     return self.fields['slug'].clean(slugify(title)[:50])
-
     def clean(self):
         cleaned_data = self.cleaned_data
 
@@ -113,7 +109,10 @@ class EventImportForm(EventForm):
         external_categories = cleaned_data['external_categories']
         concrete_category = self.arbiter \
             .concrete_categories(event, source, external_categories)
-        cleaned_data['concrete_category'] = self.fields['concrete_category'].clean(concrete_category.id)
+        # concrete_category = Category.objects.get(id=202)
+        # import ipdb; ipdb.set_trace()
+        cleaned_data['concrete_category'] = self.fields['concrete_category'] \
+            .clean(concrete_category.id)
 
         return super(EventImportForm, self).clean()
 

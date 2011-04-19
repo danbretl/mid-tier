@@ -2,6 +2,7 @@ from django.test import TestCase
 from importer.consumer import ScrapeFeedConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
 from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
+from importer.parsers.price import PriceParser
 
 class ExternalCategoryParserTest(TestCase):
     fixtures = ['sources'] # ,'external_categories']
@@ -10,7 +11,7 @@ class ExternalCategoryParserTest(TestCase):
 
     def test_parse(self):
         for category in self.consumer.categories:
-            print self.parser.parse(category)
+            self.parser.parse(category)
 
 class CityParserTest(TestCase):
     consumer = ScrapeFeedConsumer()
@@ -18,7 +19,7 @@ class CityParserTest(TestCase):
 
     def test_parse(self):
         for location in self.consumer.locations:
-            print self.parser.parse(location)
+            self.parser.parse(location)
 
 class PointParserTest(TestCase):
     consumer = ScrapeFeedConsumer()
@@ -26,7 +27,7 @@ class PointParserTest(TestCase):
 
     def test_parse(self):
         for location in self.consumer.locations:
-            print self.parser.parse(location)
+            self.parser.parse(location)
 
 class PlaceParserTest(TestCase):
     consumer = ScrapeFeedConsumer()
@@ -34,8 +35,17 @@ class PlaceParserTest(TestCase):
 
     def test_parse(self):
         for location in self.consumer.locations:
-            print self.parser.parse(location)
+            self.parser.parse(location)
 
+class PriceParserTest(TestCase):
+    fixtures = ['events']
+    consumer = ScrapeFeedConsumer()
+    parser = PriceParser()
+
+    def test_parse(self):
+        for price in self.consumer.prices:
+            price['occurrence'] = 1
+            self.parser.parse(price)
 
 class OccurrenceParserTest(TestCase):
     fixtures = ['events']
@@ -44,7 +54,7 @@ class OccurrenceParserTest(TestCase):
 
     def test_parse(self):
         for occurrence in self.consumer.occurrences:
-            print self.parser.parse(occurrence)
+            self.parser.parse(occurrence)
 
 class EventParserTest(TestCase):
     fixtures = ['categories', 'sources', 'external_categories']
@@ -54,4 +64,4 @@ class EventParserTest(TestCase):
     def test_parse(self):
         for event in self.consumer.events:
             self.parser.parse(event)
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()

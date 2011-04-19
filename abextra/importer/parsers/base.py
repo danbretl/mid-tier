@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BaseParser(object):
-    logger = logging.getLogger('abextra.importer')
+    logger = logging.getLogger('importer.parser')
 
     def __init__(self):
         self.model = self.model_form._meta.model
@@ -28,7 +28,8 @@ class BaseParser(object):
                     self.logger.error(form.errors)
             if instance:
                 self.cache[key] = instance
-                self.post_parse(data, instance)
+
+        self.post_parse(data, instance)
         result = (created, instance)
         self.logger.debug(result)
         return result
