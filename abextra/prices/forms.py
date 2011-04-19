@@ -6,4 +6,4 @@ class PriceForm(forms.ModelForm):
         model = Price
 
 class PriceImportForm(PriceForm):
-    units = forms.CharField(required=False)
+    pass
