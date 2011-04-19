@@ -84,8 +84,8 @@ class SourceRule(BaseRule):
     def __init__(self):
         """
         """
-        self.concrete_dict = defaultdict(list)
-        self.abstract_dict = defaultdict(list)
+        self.concrete_dict = {}
+        self.abstract_dict = {}
         #-------------------------------------
         # These variables are used during caching
         self.event = None
@@ -93,13 +93,13 @@ class SourceRule(BaseRule):
         self.abstract_categories = None
         #-------------------------------------
         for src in Source.objects.select_related('default_concrete_category').all():
-            self.concrete_dict[src.name].append(src.default_concrete_category)
+            self.concrete_dict.setdefault(src, []).append(src.default_concrete_category)
             abstracts = None
             try:
-                abstracts = src.default_abstract_categories.get()
+                abstracts = src.default_abstract_categories.all()
             except:
                 pass
-            self.abstract_dict[src.name].append(abstracts)
+            self.abstract_dict.setdefault(src,[]).append(abstracts)
 
     def classify(self, event, source, **kwargs):
         """
@@ -108,6 +108,8 @@ class SourceRule(BaseRule):
                     from the scrape to allow for better classifion like spider,
                     since the event django object does not support such fields.
         """
+        # if not kwargs.get('external_categories'):
+        #     import ipdb; ipdb.set_trace()
         results_concrete = []
         results_abstract = []
         if source:

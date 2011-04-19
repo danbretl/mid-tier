@@ -64,8 +64,8 @@ class Arbiter(object):
                                                         ext_categories)
         #clean concrete and abstracts here
         self.filtered_abstract = raw_abstracts
-        self.filtered_concrete = self.cachedcategorytree.deepest_category(\
-            raw_concretes)
+        self.filtered_concrete = self.cachedcategorytree \
+            .deepest_category(raw_concretes) if raw_concretes else []
 
     def abstract_categories(self, event, source, ext_category_xids=None):
         self._apply_filters(event, source, ext_category_xids)
