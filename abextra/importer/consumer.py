@@ -14,6 +14,7 @@ class ScrapeFeedReader(object):
                 yield Bunch(simplejson.loads(jsonline))
 
 class FeedIntegrityError(Exception): pass
+    # def __init__(self, *args, item_guid, **kwargs):
 
 class ScrapeFeedConsumer(object):
     """
@@ -75,7 +76,7 @@ class ScrapeFeedConsumer(object):
             self._wire_source(item_source)
 
     def _wire_source(self, item_source):
-        l = lambda item_type: self.registry[item_source][item_type]
+        l = lambda item_type: self.registry[item_source].get(item_type, {})
         categories, events, prices, occurrences, locations = \
             map(l, ('category', 'event', 'price', 'occurrence', 'location'))
 
@@ -85,14 +86,14 @@ class ScrapeFeedConsumer(object):
             prices_by_occurrence_guid.setdefault(price.occurrence_guid, []) \
                 .append(price)
 
-        for guid, occurrence in occurrences.iteritems():
+        for guid, occurrence in occurrences.items():
             try:
                 # location to occurrence    (one to many)
                 location_guid = occurrence.get('location_guid')
                 location = locations.get(location_guid)
                 if not location:
-                    if do_cleanup: del occurrences[guid]
-                    raise FeedIntegrityError('failed to relate: Occurrence to Location')
+                    if self.do_cleanup: del occurrences[guid]
+                    raise FeedIntegrityError('failed to relate: Occurrence to Location | occurrence_guid: %s\tlocation_guid: %s' % (str(guid), str(location_guid)))
                 occurrence['location'] = location
 
                 # prices to occurrence  (many to one)
@@ -103,8 +104,8 @@ class ScrapeFeedConsumer(object):
                 event_guid = occurrence.get('event_guid')
                 event = events.get(event_guid)
                 if not event:
-                    if do_cleanup: del events[event_guid]
-                    raise FeedIntegrityError('failed to relate: Occurrence to Event')
+                    if self.do_cleanup: del occurrences[guid]
+                    raise FeedIntegrityError('failed to relate: Occurrence to Event | occurrence_guid: %s\tevent_guid: %s' % (guid.encode('unicode_escape'), event_guid.encode('unicode_escape')))
                 event.setdefault('occurrences', []).append(occurrence)
 
                 # categories to event (many to one)
@@ -117,3 +118,9 @@ class ScrapeFeedConsumer(object):
 
             except FeedIntegrityError as error:
                 self.logger.warn(error)
+
+        if self.do_cleanup:
+            for guid, event in events.items():
+                if not event.get('occurrences'):
+                    del events[guid]
+                    self.logger.warn('Removing an Event with no occurrences | guid: %s' % guid)

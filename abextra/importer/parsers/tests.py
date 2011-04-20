@@ -6,7 +6,7 @@ from importer.parsers.price import PriceParser
 
 class ExternalCategoryParserTest(TestCase):
     fixtures = ['sources'] # ,'external_categories']
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = ExternalCategoryParser()
 
     def test_parse(self):
@@ -14,7 +14,7 @@ class ExternalCategoryParserTest(TestCase):
             self.parser.parse(category)
 
 class CityParserTest(TestCase):
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = CityParser()
 
     def test_parse(self):
@@ -22,7 +22,7 @@ class CityParserTest(TestCase):
             self.parser.parse(location)
 
 class PointParserTest(TestCase):
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = PointParser()
 
     def test_parse(self):
@@ -30,7 +30,7 @@ class PointParserTest(TestCase):
             self.parser.parse(location)
 
 class PlaceParserTest(TestCase):
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = PlaceParser()
 
     def test_parse(self):
@@ -39,7 +39,7 @@ class PlaceParserTest(TestCase):
 
 class PriceParserTest(TestCase):
     fixtures = ['events']
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = PriceParser()
 
     def test_parse(self):
@@ -49,7 +49,7 @@ class PriceParserTest(TestCase):
 
 class OccurrenceParserTest(TestCase):
     fixtures = ['events']
-    consumer = ScrapeFeedConsumer()
+    # consumer = ScrapeFeedConsumer()
     parser = OccurrenceParser()
 
     def test_parse(self):
@@ -57,11 +57,11 @@ class OccurrenceParserTest(TestCase):
             self.parser.parse(occurrence)
 
 class EventParserTest(TestCase):
-    fixtures = ['categories', 'sources', 'external_categories']
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
     consumer = ScrapeFeedConsumer()
     parser = EventParser()
 
     def test_parse(self):
-        for event in self.consumer.events:
+        for event in self.consumer.events():
             self.parser.parse(event)
-        # import ipdb; ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
