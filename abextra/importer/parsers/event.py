@@ -55,8 +55,8 @@ class EventParser(BaseParser):
     def parse_form_data(self, data, form_data):
         form_data['source'] = data.get('source')
         form_data['xid'] = data.get('guid')
-        form_data['title'] = data.get('title').encode('unicode-escape')
-        form_data['description'] = data.get('description').encode('unicode-escape')
+        form_data['title'] = data.get('title')
+        form_data['description'] = data.get('description')
         form_data['url'] = data.get('url')
 
         categories = data.get('categories') or []
@@ -80,6 +80,13 @@ class EventParser(BaseParser):
         for occurrence_data in data.occurrences:
             occurrence_data['event'] = event.id
             self.occurrence_parser.parse(occurrence_data)
+
+        # sanity check  FIXME ugly
+        occurrence_count = event.occurrences.count()
+        if not occurrence_count:
+            self.logger.warn('Dropping Event: no parsable occurrences')
+            event.delete()
+            return
 
         # event summary
         EventSummary.objects.for_event(event, self.ctree)
