@@ -2,10 +2,10 @@ from django import forms
 from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
+from django.contrib.auth.models import User
 from events.models import Event, Occurrence, Category, Source
 from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
-# from pundit import default_arbiter
 import pundit
 
 # ==============
@@ -76,6 +76,7 @@ class SourceAdminForm(forms.ModelForm):
 # ================
 class EventImportForm(EventForm):
     arbiter = pundit.Arbiter([pundit.SourceCategoryRule(), pundit.SourceRule()])
+    importer_user = User.objects.get(username='importer')
 
     slug = forms.SlugField(required=False)
     concrete_category = forms.ModelChoiceField(
@@ -97,24 +98,28 @@ class EventImportForm(EventForm):
     )
 
     def clean(self):
-        cleaned_data = self.cleaned_data
+        cleaned_data = super(EventImportForm, self).clean()
 
         # slug
         title = cleaned_data['title']
         cleaned_data['slug'] = slugify(title)[:50]
 
+        # sumbmitted_by
+        cleaned_data['submitted_by'] = self.importer_user
+
+        # is_active
+        cleaned_data['is_active'] = True
+
         # concrete category :: via pundit
+        # import ipdb; ipdb.set_trace()
         event = self.instance
         source = cleaned_data['source']
         external_categories = cleaned_data['external_categories']
-        concrete_category = self.arbiter \
-            .concrete_categories(event, source, external_categories)
-        # concrete_category = Category.objects.get(id=202)
-        # import ipdb; ipdb.set_trace()
+        concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
         cleaned_data['concrete_category'] = self.fields['concrete_category'] \
             .clean(concrete_category.id)
 
-        return super(EventImportForm, self).clean()
+        return cleaned_data
 
 class OccurrenceImportForm(OccurrenceForm):
     pass
