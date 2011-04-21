@@ -50,7 +50,10 @@ class EventParser(BaseParser):
     fields = ['xid',]
     occurrence_parser = OccurrenceParser()
     external_category_parser = ExternalCategoryParser()
-    ctree = CachedCategoryTree()
+
+    def __init__(self, *args, **kwargs):
+        super(EventParser, self).__init__(*args, **kwargs)
+        self.ctree = CachedCategoryTree()
 
     def parse_form_data(self, data, form_data):
         form_data['source'] = data.get('source')

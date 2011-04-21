@@ -75,8 +75,26 @@ class SourceAdminForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class EventImportForm(EventForm):
-    arbiter = pundit.Arbiter([pundit.SourceCategoryRule(), pundit.SourceRule()])
-    importer_user = User.objects.get(username='importer')
+    # FIXME needs to be lazy loaded - otherwise, shit happens at import time
+    # UPDATE: ugly fix
+    @property
+    def arbiter(self):
+        if not hasattr(EventImportForm, '_arbiter'):
+            setattr(EventImportForm, '_arbiter',
+                pundit.Arbiter((
+                        pundit.SourceCategoryRule(),
+                        pundit.SourceRule()
+                ))
+            )
+        return getattr(EventImportForm, '_arbiter')
+
+    @property
+    def importer_user(self):
+        if not hasattr(EventImportForm, '_importer_user'):
+            setattr(EventImportForm, '_importer_user',
+                User.objects.get(username='importer')
+            )
+        return getattr(EventImportForm, '_importer_user')
 
     slug = forms.SlugField(required=False)
     concrete_category = forms.ModelChoiceField(
