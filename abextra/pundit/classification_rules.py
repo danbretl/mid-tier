@@ -144,6 +144,8 @@ class SourceCategoryRule(BaseRule):
 
         for ext_cat in ExternalCategory.objects.select_related('source', 'category').all():
             key = (ext_cat.source, ext_cat)
+            if not ext_cat.concrete_category:
+                continue
             if ext_cat.concrete_category.category_type == 'C':
                 self.concrete.setdefault(key, []).append(ext_cat.concrete_category)
             elif ext_cat.concrete_category.category_type == 'A':
