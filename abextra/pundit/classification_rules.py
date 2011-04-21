@@ -94,12 +94,13 @@ class SourceRule(BaseRule):
         #-------------------------------------
         for src in Source.objects.select_related('default_concrete_category').all():
             self.concrete_dict.setdefault(src, []).append(src.default_concrete_category)
-            abstracts = None
+            abstracts = []
             try:
                 abstracts = src.default_abstract_categories.all()
             except:
                 pass
-            self.abstract_dict.setdefault(src,[]).append(abstracts)
+
+            self.abstract_dict.setdefault(src,[]).extend(abstracts)
 
     def classify(self, event, source, **kwargs):
         """
@@ -142,14 +143,10 @@ class SourceCategoryRule(BaseRule):
         self.abstract_categories = None
         #-------------------------------------
 
-        for ext_cat in ExternalCategory.objects.select_related('source', 'category').all():
+        for ext_cat in ExternalCategory.objects.select_related('source', 'conrete_category', 'abstract_categories').all():
             key = (ext_cat.source, ext_cat)
-            if not ext_cat.concrete_category:
-                continue
-            if ext_cat.concrete_category.category_type == 'C':
-                self.concrete.setdefault(key, []).append(ext_cat.concrete_category)
-            elif ext_cat.concrete_category.category_type == 'A':
-                self.abstract.setdefault(key, []).append(ext_cat.concrete_category)
+            self.concrete.setdefault(key, []).append(ext_cat.concrete_category)
+            self.abstract.setdefault(key, []).extend(ext_cat.abstract_categories.all())
 
     def classify(self, event, source, **kwargs):
         external_categories = kwargs['external_categories']
@@ -184,7 +181,7 @@ class RegexRule(BaseRule):
     Use a regular expression to map the external category text to internal
     categories
     """
-    def __init__(self, key, model):
+    def __init__(self, key, model, regex_objects=None):
         """
         # note: regexes are compiled here- they are not strings
         self.source_rules = defaultdict(list) # built from a table
@@ -208,10 +205,13 @@ class RegexRule(BaseRule):
         self.key = key
         source_dict = defaultdict(dict)
 
-        if model:
-            regex_objs = RegexCategory.objects.select_related().filter(model_type=model)
+        if not regex_objects:
+            if model:
+                regex_objs = RegexCategory.objects.select_related().filter(model_type=model)
+            else:
+                regex_objs = RegexCategory.objects.all()
         else:
-            regex_objs = RegexCategory.objects.all()
+            regex_objs = regex_objects
 
         self.default_rules = []
         self.source_rules = defaultdict(list)
@@ -280,3 +280,22 @@ class XIDRegexRule(RegexRule):
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
         RegexRule.__init__(self, xkey, 'XIDRegex')
+
+class SemanticCategoryMatchRule(RegexRule):
+    """
+    Checks if incoming categories match existing categories and assigns
+    abstract and concrete categories accordingly
+    """
+    def __init__(self):
+        xkey = lambda e,s,x: " ".join([obj.name for obj in x])
+        regex_objs = []
+        for category in Category.objects.all():
+            #we should get rid of any unwanted terms that could match
+            # like genres or
+            # Multiple matches for the same category should get more weight.
+            for word in category.title.lower().split():
+                regex_obj = RegexCategory()
+                regex_obj.regex = word
+                regex_obj.category = category
+                regex_objs.append(regex_obj)
+        RegexRule.__init__(self, xkey, None, regex_objs)

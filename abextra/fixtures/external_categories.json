@@ -1718,5 +1718,15 @@
             "xid": "Romantic", 
             "name": "Romantic"
         }
+    }, 
+    {
+        "pk": 1080, 
+        "model": "importer.externalcategory", 
+        "fields": {
+            "concrete_category": 137, 
+            "source": 3, 
+            "xid": "310677", 
+            "name": "Music"
+        }
     }
 ]

@@ -22,24 +22,14 @@ class RulesTest(TestCase):
         """
         """
         source_rule = SourceRule()
-        for event in Event.objects.all():
+        # MAke this test more comprehensive with more fandango objects.
+        source = Source.objects.get(name='fandango')
+        for event in Event.objects.filter(id__in=[2]):
             # Here add an additional check for existence of the spiders
             # information in the SourceModel
-            abstracts = None
-            try:
-                abstracts = event.categories.get()
-            except:
-                pass
-
-
-            ext_cat_obj = ExternalCategory.objects.filter(
-                source__name='fandango',
-                concrete_category=event.concrete_category)[0]
-
-            source_name = ext_cat_obj.source.name
-            event_category = ([event.concrete_category], [abstracts])
+            event_category = ([Category.objects.get(title='Movies')], [])
             self.assertEqual(event_category,
-                             source_rule.classify(event, source_name))
+                             source_rule.classify(event, source))
 
     def test_SourceCategoryRule(self):
         """
