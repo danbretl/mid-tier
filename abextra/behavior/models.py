@@ -14,6 +14,7 @@ class EventAction(models.Model):
     user = models.ForeignKey(User)
     event = models.ForeignKey(Event, related_name='actions')
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
+    instant = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = (('user', 'event'),)
