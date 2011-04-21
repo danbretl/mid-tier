@@ -9,7 +9,7 @@ class ExternalCategoryForm(forms.ModelForm):
 
 class ExternalCategoryAdminForm(ExternalCategoryForm):
     category = forms.ModelChoiceField(
-        queryset=Category.objects.all(),
+        queryset=Category.objects.all().order_by('title'),
         empty_label="Select an internal category",
         required=False
     )
