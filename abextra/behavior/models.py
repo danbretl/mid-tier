@@ -18,6 +18,7 @@ class EventAction(models.Model):
 
     class Meta:
         unique_together = (('user', 'event'),)
+        ordering = ['instant']
 
     def __unicode__(self): return unicode(self.id or '?')
 
