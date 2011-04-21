@@ -17,8 +17,10 @@ from events.models import Category
 class ExternalCategoryAdmin(admin.ModelAdmin):
     form = ExternalCategoryAdminForm
     list_select_related = True
-    list_display = ('name', 'xid', 'source', 'category_title')
-    fields = ('name', 'xid', 'source', 'category')
+    list_display = ('name', 'xid', 'source', 'concrete_category',)
+                    #'abstract_categories')
+    fields = ('name', 'xid', 'source', 'concrete_category',)
+              #'abstract_categories')
     list_filter = ('source',)
 
 admin.site.register(ExternalCategory, ExternalCategoryAdmin)
