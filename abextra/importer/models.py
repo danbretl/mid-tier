@@ -5,16 +5,19 @@ from events.models import Source, Category
 class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
     name = models.CharField(max_length=100)
-    source = models.ForeignKey(Source, related_name='external_categories')
-    category = models.ForeignKey(Category, related_name='external_categories',
-                                 blank=True, null=True)
+    source = models.ForeignKey(Source, related_name='external_concrete_category')
+    concrete_category = models.ForeignKey(Category,
+                                          related_name='external_concrete_category',
+                                          blank=True, null=True)
+    abstract_categories = models.ManyToManyField(Category,
+                                                 related_name='external_abstract_categories',
+                                                 blank=True, null=True)
 
     def category_title(self):
         return self.category.title
     category_title.admin_order_field = 'category__title'
 
     class Meta:
-        unique_together = (('name', 'source'),)
         verbose_name_plural = _('external categories')
 
 

@@ -33,7 +33,8 @@ class RulesTest(TestCase):
 
 
             ext_cat_obj = ExternalCategory.objects.filter(
-                source__name='fandango', category=event.concrete_category)[0]
+                source__name='fandango',
+                concrete_category=event.concrete_category)[0]
 
             source_name = ext_cat_obj.source.name
             event_category = ([event.concrete_category], [abstracts])
@@ -55,7 +56,7 @@ class RulesTest(TestCase):
 
             ext_cat_obj = ExternalCategory.objects.filter(
                 source__name='villagevoice',
-                category=event.concrete_category)[0]
+                concrete_category=event.concrete_category)[0]
 
             source = ext_cat_obj.source
             result = source_category_rule.classify(event, source, \
@@ -83,7 +84,8 @@ class ArbiterTest(TestCase):
         ])
         source = Source.objects.get(name='villagevoice')
         for event in Event.objects.all():
-            ext_cat_objs = ExternalCategory.objects.filter(category=event.concrete_category)
+            ext_cat_objs = ExternalCategory.objects.filter(
+                concrete_category=event.concrete_category)
             for ext_cat_obj in ext_cat_objs:
                 concrete, abstracts = arbiter.apply_rules(event,
                                                           source,

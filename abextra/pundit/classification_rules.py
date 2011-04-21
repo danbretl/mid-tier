@@ -144,10 +144,10 @@ class SourceCategoryRule(BaseRule):
 
         for ext_cat in ExternalCategory.objects.select_related('source', 'category').all():
             key = (ext_cat.source, ext_cat)
-            if ext_cat.category.category_type == 'C':
-                self.concrete.setdefault(key, []).append(ext_cat.category)
-            elif ext_cat.category.category_type == 'A':
-                self.abstract.setdefault(key, []).append(ext_cat.category)
+            if ext_cat.concrete_category.category_type == 'C':
+                self.concrete.setdefault(key, []).append(ext_cat.concrete_category)
+            elif ext_cat.concrete_category.category_type == 'A':
+                self.abstract.setdefault(key, []).append(ext_cat.concrete_category)
 
     def classify(self, event, source, **kwargs):
         external_categories = kwargs['external_categories']

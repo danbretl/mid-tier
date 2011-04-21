@@ -3,7 +3,7 @@
         "pk": 1, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "471321", 
             "name": "Activism"
@@ -13,7 +13,7 @@
         "pk": 2, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 142, 
+            "concrete_category": 142, 
             "source": 1, 
             "xid": "1133854", 
             "name": "Adult"
@@ -23,7 +23,7 @@
         "pk": 3, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1133855", 
             "name": "Announcements"
@@ -33,7 +33,7 @@
         "pk": 4, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 127, 
+            "concrete_category": 127, 
             "source": 1, 
             "xid": "1133856", 
             "name": "Art - Announcements"
@@ -43,7 +43,7 @@
         "pk": 5, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 171, 
+            "concrete_category": 171, 
             "source": 1, 
             "xid": "538260", 
             "name": "Art - Galleries"
@@ -53,7 +53,7 @@
         "pk": 6, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 121, 
+            "concrete_category": 121, 
             "source": 1, 
             "xid": "1133857", 
             "name": "Art - Museums"
@@ -63,7 +63,7 @@
         "pk": 7, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 127, 
+            "concrete_category": 127, 
             "source": 1, 
             "xid": "1133858", 
             "name": "Art - Ongoings"
@@ -73,7 +73,7 @@
         "pk": 8, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 171, 
+            "concrete_category": 171, 
             "source": 1, 
             "xid": "1133862", 
             "name": "Art - Openings & Events"
@@ -83,7 +83,7 @@
         "pk": 9, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 139, 
+            "concrete_category": 139, 
             "source": 1, 
             "xid": "155018", 
             "name": "Arts"
@@ -93,7 +93,7 @@
         "pk": 10, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 199, 
+            "concrete_category": 199, 
             "source": 1, 
             "xid": "1133863", 
             "name": "Auditions"
@@ -103,7 +103,7 @@
         "pk": 11, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 185, 
+            "concrete_category": 185, 
             "source": 1, 
             "xid": "1133864", 
             "name": "Auto"
@@ -113,7 +113,7 @@
         "pk": 12, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 18, 
+            "concrete_category": 18, 
             "source": 1, 
             "xid": "1133865", 
             "name": "Barhopping"
@@ -123,7 +123,7 @@
         "pk": 13, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 14, 
+            "concrete_category": 14, 
             "source": 1, 
             "xid": "1133870", 
             "name": "Benefits"
@@ -133,7 +133,7 @@
         "pk": 14, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1133867", 
             "name": "Black History Month"
@@ -143,7 +143,7 @@
         "pk": 15, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 124, 
+            "concrete_category": 124, 
             "source": 1, 
             "xid": "296690", 
             "name": "Broadway: Now Playing"
@@ -153,7 +153,7 @@
         "pk": 16, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 124, 
+            "concrete_category": 124, 
             "source": 1, 
             "xid": "296689", 
             "name": "Broadway: Opening"
@@ -163,7 +163,7 @@
         "pk": 17, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "471311", 
             "name": "Burlesque"
@@ -173,7 +173,7 @@
         "pk": 18, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1133868", 
             "name": "Cabaret"
@@ -183,7 +183,7 @@
         "pk": 19, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 199, 
+            "concrete_category": 199, 
             "source": 1, 
             "xid": "1138302", 
             "name": "Call for Entries"
@@ -193,7 +193,7 @@
         "pk": 20, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 15, 
+            "concrete_category": 15, 
             "source": 1, 
             "xid": "1482837", 
             "name": "Celebrity Appearances"
@@ -203,7 +203,7 @@
         "pk": 21, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 160, 
+            "concrete_category": 160, 
             "source": 1, 
             "xid": "1133869", 
             "name": "Chanukah"
@@ -213,7 +213,7 @@
         "pk": 22, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133871", 
             "name": "Cheap Thrills"
@@ -223,7 +223,7 @@
         "pk": 23, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133872", 
             "name": "Children's Events"
@@ -233,7 +233,7 @@
         "pk": 24, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 176, 
+            "concrete_category": 176, 
             "source": 1, 
             "xid": "1133873", 
             "name": "Children's Theater"
@@ -243,7 +243,7 @@
         "pk": 25, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 154, 
+            "concrete_category": 154, 
             "source": 1, 
             "xid": "1133875", 
             "name": "Christmas"
@@ -253,7 +253,7 @@
         "pk": 26, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 165, 
+            "concrete_category": 165, 
             "source": 1, 
             "xid": "1133876", 
             "name": "Cinco de Mayo"
@@ -263,7 +263,7 @@
         "pk": 27, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 115, 
+            "concrete_category": 115, 
             "source": 1, 
             "xid": "1482838", 
             "name": "Circus"
@@ -273,7 +273,7 @@
         "pk": 28, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1133877", 
             "name": "Civic Events"
@@ -283,7 +283,7 @@
         "pk": 29, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 148, 
+            "concrete_category": 148, 
             "source": 1, 
             "xid": "1133878", 
             "name": "Classes & Seminars"
@@ -293,7 +293,7 @@
         "pk": 30, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 17, 
+            "concrete_category": 17, 
             "source": 1, 
             "xid": "1133879", 
             "name": "Club Events"
@@ -303,7 +303,7 @@
         "pk": 31, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133890", 
             "name": "Clubs (Community)"
@@ -313,7 +313,7 @@
         "pk": 32, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 33, 
+            "concrete_category": 33, 
             "source": 1, 
             "xid": "258631", 
             "name": "Comedy"
@@ -323,7 +323,7 @@
         "pk": 33, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 194, 
+            "concrete_category": 194, 
             "source": 1, 
             "xid": "1133881", 
             "name": "Community Events"
@@ -333,7 +333,7 @@
         "pk": 34, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 2, 
+            "concrete_category": 2, 
             "source": 1, 
             "xid": "1133883", 
             "name": "Competitions"
@@ -343,7 +343,7 @@
         "pk": 35, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 11, 
+            "concrete_category": 11, 
             "source": 1, 
             "xid": "1133884", 
             "name": "Conferences"
@@ -353,7 +353,7 @@
         "pk": 36, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 170, 
+            "concrete_category": 170, 
             "source": 1, 
             "xid": "1133885", 
             "name": "Contests"
@@ -363,7 +363,7 @@
         "pk": 37, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 10, 
+            "concrete_category": 10, 
             "source": 1, 
             "xid": "1133886", 
             "name": "Conventions"
@@ -373,7 +373,7 @@
         "pk": 38, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133887", 
             "name": "Craft Events"
@@ -383,7 +383,7 @@
         "pk": 39, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 193, 
+            "concrete_category": 193, 
             "source": 1, 
             "xid": "1133992", 
             "name": "Cultural Events"
@@ -393,7 +393,7 @@
         "pk": 41, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 187, 
+            "concrete_category": 187, 
             "source": 1, 
             "xid": "229372", 
             "name": "Dance"
@@ -403,7 +403,7 @@
         "pk": 42, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 150, 
+            "concrete_category": 150, 
             "source": 1, 
             "xid": "1133888", 
             "name": "Daytripper"
@@ -413,7 +413,7 @@
         "pk": 43, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 148, 
+            "concrete_category": 148, 
             "source": 1, 
             "xid": "1133889", 
             "name": "Defensive Driving"
@@ -423,7 +423,7 @@
         "pk": 44, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 161, 
+            "concrete_category": 161, 
             "source": 1, 
             "xid": "1133891", 
             "name": "Dia de los Muertos"
@@ -433,7 +433,7 @@
         "pk": 45, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "1133892", 
             "name": "Disabled Programs & Services"
@@ -443,7 +443,7 @@
         "pk": 46, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1138304", 
             "name": "DIY"
@@ -453,7 +453,7 @@
         "pk": 47, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 169, 
+            "concrete_category": 169, 
             "source": 1, 
             "xid": "1482840", 
             "name": "Drag"
@@ -463,7 +463,7 @@
         "pk": 48, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 200, 
+            "concrete_category": 200, 
             "source": 1, 
             "xid": "1133893", 
             "name": "Education"
@@ -473,7 +473,7 @@
         "pk": 49, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "1133894", 
             "name": "Environmental"
@@ -483,7 +483,7 @@
         "pk": 50, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 147, 
+            "concrete_category": 147, 
             "source": 1, 
             "xid": "1133896", 
             "name": "Expos"
@@ -493,7 +493,7 @@
         "pk": 51, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133897", 
             "name": "Family Events"
@@ -503,7 +503,7 @@
         "pk": 52, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 40, 
+            "concrete_category": 40, 
             "source": 1, 
             "xid": "1133898", 
             "name": "Farmers' Markets"
@@ -513,7 +513,7 @@
         "pk": 53, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 174, 
+            "concrete_category": 174, 
             "source": 1, 
             "xid": "471316", 
             "name": "Fashion & Style"
@@ -523,7 +523,7 @@
         "pk": 54, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 156, 
+            "concrete_category": 156, 
             "source": 1, 
             "xid": "1133899", 
             "name": "Father's Day"
@@ -533,7 +533,7 @@
         "pk": 55, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 114, 
+            "concrete_category": 114, 
             "source": 1, 
             "xid": "471317", 
             "name": "Festivals"
@@ -543,7 +543,7 @@
         "pk": 56, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "1133900", 
             "name": "Film"
@@ -553,7 +553,7 @@
         "pk": 57, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "1133901", 
             "name": "Film - Art House"
@@ -563,7 +563,7 @@
         "pk": 58, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "1133902", 
             "name": "Film - Events"
@@ -573,7 +573,7 @@
         "pk": 59, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "1138305", 
             "name": "Film - Festivals"
@@ -583,7 +583,7 @@
         "pk": 60, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "1133903", 
             "name": "Film - IMAX"
@@ -593,7 +593,7 @@
         "pk": 61, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 29, 
+            "concrete_category": 29, 
             "source": 1, 
             "xid": "471318", 
             "name": "Film - Picks"
@@ -603,7 +603,7 @@
         "pk": 62, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 173, 
+            "concrete_category": 173, 
             "source": 1, 
             "xid": "155017", 
             "name": "Film - Repertory & Special Screenings"
@@ -613,7 +613,7 @@
         "pk": 63, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 40, 
+            "concrete_category": 40, 
             "source": 1, 
             "xid": "1133866", 
             "name": "Flea Markets"
@@ -623,7 +623,7 @@
         "pk": 64, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 198, 
+            "concrete_category": 198, 
             "source": 1, 
             "xid": "1133904", 
             "name": "Float Trips"
@@ -633,7 +633,7 @@
         "pk": 65, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 38, 
+            "concrete_category": 38, 
             "source": 1, 
             "xid": "155019", 
             "name": "Food & Drink"
@@ -643,7 +643,7 @@
         "pk": 66, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 36, 
+            "concrete_category": 36, 
             "source": 1, 
             "xid": "1133905", 
             "name": "Forums"
@@ -653,7 +653,7 @@
         "pk": 67, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 163, 
+            "concrete_category": 163, 
             "source": 1, 
             "xid": "1133906", 
             "name": "Fourth of July"
@@ -663,7 +663,7 @@
         "pk": 68, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1094971", 
             "name": "Free Events"
@@ -673,7 +673,7 @@
         "pk": 69, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 170, 
+            "concrete_category": 170, 
             "source": 1, 
             "xid": "1133907", 
             "name": "Games"
@@ -683,7 +683,7 @@
         "pk": 70, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 178, 
+            "concrete_category": 178, 
             "source": 1, 
             "xid": "1133908", 
             "name": "Golf Courses"
@@ -693,7 +693,7 @@
         "pk": 71, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 14, 
+            "concrete_category": 14, 
             "source": 1, 
             "xid": "1133909", 
             "name": "Grants"
@@ -703,7 +703,7 @@
         "pk": 72, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "1133910", 
             "name": "Green Events"
@@ -713,7 +713,7 @@
         "pk": 73, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 192, 
+            "concrete_category": 192, 
             "source": 1, 
             "xid": "1133911", 
             "name": "Groups - Professional"
@@ -723,7 +723,7 @@
         "pk": 74, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1133912", 
             "name": "Groups - Social"
@@ -733,7 +733,7 @@
         "pk": 75, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 157, 
+            "concrete_category": 157, 
             "source": 1, 
             "xid": "1133913", 
             "name": "Halloween"
@@ -743,7 +743,7 @@
         "pk": 76, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 191, 
+            "concrete_category": 191, 
             "source": 1, 
             "xid": "1133914", 
             "name": "Happy Hours"
@@ -753,7 +753,7 @@
         "pk": 77, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 157, 
+            "concrete_category": 157, 
             "source": 1, 
             "xid": "1338358", 
             "name": "Haunted Houses"
@@ -763,7 +763,7 @@
         "pk": 78, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 181, 
+            "concrete_category": 181, 
             "source": 1, 
             "xid": "1133915", 
             "name": "Health & Fitness"
@@ -773,7 +773,7 @@
         "pk": 79, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 197, 
+            "concrete_category": 197, 
             "source": 1, 
             "xid": "1133916", 
             "name": "High Country"
@@ -783,7 +783,7 @@
         "pk": 80, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 146, 
+            "concrete_category": 146, 
             "source": 1, 
             "xid": "1133917", 
             "name": "Hiking"
@@ -793,7 +793,7 @@
         "pk": 81, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 153, 
+            "concrete_category": 153, 
             "source": 1, 
             "xid": "1482841", 
             "name": "Hispanic Heritage Month"
@@ -803,7 +803,7 @@
         "pk": 82, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 186, 
+            "concrete_category": 186, 
             "source": 1, 
             "xid": "1133918", 
             "name": "History"
@@ -813,7 +813,7 @@
         "pk": 83, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 153, 
+            "concrete_category": 153, 
             "source": 1, 
             "xid": "1138306", 
             "name": "Holiday"
@@ -823,7 +823,7 @@
         "pk": 84, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 154, 
+            "concrete_category": 154, 
             "source": 1, 
             "xid": "1133919", 
             "name": "Holiday - Lights"
@@ -833,7 +833,7 @@
         "pk": 85, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 153, 
+            "concrete_category": 153, 
             "source": 1, 
             "xid": "1133920", 
             "name": "Holiday - Parties"
@@ -843,7 +843,7 @@
         "pk": 86, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1133921", 
             "name": "Home & Garden"
@@ -853,7 +853,7 @@
         "pk": 87, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 180, 
+            "concrete_category": 180, 
             "source": 1, 
             "xid": "1133922", 
             "name": "Ice Skating Rinks"
@@ -863,7 +863,7 @@
         "pk": 88, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 189, 
+            "concrete_category": 189, 
             "source": 1, 
             "xid": "1138307", 
             "name": "Juneteenth"
@@ -873,7 +873,7 @@
         "pk": 89, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 159, 
+            "concrete_category": 159, 
             "source": 1, 
             "xid": "1133923", 
             "name": "Kwanzaa"
@@ -883,7 +883,7 @@
         "pk": 90, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 164, 
+            "concrete_category": 164, 
             "source": 1, 
             "xid": "1133924", 
             "name": "Labor Day"
@@ -893,7 +893,7 @@
         "pk": 91, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 116, 
+            "concrete_category": 116, 
             "source": 1, 
             "xid": "1133925", 
             "name": "Landmarks"
@@ -903,7 +903,7 @@
         "pk": 92, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 35, 
+            "concrete_category": 35, 
             "source": 1, 
             "xid": "1133926", 
             "name": "Lectures"
@@ -913,7 +913,7 @@
         "pk": 93, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 169, 
+            "concrete_category": 169, 
             "source": 1, 
             "xid": "471319", 
             "name": "LGBT Events"
@@ -923,7 +923,7 @@
         "pk": 94, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 38, 
+            "concrete_category": 38, 
             "source": 1, 
             "xid": "1133927", 
             "name": "Libations"
@@ -933,7 +933,7 @@
         "pk": 95, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 200, 
+            "concrete_category": 200, 
             "source": 1, 
             "xid": "1133928", 
             "name": "Library"
@@ -943,7 +943,7 @@
         "pk": 96, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 34, 
+            "concrete_category": 34, 
             "source": 1, 
             "xid": "1133929", 
             "name": "Literary Events"
@@ -953,7 +953,7 @@
         "pk": 97, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 38, 
+            "concrete_category": 38, 
             "source": 1, 
             "xid": "1133972", 
             "name": "Luncheons"
@@ -963,7 +963,7 @@
         "pk": 98, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 158, 
+            "concrete_category": 158, 
             "source": 1, 
             "xid": "1133977", 
             "name": "Mardi Gras"
@@ -973,7 +973,7 @@
         "pk": 99, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 162, 
+            "concrete_category": 162, 
             "source": 1, 
             "xid": "1133978", 
             "name": "Martin Luther King, Jr. Day"
@@ -983,7 +983,7 @@
         "pk": 100, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 157, 
+            "concrete_category": 157, 
             "source": 1, 
             "xid": "1133979", 
             "name": "Mazes and Pumpkin Patches"
@@ -993,7 +993,7 @@
         "pk": 101, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 15, 
+            "concrete_category": 15, 
             "source": 1, 
             "xid": "1133982", 
             "name": "Meet & Greets"
@@ -1003,7 +1003,7 @@
         "pk": 102, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 168, 
+            "concrete_category": 168, 
             "source": 1, 
             "xid": "1133983", 
             "name": "Memorial Day"
@@ -1013,7 +1013,7 @@
         "pk": 103, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 181, 
+            "concrete_category": 181, 
             "source": 1, 
             "xid": "1133984", 
             "name": "Mind & Body"
@@ -1023,7 +1023,7 @@
         "pk": 104, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 167, 
+            "concrete_category": 167, 
             "source": 1, 
             "xid": "1133985", 
             "name": "Mother's Day"
@@ -1033,7 +1033,7 @@
         "pk": 105, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 184, 
+            "concrete_category": 184, 
             "source": 1, 
             "xid": "1133991", 
             "name": "Motorcycles"
@@ -1043,7 +1043,7 @@
         "pk": 106, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 127, 
+            "concrete_category": 127, 
             "source": 1, 
             "xid": "1133997", 
             "name": "Multimedia"
@@ -1053,7 +1053,7 @@
         "pk": 107, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 121, 
+            "concrete_category": 121, 
             "source": 1, 
             "xid": "309987", 
             "name": "Museum Exhibits & Events"
@@ -1063,7 +1063,7 @@
         "pk": 108, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 137, 
+            "concrete_category": 137, 
             "source": 1, 
             "xid": "310677", 
             "name": "Music"
@@ -1073,7 +1073,7 @@
         "pk": 109, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 4, 
+            "concrete_category": 4, 
             "source": 1, 
             "xid": "1133998", 
             "name": "Nature"
@@ -1083,7 +1083,7 @@
         "pk": 110, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1482842", 
             "name": "Networking"
@@ -1093,7 +1093,7 @@
         "pk": 111, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 181, 
+            "concrete_category": 181, 
             "source": 1, 
             "xid": "1133999", 
             "name": "New Age"
@@ -1103,7 +1103,7 @@
         "pk": 112, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 155, 
+            "concrete_category": 155, 
             "source": 1, 
             "xid": "1134012", 
             "name": "New Year's Day"
@@ -1113,7 +1113,7 @@
         "pk": 113, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 155, 
+            "concrete_category": 155, 
             "source": 1, 
             "xid": "1134013", 
             "name": "New Year's Eve"
@@ -1123,7 +1123,7 @@
         "pk": 114, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 16, 
+            "concrete_category": 16, 
             "source": 1, 
             "xid": "1134018", 
             "name": "Nightlife"
@@ -1133,7 +1133,7 @@
         "pk": 115, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1134024", 
             "name": "Off The Wall"
@@ -1143,7 +1143,7 @@
         "pk": 116, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 125, 
+            "concrete_category": 125, 
             "source": 1, 
             "xid": "296692", 
             "name": "Off-Broadway: Now Playing"
@@ -1153,7 +1153,7 @@
         "pk": 117, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 125, 
+            "concrete_category": 125, 
             "source": 1, 
             "xid": "296691", 
             "name": "Off-Broadway: Opening"
@@ -1163,7 +1163,7 @@
         "pk": 118, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 125, 
+            "concrete_category": 125, 
             "source": 1, 
             "xid": "296694", 
             "name": "Off-Off-Broadway: Now Playing"
@@ -1173,7 +1173,7 @@
         "pk": 119, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 125, 
+            "concrete_category": 125, 
             "source": 1, 
             "xid": "296693", 
             "name": "Off-Off-Broadway: Opening"
@@ -1183,7 +1183,7 @@
         "pk": 120, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 19, 
+            "concrete_category": 19, 
             "source": 1, 
             "xid": "1482843", 
             "name": "Open Mic"
@@ -1193,7 +1193,7 @@
         "pk": 121, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 132, 
+            "concrete_category": 132, 
             "source": 1, 
             "xid": "471313", 
             "name": "Opera"
@@ -1203,7 +1203,7 @@
         "pk": 122, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 150, 
+            "concrete_category": 150, 
             "source": 1, 
             "xid": "1134025", 
             "name": "Out of Town"
@@ -1213,7 +1213,7 @@
         "pk": 123, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 197, 
+            "concrete_category": 197, 
             "source": 1, 
             "xid": "1094972", 
             "name": "Outdoors"
@@ -1223,7 +1223,7 @@
         "pk": 124, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 145, 
+            "concrete_category": 145, 
             "source": 1, 
             "xid": "1134027", 
             "name": "Parades"
@@ -1233,7 +1233,7 @@
         "pk": 125, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 150, 
+            "concrete_category": 150, 
             "source": 1, 
             "xid": "1134036", 
             "name": "Parks & Preserves"
@@ -1243,7 +1243,7 @@
         "pk": 126, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1134038", 
             "name": "Parties & Receptions"
@@ -1253,7 +1253,7 @@
         "pk": 127, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1482844", 
             "name": "Performance Art"
@@ -1263,7 +1263,7 @@
         "pk": 128, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1145585", 
             "name": "Performing Arts"
@@ -1273,7 +1273,7 @@
         "pk": 129, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 143, 
+            "concrete_category": 143, 
             "source": 1, 
             "xid": "1134039", 
             "name": "Pets"
@@ -1283,7 +1283,7 @@
         "pk": 130, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 127, 
+            "concrete_category": 127, 
             "source": 1, 
             "xid": "309994", 
             "name": "Photography"
@@ -1293,7 +1293,7 @@
         "pk": 131, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 121, 
+            "concrete_category": 121, 
             "source": 1, 
             "xid": "1134044", 
             "name": "Planetariums"
@@ -1303,7 +1303,7 @@
         "pk": 132, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 27, 
+            "concrete_category": 27, 
             "source": 1, 
             "xid": "1134045", 
             "name": "Poetry"
@@ -1313,7 +1313,7 @@
         "pk": 133, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 16, 
+            "concrete_category": 16, 
             "source": 1, 
             "xid": "1134046", 
             "name": "Poker Nights"
@@ -1323,7 +1323,7 @@
         "pk": 134, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "1134051", 
             "name": "Politics"
@@ -1333,7 +1333,7 @@
         "pk": 135, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 139, 
+            "concrete_category": 139, 
             "source": 1, 
             "xid": "1134052", 
             "name": "Pop Culture"
@@ -1343,7 +1343,7 @@
         "pk": 136, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 9, 
+            "concrete_category": 9, 
             "source": 1, 
             "xid": "1134057", 
             "name": "Promotional Events"
@@ -1353,7 +1353,7 @@
         "pk": 137, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 140, 
+            "concrete_category": 140, 
             "source": 1, 
             "xid": "1134058", 
             "name": "Public Interest"
@@ -1363,7 +1363,7 @@
         "pk": 138, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 141, 
+            "concrete_category": 141, 
             "source": 1, 
             "xid": "1134059", 
             "name": "Public Service"
@@ -1373,7 +1373,7 @@
         "pk": 139, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 4, 
+            "concrete_category": 4, 
             "source": 1, 
             "xid": "471323", 
             "name": "Recreation"
@@ -1383,7 +1383,7 @@
         "pk": 140, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 177, 
+            "concrete_category": 177, 
             "source": 1, 
             "xid": "1134060", 
             "name": "Religion & Spirituality"
@@ -1393,7 +1393,7 @@
         "pk": 141, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 154, 
+            "concrete_category": 154, 
             "source": 1, 
             "xid": "1138308", 
             "name": "Santa Sightings"
@@ -1403,7 +1403,7 @@
         "pk": 142, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 196, 
+            "concrete_category": 196, 
             "source": 1, 
             "xid": "1134064", 
             "name": "Seasonal Events"
@@ -1413,7 +1413,7 @@
         "pk": 143, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 116, 
+            "concrete_category": 116, 
             "source": 1, 
             "xid": "1134066", 
             "name": "See & Be Seen"
@@ -1423,7 +1423,7 @@
         "pk": 144, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 142, 
+            "concrete_category": 142, 
             "source": 1, 
             "xid": "471322", 
             "name": "Sex & Fetish Events"
@@ -1433,7 +1433,7 @@
         "pk": 145, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 149, 
+            "concrete_category": 149, 
             "source": 1, 
             "xid": "1134067", 
             "name": "Shopping"
@@ -1443,7 +1443,7 @@
         "pk": 146, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 16, 
+            "concrete_category": 16, 
             "source": 1, 
             "xid": "1134068", 
             "name": "Singles Events"
@@ -1453,7 +1453,7 @@
         "pk": 147, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 179, 
+            "concrete_category": 179, 
             "source": 1, 
             "xid": "1134069", 
             "name": "Skate Parks"
@@ -1463,7 +1463,7 @@
         "pk": 148, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 27, 
+            "concrete_category": 27, 
             "source": 1, 
             "xid": "471320", 
             "name": "Spoken Word"
@@ -1473,7 +1473,7 @@
         "pk": 149, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 3, 
+            "concrete_category": 3, 
             "source": 1, 
             "xid": "1134070", 
             "name": "Sports - Participatory"
@@ -1483,7 +1483,7 @@
         "pk": 150, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 2, 
+            "concrete_category": 2, 
             "source": 1, 
             "xid": "1134072", 
             "name": "Sports - Spectator"
@@ -1493,7 +1493,7 @@
         "pk": 151, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 151, 
+            "concrete_category": 151, 
             "source": 1, 
             "xid": "1134073", 
             "name": "St. Patrick's Day"
@@ -1503,7 +1503,7 @@
         "pk": 152, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 196, 
+            "concrete_category": 196, 
             "source": 1, 
             "xid": "1134078", 
             "name": "Summer Camps"
@@ -1513,7 +1513,7 @@
         "pk": 153, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 196, 
+            "concrete_category": 196, 
             "source": 1, 
             "xid": "1134079", 
             "name": "Summer Guide"
@@ -1523,7 +1523,7 @@
         "pk": 154, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 201, 
+            "concrete_category": 201, 
             "source": 1, 
             "xid": "1134081", 
             "name": "Support Groups & Hotlines"
@@ -1533,7 +1533,7 @@
         "pk": 155, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 34, 
+            "concrete_category": 34, 
             "source": 1, 
             "xid": "1134270", 
             "name": "Talks"
@@ -1543,7 +1543,7 @@
         "pk": 156, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 188, 
+            "concrete_category": 188, 
             "source": 1, 
             "xid": "1482845", 
             "name": "Technology Events"
@@ -1553,7 +1553,7 @@
         "pk": 157, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1134082", 
             "name": "Teen Events"
@@ -1563,7 +1563,7 @@
         "pk": 158, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 44, 
+            "concrete_category": 44, 
             "source": 1, 
             "xid": "1134084", 
             "name": "Television"
@@ -1573,7 +1573,7 @@
         "pk": 159, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 166, 
+            "concrete_category": 166, 
             "source": 1, 
             "xid": "1134085", 
             "name": "Thanksgiving"
@@ -1583,7 +1583,7 @@
         "pk": 160, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "155016", 
             "name": "Theater"
@@ -1593,7 +1593,7 @@
         "pk": 161, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1134086", 
             "name": "Theater - Dinner"
@@ -1603,7 +1603,7 @@
         "pk": 162, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1134087", 
             "name": "Theater - Large"
@@ -1613,7 +1613,7 @@
         "pk": 163, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1134088", 
             "name": "Theater - Ongoing"
@@ -1623,7 +1623,7 @@
         "pk": 164, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1134089", 
             "name": "Theater - Openings"
@@ -1633,7 +1633,7 @@
         "pk": 165, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 28, 
+            "concrete_category": 28, 
             "source": 1, 
             "xid": "1134090", 
             "name": "Theater - Small"
@@ -1643,7 +1643,7 @@
         "pk": 166, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 117, 
+            "concrete_category": 117, 
             "source": 1, 
             "xid": "471325", 
             "name": "Tours"
@@ -1653,7 +1653,7 @@
         "pk": 167, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 152, 
+            "concrete_category": 152, 
             "source": 1, 
             "xid": "1134091", 
             "name": "Valentine's Day"
@@ -1663,7 +1663,7 @@
         "pk": 168, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 127, 
+            "concrete_category": 127, 
             "source": 1, 
             "xid": "1992646", 
             "name": "Visual Art"
@@ -1673,7 +1673,7 @@
         "pk": 169, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 141, 
+            "concrete_category": 141, 
             "source": 1, 
             "xid": "1134092", 
             "name": "Volunteer Opportunities"
@@ -1683,7 +1683,7 @@
         "pk": 170, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 42, 
+            "concrete_category": 42, 
             "source": 1, 
             "xid": "1134093", 
             "name": "Wineries"
@@ -1693,7 +1693,7 @@
         "pk": 171, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 138, 
+            "concrete_category": 138, 
             "source": 1, 
             "xid": "1134096", 
             "name": "Women's Events"
@@ -1703,7 +1703,7 @@
         "pk": 172, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 143, 
+            "concrete_category": 143, 
             "source": 1, 
             "xid": "1134097", 
             "name": "Zoo & Animals"
@@ -1713,7 +1713,7 @@
         "pk": 173, 
         "model": "importer.externalcategory", 
         "fields": {
-            "category": 377, 
+            "concrete_category": 377, 
             "source": 3, 
             "xid": "Romantic", 
             "name": "Romantic"
