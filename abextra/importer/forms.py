@@ -1,5 +1,5 @@
 from django import forms
-
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from importer.models import ExternalCategory
 from events.models import Category, Source
 
@@ -8,9 +8,14 @@ class ExternalCategoryForm(forms.ModelForm):
         model = ExternalCategory
 
 class ExternalCategoryAdminForm(ExternalCategoryForm):
-    category = forms.ModelChoiceField(
+    concrete_category = forms.ModelChoiceField(
         queryset=Category.objects.all().order_by('title'),
         empty_label="Select an internal category",
+        required=False
+    )
+    abstract_categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(),
+        widget=FilteredSelectMultiple(u'abstract categories', is_stacked=False),
         required=False
     )
 

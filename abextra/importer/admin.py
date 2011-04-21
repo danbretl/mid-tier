@@ -17,11 +17,10 @@ from events.models import Category
 class ExternalCategoryAdmin(admin.ModelAdmin):
     form = ExternalCategoryAdminForm
     list_select_related = True
-    list_display = ('name', 'xid', 'source', 'concrete_category',)
-                    #'abstract_categories')
-    fields = ('name', 'xid', 'source', 'concrete_category',)
-              #'abstract_categories')
-    list_filter = ('source',)
+    fields = ('name', 'xid', 'source', 'concrete_category','abstract_categories')
+    list_display = ('name', 'xid', 'source', 'concrete_category')
+    list_filter = ('source', 'concrete_category')
+    filter_horizontal = ('abstract_categories',)
 
 admin.site.register(ExternalCategory, ExternalCategoryAdmin)
 
@@ -34,3 +33,6 @@ class SourceRegexAdmin(admin.ModelAdmin):
     search_fields = ('source',)
 
 admin.site.register(RegexCategory, SourceRegexAdmin)
+
+
+
