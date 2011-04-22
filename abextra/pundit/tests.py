@@ -24,12 +24,14 @@ class RulesTest(TestCase):
         source_rule = SourceRule()
         # MAke this test more comprehensive with more fandango objects.
         source = Source.objects.get(name='fandango')
+        event_category = ([Category.objects.get(title='Movies')], [])
         for event in Event.objects.filter(id__in=[2]):
             # Here add an additional check for existence of the spiders
             # information in the SourceModel
-            event_category = ([Category.objects.get(title='Movies')], [])
             self.assertEqual(event_category,
                              source_rule.classify(event, source))
+
+        self.assertEqual(event_category, source_rule.classify(event, source))
 
     def test_SourceCategoryRule(self):
         """
@@ -72,13 +74,15 @@ class ArbiterTest(TestCase):
             SourceCategoryRule(),
             SourceRule()
         ])
-        source = Source.objects.get(name='villagevoice')
+        source1 = Source.objects.get(name='villagevoice')
+        source2 = Source.objects.get(name='fandango')
+        movie_category = Category.objects.get(title='Movies')
         for event in Event.objects.all():
             ext_cat_objs = ExternalCategory.objects.filter(
                 concrete_category=event.concrete_category)
             for ext_cat_obj in ext_cat_objs:
                 concrete, abstracts = arbiter.apply_rules(event,
-                                                          source,
+                                                          source1,
                                                           [ext_cat_obj])
                 if concrete:
                     break
@@ -88,6 +92,12 @@ class ArbiterTest(TestCase):
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
+            source = Source.objects.get(id=2)
+            concrete, abstracts = arbiter.apply_rules(event,
+                                                       source2,
+                                                       [])
+            self.assertEqual(concrete, [movie_category])
+
 
     def test_concrete_filters(self):
         arbiter = Arbiter([

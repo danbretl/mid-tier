@@ -43,6 +43,7 @@ class Arbiter(object):
             # Special handling for event classification rules.
             # Could later put this into a special class and abstract out
             # the common theme into a BaseChain class.
+            concretes = [category for category in concretes if category]
             if concretes and not raw_concretes:
                 raw_concretes = concretes
             raw_abstracts.extend(abstracts)
@@ -62,10 +63,14 @@ class Arbiter(object):
         raw_concretes, raw_abstracts = self.apply_rules(event,
                                                         source,
                                                         ext_categories)
+        raw_concretes = [category for category in raw_concretes if category]
         #clean concrete and abstracts here
         self.filtered_abstract = raw_abstracts
-        self.filtered_concrete = self.cachedcategorytree \
-            .deepest_category(raw_concretes) if raw_concretes else []
+        if raw_concretes:
+            self.filtered_concrete = self.cachedcategorytree \
+                                     .deepest_category(raw_concretes)
+        else:
+            self.filtered_concrete = None
 
     def abstract_categories(self, event, source, ext_category_xids=None):
         self._apply_filters(event, source, ext_category_xids)

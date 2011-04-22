@@ -10,7 +10,7 @@
         }
     }, 
     {
-        "pk": 3, 
+        "pk": 2, 
         "model": "events.source", 
         "fields": {
             "default_abstract_categories": [], 

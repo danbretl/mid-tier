@@ -139,8 +139,8 @@ class SourceCategoryRule(BaseRule):
         #-------------------------------------
         # These variables are used during caching
         self.event = None
-        self.concrete_categories = None
-        self.abstract_categories = None
+        self.concrete_categories = []
+        self.abstract_categories = []
         #-------------------------------------
 
         for ext_cat in ExternalCategory.objects.select_related('source', 'conrete_category', 'abstract_categories').all():
@@ -201,10 +201,7 @@ class RegexRule(BaseRule):
         self.event = None
         self.concrete_categories = None
         self.abstract_categories = None
-
         self.key = key
-        source_dict = defaultdict(dict)
-
         if not regex_objects:
             if model:
                 regex_objs = RegexCategory.objects.select_related().filter(model_type=model)
@@ -214,10 +211,10 @@ class RegexRule(BaseRule):
             regex_objs = regex_objects
 
         self.default_rules = []
-        self.source_rules = defaultdict(list)
+        self.source_rules = {}
         for rgx_obj in regex_objs:
             if rgx_obj.source:
-                self.source_rules[rgx_obj.source].append(
+                self.source_rules.setdefault(rgx_obj.source,[]).append(
                     (re.compile(rgx_obj.regex, re.IGNORECASE),
                     rgx_obj.category)
                     )
