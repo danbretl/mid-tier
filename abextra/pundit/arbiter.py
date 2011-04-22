@@ -36,7 +36,7 @@ class Arbiter(object):
         concrete_category and abstract_category functions.)
         """
         raw_abstracts = []
-        raw_concretes = None
+        raw_concretes = []
         for rule in self.rules:
             concretes, abstracts = rule.classify(event, source, external_categories=external_categories)
 
