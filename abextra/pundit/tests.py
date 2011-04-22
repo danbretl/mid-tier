@@ -156,7 +156,6 @@ class RegexRulesTest(TestCase):
         category = Category.objects.get(title='Adventure')
         ext = ExternalCategory.objects.get(id=1080)
         semantic_rule = SemanticCategoryMatchRule()
-        import ipdb; ipdb.set_trace()
         self.assertEqual([category], semantic_rule.get_abstract_category(event,
                                                                        source,
                                                                        [ext]))
