@@ -3,7 +3,7 @@ from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
-from pundit.classification_rules import SourceRule,\
+from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
 from pundit.arbiter import Arbiter
 
@@ -149,3 +149,14 @@ class RegexRulesTest(TestCase):
         xregexrule = XIDRegexRule()
         xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
         self.assertEqual(event.concrete_category, xrr_category)
+
+    def test_SemanticMatchRule(self):
+        event = Event.objects.get(id=2)
+        source = Source.objects.get(name='villagevoice')
+        category = Category.objects.get(title='Adventure')
+        ext = ExternalCategory.objects.get(id=1080)
+        semantic_rule = SemanticCategoryMatchRule()
+        import ipdb; ipdb.set_trace()
+        self.assertEqual([category], semantic_rule.get_abstract_category(event,
+                                                                       source,
+                                                                       [ext]))

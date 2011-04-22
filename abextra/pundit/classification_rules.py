@@ -6,7 +6,7 @@ Date: Apr 12 2011
 from collections import defaultdict
 
 from pundit.base import BaseRule
-from events.models import Source
+from events.models import Source, Category
 from importer.models import ExternalCategory, RegexCategory
 import re
 
@@ -211,18 +211,16 @@ class RegexRule(BaseRule):
             regex_objs = regex_objects
 
         self.default_rules = []
-        self.source_rules = {}
+        total_count = fail_count = 0
         for rgx_obj in regex_objs:
-            if rgx_obj.source:
-                self.source_rules.setdefault(rgx_obj.source,[]).append(
-                    (re.compile(rgx_obj.regex, re.IGNORECASE),
-                    rgx_obj.category)
-                    )
-            else:
-                self.default_rules.append(
-                    (re.compile(rgx_obj.regex, re.IGNORECASE),
-                                           rgx_obj.category)
-                    )
+            total_count +=1
+            try:
+                self.default_rules.append((re.compile(rgx_obj.regex,
+                                                      re.IGNORECASE),
+                                           rgx_obj.category))
+            except:
+                #Fails for some badly coded categories
+                fail_count += 1
 
     def classify(self, event, source, xids):
         """
@@ -237,28 +235,13 @@ class RegexRule(BaseRule):
 
         self.event = event
         self.concrete_categories = self.abstract_categories = []
-
-        # Apply the 2 dictionaries in order or precedence:
-        # TODO: see if there is any value in refactoring this.
-        #----------------------------------------------------------------------
-
         categories = []
-        for regex,category in self.source_rules[source]:
-            if regex.search(input_string):
-                categories.append(category)
-        if categories:
-            self.concrete_categories, self.abstract_categories = \
-                                   self.separate_concretes_abstracts(categories)
-            return
-        #----------------------------------------------------------------------
         for regex, category in self.default_rules:
             if regex.search(input_string):
                 categories.append(category)
         if  categories:
             self.concrete_categories, self.abstract_categories = \
                                    self.separate_concretes_abstracts(categories)
-
-        return
 
 
 class TitleRegexRule(RegexRule):
@@ -282,11 +265,13 @@ class SemanticCategoryMatchRule(RegexRule):
     """
     Checks if incoming categories match existing categories and assigns
     abstract and concrete categories accordingly
+    Note: Currently used only for abstract categorization.
     """
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
         regex_objs = []
-        for category in Category.objects.all():
+        # Loop over all ABSTRACT categories only. 
+        for category in Category.abstract.all():
             #we should get rid of any unwanted terms that could match
             # like genres or
             # Multiple matches for the same category should get more weight.
