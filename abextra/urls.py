@@ -26,3 +26,16 @@ urlpatterns = patterns('',
         'document_root': settings.STATIC_DOC_ROOT
     }),
 )
+
+
+# from tastypie.api import Api
+# # from myapp.api.resources import UserResource, EntryResource
+# 
+# v1_api = Api(api_name='v1')
+# # v1_api.register(UserResource)
+# # v1_api.register(EntryResource)
+# 
+# # Standard bits...
+# urlpatterns += patterns('',
+#     (r'^tapi/', include(v1_api.urls)),
+# )
