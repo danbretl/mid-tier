@@ -9,7 +9,6 @@ class EventActionForm(forms.ModelForm):
     # FIXME shameless hack to circumvent form validation for event actions api
     def validate_unique(self):
         exclude = self._get_validation_exclusions()
-        # import ipdb; ipdb.set_trace()
         exclude.append('action') # allow checking against the missing attribute
         exclude.append('event') # allow checking against the missing attribute
 

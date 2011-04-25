@@ -380,7 +380,6 @@ class AlgorithmTest(TestCase):
 
 
     def test_convergence(self):
-        # import ipdb; ipdb.set_trace()
         categories = ml.recommend_categories(self.user)
         #print "Categories: ", categories
         picked_category = categories[0]

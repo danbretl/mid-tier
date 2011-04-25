@@ -129,7 +129,6 @@ class EventImportForm(EventForm):
         cleaned_data['is_active'] = True
 
         # concrete category :: via pundit
-        # import ipdb; ipdb.set_trace()
         event = self.instance
         source = cleaned_data['source']
         external_categories = cleaned_data['external_categories']
