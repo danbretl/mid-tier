@@ -1,7 +1,7 @@
 from tastypie.authentication import Authentication, ApiKeyAuthentication
 from tastypie.http import HttpUnauthorized
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from models import Consumer
 
 class ConsumerAuthentication(Authentication):
@@ -41,12 +41,24 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
             return self._unauthorized()
 
         try:
-            consumer = Consumer.objects.by_key(key=consumer_key)
+            consumer = Consumer.objects.select_related('user').get(
+                key=consumer_key, secret=consumer_secret, is_active=True
+            )
         except (Consumer.DoesNotExist, Consumer.MultipleObjectsReturned):
             return self._unauthorized()
         else:
-            if not consumer.is_active or consumer.secret != consumer_secret:
-                return self._unauthorized()
+            request.user = consumer.user
+
+        # device identification
+        api_key = request.REQUEST.get('api_key')
+        udid = request.REQUEST.get('udid')
+        if udid and not api_key:
+            user, created = User.objects.get_or_create(username=udid)
+            if created:
+                group = Group.objects.get(name='device_user_anonymous')
+                user.groups.add(group)
+            request.user = user
+            return True
 
         return super(ConsumerApiKeyAuthentication, self) \
             .is_authenticated(request, **kwargs)
