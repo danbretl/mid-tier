@@ -28,14 +28,16 @@ urlpatterns = patterns('',
 )
 
 
-# from tastypie.api import Api
-# # from myapp.api.resources import UserResource, EntryResource
-# 
-# v1_api = Api(api_name='v1')
-# # v1_api.register(UserResource)
-# # v1_api.register(EntryResource)
-# 
-# # Standard bits...
-# urlpatterns += patterns('',
-#     (r'^tapi/', include(v1_api.urls)),
-# )
+from tastypie.api import Api
+from events.api import UserResource, EventResource, EventSummaryResource, CategoryResource
+
+v1_api = Api(api_name='v1')
+v1_api.register(UserResource())
+v1_api.register(EventResource())
+v1_api.register(EventSummaryResource())
+v1_api.register(CategoryResource())
+
+# Standard bits...
+urlpatterns += patterns('',
+    (r'^tapi/', include(v1_api.urls)),
+)

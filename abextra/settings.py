@@ -121,7 +121,8 @@ INSTALLED_APPS = (
     'fabtastic',                    # deployments
     'registration',                 # user registration app
     'piston',                       # api assistance
-    # 'tastypie',                     # new api assistance
+    'tastypie',                     # new api assistance
+    'newapi',                       # additional API models and utils
     'sorl.thumbnail',               # thumbnails
 
     'behavior',                     # ABEX behavior | user actions
