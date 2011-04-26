@@ -49,14 +49,13 @@ class Consumer(models.Model):
 # ===============
 # = Device UDID =
 # ===============
-from django.utils.hashcompat import sha_constructor
-from django.utils.encoding import smart_str
+from django.utils.crypto import salted_hmac
 
 class DeviceUdidManager(models.Manager):
     def get_hexdigest(self, raw_udid):
         salt = 'QJ7@cqBQdLy$mqr+'
-        raw_udid, salt = smart_str(raw_udid), smart_str(salt)
-        return sha_constructor(salt + raw_udid).hexdigest()
+        hmac = salted_hmac(salt, raw_udid)
+        return hmac.hexdigest()
 
 class DeviceUdid(models.Model):
     user = models.OneToOneField(User, related_name='device_udid')

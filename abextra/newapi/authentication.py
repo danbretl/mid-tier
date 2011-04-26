@@ -1,9 +1,11 @@
 from tastypie.authentication import Authentication, ApiKeyAuthentication
 from tastypie.http import HttpUnauthorized
-from utils import validate_iphone_udid
 
 from django.contrib.auth.models import User, Group
+from django.forms import ValidationError
+
 from models import Consumer, DeviceUdid
+from forms import DeviceUdidForm
 
 class ConsumerAuthentication(Authentication):
     def _unauthorized(self):
@@ -35,14 +37,21 @@ class ConsumerAuthentication(Authentication):
 
 
 class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
+    udid_field = DeviceUdidForm.declared_fields['udid']
+
     def is_authenticated(self, request, **kwargs):
         consumer_key = request.REQUEST.get('consumer_key')
         consumer_secret = request.REQUEST.get('consumer_secret')
         raw_udid = request.REQUEST.get('udid')
+        api_key = request.REQUEST.get('api_key')
 
         # check for all required authentication pieces
         # FIXME make udid optional -> consumer should dictate this
         if not consumer_key or not consumer_secret or not raw_udid:
+            return self._unauthorized()
+        try:
+            raw_udid = self.udid_field.clean(raw_udid)
+        except ValidationError:
             return self._unauthorized()
 
         # authenticate consumer
@@ -56,31 +65,30 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
             request.user = consumer.user
 
         # authenticate device
-        api_key = request.REQUEST.get('api_key')
-        if validate_iphone_udid(raw_udid) and not api_key:
-            try:
-                udid = DeviceUdid.objects.select_related('user').get(
-                    udid=raw_udid
-                )
-            except (DeviceUdid.DoesNotExist, DeviceUdid.MultipleObjectsReturned):
-                # create new user
-                user = User()
-                user.username = 'udid_user$' + User.objects.make_random_password(length=20)
-                user.set_password(None)     # makes unusable password
-                user.save()
+        try:
+            udid = DeviceUdid.objects.select_related('user').get(
+                udid=DeviceUdid.objects.get_hexdigest(raw_udid)
+            )
+        except (DeviceUdid.DoesNotExist, DeviceUdid.MultipleObjectsReturned):
+            # create new user
+            user = User()
+            user.username = 'udid_user$' + User.objects.make_random_password(length=20)
+            user.set_password(None)     # makes unusable password
+            user.save()
 
-                # create device udid record
-                udid = DeviceUdid(user=user, udid=raw_udid).save()
+            # create device udid record
+            udid_form = DeviceUdidForm(data=dict(user=user.id, udid=raw_udid))
+            if udid_form.is_valid():
+                udid = udid_form.save()
 
-                # add to proper user group
-                group = Group.objects.get(name='device_user_anonymous')
-                user.groups.add(group)
+            # add to proper user group
+            group = Group.objects.get(name='device_user_anonymous')
+            user.groups.add(group)
 
-                request.user = user
-            else:
-                request.user = udid.user
-            return True
+            request.user = user
+        else:
+            request.user = udid.user
 
         # authenticate user by api key
         return super(ConsumerApiKeyAuthentication, self) \
-            .is_authenticated(request, **kwargs)
+            .is_authenticated(request, **kwargs) if api_key else True
