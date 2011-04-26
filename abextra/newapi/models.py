@@ -45,3 +45,24 @@ class Consumer(models.Model):
 
     def __unicode__(self):
         return u"Consumer %s with key %s" % (self.name, self.key)
+
+# ===============
+# = Device UDID =
+# ===============
+from django.utils.hashcompat import sha_constructor
+from django.utils.encoding import smart_str
+
+class DeviceUdidManager(models.Manager):
+    def get_hexdigest(self, raw_udid):
+        salt = 'QJ7@cqBQdLy$mqr+'
+        raw_udid, salt = smart_str(raw_udid), smart_str(salt)
+        return sha_constructor(salt + raw_udid).hexdigest()
+
+class DeviceUdid(models.Model):
+    user = models.OneToOneField(User, related_name='device_udid')
+    udid = models.CharField(max_length=40, unique=True)
+
+    objects = DeviceUdidManager()
+
+    def __unicode__(self):
+        return u"%s for %s" % (self.udid, self.user)
