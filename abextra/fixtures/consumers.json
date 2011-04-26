@@ -1,0 +1,13 @@
+[
+    {
+        "pk": 1, 
+        "model": "newapi.consumer", 
+        "fields": {
+            "secret": "7fb49b90f41a832f3d5cc12f1b9ed56795c5748a", 
+            "is_active": true, 
+            "name": "iphone", 
+            "key": "rngQ5ZSe3FmzYJ3cgL", 
+            "user": 5
+        }
+    }
+]
