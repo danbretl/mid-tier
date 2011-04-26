@@ -34,13 +34,13 @@ from newapi.api import ApiKeyResource
 
 v1_api = Api(api_name='v1')
 
-v1_api.register(UserResource())
-v1_api.register(AnonymousUserResource())
-
-v1_api.register(ApiKeyResource())
-
-v1_api.register(EventResource())
-v1_api.register(EventSummaryResource())
+# v1_api.register(UserResource())
+# v1_api.register(AnonymousUserResource())
+# 
+# v1_api.register(ApiKeyResource())
+# 
+# v1_api.register(EventResource())
+# v1_api.register(EventSummaryResource())
 v1_api.register(CategoryResource())
 
 # Standard bits...

@@ -80,7 +80,7 @@ class AnonymousUserResource(ModelResource):
 # ============
 class CategoryResource(ModelResource):
     class Meta:
-        queryset = Category.objects.all()
+        queryset = Category.concrete.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
 
