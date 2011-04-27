@@ -8,10 +8,10 @@ from events.utils import CachedCategoryTree
 
 class CategoryTree:
     #ToDo:
-    # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it. 
+    # Efficiency Consideration: The recursive init is inefficient and can be made iterative by requesting the entire table and looping over it.
     def __init__(self, userID, category=None, parent=None, ctree=None, eaa=None, score=None, dictionary=None, db=user_behavior.DJANGO_DB):
         """
-        A Tree for a user is represented recursively as a collection of trees, 
+        A Tree for a user is represented recursively as a collection of trees,
         Each gtree is for a specific user.
         The name of a tree node is the category name otherwise defaults to ROOT
         the value is calculated from the persisted representation of the tree
@@ -26,7 +26,7 @@ class CategoryTree:
         if eaa==None:
             # get from DB (whether Django or dictionary)
             eaa = db.gvix_dict(userID)
-            
+
         if category:
             self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in ctree.children(category)]
             self.category = category
@@ -34,9 +34,9 @@ class CategoryTree:
         else:
             self.children = [CategoryTree(userID, x, self, ctree, eaa) for x in  ctree.children(ctree.concrete_node)]
             self.category = ctree.concrete_node
-            self.title = "ROOT"
+            self.title = ctree.concrete_node.title
 
-        if dictionary: 
+        if dictionary:
             self.dictionary = dictionary
         else:
             self.dictionary = {}
@@ -52,7 +52,7 @@ class CategoryTree:
 
     def category_objects(self,category_objects, category):
          return [c for c in category_objects if self.parent == category.id]
-    
+
     def get_parent(self):
         """
         Return category parent
@@ -102,21 +102,21 @@ class CategoryTree:
         Return a list of child SimpleTree objects
         """
         return self.children
-    
+
     def num_nodes(self):
         """
-        Return number of children. 
+        Return number of children.
         """
         return 1 + sum([c.num_nodes() for c in self.children])
-    
+
     def __repr__(self):
         """
         string representation in nested parentheses
         """
-        ret = "'" + self.title + "'" + "=" + str(self.score)
+        ret = "'" + self.category.__repr__() + "'" + "=" + str(self.score)
 
         if len(self.children) > 0:
-            ret += "(" + ",".join(map(str, self.children)) + ")"
+            ret += "(" + ",".join([c.__repr__() for c in self.children]) + ")"
         return ret
 
     def insert_key_value(self, key, value):
@@ -179,7 +179,7 @@ class CategoryTree:
     """
     def __iter__(self):
         return self
-    
+
     def next(self):
         if self.children:
             for child in self.children:

@@ -29,6 +29,7 @@ from bisect import bisect_left
 import random
 import settings
 from events.models import Event, Category
+from events.utils import CachedCategoryTree
 from category_tree import CategoryTree
 from behavior.models import EventActionAggregate
 import user_behavior
@@ -42,8 +43,8 @@ def recommend_events(user, events=None, number=settings.N):
     If provided, only number is the number of recommendations requested.
         - This is defaulted to N in settings.py
     """
-    categories_dict = random_tree_walk_algorithm(user, number)
-
+    categories_dict = random_tree_walk_algorithm(user)
+    # A list of all categories and their scores.
     #Debugging statements
     # print "Recommended categories: ",[c.title for c in categories]
     # print len(filter_events(user, events, categories_dict, number))
@@ -69,8 +70,7 @@ def recommend_categories(*args, **kwargs):
     return random_tree_walk_algorithm(*args, **kwargs)
 
 
-def random_tree_walk_algorithm(user, number=settings.N, category=None,
-                                db=DJANGO_DB, ctree=None):
+def random_tree_walk_algorithm(user, category=None, ctree=None, db=DJANGO_DB):
     """
     Input:
         a) User: Required.
@@ -150,6 +150,7 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
     on its abstract categories.The abstract categories are passed as input with a dicitonary
     that maintains the mapping between the scores and the category.
     ToDo: Use a kernel function instead of returning mean.
+    ToDo: Do the tree walk to calculate a abstract categories score.
     """
     scores_list = [settings.abstract_scoring_function(dictionary_category_eaa[c]) for c in abstract_category_ids]
 
@@ -162,116 +163,135 @@ def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
 
 def generate_category_mapping(event_query_set, categories_dict=None):
     """
+    ! This function is for use only with concrete categories.
     Input: a) Query set of event objects
-           b) List of cateegories with probability scores.
+           b) Dictionary of category objects mapping to scores.(optional)
     Output:
-           default dictionary category_event_map[category] = set of event ids.
+           dictionary category_event_map[category object] = set of event ids.
     """
-
-    #import time
-    #start = time.time()
-    category_event_map = defaultdict(lambda: set())
-
-    #This is an optimization.
-    #Load all category objects into a dictionary.
-    all_category_dict = dict([(category.id,category)
-                              for category in
-                              Category.objects.filter(category_type='C')])
-
+    # This is a dictionary of the form:
+    # categoryid_event_map[category id] = list(event ids)
     categoryid_event_map = defaultdict(lambda :[])
-    for category, event in event_query_set.values_list('concrete_category_id','id'):
-        categoryid_event_map[category].append(event)
+    for categoryid, event in event_query_set.values_list('concrete_category_id','id'):
+        categoryid_event_map[categoryid].append(event)
 
-    for category_id in categoryid_event_map.keys():
+    if not categories_dict:
+        all_category_dict = dict([(category.id,category)
+                                  for category in
+                                  Category.objects.filter(category_type='C')])
+    else:
+        all_category_dict = dict([(category.id,category)
+                                  for category in categories_dict.keys()])
+
+    # This is a dictionary of the form:
+    # category_event_map[category# object] = set(event ids)
+    category_event_map = defaultdict(lambda: set())
+    for category_id in all_category_dict.keys():
         category = all_category_dict[category_id]
-        category_event_map[category] = set(categoryid_event_map[category_id])
+        event_ids = categoryid_event_map[category_id]
+        if event_ids:
+            category_event_map[category] = set(event_ids)
 
     #print "Time taken: ", time.time() - start
     return category_event_map
 
 
-def filter_events(user, event_query_set=None, categories_dict=None,
+def get_event_score(user, event_ids, event_score):
+    """
+    Given a user and event_ids, returns a dictionary that maps the
+    abstract events score for each event_id
+    """
+    if not event_score:
+        event_score = defaultdict(lambda :0)
+    #Mapping between event ids and all abstract categories.
+    event_cat_dict = Category.objects.for_events(tuple(event_ids), 'A')
+    ctree = CachedCategoryTree()
+    event_abstract_score = random_tree_walk_algorithm(user,ctree.abstract_node,
+                                                      ctree)
+    #event_abstract_score is now a mapping of category objects to scores
+    # Converting it to a mapping of category id to score
+    event_abstract_score = dict([(cat.id,value) for cat,value in event_abstract_score.items()])
+    # FIXME: This can be optimized.
+    # Only calculate scores for events that you sample inside the
+    # for category in categories loop.
+    for event_id, abstract_category_ids in event_cat_dict.items():
+        scores = [event_abstract_score[c] for c in abstract_category_ids]
+        # FIXME: consider using a kernel function here instead of just max.
+        event_score[event_id] = max(scores)
+    return event_score
+
+def filter_events(user, event_query_set, categories_dict,
                   number=settings.N, selected_events=set(),
-                  selected_event_score={}):
+                   event_score=None, events=None):
     """
-    Input: User,
-           List of categories
-           N = Number of recommendations to provide
+    Input: User (required)            : person we are recommending to
+           event_query (required)     : represents the input Events wuery set.
+           categories_dict (required) : list of (concrete_categories, score)
+           number (optional)          : Number of recommendations to provide
+           selected_events (optional) : The set of events already selected events.
+           event_score (optional)     : A dictionary representing event score.
     Output: List of events.
+    Caution: Too many datastructures ahead!
     Description:
-                 This function accepts as input a list of categories and
-                 randomly selects 50 events for these categories
-                 Events that are cross listed in multiple concrete categories
-                 have a higher probability of getting selected.
-                 Once selected, they also have a higher probability
-                 of getting sampled.
+                 This function accepts as input a list of concrete_categories and
+                 selects 'number' events for these concrete_categories
+    #FIXME: Consider refactoring this function and testing individual bits.
+                 - Performance consideration: adding a level(s) to the stack
+                   will degrade performance.
+                 - Trade-off is readability v/s performance :(
+    #FIXME: You might not need to score all events. Only those selected during
+            the sampling phase and the ones in its pool.
+
+    Steps:
+         - We start with generating
     """
-    # ToDo: Filter events that have already been X'd
-    # For performance reasons in testing limiting this to 50 events for now.
-    # The hope is that geo-location based filtering will also roughly break
-    # down the number of events down to roughly 50 a category.
+    if not events:
+        events = generate_category_mapping(event_query_set,categories_dict)
+    # events is now a dictionary of concrete category keys mapping to event ids.
 
-    #events = [Event.objects.filter(concrete_category=category).order_by('?')[:number]
-    #          for category,number in dictionary.iteritems()]
-    # Should the number 50 be a setting?
-
-    events = generate_category_mapping(event_query_set,categories_dict)
-
-    #Optimization:
+    #Optimization to return early if we don't have enough events:
     if sum(map(len,events.values())) <= number:
         return [e for e in event_query_set]
 
-    # Remove all categories that are not present in the set of events so we only
-    # sample categories for which we have events.
+    # Remove all concrete_categories that do not have any events.
+    # This way, we only sample concrete_categories for which we have events.
     for key in set(categories_dict.keys()) - set(events.keys()):
         del categories_dict[key]
-    categories = sample_category_distribution(categories_dict.items(), number)
+    concrete_categories = sample_category_distribution(categories_dict.items(),
+                                                       number)
 
-    # Remove already selected events from the list of events.
-    for category in categories:
+    # Remove already selected events
+    for concrete_cat in concrete_categories:
         # Select only those events that have not yet been selected.
-        events[category] = events[category] - selected_events
+        events[concrete_cat] = events[concrete_cat] - selected_events
 
-    # This is an optimization.
-    # Prepare in advance all the users behavior for the categories
-    # under consideration.
-    eaa = EventActionAggregate.objects.filter(user=user,category__in=categories)
-    dictionary_category_eaa = defaultdict(lambda :(0, 0, 0, 0))
-    for ea in eaa:
-        dictionary_category_eaa[ea.category_id] = (ea.g, ea.v, ea.i, ea.x)
+    # This can be optimized later.
+    # event_score contains.
+    # THIS IS A SERIOUS BOTTLENECK
+    events_for_categories = [events[cat] for cat in set(concrete_categories)]
+    events_for_categories = set([a for b in events_for_categories for a in b])
+    event_score = defaultdict(lambda :0)
+    events_for_categories = events_for_categories - selected_events \
+                            - set(event_score.keys())
+    event_score = get_event_score(user, events_for_categories, event_score)
 
-    #This is an optimization
-    #Stores the score for every event id.
-    event_abstract_score = defaultdict(lambda :0)
+    # This maintains a count of the number of missing events that need to be
+    # sampled for again.
 
-    #Mapping between event ids and all abstract categories.
-    all_event_ids = itertools.chain(*events.values())
-    event_cat_dict = Category.objects.for_events(tuple(all_event_ids), 'A')
-
-    for event_id, abstract_categories in event_cat_dict.items():
-        event_abstract_score[event_id] = \
-        max(abstract_scoring_function(abstract_categories,
-                                      dictionary_category_eaa),
-            event_abstract_score[event_id])
-
-    # First sample a category (already sampled and available in categories).
-    # This maintains a count of all categories that were sampled from but didn't
-    # have enough events and need to be asked for again.
     missing_count = 0
-    for category in categories:
-        # Next sample an event based on the abstract score.
-        event = sample_category_distribution([(event_id, event_abstract_score[event_id])
-                                     for event_id in events[category]],1)
-        if event:
-            selected_events.add(event[0])
-            selected_event_score[event[0]] = categories_dict[category]
+    unique_categories = set(concrete_categories)
+    for category in unique_categories:
+        # Sample an event for each category based on the abstract score.
+        count = concrete_categories.count(category)
+        event_ids = sample_distribution([(event_id, event_score[event_id])
+                                     for event_id in events[category]],
+                                       count)
+
+        for event_id in event_ids:
+            selected_events.add(event_id)
             # This ensures an already selected event does not get selected again
-            events[category].discard(event[0])
-        else:
-            # This category has no more events. If it comes down to it,
-            # Don't sample it ever again.
-            missing_count += 1
-            # del categories_dict[category]
+            events[category].discard(event_id)
+        missing_count += count - len(set(event_ids))
 
         if len(events[category]) == 0 :
             del events[category]
@@ -279,29 +299,30 @@ def filter_events(user, event_query_set=None, categories_dict=None,
     if missing_count > 0 and len(events) > 0:
         # This is "hopefully" unlikely to happen if there are enough events in
         # each category. If we get to this point, it means we don't have enough
-        # events for the categories sampled resample from the categories and
+        # events for the concrete_categories sampled resample from the concrete_categories and
         # recommend more events. This is one place where we could break the
         # settings.max_probability cap. But this could be necessary for example
         # if you are in Waukeesha, Wisconsin and only have movies to go to.
         # Or worse, if you are in Wahkon, Wisconsin and have no events or
         # literally  nothing around you.
-        selected_events.union(set([ev.id for ev in
-                                   filter_events(user, event_query_set,
-                                                 categories_dict, missing_count,
-                                                 selected_events,
-                                                 selected_event_score)]))
 
+        more_events = set(filter_events(user, event_query_set,
+                                        categories_dict, missing_count,
+                                        selected_events,
+                                        event_score,
+                                        events))
+        selected_events.union(more_events)
     # print "Number of events recommended: ", len(selected_events)
     #print fuzzy_sort(selected_events)
 
     # FIXME select related is an ugly fix, because it costs us 1 JOIN.
     # FIXME look into refactoring your category_dict to have category_id keys
     # FIXME then lookup using event.category_id which won't hit the db
-    returned_events = Event.objects.filter(id__in=selected_events).select_related('concrete_category')
-    #this can be made more efficient with a single query. Leaving out for now. 
-    return fuzzy_sort(semi_sort([(selected_event_score[event.id],event)
-                                 for event in returned_events],
-                                min(3,len(returned_events))))
+    #returned_events = Event.objects.filter(id__in=selected_events)
+    #this can be made more efficient with a single query. Leaving out for now.
+    event_score_list = [(event_score[ev], ev) for ev in selected_events]
+    semi_sorted = semi_sort(event_score_list, min(3,len(selected_events)))
+    return fuzzy_sort(semi_sorted)
 
 def semi_sort(events, top_sort=3):
     """
