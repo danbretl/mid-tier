@@ -84,6 +84,8 @@ class CategoryResource(ModelResource):
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
+        fields = ('id', 'title', 'color')
+        include_resource_uri = False
 
 # =========
 # = Event =
