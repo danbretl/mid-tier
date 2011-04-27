@@ -13,6 +13,8 @@ from learning import ml, settings, category_tree, user_behavior, simulation_shar
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
+from scipy.stats import binom_test
+import sys
 
 import random
 
@@ -84,7 +86,7 @@ class EventSummaryTest(TestCase):
         event_ids = [ev.id for ev in events]
         all_DB_es_set = set(EventSummary.objects.filter(id__in=event_ids))
         self.assertEqual(all_inserted_es_set, all_DB_es_set)
-        
+
 
 class MLModuleTest(TestCase):
     """
@@ -117,16 +119,16 @@ class MLModuleTest(TestCase):
 
 class algorithm_profile(TestCase):
     """
-    Profiling for ML algorithms. 
+    Profiling for ML algorithms.
     """
     fixtures = ['auth', 'categories', 'default_behavior','places', 'events']
     #fixtures = ['categories', 'default_behavior','places', 'events']
     def setUp(self):
         self.user = User.objects.get(id=1)
-    
+
     def test_printing_precision_recall(self):
         """
-        Note: this test is outdated. For right now algorithm tests remain in 
+        Note: this test is outdated. For right now algorithm tests remain in
         simple_testing.py (made debugging a lot easier, and the main reason
         for moving to testing framework was speeding up the DB, which was
         done using the user_behavior module
@@ -138,7 +140,7 @@ class algorithm_profile(TestCase):
         #person = testing_simulation.DiscretePerson()
         #for i in range(100):
         #    person.push_recommendation()
-            
+
 
 class PersonTest(TestCase):
     """
@@ -147,13 +149,13 @@ class PersonTest(TestCase):
     """
     # right now categories, not events, are used
     fixtures = ['auth', 'categories']
-    
+
     def setUp(self):
         """initialize behavior db"""
         self.user = User.objects.get(id=1)
         self.db = user_behavior.UserBehaviorDict()
         self.db.initialize_user(self.user)
-    
+
     def __run_and_test_rounds(self, person, num_rounds, num_trials,
                                     num_recommendations=settings.N):
         """
@@ -162,18 +164,18 @@ class PersonTest(TestCase):
         Not specific to one type of Person
         """
         person.run_rounds(num_rounds, num_trials, num_recommendations)
-        
+
         # test number of rounds, trials, recommendations
         self.assertEqual(len(person.rounds), num_rounds)
         self.assertTrue(all([len(r) == num_trials for r in person.rounds]))
         for round in person.rounds:
             self.assertTrue(all([r.N == num_recommendations == len(r.actions)
                                 for r in round]))
-        
+
         # check that it can't run more than once
-        self.assertRaises(testing_simulation.SimulationError, 
+        self.assertRaises(testing_simulation.SimulationError,
                           person.run_rounds, (1, 1))
-    
+
     def test_deterministic_person(self):
         """
         test the simulation where a person always goes to specific
@@ -186,20 +188,20 @@ class PersonTest(TestCase):
                                                         user=self.user,
                                                         db=self.db)
         for c in all_categories:
-            self.assertEqual(simple_p.get_action(c), 
+            self.assertEqual(simple_p.get_action(c),
                              simulation_shared.GO if c in liked else XOUT)
-        
+
         # now more realistic tests with real category IDs
-        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine', 
+        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine',
                       'Sculpture']
         category_ids = map(testing_simulation.get_category_id, categories)
-        person = testing_simulation.DeterministicPerson(category_ids, 
+        person = testing_simulation.DeterministicPerson(category_ids,
                                                         db=self.db)
-        
-        # this should take under 1 second to run with the custom db, and 
+
+        # this should take under 1 second to run with the custom db, and
         # more like 30 seconds with the regular DB
         self.__run_and_test_rounds(person, 50, 2)
-        
+
         # for each round, check that it had the correct behavior
         for rlst in person.rounds:
             for r in rlst:
@@ -216,13 +218,13 @@ class UserBehaviorDBTest(TestCase):
     the UserBehaviorDjangoDB test has not yet been implemented
     """
     fixtures = ['auth', 'categories']
-    
+
     def setUp(self):
         """initialize with some category ids"""
-        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine', 
+        categories = ['Bars','Clubs', 'Plays','Sculpture','Fallon', 'Wine',
                       'Sculpture']
         self.category_ids = map(testing_simulation.get_category_id, categories)
-    
+
     def test_user_behavior_dict(self):
         """
         test the UserBehaviorDict, which is a class that stores user
@@ -231,39 +233,39 @@ class UserBehaviorDBTest(TestCase):
         u = 1 # it doesn't actually matter if we have a real user or not
         db = user_behavior.UserBehaviorDict()
         self.__db_test(u, db)
-    
+
     def test_user_behavior_django_db(self):
         """test the UserBehaviorDjangoDB class"""
         # TODO: THIS TEST HAS YET TO BE WRITTEN
         pass
-        
+
     def __db_test(self, u, db):
         """given a user and a database, run through a bunch of tests by adding
         data and checking it at various points"""
         c1, c2, c3 = self.category_ids[:3]
-        
+
         for i in range(10):
             db.perform_action(u, c1, simulation_shared.GO)
         self.assertEqual(db.gvix_dict(u)[c1], [10, 0, 0, 0])
-        
+
         for i in range(20):
             db.perform_action(u, c1, simulation_shared.VIEW)
         self.assertEqual(db.gvix_dict(u)[c1], [10, 20, 0, 0])
-        
+
         for i in range(50):
             db.perform_action(u, c2, simulation_shared.IGNORE)
             db.perform_action(u, c2, simulation_shared.XOUT)
         self.assertEqual(db.gvix_dict(u)[c2], [0, 0, 50, 50])
-        
+
         # check that this hasn't affected others
         self.assertEqual(db.gvix_dict(u)[c3], [0, 0, 0, 0])
-        
+
         # test clearing
         db.clear()
-        
+
         for c in self.category_ids:
             self.assertEqual(db.gvix_dict(u)[c], [0, 0, 0, 0])
-        
+
         # and finally, clear again
         db.clear()
 
@@ -277,16 +279,28 @@ class AlgorithmTest(TestCase):
         self.user = User.objects.get(username='tester_api')
         #MockInitializer().run()
 
+    def test_sampling_distribution(self):
+        """
+        test if the sampling distribution function is working as expected.
+        """
+        trials = 1000
+        distribution = [('H',0.5),('T',0.5)]
+        num_heads = ml.sample_distribution(distribution,trials).count('H')
+        result = [binom_test(num_heads,trials,1.0/2) for x in range(trials)]
+        mean = sum(result) / len(result)
+        # NOTE: Maybe this number should be higher. What is a good number?
+        self.assertTrue(mean > 0.05)
+
 
     def test_probabilistic_walk(self):
         #invariants:
         # Total scores sum up to 1.0 after walk for any label
-        userTree = CategoryTree.CategoryTree(self.user)
+        userTree = category_tree.CategoryTree(self.user)
         userTree.top_down_recursion(ml.scoring_function,{"outkey":"score"})
         userTree.top_down_recursion(ml.probabilistic_walk,{"inkey":"score", "outkey":"probabilistic_walk"})
         #print "simple_probability sum is: ", userTree.subtree_score("probabilistic_walk")
         self.assertAlmostEqual(1.0,userTree.subtree_score("probabilistic_walk"))
-        userTree.bottom_up_recursion(ml.topN_function,{"inkey":"score","outkey":"topNscore"})
+        userTree.bottom_up_recursion(ml.topn_function,{"inkey":"score","outkey":"topNscore"})
         userTree.top_down_recursion(ml.probabilistic_walk,{"inkey":"topNscore", "outkey":"topNscore_probability"})
         #print "topNscore_probability sum is: ", userTree.subtree_score("topNscore_probability")
         #print "Current Dictionary: "
@@ -304,7 +318,7 @@ class AlgorithmTest(TestCase):
         for c in Category.objects.all():
             EventActionAggregate(user=user,category=c).save()
 
-        # Each color corresponds to the number of categories (position in list + 1) selected during the iteration. 
+        # Each color corresponds to the number of categories (position in list + 1) selected during the iteration.
         colors = ["r","b","g","k","c","m","y"]
         # k is the number of categories selected.
         for k in range(1,8):
@@ -342,7 +356,7 @@ class AlgorithmTest(TestCase):
                     picked_cat_aggregates[key].g += min(round(value/iterations),2)
                     picked_cat_aggregates[key].save()
                 #end of looping over temporary dictionary.
-                    
+
                 lst.append(recall*1.0/iterations)
 
                 #Variant 1: All items in the last iterations that were not in the picked category have been X'd once.
@@ -353,10 +367,10 @@ class AlgorithmTest(TestCase):
                         eaa = EventActionAggregate(user=user, category=c)
                     eaa.x += 1
                     eaa.save()
-                #end of adding X's 
-                #end    
+                #end of adding X's
+                #end
             print "Recall: ",lst
-            plt.plot(lst,color=colors[k-1],label=k)       
+            plt.plot(lst,color=colors[k-1],label=k)
             for c in Category.objects.all():
                 #import pdb; pdb.set_trace()
                 try:
@@ -368,13 +382,13 @@ class AlgorithmTest(TestCase):
                     eaa.save()
                 except:
                     pass
-                    
+
         plt.title("Recall")
         plt.xlabel("Trials")
         plt.ylabel("% of User preferred categories")
         #plt.legend()
         plt.savefig("learning/test_results/recall.pdf")
-        plt.cla() 
+        plt.cla()
         #import pdb; pdb.set_trace()
         self.assertTrue(True)
 
@@ -382,52 +396,49 @@ class AlgorithmTest(TestCase):
     def test_convergence(self):
         categories = ml.recommend_categories(self.user)
         #print "Categories: ", categories
-        picked_category = categories[0]
-        
+        picked_category = ml.sample_distribution(categories.items())[0]
+        #print "picked category: ", picked_category
         picked_aggr = EventActionAggregate(user=self.user, category=picked_category)
-        #picked_aggr.save()
         lst = []
-    
+        ctree = CachedCategoryTree()
+        parents = ctree.parents(picked_category)
         count = 0
-        while count < 50:
+        while count < 100:
             count +=1
-            #print count
+            print "Round: %d\r"%count,
+            sys.stdout.flush()
             # recommend a new set of categories
-            cats = ml.recommend_categories(self.user)
-            cnt = 0
-            for i in cats:
-                if i == picked_category:
-                    cnt += 1
+            recommendation_scores =  ml.recommend_categories(self.user)
+            cats = ml.sample_category_distribution(recommendation_scores.items(),
+                                          settings.N)
+            found_count = cats.count(picked_category)
 
             #print "Categories: ",cats
             #print "ID: ", picked_category.id
-            #print "Count: ", cnt
-
             cats = set(cats)
             cats.discard(picked_category.id)
-            
+
             # # G(oto) picked category
-            picked_aggr.g += cnt
+            picked_aggr.g += found_count
             picked_aggr.save()
-            
+
             # X all other categories
             for c in cats:
+                if c in parents:
+                    continue
                 try:
                     eaa = EventActionAggregate.objects.get(user=self.user, category=c)
                 except EventActionAggregate.DoesNotExist:
                     eaa = EventActionAggregate(user=self.user, category=c)
                 eaa.x += 1
                 eaa.save()
-                    
-            lst.append(cnt*100.0/settings.N)
-        lst.append(100.0)
+
+            lst.append(found_count*100.0/settings.N)
         plt.plot(lst,color="blue")
         plt.title("Rate of learning one category")
         plt.xlabel("Trials")
         plt.ylabel("% of all Recommendations")
         plt.savefig("learning/test_results/test.pdf")
-        plt.cla() 
+        plt.cla()
         self.assertTrue(True)
-
-        
 

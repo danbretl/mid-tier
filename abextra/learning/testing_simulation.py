@@ -86,7 +86,7 @@ class SimulatedPreference:
     
     def sample_action(self):
         """get one random from this preference distribution"""
-        return ml.sample_distribution(self.distribution)[0]
+        return ml.sample_category_distribution(self.distribution)[0]
     
     def __repr__(self):
         return "<Preference: " + self.name + ">"
@@ -174,7 +174,7 @@ class PreferenceTransitionMatrix:
         
         for n in top_level:
             # assign randomly
-            ret[n.id] = ml.sample_distribution(self.original_distribution)[0]
+            ret[n.id] = ml.sample_category_distribution(self.original_distribution)[0]
             self.__recurse_ct(ct, n, ret)
         
         return ret
@@ -184,7 +184,7 @@ class PreferenceTransitionMatrix:
         category->preference mappings"""
         current_pref = d[n.id]
         for child in ct.children(n):
-            d[child.id] = ml.sample_distribution(self.transition_matrix[current_pref])[0]
+            d[child.id] = ml.sample_category_distribution(self.transition_matrix[current_pref])[0]
             self.__recurse_ct(ct, child, d)
 
 
@@ -273,7 +273,7 @@ class Person:
         cats = ml.recommend_categories(self.user, ctree=self.ctree,
                                         db=self.db).items()
         categories = [c.id for c in
-                      ml.sample_distribution(cats, settings.N)]
+                      ml.sample_category_distribution(cats, settings.N)]
         actions = map(self.get_action, categories)
         
         r = Round(categories, actions)

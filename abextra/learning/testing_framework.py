@@ -225,7 +225,7 @@ class EventureUser:
             # just get category ids directly
             
             cats = ml.recommend_categories(self.user)
-            event_categories = ml.sample_distribution(cats.items(), 
+            event_categories = ml.sample_category_distribution(cats.items(), 
                                                     settings.N)
 
             event_categories= [[a.id] for a in event_categories]
