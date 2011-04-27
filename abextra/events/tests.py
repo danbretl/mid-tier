@@ -369,8 +369,8 @@ class AlgorithmTest(TestCase):
                     eaa.save()
                 #end of adding X's
                 #end
-            print "Recall: ", recall
-            plt.plot(recall,color=colors[k-1],label=k)
+            print "Recall: ",lst
+            plt.plot(lst,color=colors[k-1],label=k)
             for c in Category.objects.all():
                 #import pdb; pdb.set_trace()
                 try:
