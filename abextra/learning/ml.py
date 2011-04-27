@@ -167,7 +167,7 @@ def generate_category_mapping(event_query_set, categories_dict=None):
     Input: a) Query set of event objects
            b) Dictionary of category objects mapping to scores.(optional)
     Output:
-           dictionary category_event_map[category object] = set of event ids.
+           default dictionary category_event_map[category] = set of event ids.
     """
     # This is a dictionary of the form:
     # categoryid_event_map[category id] = list(event ids)
