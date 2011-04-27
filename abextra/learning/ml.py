@@ -245,7 +245,7 @@ def filter_events(user, event_query_set, categories_dict,
     Steps:
          - We start with generating
     """
-    event_category = {}  # This is slightly confusing. The idea is that this 
+    event_category = {}  # This is slightly confusing. The idea is that this
     if not events:
         events = generate_category_mapping(event_query_set,categories_dict)
         #used for ranking by categories
