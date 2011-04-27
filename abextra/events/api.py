@@ -83,6 +83,7 @@ class CategoryResource(ModelResource):
         queryset = Category.concrete.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
+        limit = 200
 
 # =========
 # = Event =
