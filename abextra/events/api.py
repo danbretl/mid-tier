@@ -82,6 +82,7 @@ class EventResource(ModelResource):
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
+    concrete_parent_category = fields.ToOneField(CategoryResource, 'concrete_parent_category')
 
     class Meta:
         queryset = EventSummary.objects.all()
