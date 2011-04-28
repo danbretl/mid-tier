@@ -21,7 +21,7 @@ class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
         allowed_methods = ('post',)
-        detail_allowed_methods = []
+        detail_allowed_methods = ()
         authentication = ConsumerAuthentication()
         authorization = DjangoAuthorization()
         validation = FormValidation(form_class=UserCreationForm)
@@ -57,24 +57,6 @@ class UserResource(ModelResource):
     #             raise ImmediateHttpResponse(response=response)
     #     super(UserResource, self).is_valid(bundle, request)
 
-class AnonymousUserResource(ModelResource):
-    class Meta:
-        queryset = User.objects.all()
-        allowed_methods = ('post',)
-        detail_allowed_methods = []
-        authentication = ConsumerAuthentication()
-        authorization = DjangoAuthorization()
-        validation = FormValidation(form_class=UserCreationForm)
-
-    def hydrate_username(self, bundle):
-        bundle.obj.username = bundle.data['udid']
-        return bundle
-
-    def hydrate_password(self, bundle):
-        raw_password = User.objects.make_random_password()
-        bundle.obj.set_password(raw_password)
-        return bundle
-
 # ============
 # = Category =
 # ============
@@ -95,8 +77,8 @@ class EventResource(ModelResource):
 
     class Meta:
         queryset = Event.objects.all()
-        allowed_methods = ('get', 'post')
-        authentication = ConsumerAuthentication()
+        allowed_methods = ()
+        authentication = ConsumerApiKeyAuthentication()
         filtering = {"title": ALL}
 
     def build_filters(self, filters=None):
@@ -108,9 +90,12 @@ class EventResource(ModelResource):
         return orm_filters
 
 class EventSummaryResource(ModelResource):
+    event = fields.ToOneField(EventResource, 'event')
+
     class Meta:
         queryset = EventSummary.objects.all()
         allowed_methods = ('get',)
+        authentication = ConsumerApiKeyAuthentication()
 
     def build_filters(self, filters=None):
         if filters is None:

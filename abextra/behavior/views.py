@@ -1,21 +1,21 @@
 from django.http import HttpResponse, HttpResponseNotAllowed
-from api.urls import auth
+# from api.urls import auth
 from piston.utils import rc
 
 from behavior.models import EventAction
 from behavior.forms import EventActionForm
 from behavior.utils import reset_user_behavior
 
-def require_auth(func):
-    """Decorator for requiring authentication."""
-    def new_func(request, *args, **kwargs):
-        if not getattr(request, 'user', False) or not auth.is_authenticated(request):
-            return auth.challenge()
-        else:
-            return func(request, *args, **kwargs)
-    return new_func
+# def require_auth(func):
+#     """Decorator for requiring authentication."""
+#     def new_func(request, *args, **kwargs):
+#         if not getattr(request, 'user', False) or not auth.is_authenticated(request):
+#             return auth.challenge()
+#         else:
+#             return func(request, *args, **kwargs)
+#     return new_func
 
-@require_auth
+# @require_auth
 def create_eventaction(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -44,7 +44,7 @@ def create_eventaction(request):
 
 # FIXME this is a very dangerous request handler
 # FIXME perhaps we should make it a post or something :: just for an impression of 
-@require_auth
+# @require_auth
 def reset_behavior(request):
     """
     Resets behavior by clearing all user's event actions and hence action
@@ -56,7 +56,7 @@ def reset_behavior(request):
     return rc.ALL_OK
 
 # Adding a handler to delete all behavior
-@require_auth
+# @require_auth
 def reset_behavior_all(request):
     """
     Resets behavior similart to reset_behavior but also resets event actions. 
