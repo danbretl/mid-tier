@@ -27,20 +27,26 @@ urlpatterns = patterns('',
 # = TastyPie API =
 # ================
 from tastypie.api import Api
-from events.api import UserResource, EventResource, EventSummaryResource, CategoryResource
+
+from events.api import UserResource
+from events.api import EventResource, EventSummaryResource, EventRecommendationResource
 from behavior.api import EventActionResource
-from newapi.api import ApiKeyResource
+from events.api import CategoryResource
 
 v1_api = Api(api_name='v1')
 
+# User / Registration
 v1_api.register(UserResource())
-# v1_api.register(ApiKeyResource())
 
+# Event / Recommendation
 v1_api.register(EventResource())
 v1_api.register(EventSummaryResource())
+v1_api.register(EventRecommendationResource())
 
+# Behavior / Reset
 v1_api.register(EventActionResource())
 
+# Category
 v1_api.register(CategoryResource())
 
 urlpatterns += patterns('',

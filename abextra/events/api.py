@@ -66,8 +66,7 @@ class CategoryResource(ModelResource):
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
-        fields = ('id', 'title', 'color')
-        include_resource_uri = False
+        fields = ('title', 'color')
 
 # =========
 # = Event =
@@ -77,32 +76,88 @@ class EventResource(ModelResource):
 
     class Meta:
         queryset = Event.objects.all()
-        allowed_methods = ()
+        allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
-        filtering = {"title": ALL}
-
-    def build_filters(self, filters=None):
-        if filters is None:
-            filters = {}
-
-        orm_filters = super(EventResource, self).build_filters(filters)
-        orm_filters = {"pk__in": range(10)}
-        return orm_filters
 
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventResource, 'event')
+    concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
 
     class Meta:
         queryset = EventSummary.objects.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
 
-    def build_filters(self, filters=None):
+# =========================
+# = Event Recommendations =
+# =========================
+from events.utils import CachedCategoryTree
+from behavior.models import EventAction
+from learning import ml
+
+class EventRecommendationResource(EventSummaryResource):
+
+    def build_filters(self, request, filters=None):
         if filters is None:
             filters = {}
 
         orm_filters = super(EventSummaryResource, self).build_filters(filters)
-        # import ipdb; ipdb.set_trace()
-        orm_filters = {"pk__in": range(10)}
 
+        events_qs = Event.active.future()
+        # if search_terms:
+        #     events_qs = events_qs.filter(title__search=search_terms)
+        # else:
+        events_qs = events_qs.filter_user_actions(request.user, 'VI')
+
+        ctree = CachedCategoryTree()
+        try:
+            category_id = int(request.GET.get('category_id'))
+        except (ValueError, TypeError):
+            recommended_events = ml.recommend_events(request.user, events_qs)
+        else:
+            category = ctree.get(id=category_id)
+            all_children = ctree.children_recursive(category)
+            all_children.append(category)
+            events_qs = events_qs.filter(concrete_category__in=all_children)
+            recommended_events = ml.recommend_events(request.user, events_qs)
+
+        # preprocess ignores
+        recommended_event_ids = [event.id for event in recommended_events]
+        if recommended_event_ids:
+            ids_param = recommended_event_ids \
+                if len(recommended_event_ids) > 1 else recommended_event_ids[0]
+            non_actioned_events = Event.objects.raw(
+                """SELECT `events_event`.`id` FROM `events_event`
+                LEFT JOIN `behavior_eventaction`
+                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
+                """, [request.user.id, ids_param]
+            )
+            if non_actioned_events:
+                for event in non_actioned_events:
+                    EventAction(event=event, user=request.user, action='I').save()
+
+        orm_filters = dict(event__in=recommended_event_ids)
         return orm_filters
+
+    def obj_get_list(self, request=None, **kwargs):
+        """
+        A ORM-specific implementation of ``obj_get_list``.
+
+        Takes an optional ``request`` object, whose ``GET`` dictionary can be
+        used to narrow the query.
+        """
+        filters = {}
+
+        if hasattr(request, 'GET'):
+            # Grab a mutable copy.
+            filters = request.GET.copy()
+
+        # Update with the provided kwargs.
+        filters.update(kwargs)
+        applicable_filters = self.build_filters(request, filters=filters)
+
+        try:
+            return self.get_object_list(request).filter(**applicable_filters)
+        except ValueError, e:
+            raise NotFound("Invalid resource lookup data provided (mismatched type).")
