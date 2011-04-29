@@ -135,6 +135,8 @@ INSTALLED_APPS = (
 
     'importer',                     # part of the scrape pipeline
     'pundit',                       # Pundit categorizes/annotates events
+
+    'alphasignup',                  # simple web front for Alpha signup
 )
 
 # ===========
