@@ -1,11 +1,13 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
-from events.models import Event, Category, EventSummary
+from events.models import Event, Occurrence, Category, EventSummary
 from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
 
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from newapi.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
+
+from places.api import PlaceResource, PlaceFullResource
 
 # ========
 # = User =
@@ -68,17 +70,46 @@ class CategoryResource(ModelResource):
         limit = 200
         fields = ('title', 'color')
 
+# ==============
+# = Occurrence =
+# ==============
+class OccurrenceResource(ModelResource):
+    place = fields.ToOneField(PlaceResource, 'place')
+
+    class Meta:
+        queryset = Occurrence.objects.all()
+        allowed_methods = ('get',)
+        authentication = ConsumerApiKeyAuthentication()
+        excludes = ('id',)
+
+class OccurrenceFullResource(OccurrenceResource):
+    place = fields.ToOneField(PlaceFullResource, 'place', full=True)
+
+    class Meta(OccurrenceResource.Meta):
+        resource_name = 'occurrence_full'
+
 # =========
 # = Event =
 # =========
 class EventResource(ModelResource):
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
+    occurrences = fields.ToManyField(OccurrenceResource, 'occurrences')
 
     class Meta:
         queryset = Event.objects.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
+        fields = ()
 
+class EventFullResource(EventResource):
+    occurrences = fields.ToManyField(OccurrenceFullResource, 'occurrences', full=True)
+
+    class Meta(EventResource.Meta):
+        resource_name = 'event_full'
+
+# =================
+# = Event Summary =
+# =================
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
