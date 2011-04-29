@@ -245,8 +245,11 @@ def filter_events(user, event_query_set, categories_dict,
     Steps:
          - We start with generating
     """
+    event_category = {}  # This is slightly confusing. The idea is that this 
     if not events:
         events = generate_category_mapping(event_query_set,categories_dict)
+        #used for ranking by categories
+        event_category = dict([(e,categories_dict[k]) for k,v in events.items() for e in v])
     # events is now a dictionary of concrete category keys mapping to event ids.
 
     #Optimization to return early if we don't have enough events:
@@ -320,9 +323,12 @@ def filter_events(user, event_query_set, categories_dict,
     # FIXME then lookup using event.category_id which won't hit the db
     #returned_events = Event.objects.filter(id__in=selected_events)
     #this can be made more efficient with a single query. Leaving out for now.
-    event_score_list = [(event_score[ev], ev) for ev in selected_events]
-    semi_sorted = semi_sort(event_score_list, min(3,len(selected_events)))
-    return fuzzy_sort(semi_sorted)
+    if event_category:
+        event_score_list = [(event_category[ev], ev) for ev in selected_events]
+        semi_sorted = semi_sort(event_score_list, min(3,len(selected_events)))
+        return fuzzy_sort(semi_sorted)
+
+    return [ev for ev in selected_events]
 
 def semi_sort(events, top_sort=3):
     """
