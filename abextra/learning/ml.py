@@ -639,7 +639,7 @@ def sample_category_distribution_test(distribution, trials=1):
 
 def sample_distribution(distribution, trials=1):
     """
-    This is the factored out weighted sampling distribution. 
+    This is the factored out weighted sampling distribution.
     """
     if not distribution: return []
     cumulative_distribution = numpy.cumsum(normalize([x[1]
