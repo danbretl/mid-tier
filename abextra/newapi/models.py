@@ -52,10 +52,24 @@ class Consumer(models.Model):
 from django.utils.crypto import salted_hmac
 
 class DeviceUdidManager(models.Manager):
+    username_prefix = 'udid'
+
     def get_hexdigest(self, raw_udid):
         salt = 'QJ7@cqBQdLy$mqr+'
         hmac = salted_hmac(salt, raw_udid)
         return hmac.hexdigest()
+
+    def generate_username(self, rand_length=20):
+        return '$'.join((
+            self.username_prefix,
+            User.objects.make_random_password(rand_length)
+        ))
+
+    def generate_username_unique(self, rand_length=20):
+        new_username = self.generate_username(rand_length)
+        while User.objects.filter(username=new_username).exists():
+            new_username = self.generate_username(rand_length)
+        return new_username
 
 class DeviceUdid(models.Model):
     user = models.OneToOneField(User, related_name='device_udid')

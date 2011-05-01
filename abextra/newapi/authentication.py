@@ -35,7 +35,6 @@ class ConsumerAuthentication(Authentication):
         base = super(ConsumerAuthentication, self).get_identifier(request)
         return '_'.join((base, request.REQUEST.get('consumer_key', 'noconsumer')))
 
-
 class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
     udid_field = DeviceUdidForm.declared_fields['udid']
 
@@ -71,21 +70,19 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
             )
         except (DeviceUdid.DoesNotExist, DeviceUdid.MultipleObjectsReturned):
             # create new user
-            user = User()
-            user.username = 'udid_user$' + User.objects.make_random_password(length=20)
-            user.set_password(None)     # makes unusable password
-            user.save()
+            username = DeviceUdid.objects.generate_username_unique()
+            new_user = User.objects.create_user(username=username, email='')
 
             # create device udid record
-            udid_form = DeviceUdidForm(data=dict(user=user.id, udid=raw_udid))
+            udid_form = DeviceUdidForm(data=dict(user=new_user.id, udid=raw_udid))
             if udid_form.is_valid():
                 udid = udid_form.save()
 
             # add to proper user group
             group = Group.objects.get(name='device_user_anonymous')
-            user.groups.add(group)
+            new_user.groups.add(group)
 
-            request.user = user
+            request.user = new_user
         else:
             request.user = udid.user
 
