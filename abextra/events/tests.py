@@ -675,3 +675,4 @@ class StressTesting(TestCase):
             post_data = u'{"action": "' + random_action + '", "event": "/api/v1/event/' + str(event.id) + '/"}'
             resp = client.post(api + encoded_params, data=post_data, content_type='application/json')
             self.assertEqual(resp.status_code, 201)
+
