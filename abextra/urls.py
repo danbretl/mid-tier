@@ -24,3 +24,11 @@ urlpatterns = patterns('',
 
     url(r'^api/', include('api.urls')),              # APIs
 )
+
+
+# ===========
+# = Userena =
+# ===========
+urlpatterns += patterns('',
+    (r'^accounts/', include('alphasignup.urls')),
+)
