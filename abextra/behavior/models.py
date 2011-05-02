@@ -2,6 +2,23 @@ from django.db import models
 from django.contrib.auth.models import User
 from events.models import Event, Category
 
+class EventActionManager(models.Manager):
+    def ignore_non_actioned_events(self, user, events):
+        event_ids = map(lambda e: e.id if hasattr(e, 'id') else e, events)
+        if event_ids:
+            ids_param = event_ids \
+                if len(event_ids) > 1 else event_ids[0]
+            non_actioned_events = Event.objects.raw(
+                """SELECT `events_event`.`id` FROM `events_event`
+                LEFT JOIN `behavior_eventaction`
+                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
+                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
+                """, [user.id, ids_param]
+            )
+            if non_actioned_events:
+                for event in non_actioned_events:
+                    self.model(event=event, user=user, action='I').save()
+
 class EventAction(models.Model):
     """Represents user's action on a particular event."""
     ACTION_CHOICES = (
@@ -14,6 +31,8 @@ class EventAction(models.Model):
     event = models.ForeignKey(Event, related_name='actions')
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now=True)
+
+    objects = EventActionManager()
 
     class Meta:
         unique_together = (('user', 'event'),)

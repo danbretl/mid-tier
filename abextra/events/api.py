@@ -82,6 +82,11 @@ class OccurrenceResource(ModelResource):
         authentication = ConsumerApiKeyAuthentication()
         excludes = ('id',)
 
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(OccurrenceResource, self).get_object_list(request) \
+            .select_related('place__point__city')
+
 class OccurrenceFullResource(OccurrenceResource):
     place = fields.ToOneField(PlaceFullResource, 'place', full=True)
 
@@ -136,6 +141,12 @@ class EventResource(ModelResource):
 
         return super(EventResource, self).dehydrate(bundle)
 
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(EventResource, self).get_object_list(request) \
+            .select_related('concrete_category',)
+
+
 class EventFullResource(EventResource):
     occurrences = fields.ToManyField(OccurrenceFullResource, 'occurrences', full=True)
 
@@ -154,11 +165,20 @@ class EventSummaryResource(ModelResource):
         queryset = EventSummary.objects.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
+        filtering = {
+            'concrete_category': ('exact',),
+            'concrete_parent_category': ('exact',)
+        }
+
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(EventSummaryResource, self).get_object_list(request) \
+            .select_related('event', 'concrete_category', 'concrete_parent_category')
+
 
 # =========================
 # = Event Recommendations =
 # =========================
-from events.utils import CachedCategoryTree
 from behavior.models import EventAction
 from learning import ml
 
@@ -167,53 +187,27 @@ class EventRecommendationResource(EventSummaryResource):
     def build_filters(self, request, filters=None):
         if filters is None:
             filters = {}
-
         orm_filters = super(EventSummaryResource, self).build_filters(filters)
 
-        events_qs = Event.active.future()
-        # if search_terms:
-        #     events_qs = events_qs.filter(title__search=search_terms)
-        # else:
-        events_qs = events_qs.filter_user_actions(request.user, 'VI')
+        if orm_filters.has_key('concrete_parent_category__exact'):
+            filter_value = orm_filters['concrete_parent_category__exact']
+            orm_filters.update(summary__concrete_parent_category=filter_value)
+            del orm_filters['concrete_parent_category__exact']
 
-        ctree = CachedCategoryTree()
-        try:
-            category_id = int(request.GET.get('category_id'))
-        except (ValueError, TypeError):
-            recommended_events = ml.recommend_events(request.user, events_qs)
-        else:
-            category = ctree.get(id=category_id)
-            all_children = ctree.children_recursive(category)
-            all_children.append(category)
-            events_qs = events_qs.filter(concrete_category__in=all_children)
-            recommended_events = ml.recommend_events(request.user, events_qs)
+        # filter initial event queryset
+        events_qs = Event.active.future().filter(**orm_filters) \
+            .filter_user_actions(request.user, 'VI')
+
+        # use machine learning
+        recommended_events = ml.recommend_events(request.user, events_qs)
 
         # preprocess ignores
-        recommended_event_ids = [event.id for event in recommended_events]
-        if recommended_event_ids:
-            ids_param = recommended_event_ids \
-                if len(recommended_event_ids) > 1 else recommended_event_ids[0]
-            non_actioned_events = Event.objects.raw(
-                """SELECT `events_event`.`id` FROM `events_event`
-                LEFT JOIN `behavior_eventaction`
-                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
-                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
-                """, [request.user.id, ids_param]
-            )
-            if non_actioned_events:
-                for event in non_actioned_events:
-                    EventAction(event=event, user=request.user, action='I').save()
+        EventAction.objects.ignore_non_actioned_events(request.user, recommended_events)
 
-        orm_filters = dict(event__in=recommended_event_ids)
-        return orm_filters
+        return dict(event__in=recommended_events)
 
     def obj_get_list(self, request=None, **kwargs):
-        """
-        A ORM-specific implementation of ``obj_get_list``.
-
-        Takes an optional ``request`` object, whose ``GET`` dictionary can be
-        used to narrow the query.
-        """
+        """overriden just to pass the `request` as an arg to `build_filters`"""
         filters = {}
 
         if hasattr(request, 'GET'):
