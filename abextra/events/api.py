@@ -137,7 +137,7 @@ class EventResource(ModelResource):
         # detail image thumbnail
         image = event.image_chain(ctree)
         detail_thumb = get_thumbnail(image, **settings.IPHONE_THUMB_OPTIONS)
-        data.update(detail_thumbnail=detail_thumb.url)
+        data.update(thumbnail_detail=detail_thumb.url)
 
         return super(EventResource, self).dehydrate(bundle)
 
