@@ -68,9 +68,14 @@ class CachedCategoryTree(object):
     def children(self, category):
         return self._graph[category]
 
-    def surface_parent(self, category):
+    def _surface_parent(self, category):
         if not category.parent: return None
         return self.surface_parent(category.parent) if category.parent.parent else category
+
+    def surface_parent(self, category):
+        category_id = category.id if hasattr(category, 'id') else category
+        category = self.get(id=category_id)
+        return self._surface_parent(category)
 
     def _parents(self, category, l):
         parent = category.parent
@@ -79,6 +84,8 @@ class CachedCategoryTree(object):
             self._parents(parent, l)
         return l
     def parents(self, category):
+        category_id = category.id if hasattr(category, 'id') else category
+        category = self.get(id=category_id)
         return self._parents(category, [])
 
     @property
