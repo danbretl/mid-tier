@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test.client import Client
 from events.models import Event, EventSummary, Category
 from events import summarizer
 from events.utils import CachedCategoryTree
@@ -13,7 +14,9 @@ from learning import ml, settings, category_tree, user_behavior, simulation_shar
 from itertools import count
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
-
+import threading
+import urllib
+import json
 import random
 
 class CachedCategoryTreeTest(TestCase):
@@ -428,3 +431,122 @@ class AlgorithmTest(TestCase):
         plt.savefig("learning/test_results/test.pdf")
         plt.cla()
         self.assertTrue(True)
+
+
+def test_concurrently(times):
+    """ 
+    Add this decorator to small pieces of code that you want to test
+    concurrently to make sure they don't raise exceptions when run at the
+    same time.  E.g., some Django views that do a SELECT and then a subsequent
+    INSERT might fail when the INSERT assumes that the data has not changed
+    since the SELECT.
+    """
+    def test_concurrently_decorator(test_func):
+        def wrapper(*args, **kwargs):
+            exceptions = []
+            import threading
+            def call_test_func():
+                try:
+                    test_func(*args, **kwargs)
+                except Exception, e:
+                    exceptions.append(e)
+                    raise
+            threads = []
+            for i in range(times):
+                threads.append(threading.Thread())
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+            if exceptions:
+                raise Exception('test_concurrently intercepted %s exceptions: %s' % (len(exceptions), exceptions))
+        return wrapper
+    return test_concurrently_decorator
+
+class StressTesting(TestCase):
+    """
+    API's users will be hitting:
+    1) Event_List
+    2) Event_Detail
+    3) CategoryFrequency
+    4) BreadCrumbs
+    5) Registration
+    6) Sharing
+    7) Haystack Search
+    8) Event of the day page
+    9) Event actions
+
+    a) Test each API independently
+    b) Test each API with a random ordering of the calls above
+    c) Test each API with a expected sample of the calls above
+
+    Serial stress test:
+    a) Create a 1000 users
+    b) For each of these users, generate a 100 requests
+       - Randomly populate the user behavior db
+
+    Concurrent stress test:
+       - Same as above except, each user has his own process
+         - Can a laptop handle 1000 processes?
+           - Consider multithreading.
+
+    To consider:
+       - Distributed stress testing.
+
+    Things to plot:
+    a) Number of requests handled per second
+    b) Average response time per request
+    c) Users v/s load
+
+    Stress testing individual components of the system:
+    a) MySQL stress and performance tests under different query loads
+    b) Django stress and performance tests under different query loads
+       - Will be useful for before and after comparisons of Johnny Cache.
+    c)
+    """
+    fixtures = ['auth', 'consumers']
+    # Consider this for automated testing.
+    def test_all_apis(self):
+        base_url = 'http://testsv.abextratech.com'
+        consumer_secret = '7fb49b90f41a832f3d5cc12f1b9ed56795c5748a'
+        consumer_key = 'rngQ5ZSe3FmzYJ3cgL'
+        udid = '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
+        params = urllib.urlencode({'consumer_key' : consumer_key,
+                                   'consumer_secret' : consumer_key,
+                                   'udid' : udid,
+                                   'format': 'json'})
+        # The more automated we want to make this the less assumptions we will
+        # need to make.
+        f = urllib.urlopen(base_url + '/tapi/v1/?' + params)
+        apis = json.loads(f.readline())
+        for model in apis.keys():
+            #Test apis here
+            schema_url = apis[model]['schema']
+            list_endpoint = apis[model]['list_endpoint']
+            schema = json.loads(urllib.urlopen( base_url
+                                              + schema_url
+                                              + params).readline())
+            # Now hit the url and get some objects.
+            # Ensure each of the URLS conforms to this schema
+            # (such checks will likely have also been performed in tastypie's
+            # unit tests
+
+    def simple_client(self):
+        client = Client()
+        consumer_secret = '7fb49b90f41a832f3d5cc12f1b9ed56795c5748a'
+        consumer_key = 'rngQ5ZSe3FmzYJ3cgL'
+        udid = '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
+        encoded_params = urllib.urlencode({'consumer_key' : consumer_key,
+                                   'consumer_secret' : consumer_key,
+                                   'udid' : udid,
+                                   'format': 'json'})
+
+        params = '/tapi/v1/?' + encoded_params
+        response = client.get(params)
+        apis = json.loads(response.content)
+        for model in apis.keys():
+            schema_url = apis[model]['schema']
+            list_endpoint = apis[model]['list_endpoint']
+            api_schema_response = client.get( schema_url + '?' + encoded_params)
+            print api_schema_response.content
+            print "Schema: ", schema_url
