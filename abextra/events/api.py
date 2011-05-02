@@ -91,15 +91,50 @@ class OccurrenceFullResource(OccurrenceResource):
 # =========
 # = Event =
 # =========
+from events.utils import CachedCategoryTree
+from sorl.thumbnail import get_thumbnail
+from django.conf import settings
+
 class EventResource(ModelResource):
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
+    abstract_categories = fields.ToManyField(CategoryResource, 'categories')
     occurrences = fields.ToManyField(OccurrenceResource, 'occurrences')
 
     class Meta:
         queryset = Event.objects.all()
         allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
-        fields = ()
+        fields = ('concrete_category', 'abstract_categories', 'occurrences',
+            'title', 'description', 'image', 'video_url', 'url'
+        )
+
+    def dehydrate(self, bundle):
+        """inject extra info"""
+        event, data = bundle.obj, bundle.data
+        category_resource = self.concrete_category.get_related_resource(
+            bundle.obj.concrete_category
+        )
+        ctree = CachedCategoryTree()
+
+        # concrete parent category
+        concrete_parent_category = ctree.surface_parent(event.concrete_category_id)
+        concrete_parent_category_uri = category_resource.get_resource_uri(concrete_parent_category)
+        data.update(concrete_parent_category=concrete_parent_category_uri)
+
+        # concrete breadcrumbs :)
+        concrete_category_breadcrumb_uris = []
+        for category in ctree.parents(event.concrete_category_id):
+            concrete_category_breadcrumb_uris.append(
+                category_resource.get_resource_uri(category)
+            )
+        data.update(concrete_category_breadcrumbs=concrete_category_breadcrumb_uris)
+
+        # detail image thumbnail
+        image = event.image_chain(ctree)
+        detail_thumb = get_thumbnail(image, **settings.IPHONE_THUMB_OPTIONS)
+        data.update(detail_thumbnail=detail_thumb.url)
+
+        return super(EventResource, self).dehydrate(bundle)
 
 class EventFullResource(EventResource):
     occurrences = fields.ToManyField(OccurrenceFullResource, 'occurrences', full=True)
