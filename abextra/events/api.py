@@ -156,6 +156,9 @@ class EventFullResource(EventResource):
 # =================
 # = Event Summary =
 # =================
+from django.core.urlresolvers import resolve, Resolver404
+from tastypie.exceptions import NotFound
+
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
@@ -175,6 +178,21 @@ class EventSummaryResource(ModelResource):
         return super(EventSummaryResource, self).get_object_list(request) \
             .select_related('event', 'concrete_category', 'concrete_parent_category')
 
+    def build_filters(self, filters=None):
+        if filters is None:
+            filters = {}
+        orm_filters = super(EventSummaryResource, self).build_filters(filters)
+
+        filter_uri = orm_filters.get('concrete_parent_category__exact')
+        if filter_uri:
+            try:
+                view, args, kwargs = resolve(filter_uri)
+            except Resolver404:
+                raise NotFound("The URL provided '%s' was not a link to a valid resource." % filter_uri)
+            else:
+                orm_filters.update(concrete_parent_category__exact=kwargs['pk'])
+
+        return orm_filters
 
 # =========================
 # = Event Recommendations =
@@ -187,12 +205,12 @@ class EventRecommendationResource(EventSummaryResource):
     def build_filters(self, request, filters=None):
         if filters is None:
             filters = {}
-        orm_filters = super(EventSummaryResource, self).build_filters(filters)
+        orm_filters = super(EventRecommendationResource, self).build_filters(filters)
 
-        if orm_filters.has_key('concrete_parent_category__exact'):
-            filter_value = orm_filters['concrete_parent_category__exact']
-            orm_filters.update(summary__concrete_parent_category=filter_value)
-            del orm_filters['concrete_parent_category__exact']
+        # passthrough of concrete_parent_category to summary
+        cpc_filter = orm_filters.pop('concrete_parent_category__exact', None)
+        if cpc_filter:
+            orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
         # filter initial event queryset
         events_qs = Event.active.future().filter(**orm_filters) \
@@ -204,7 +222,10 @@ class EventRecommendationResource(EventSummaryResource):
         # preprocess ignores
         EventAction.objects.ignore_non_actioned_events(request.user, recommended_events)
 
-        return dict(event__in=recommended_events)
+        # orm filters are simple, when it comes down to it
+        orm_filters = dict(event__in=recommended_events)
+
+        return orm_filters
 
     def obj_get_list(self, request=None, **kwargs):
         """overriden just to pass the `request` as an arg to `build_filters`"""
