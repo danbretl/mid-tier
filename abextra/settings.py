@@ -121,10 +121,10 @@ INSTALLED_APPS = (
     'fabtastic',                    # deployments
     'registration',                 # user registration app
     'tastypie',                     # new api assistance
-    'api',                       # additional API models and utils
     'sorl.thumbnail',               # thumbnails
     'livesettings',                 # live settings ;)
 
+    'api',                          # ABEX API models, resources and utils
     'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
     'events',                       # ABEX events
@@ -133,10 +133,10 @@ INSTALLED_APPS = (
     'preprocess',                   # ABEX data preprocessing | scrape->django
     'prices',                       # ABEX prices
 
-    'importer',                     # part of the scrape pipeline
-    'pundit',                       # Pundit categorizes/annotates events
+    'importer',                     # ABEX part of the scrape pipeline
+    'pundit',                       # ABEX Pundit categorizes/annotates events
 
-    'alphasignup',                  # simple web front for Alpha signup
+    'alphasignup',                  # ABEX simple web front for Alpha signup
 )
 
 # ===========

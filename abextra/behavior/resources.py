@@ -9,7 +9,7 @@ from tastypie.utils.mime import determine_format, build_content_type
 from tastypie.http import HttpBadRequest
 from api.authentication import ConsumerApiKeyAuthentication
 
-from events.api import EventResource, UserResource
+from events.resources import EventResource, UserResource
 
 from behavior.models import EventAction, User, Event
 from behavior.forms import EventActionForm

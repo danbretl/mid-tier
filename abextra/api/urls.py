@@ -1,15 +1,15 @@
 from django.conf.urls.defaults import *
 from tastypie.api import Api
 
-from events.api import UserResource
-from events.api import CategoryResource
-from events.api import EventResource, EventFullResource, FeaturedEventResource
-from events.api import OccurrenceResource, OccurrenceFullResource
-from events.api import EventSummaryResource, EventRecommendationResource
-from behavior.api import EventActionResource
-from places.api import PlaceResource, PointResource, CityResource
-from places.api import PlaceFullResource, PointFullResource
-from prices.api import PriceResource
+from events.resources import UserResource
+from events.resources import CategoryResource
+from events.resources import EventResource, EventFullResource, FeaturedEventResource
+from events.resources import OccurrenceResource, OccurrenceFullResource
+from events.resources import EventSummaryResource, EventRecommendationResource
+from behavior.resources import EventActionResource
+from places.resources import PlaceResource, PointResource, CityResource
+from places.resources import PlaceFullResource, PointFullResource
+from prices.resources import PriceResource
 
 # ===========================
 # = Instantiate Api Version =

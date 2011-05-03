@@ -16,8 +16,8 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
 from api.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
 
-from places.api import PlaceResource, PlaceFullResource
-from prices.api import PriceResource
+from places.resources import PlaceResource, PlaceFullResource
+from prices.resources import PriceResource
 
 from events.models import Event, Occurrence, Category, EventSummary
 from events.utils import CachedCategoryTree
