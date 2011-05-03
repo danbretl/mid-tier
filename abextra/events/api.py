@@ -153,6 +153,17 @@ class EventFullResource(EventResource):
     class Meta(EventResource.Meta):
         resource_name = 'event_full'
 
+class FeaturedEventResource(EventFullResource):
+    class Meta(EventFullResource.Meta):
+        queryset = Event.objects.all()
+        detail_allowed_methods = ()
+        resource_name = 'event_featured'
+
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(FeaturedEventResource, self).get_object_list(request) \
+            .featured()
+
 # =================
 # = Event Summary =
 # =================
@@ -180,7 +191,7 @@ class EventSummaryResource(ModelResource):
 
     def build_filters(self, filters=None):
         if filters is None:
-            filters = {}
+            filters = dict()
         orm_filters = super(EventSummaryResource, self).build_filters(filters)
 
         filter_uri = orm_filters.get('concrete_parent_category__exact')
@@ -204,7 +215,7 @@ class EventRecommendationResource(EventSummaryResource):
 
     def build_filters(self, request, filters=None):
         if filters is None:
-            filters = {}
+            filters = dict()
         orm_filters = super(EventRecommendationResource, self).build_filters(filters)
 
         # passthrough of concrete_parent_category to summary
@@ -229,11 +240,7 @@ class EventRecommendationResource(EventSummaryResource):
 
     def obj_get_list(self, request=None, **kwargs):
         """overriden just to pass the `request` as an arg to `build_filters`"""
-        filters = {}
-
-        if hasattr(request, 'GET'):
-            # Grab a mutable copy.
-            filters = request.GET.copy()
+        filters = request.GET.copy() if hasattr(request, 'GET') else dict()
 
         # Update with the provided kwargs.
         filters.update(kwargs)

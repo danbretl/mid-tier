@@ -4,17 +4,15 @@ from django.contrib import admin
 from django.views.static import serve
 from autocomplete.views import autocomplete
 
-from api import urls as api_urls
-
-
 admin.autodiscover()
 
 urlpatterns = patterns('',
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     url(r'^admin/', include(admin.site.urls)),          # admin
+    url(r'^settings/', include('livesettings.urls')),   # live settings
 
-    url(r'^api/', include(api_urls)),                   # piston api
+    url(r'^api/', include('api.urls')),                   # piston api
 
     url('^autocomplete/', include(autocomplete.urls)),  # autocomplete
 
@@ -30,7 +28,7 @@ from tastypie.api import Api
 
 from events.api import UserResource
 from events.api import CategoryResource
-from events.api import EventResource, EventFullResource
+from events.api import EventResource, EventFullResource, FeaturedEventResource
 from events.api import OccurrenceResource, OccurrenceFullResource
 from events.api import EventSummaryResource, EventRecommendationResource
 from behavior.api import EventActionResource
@@ -45,6 +43,7 @@ v1_api.register(UserResource())
 # Event / Recommendation
 v1_api.register(EventResource(), canonical=True)
 v1_api.register(EventFullResource())
+v1_api.register(FeaturedEventResource())
 v1_api.register(OccurrenceResource(), canonical=True)
 v1_api.register(OccurrenceFullResource())
 v1_api.register(EventSummaryResource(), canonical=True)

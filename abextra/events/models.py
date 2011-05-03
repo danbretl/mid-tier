@@ -8,6 +8,9 @@ from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 from places.models import Place
 
+import events.config
+from livesettings import config_value
+
 # ============
 # = Category =
 # ============
@@ -85,6 +88,10 @@ class EventMixin(object):
         actions_q = models.Q(actions__action__in=actions)
         q = (user_q & actions_q) | models.Q(actions__isnull=True)
         return self.filter(q)
+
+    def featured(self):
+        featured_event_id = config_value('EVENTS', 'FEATURED_EVENT_ID')
+        return self.filter(id=featured_event_id)
 
 class EventQuerySet(models.query.QuerySet, EventMixin):
     pass

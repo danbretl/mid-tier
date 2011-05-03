@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     'tastypie',                     # new api assistance
     'newapi',                       # additional API models and utils
     'sorl.thumbnail',               # thumbnails
+    'livesettings',                 # live settings ;)
 
     'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
@@ -179,6 +180,10 @@ LOGGING = {
         #     'level': 'DEBUG',
         #     'propagate': False,
         # },
+        'keyedcache': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         'importer.parser': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -189,6 +194,12 @@ LOGGING = {
         }
     }
 }
+
+# ===============
+# = Keyed Cache =
+# ===============
+# CACHE_PREFIX = str(SITE_ID)
+CACHE_TIMEOUT = 60              # 1 minute
 
 # ==============================
 # = eventure specific settings =
