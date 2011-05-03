@@ -1,6 +1,4 @@
 from django.core.urlresolvers import resolve, Resolver404
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 from sorl.thumbnail import get_thumbnail
 
@@ -24,49 +22,6 @@ from events.utils import CachedCategoryTree
 
 from behavior.models import EventAction
 from learning import ml
-
-# ========
-# = User =
-# ========
-class UserResource(ModelResource):
-    class Meta:
-        queryset = User.objects.all()
-        allowed_methods = ('post',)
-        detail_allowed_methods = ()
-        authentication = ConsumerAuthentication()
-        authorization = DjangoAuthorization()
-        validation = FormValidation(form_class=UserCreationForm)
-
-    def hydrate_password(self, bundle):
-        user = bundle.obj
-        raw_password = bundle.data['password1']
-        user.set_password(raw_password)
-        return bundle
-
-    def post_list(self, request, **kwargs):
-        response = super(UserResource, self).post_list(request, **kwargs)
-        import ipdb; ipdb.set_trace()
-        return response
-
-    # def is_valid(self, bundle, request=None):
-    #     username = bundle.data.get('username')
-    #     if username:
-    #         try:
-    #             existing_user = User.objects.get(username=username)
-    #         except (User.DoesNotExist, User.MultipleObjectsReturned):
-    #             pass
-    #         else:
-    #             data = dict(api_key=existing_user.api_key.key)
-    #             desired_format = self.determine_format(request) if request \
-    #                 else self._meta.default_format
-    #             serialized = self.serialize(request, data, desired_format)
-    #             response = HttpBadRequest(
-    #                 content=serialized,
-    #                 content_type=build_content_type(desired_format)
-    #             )
-    #             # import ipdb; ipdb.set_trace()
-    #             raise ImmediateHttpResponse(response=response)
-    #     super(UserResource, self).is_valid(bundle, request)
 
 # ============
 # = Category =
