@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),          # admin
     url(r'^settings/', include('livesettings.urls')),   # live settings
 
-    url(r'^api/', include('api.urls')),                   # piston api
+    # url(r'^api/', include('api.urls')),                   # piston api
 
     url('^autocomplete/', include(autocomplete.urls)),  # autocomplete
 
