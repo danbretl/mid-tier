@@ -161,6 +161,7 @@ class EventFullResource(EventResource):
 class FeaturedEventResource(EventFullResource):
     class Meta(EventFullResource.Meta):
         queryset = Event.objects.all()
+        list_allowed_methods = ('get',)
         detail_allowed_methods = ()
         resource_name = 'event_featured'
 
