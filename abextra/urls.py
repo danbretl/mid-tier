@@ -17,6 +17,10 @@ urlpatterns = patterns('',
     url(r'^static/(?P<path>.*)$', serve, {              # statics
         'document_root': settings.STATIC_DOC_ROOT
     }),
+    url(r'^favicon\.ico$',                              # favicon
+        'django.views.generic.simple.redirect_to',
+        {'url': '/static/images/favicon.ico'}
+    ),
 
     url(r'^api/', include('newapi.urls')),              # APIs
 )
