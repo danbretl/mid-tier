@@ -171,7 +171,7 @@ from django.core.urlresolvers import resolve, Resolver404
 from tastypie.exceptions import NotFound
 
 class EventSummaryResource(ModelResource):
-    event = fields.ToOneField(EventResource, 'event')
+    event = fields.ToOneField(EventFullResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
     concrete_parent_category = fields.ToOneField(CategoryResource, 'concrete_parent_category')
 
