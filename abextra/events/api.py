@@ -8,6 +8,7 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from newapi.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
 
 from places.api import PlaceResource, PlaceFullResource
+from prices.api import PriceResource
 
 # ========
 # = User =
@@ -75,6 +76,7 @@ class CategoryResource(ModelResource):
 # ==============
 class OccurrenceResource(ModelResource):
     place = fields.ToOneField(PlaceResource, 'place')
+    prices = fields.ToManyField(PriceResource, 'prices')
 
     class Meta:
         queryset = Occurrence.objects.all()
@@ -89,6 +91,7 @@ class OccurrenceResource(ModelResource):
 
 class OccurrenceFullResource(OccurrenceResource):
     place = fields.ToOneField(PlaceFullResource, 'place', full=True)
+    prices = fields.ToManyField(PriceResource, 'prices', full=True)
 
     class Meta(OccurrenceResource.Meta):
         resource_name = 'occurrence_full'
