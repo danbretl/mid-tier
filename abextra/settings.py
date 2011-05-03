@@ -120,7 +120,6 @@ INSTALLED_APPS = (
     'south',                        # migrations managements
     'fabtastic',                    # deployments
     'registration',                 # user registration app
-    'piston',                       # api assistance
     'tastypie',                     # new api assistance
     'newapi',                       # additional API models and utils
     'sorl.thumbnail',               # thumbnails
