@@ -129,30 +129,28 @@ INSTALLED_APPS = (
     'django.contrib.sites',         # sites
     'django.contrib.messages',      # user messages
     'django.contrib.admin',         # admin
-    # 'django.contrib.admindocs',   # admin documentation
+    'django.contrib.admindocs',     # admin documentation
 
-    'gunicorn',                     # gunicorn | app server
-
-    'south',                        # migrations managements
     'fabtastic',                    # deployments
-    'registration',                 # user registration app
-    'tastypie',                     # new api assistance
-    'sorl.thumbnail',               # thumbnails
+    'gunicorn',                     # gunicorn | app server
     'livesettings',                 # live settings ;)
+    'registration',                 # user registration app
+    'sorl.thumbnail',               # thumbnails
+    'south',                        # migrations managements
+    'tastypie',                     # new api assistance
 
+    'accounts',                     # ABEX user profile extensions
+    'alphasignup',                  # ABEX simple web front for Alpha signup
     'api',                          # ABEX API models, resources and utils
     'behavior',                     # ABEX behavior | user actions
     'core',                         # ABEX core
     'events',                       # ABEX events
+    'importer',                     # ABEX part of the scrape pipeline
     'learning',                     # ABEX machine learning | recommendations
     'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
     'prices',                       # ABEX prices
-
-    'importer',                     # ABEX part of the scrape pipeline
     'pundit',                       # ABEX Pundit categorizes/annotates events
-
-    'alphasignup',                  # ABEX simple web front for Alpha signup
 )
 
 # ===========
