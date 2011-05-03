@@ -121,7 +121,7 @@ INSTALLED_APPS = (
     'fabtastic',                    # deployments
     'registration',                 # user registration app
     'tastypie',                     # new api assistance
-    'newapi',                       # additional API models and utils
+    'api',                       # additional API models and utils
     'sorl.thumbnail',               # thumbnails
     'livesettings',                 # live settings ;)
 

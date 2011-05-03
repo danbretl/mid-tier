@@ -22,5 +22,5 @@ urlpatterns = patterns('',
         {'url': '/static/images/favicon.ico'}
     ),
 
-    url(r'^api/', include('newapi.urls')),              # APIs
+    url(r'^api/', include('api.urls')),              # APIs
 )

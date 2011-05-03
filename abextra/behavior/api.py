@@ -1,22 +1,22 @@
+from django.core.urlresolvers import resolve, Resolver404
+
 from tastypie import fields
 from tastypie.resources import ModelResource
-from newapi.authentication import ConsumerApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.validation import FormValidation
+from tastypie.exceptions import ImmediateHttpResponse, NotFound
+from tastypie.utils.mime import determine_format, build_content_type
+from tastypie.http import HttpBadRequest
+from api.authentication import ConsumerApiKeyAuthentication
+
+from events.api import EventResource, UserResource
 
 from behavior.models import EventAction, User, Event
 from behavior.forms import EventActionForm
 
-from events.api import EventResource, UserResource
-
-# ==========
-# = API v1 =
-# ==========
-from tastypie.utils.mime import determine_format, build_content_type
-from tastypie.http import HttpBadRequest
-from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from django.core.urlresolvers import resolve, Resolver404
-
+# ================
+# = Event Action =
+# ================
 class EventActionResource(ModelResource):
     user = fields.ToOneField(UserResource, 'user')
     event = fields.ToOneField(EventResource, 'event')

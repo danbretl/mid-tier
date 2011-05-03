@@ -3,7 +3,7 @@ from tastypie.resources import ModelResource
 from places.models import Place, Point, City
 from tastypie.authorization import DjangoAuthorization
 
-from newapi.authentication import ConsumerApiKeyAuthentication
+from api.authentication import ConsumerApiKeyAuthentication
 
 # ========
 # = City =

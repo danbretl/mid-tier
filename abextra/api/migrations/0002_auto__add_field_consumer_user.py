@@ -8,19 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'DeviceUdid'
-        db.create_table('newapi_deviceudid', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='device_udid', unique=True, to=orm['auth.User'])),
-            ('udid', self.gf('django.db.models.fields.CharField')(unique=True, max_length=40)),
-        ))
-        db.send_create_signal('newapi', ['DeviceUdid'])
+        # Adding field 'Consumer.user'
+        db.add_column('api_consumer', 'user', self.gf('django.db.models.fields.related.ForeignKey')(default=0, related_name='consumers_tasty', to=orm['auth.User']), keep_default=False)
 
 
     def backwards(self, orm):
         
-        # Deleting model 'DeviceUdid'
-        db.delete_table('newapi_deviceudid')
+        # Deleting field 'Consumer.user'
+        db.delete_column('api_consumer', 'user_id')
 
 
     models = {
@@ -60,7 +55,7 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
-        'newapi.consumer': {
+        'api.consumer': {
             'Meta': {'object_name': 'Consumer'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -68,13 +63,7 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '20'}),
             'secret': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'consumers_tasty'", 'to': "orm['auth.User']"})
-        },
-        'newapi.deviceudid': {
-            'Meta': {'object_name': 'DeviceUdid'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'udid': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '40'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'device_udid'", 'unique': 'True', 'to': "orm['auth.User']"})
         }
     }
 
-    complete_apps = ['newapi']
+    complete_apps = ['api']

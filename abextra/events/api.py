@@ -1,25 +1,33 @@
+from django.core.urlresolvers import resolve, Resolver404
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+from django.conf import settings
+from sorl.thumbnail import get_thumbnail
+
 from tastypie import fields
 from tastypie.resources import ModelResource
-from events.models import Event, Occurrence, Category, EventSummary
 from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
-
+from tastypie.validation import FormValidation
+from tastypie.exceptions import ImmediateHttpResponse, NotFound
+from tastypie.http import HttpAccepted, HttpBadRequest
+from tastypie.utils.mime import determine_format, build_content_type
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
-from newapi.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
+
+from api.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
 
 from places.api import PlaceResource, PlaceFullResource
 from prices.api import PriceResource
 
+from events.models import Event, Occurrence, Category, EventSummary
+from events.utils import CachedCategoryTree
+
+from behavior.models import EventAction
+from learning import ml
+
 # ========
 # = User =
 # ========
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-from tastypie.validation import FormValidation
-from tastypie.exceptions import ImmediateHttpResponse
-from tastypie.http import HttpAccepted, HttpBadRequest
-from tastypie.utils.mime import determine_format, build_content_type
-
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
@@ -100,10 +108,6 @@ class OccurrenceFullResource(OccurrenceResource):
 # =========
 # = Event =
 # =========
-from events.utils import CachedCategoryTree
-from sorl.thumbnail import get_thumbnail
-from django.conf import settings
-
 class EventResource(ModelResource):
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
     abstract_categories = fields.ToManyField(CategoryResource, 'categories')
@@ -173,9 +177,6 @@ class FeaturedEventResource(EventFullResource):
 # =================
 # = Event Summary =
 # =================
-from django.core.urlresolvers import resolve, Resolver404
-from tastypie.exceptions import NotFound
-
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventFullResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
@@ -214,9 +215,6 @@ class EventSummaryResource(ModelResource):
 # =========================
 # = Event Recommendations =
 # =========================
-from behavior.models import EventAction
-from learning import ml
-
 class EventRecommendationResource(EventSummaryResource):
 
     def build_filters(self, request, filters=None):

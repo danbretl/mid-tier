@@ -1,7 +1,8 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.authorization import DjangoAuthorization
-from newapi.authentication import ConsumerApiKeyAuthentication
+
+from api.authentication import ConsumerApiKeyAuthentication
 
 from prices.models import Price
 
