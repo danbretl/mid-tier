@@ -81,6 +81,7 @@ class OccurrenceResource(ModelResource):
     class Meta:
         queryset = Occurrence.objects.all()
         allowed_methods = ('get',)
+        list_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         excludes = ('id',)
 
@@ -111,6 +112,7 @@ class EventResource(ModelResource):
     class Meta:
         queryset = Event.objects.all()
         allowed_methods = ('get',)
+        list_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         fields = ('concrete_category', 'abstract_categories', 'occurrences',
             'title', 'description', 'image', 'video_url', 'url'

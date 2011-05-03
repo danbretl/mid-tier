@@ -18,5 +18,5 @@ urlpatterns = patterns('',
         'document_root': settings.STATIC_DOC_ROOT
     }),
 
-    url(r'^api/', include('newapi.urls')),                   # APIs
+    url(r'^api/', include('newapi.urls')),              # APIs
 )
