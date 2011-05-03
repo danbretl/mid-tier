@@ -12,8 +12,6 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),          # admin
     url(r'^settings/', include('livesettings.urls')),   # live settings
 
-    # url(r'^api/', include('api.urls')),                   # piston api
-
     url('^autocomplete/', include(autocomplete.urls)),  # autocomplete
 
     url(r'^static/(?P<path>.*)$', serve, {              # statics
@@ -64,5 +62,5 @@ v1_api.register(EventActionResource(), canonical=True)
 v1_api.register(CategoryResource(), canonical=True)
 
 urlpatterns += patterns('',
-    (r'^tapi/', include(v1_api.urls)),
+    (r'^api/', include(v1_api.urls)),
 )
