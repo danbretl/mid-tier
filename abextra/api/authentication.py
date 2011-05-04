@@ -1,5 +1,6 @@
 from tastypie.authentication import Authentication, ApiKeyAuthentication
 from tastypie.http import HttpUnauthorized
+from tastypie.models import ApiKey
 
 from django.contrib.auth.models import User, Group
 from django.forms import ValidationError
@@ -86,6 +87,13 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
         else:
             request.user = udid.user
 
-        # authenticate user by api key
-        return super(ConsumerApiKeyAuthentication, self) \
-            .is_authenticated(request, **kwargs) if api_key else True
+        # authenticate api key
+        if api_key:
+            try:
+                key = ApiKey.objects.select_related('user').get(key=api_key)
+            except ApiKey.DoesNotExist:
+                return self._unauthorized()
+            else:
+                request.user = key.user
+
+        return True
