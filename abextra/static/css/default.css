@@ -8,7 +8,7 @@ Released for free under a Creative Commons Attribution 2.5 License
 body {
 	margin: 0;
 	padding: 0;
-	background: #EBEBEB url(images/img01.gif) repeat-x left top;
+	background: #EBEBEB url(/static/images/img01.gif) repeat-x left top;
 	text-align: justify;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;
@@ -71,7 +71,7 @@ img.right {
 	width: 960px;
 	height: 100px;
 	margin: 0 auto;
-	background: url(images/img02.gif) no-repeat left top;
+	background: url(/static/images/img02.gif) no-repeat left top;
 }
 
 #logo h1 {
@@ -157,7 +157,7 @@ img.right {
 #top_login .login_button {
 	height:24px;
 	width:24px;
-	background:url(images/img09.gif) 0 0 no-repeat;
+	background:url(/static/images/img09.gif) 0 0 no-repeat;
 	border:none;
 	}
 
@@ -218,22 +218,22 @@ img.right {
 #page_dual {
 	width: 960px;
 	margin: 0 auto;
-	background: url(images/img05.gif) repeat-y left top;
+	background: url(/static/images/img05.gif) repeat-y left top;
 }
 
 #page_single {
 	width: 960px;
 	margin: 0 auto;
-	background: url(images/img08.gif) repeat-y left top;
+	background: url(/static/images/img08.gif) repeat-y left top;
 }
 
 #page-bg_dual {
-	background: url(images/img06.gif) no-repeat left top;
+	background: url(/static/images/img06.gif) no-repeat left top;
 	padding: 0px 10px;
 }
 
 #page-bg_single {
-	background: url(images/img07.gif) no-repeat left top;
+	background: url(/static/images/img07.gif) no-repeat left top;
 	padding: 0px 10px;
 }
 
@@ -273,7 +273,7 @@ img.right {
 	letter-spacing: -1px;
 	font-size: 3em;
 	font-weight: normal;
-	background: url(images/img04.gif) repeat-x left bottom;
+	background: url(/static/images/img04.gif) repeat-x left bottom;
 }
 
 .title a {
@@ -285,7 +285,7 @@ img.right {
 }
 
 .byline {
-	background: url(images/img04.jpg) repeat-x left bottom;
+	background: url(/static/images/img04.jpg) repeat-x left bottom;
 	padding-bottom: 10px;
 }
 
@@ -343,7 +343,7 @@ img.right {
 .sidebar li li {
 	margin: 0 20px 0 15px;
 	padding: 8px 0px;
-	background: url(images/img04.gif) repeat-x left bottom;
+	background: url(/static/images/img04.gif) repeat-x left bottom;
 }
 
 
