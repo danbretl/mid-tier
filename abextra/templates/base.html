@@ -7,6 +7,36 @@
   <title>{% block title %}Kwiqet{% endblock %}</title>
 </head>
 <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
+
+  <!-- start header -->
+  <div id="header">
+  	<div id="logo">
+  		<h1><a href="#"><span>Kwiqet </span></a></h1>
+  		<p>ALPHA USERS PORTAL</p>
+  	</div>
+  <!-- start login -->
+      <div id="top_login"> 
+  		<form action="https://www.leagueoflegends.com/user/login" method="post"> 
+  			<span class="label" style="position: absolute; left: 28px;">Login</span> 
+  			<input type="text" name="name"> 
+  			<input type="password" name="pass"> 
+  			<input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
+  			<input type="submit" class="login_button" value=""> 
+  			<a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
+  		</form> 
+  	</div>
+  <!-- end login -->
+  	<div id="menu">
+  		<ul id="main">
+  			<li class="current_page_item"><a href="#" class="first">Homepage</a></li>
+  			<li><a href="#">About Us</a></li>
+  			<li><a href="#">Contact Us</a></li>
+  		</ul>
+  	</div>
+  </div>
+  <!-- end header -->
+
+
   <div id="body">
     {% block body %}
     <div class="content_title">
