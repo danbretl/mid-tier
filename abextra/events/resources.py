@@ -4,7 +4,7 @@ from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
+from tastypie.authentication import ApiKeyAuthentication
 from tastypie.authorization import DjangoAuthorization
 from tastypie.validation import FormValidation
 from tastypie.exceptions import ImmediateHttpResponse, NotFound

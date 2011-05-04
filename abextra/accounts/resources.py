@@ -54,6 +54,7 @@ class UserResource(ModelResource):
         authentication = ConsumerAuthentication()
         authorization = DjangoAuthorization()
         validation = FormValidation(form_class=SignupFormOnlyEmailBastardized)
+        resource_name = 'registration'
 
     def is_valid(self, bundle, request=None):
         """Overriden to perform validation and persistence in one step"""

@@ -1,4 +1,4 @@
-from tastypie.authentication import Authentication, ApiKeyAuthentication
+from tastypie.authentication import Authentication, BasicAuthentication, ApiKeyAuthentication
 from tastypie.http import HttpUnauthorized
 from tastypie.models import ApiKey
 
@@ -97,3 +97,59 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
                 request.user = key.user
 
         return True
+
+# ========================
+# = Custom Auth Backends =
+# ========================
+from django.contrib.auth.models import User
+from django.core.validators import email_re
+
+class BasicBackend:
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+
+class EmailBackend(BasicBackend):
+    def authenticate(self, username=None, password=None):
+        #If username is an email address, then try to pull it up
+        if email_re.search(username):
+            try:
+                user = User.objects.get(email=username)
+            except User.DoesNotExist:
+                return None
+        else:
+            #We have a non-email address username we should try username
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                return None
+        if user.check_password(password):
+            return user
+
+
+class ConsumerBasicAuthentication(BasicAuthentication):
+    def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
+        self.backend = backend
+        self.realm = realm
+
+    def is_authenticated(self, request, **kwargs):
+        consumer_key = request.REQUEST.get('consumer_key')
+        consumer_secret = request.REQUEST.get('consumer_secret')
+
+        if not consumer_key or not consumer_secret:
+            return self._unauthorized()
+
+        try:
+            consumer = Consumer.objects.select_related('user').get(
+                key=consumer_key, secret=consumer_secret, is_active=True
+            )
+        except (Consumer.DoesNotExist, Consumer.MultipleObjectsReturned):
+            return self._unauthorized()
+        else:
+            request.user = consumer.user
+
+        # ancestor will always return True
+        return super(ConsumerBasicAuthentication, self) \
+            .is_authenticated(request, **kwargs)

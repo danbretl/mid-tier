@@ -1,20 +1,24 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.authorization import DjangoAuthorization
-from api.authentication import ConsumerAuthentication
+from api.authentication import ConsumerBasicAuthentication
 
 from tastypie.models import ApiKey
 from django.contrib.auth.models import User
 
+# ===========================
+# = ApiKey Resource | Login =
+# ===========================
 class ApiKeyResource(ModelResource):
     class Meta:
         queryset = ApiKey.objects.all()
         allowed_methods = ('get')
-        authentication = ConsumerAuthentication()
+        authentication = ConsumerBasicAuthentication()
         authorization = DjangoAuthorization()
         fields = ('key',)
+        resource_name = 'login'
 
-    def obj_get(self, request=None, **kwargs):
-        udid = request.REQUEST.get('udid')
-        import ipdb; ipdb.set_trace()
-        return super(ApiKeyResource, self).obj_get(request, **kwargs)
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(ApiKeyResource, self).get_object_list(request) \
+            .filter(user=request.user)
