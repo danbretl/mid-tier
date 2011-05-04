@@ -138,6 +138,9 @@ INSTALLED_APPS = (
     'sorl.thumbnail',               # thumbnails
     'south',                        # migrations managements
     'tastypie',                     # new api assistance
+    'userena',                      # accounts and registration
+    'guardian',                     # object level permissions  | userena dep
+    'easy_thumbnails',              # thumbnails                | userena dep
 
     'accounts',                     # ABEX user profile extensions
     'alphasignup',                  # ABEX simple web front for Alpha signup
