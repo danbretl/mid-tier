@@ -122,6 +122,16 @@ FIXTURE_DIRS = (
     os.path.join(PROJECT_ROOT, 'fixtures'),
 )
 
+
+HAYSTACK_SITECONF  = 'haystack_search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_DEFAULT_OPERATOR = 'OR'
+###### Identify correct path on server#####
+# Use your own on your local dev meachine
+# Example: '/home/whisky/Abextra/abexmid/abextra/whoosh_indexes' 
+HAYSTACK_WHOOSH_PATH = '/whoosh_indexes/'
+
+
 INSTALLED_APPS = (
     'django.contrib.auth',          # authentication
     'django.contrib.contenttypes',  # content types
@@ -153,7 +163,10 @@ INSTALLED_APPS = (
     'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
     'prices',                       # ABEX prices
-    'pundit',                       # ABEX Pundit categorizes/annotates events
+    'importer',                     # part of the scrape pipeline
+    'pundit',                       # Pundit categorizes/annotates events
+    'alphasignup',                  # simple web front for Alpha signup
+    'haystack',                     # text indexing and search tool for django
 )
 
 # ===========

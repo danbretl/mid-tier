@@ -129,9 +129,11 @@ class FeaturedEventResource(EventFullResource):
         return super(FeaturedEventResource, self).get_object_list(request) \
             .featured()
 
-# =================
-# = Event Summary =
-# =================
+# =========================================
+# = Event Summary including Haystack search
+# =========================================
+from haystack.query import SearchQuerySet
+
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventFullResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
@@ -164,6 +166,11 @@ class EventSummaryResource(ModelResource):
                 raise NotFound("The URL provided '%s' was not a link to a valid resource." % filter_uri)
             else:
                 orm_filters.update(concrete_parent_category__exact=kwargs['pk'])
+
+        if 'q' in filters:
+            sqs = SearchQuerySet().auto_query(filters['q'])
+
+            orm_filters["pk__in"] = [ i.pk for i in sqs ]
 
         return orm_filters
 
