@@ -9,13 +9,13 @@ from tastypie.authentication import Authentication
 from tastypie.authorization import DjangoAuthorization, Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from tastypie.http import HttpAccepted, HttpBadRequest
+from tastypie.http import HttpAccepted, HttpBadRequest, HttpCreated
 from tastypie.resources import ModelResource
+from tastypie.utils import dict_strip_unicode_keys
 from tastypie.utils.mime import determine_format, build_content_type
 from tastypie.validation import FormValidation
 
 from api.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
-# from api.models import DeviceUdid # FIXME generic tool - find a better place
 
 import random
 from django.utils.hashcompat import sha_constructor
@@ -51,13 +51,13 @@ class UserResource(ModelResource):
         validation = FormValidation(form_class=SignupFormOnlyEmailBastardized)
 
     def is_valid(self, bundle, request=None):
-        # username = DeviceUdid.objects.generate_username_unique(prefix='')
-        # bundle.data.update(username=username)
         form = self._meta.validation.form_class(data=bundle.data)
 
         # validation
         if form.is_valid():
-            form.save()
+            new_user = form.save()
+            request.user = new_user
+            request.user_created = True
 
         # error handling
         else:
@@ -72,3 +72,18 @@ class UserResource(ModelResource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         return bundle
+
+    def post_list(self, request, **kwargs):
+        deserialized = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
+        bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized))
+        self.is_valid(bundle, request)
+        updated_bundle = self.obj_create(bundle, request=request)
+
+        response = HttpCreated(location=self.get_resource_uri(updated_bundle))
+
+        if request:
+            user, created = getattr(request, 'user', None), getattr(request, 'user_created', None)
+            if user and created and user.api_key:
+                response.content = user.api_key.key
+
+        return response
