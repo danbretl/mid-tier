@@ -54,7 +54,10 @@ class UserResource(ModelResource):
         validation = FormValidation(form_class=SignupFormOnlyEmailBastardized)
 
     def is_valid(self, bundle, request=None):
+<<<<<<< HEAD
         """Overriden to perform validation and persistence in one step"""
+=======
+>>>>>>> 71f67691e94dda94f75d8e984951a5c69411bbd8
         form = self._meta.validation.form_class(data=bundle.data)
 
         # validation
@@ -79,10 +82,24 @@ class UserResource(ModelResource):
         return bundle
 
     def post_list(self, request, **kwargs):
+<<<<<<< HEAD
         """Overriden to inject ApiKey into response content"""
         response = super(UserResource, self).post_list(request, **kwargs)
+=======
+        deserialized = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
+        bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized))
+        self.is_valid(bundle, request)
+        updated_bundle = self.obj_create(bundle, request=request)
+
+        response = HttpCreated(location=self.get_resource_uri(updated_bundle))
+
+>>>>>>> 71f67691e94dda94f75d8e984951a5c69411bbd8
         if request:
             user, created = getattr(request, 'user', None), getattr(request, 'user_created', None)
             if user and created and user.api_key:
                 response.content = user.api_key.key
+<<<<<<< HEAD
+=======
+
+>>>>>>> 71f67691e94dda94f75d8e984951a5c69411bbd8
         return response
