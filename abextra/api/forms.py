@@ -2,7 +2,9 @@ import re
 from django import forms
 from models import DeviceUdid
 
-UDID_RE = re.compile(r'[0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12}', re.I)
+# simulator udid: 12345678-1234-1234-123456789ABC (hex)
+# iphone udid: 40digits (hex)
+UDID_RE = re.compile(r'([0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12})|([0-9A-F]{40})', re.I)
 
 class DeviceUdidForm(forms.ModelForm):
     udid = forms.RegexField(regex=UDID_RE)
