@@ -214,7 +214,7 @@ LOGGING = {
 # ===============
 # = Keyed Cache =
 # ===============
-# CACHE_PREFIX = str(SITE_ID)
+CACHE_PREFIX = str(SITE_ID)
 CACHE_TIMEOUT = 60              # 1 minute
 
 # ==============================
