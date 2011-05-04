@@ -10,3 +10,4 @@ TAGS
 .emacs.desktop
 abextra/static/*_images
 abextra/whoosh_indexes/*
+requirements_local.txt
