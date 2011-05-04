@@ -1,5 +1,5 @@
 from django.core.urlresolvers import resolve, Resolver404
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
 from sorl.thumbnail import get_thumbnail
@@ -39,6 +39,8 @@ class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
                                      self.cleaned_data['password1'])
 
         new_user = User.objects.create_user(username, email, password)
+        device_user_group = Group.objects.get(id=5)
+        new_user.groups.add(device_user_group)
         return new_user
 
 # ========
