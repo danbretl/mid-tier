@@ -17,3 +17,6 @@ paramiko==1.7.6
 pycrypto==2.3
 wsgiref==0.1.2
 yolk==0.4.1
+Whoosh==1.8.2
+-e git://github.com/toastdriven/django-haystack.git@v1.1#egg=django-haystack
+

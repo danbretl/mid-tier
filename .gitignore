@@ -9,3 +9,4 @@ biketextmate.log
 TAGS
 .emacs.desktop
 abextra/static/*_images
+abextra/whoosh_indexes/*
