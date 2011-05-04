@@ -1,0 +1,12 @@
+{% load i18n %}{% autoescape off %}
+{% trans "Dear" %} {{ user.username }},
+
+{% trans "Thank you for signing up at" %} {{ site.name }}.
+
+{% trans "To activate your account you should click on the link below:" %}
+
+{{ protocol }}://{{ site.domain }}{% url userena_activate user.username activation_key %}
+
+{% trans "Sincerely" %},
+{{ site.name }}
+{% endautoescape %}

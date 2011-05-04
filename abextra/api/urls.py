@@ -1,12 +1,12 @@
 from django.conf.urls.defaults import *
 from tastypie.api import Api
 
-from events.resources import UserResource
+from accounts.resources import UserResource
+from behavior.resources import EventActionResource
 from events.resources import CategoryResource
 from events.resources import EventResource, EventFullResource, FeaturedEventResource
 from events.resources import OccurrenceResource, OccurrenceFullResource
 from events.resources import EventSummaryResource, EventRecommendationResource
-from behavior.resources import EventActionResource
 from places.resources import PlaceResource, PointResource, CityResource
 from places.resources import PlaceFullResource, PointFullResource
 from prices.resources import PriceResource
