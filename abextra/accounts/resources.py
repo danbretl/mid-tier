@@ -50,7 +50,7 @@ class UserResource(ModelResource):
         allowed_methods = ('post',)
         detail_allowed_methods = ()
         authentication = ConsumerAuthentication()
-        authorization = Authorization()
+        authorization = DjangoAuthorization()
         validation = FormValidation(form_class=SignupFormOnlyEmailBastardized)
 
     def is_valid(self, bundle, request=None):
