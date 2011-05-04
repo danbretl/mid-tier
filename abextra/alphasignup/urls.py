@@ -2,11 +2,14 @@ from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 from userena import views as userena_views
 from userena import settings as userena_settings
 
+from alphasignup import views as alpha_views
 from alphasignup.forms import AlphaSignupForm
+
 
 urlpatterns = patterns('',
     # Signup, signin and signout
@@ -52,12 +55,14 @@ urlpatterns = patterns('',
 
     # Activate
     url(r'^(?P<username>\w+)/activate/complete/$',
-       userena_views.direct_to_user_template,
-       {'template_name': 'userena/activate_complete.html'},
-       name='userena_activate_complete'),
-    url(r'^(?P<username>\w+)/activate/(?P<activation_key>\w+)/$',
-       userena_views.activate,
-       name='userena_activate'),
+        userena_views.direct_to_user_template,
+        {'template_name': 'userena/activate_complete.html'},
+        name='userena_activate_complete'
+    ),
+        url(r'^(?P<username>\w+)/activate/(?P<activation_key>\w+)/$',
+        alpha_views.activate,
+        name='userena_activate'
+    ),
 
     # Change email and confirm it
     url(r'^(?P<username>\w+)/email/$',
@@ -80,6 +85,12 @@ urlpatterns = patterns('',
        userena_views.direct_to_user_template,
        {'template_name': 'userena/disabled.html'},
        name='userena_disabled'),
+
+    # Change or Set Password
+    url(r'^(?P<username>\w+)/password_set/$',
+       alpha_views.password_change_or_set,
+       name='alpha_password_change_or_set'
+    ),
 
     # Change password
     url(r'^(?P<username>\w+)/password/$',

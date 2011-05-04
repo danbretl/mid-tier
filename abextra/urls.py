@@ -23,7 +23,7 @@ urlpatterns = patterns('',
     # ============================
     # = User Accounts via Userna =
     # ============================
-    # (r'^accounts/', include('alphasignup.urls')),
+    (r'^alpha/', include('alphasignup.urls')),
 
     # ================
     # = Autocomplete =
