@@ -12,6 +12,7 @@ else:
     from learning import testing_simulation, testing_framework
 from learning import ml, settings, category_tree, user_behavior, simulation_shared
 from itertools import count
+from newapi.models import Consumer
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
 import threading
@@ -504,7 +505,20 @@ class StressTesting(TestCase):
        - Will be useful for before and after comparisons of Johnny Cache.
     c)
     """
-    fixtures = ['auth', 'consumers']
+    fixtures = ['auth', 'consumers', 'events_all', 'categories', 'places', 'user',
+                'eventsummary', 'occurrences']
+    consumer = Consumer.objects.get(id=1)
+    encoded_params = '?'
+    encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
+                                        'consumer_secret' : consumer.secret,
+                                        'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3',
+                                        'format': 'json'})
+    clients = []
+    num_clients = 100
+    for num in range(num_clients):
+        client = Client()
+        clients.append(client)
+
     # Consider this for automated testing.
     def test_all_apis(self):
         base_url = 'http://testsv.abextratech.com'
@@ -512,12 +526,12 @@ class StressTesting(TestCase):
         consumer_key = 'rngQ5ZSe3FmzYJ3cgL'
         udid = '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
         params = urllib.urlencode({'consumer_key' : consumer_key,
-                                   'consumer_secret' : consumer_key,
+                                   'consumer_secret' : consumer_secret,
                                    'udid' : udid,
                                    'format': 'json'})
         # The more automated we want to make this the less assumptions we will
         # need to make.
-        f = urllib.urlopen(base_url + '/tapi/v1/?' + params)
+        f = urllib.urlopen(base_url + '/api/v1/?' + params)
         apis = json.loads(f.readline())
         for model in apis.keys():
             #Test apis here
@@ -529,24 +543,105 @@ class StressTesting(TestCase):
             # Now hit the url and get some objects.
             # Ensure each of the URLS conforms to this schema
             # (such checks will likely have also been performed in tastypie's
-            # unit tests
+            # unit tests)
 
-    def simple_client(self):
-        client = Client()
-        consumer_secret = '7fb49b90f41a832f3d5cc12f1b9ed56795c5748a'
-        consumer_key = 'rngQ5ZSe3FmzYJ3cgL'
+    def test_simple_client(self):
+        clients = []
+        num_clients = 100
+        for num in range(num_clients):
+            client = Client()
+            clients.append(client)
+        #1) Create fixtures for each of these
+        apis_to_test = ['/api/v1/category/',
+                        '/api/v1/city/',
+                        '/api/v1/occurrence/',
+                        '/api/v1/occurrence_full/',
+                        '/api/v1/point/',
+                        '/api/v1/point_full/',
+                        '/api/v1/eventsummary/',
+                        '/api/v1/eventaction/',
+                        '/api/v1/event_full/',
+                        '/api/v1/price/',
+                        '/api/v1/eventrecommendation/',
+                        '/api/v1/place/',
+                        '/api/v1/place_full/',
+                        '/api/v1/user/1/',
+                        '/api/v1/event_featured/',
+                        '/api/v1/event/'
+                        ]
+        # Get these values instead from the fixtures.
+        consumer = Consumer.objects.get(id=1)
+        consumer_secret = consumer.secret
+        consumer_key = consumer.key
         udid = '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
-        encoded_params = urllib.urlencode({'consumer_key' : consumer_key,
-                                   'consumer_secret' : consumer_key,
-                                   'udid' : udid,
-                                   'format': 'json'})
+        encoded_params = '?'
+        encoded_params += urllib.urlencode({'consumer_key' : consumer_key,
+                                            'consumer_secret' : consumer_secret,
+                                            'udid' : udid,
+                                            'format': 'json'})
 
-        params = '/tapi/v1/?' + encoded_params
+        params = '/api/v1/?' + encoded_params
         response = client.get(params)
         apis = json.loads(response.content)
-        for model in apis.keys():
-            schema_url = apis[model]['schema']
-            list_endpoint = apis[model]['list_endpoint']
-            api_schema_response = client.get( schema_url + '?' + encoded_params)
-            print api_schema_response.content
-            print "Schema: ", schema_url
+
+        for list_endpoint in apis_to_test:
+            url = list_endpoint + encoded_params
+            api_response = client.get(url)
+            print "URL    : ", url
+            print "Content: ", api_response.content
+            try:
+                print "JSON:    ", json.loads(api_response.content), "\n"
+            except:
+                pass
+            print "Endpoint:", list_endpoint
+            print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+
+    def test_category_city_api(self):
+        client_temp = Client()
+        # More comprehensive tests could check for more keys.
+        apis = [
+            '/api/v1/category/',
+            '/api/v1/city/',
+            '/api/v1/place/',
+            '/api/v1/place_full/',
+            '/api/v1/eventsummary/',
+            '/api/v1/point_full/',
+            '/api/v1/point/',
+            '/api/v1/occurrence_full/',
+            '/api/v1/occurrence/',
+            ]
+        for api_to_hit in apis:
+            url = api_to_hit + self.encoded_params
+            response = client_temp.get(url)
+            all_objects = json.loads(response.content)
+            for client in self.clients:
+                try:
+                    num = random.randrange(0,len(all_objects['objects']))
+                except:
+                    import ipdb; ipdb.set_trace()
+                    break
+                resource_uri = all_objects['objects'][num]['resource_uri']
+                for key in all_objects['objects'][num].keys():
+                    api_obj = all_objects['objects'][num][key]
+                    url = resource_uri + self.encoded_params
+                    response = client.get(url)
+                    self.assertEqual(response.status_code,200)
+                    self.assertEqual(json.loads(response.content)[key], api_obj)
+
+    def test_price(self):
+        apis = ['/api/v1/price/']
+
+    def test_user(self):
+        apis = ['/api/v1/user']
+
+    def test_event(self):
+        apis = ['/api/v1/event/', '/api/v1/event_full/']
+        apis = ['/api/v1/eventrecommendation/']
+        apis = ['/api/v1/eventsummary/']
+        apis = ['/api/v1/event_featured/']
+
+
+    def test_event_action(self):
+        apis = ['/api/v1/eventaction/']
+
