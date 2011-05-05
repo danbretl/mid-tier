@@ -5,12 +5,12 @@ from tastypie.resources import ModelResource
 from tastypie.authorization import DjangoAuthorization
 from tastypie.validation import FormValidation
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from tastypie.utils.mime import determine_format, build_content_type
+from tastypie.utils.mime import build_content_type
 from tastypie.http import HttpBadRequest
 from api.authentication import ConsumerApiKeyAuthentication
 
 from accounts.resources import UserResource
-from behavior.models import EventAction, User, Event
+from behavior.models import EventAction, EventActionAggregate
 from behavior.forms import EventActionForm
 from events.resources import EventResource
 
@@ -23,7 +23,7 @@ class EventActionResource(ModelResource):
 
     class Meta:
         queryset = EventAction.objects.all()
-        allowed_methods = ('post',)
+        allowed_methods = ('post', 'delete')
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         authorization = DjangoAuthorization()
@@ -82,3 +82,21 @@ class EventActionResource(ModelResource):
 
     def obj_create(self, bundle, request=None, **kwargs):
         return bundle
+
+    def obj_delete_list(self, request=None, **kwargs):
+        """overriden to filter for the user"""
+        self.get_object_list(request).filter(**kwargs) \
+            .filter(user=request.user).delete()
+
+class EventActionAggregateResource(ModelResource):
+    class Meta:
+        queryset = EventActionAggregate.objects.all()
+        allowed_methods = ('delete',)
+        detail_allowed_methods = ()
+        authentication = ConsumerApiKeyAuthentication()
+        authorization = DjangoAuthorization()
+
+    def obj_delete_list(self, request=None, **kwargs):
+        """overriden to filter for the user"""
+        self.get_object_list(request).filter(**kwargs) \
+            .filter(user=request.user).delete()

@@ -3,7 +3,7 @@ from tastypie.api import Api
 
 from accounts.resources import UserResource
 from api.resources import ApiKeyResource
-from behavior.resources import EventActionResource
+from behavior.resources import EventActionResource, EventActionAggregateResource
 from events.resources import CategoryResource
 from events.resources import EventResource, EventFullResource, FeaturedEventResource
 from events.resources import OccurrenceResource, OccurrenceFullResource
@@ -52,6 +52,7 @@ api_v1.register(PriceResource(), canonical=True)
 # = Behavior / Reset =
 # ====================
 api_v1.register(EventActionResource(), canonical=True)
+api_v1.register(EventActionAggregateResource(), canonical=True)
 
 # ============
 # = Category =
