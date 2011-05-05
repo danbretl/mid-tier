@@ -224,10 +224,6 @@ CACHE_TIMEOUT = 60              # 1 minute
 HAYSTACK_SITECONF  = 'search_sites'
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_DEFAULT_OPERATOR = 'OR'
-###### Identify correct path on server#####
-# Use your own on your local dev meachine
-# Example: '/home/whisky/Abextra/abexmid/abextra/whoosh_indexes' 
-HAYSTACK_WHOOSH_PATH = '/whoosh_indexes/'
 
 # ==============================
 # = eventure specific settings =
