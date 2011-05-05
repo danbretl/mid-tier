@@ -139,7 +139,7 @@ class EventSummaryResource(ModelResource):
 
     class Meta:
         queryset = EventSummary.objects.all()
-        allowed_methods = ('get',)
+        allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         filtering = {
             'concrete_category': ('exact',),
@@ -171,6 +171,9 @@ class EventSummaryResource(ModelResource):
 # = Event Recommendations =
 # =========================
 class EventRecommendationResource(EventSummaryResource):
+
+    class Meta(EventSummaryResource.Meta):
+        allowed_methods = ('get',)
 
     def build_filters(self, request, filters=None):
         if filters is None:
