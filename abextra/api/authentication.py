@@ -147,8 +147,6 @@ class ConsumerBasicAuthentication(BasicAuthentication):
             )
         except (Consumer.DoesNotExist, Consumer.MultipleObjectsReturned):
             return self._unauthorized()
-        else:
-            request.user = consumer.user
 
         # ancestor will always return True
         return super(ConsumerBasicAuthentication, self) \

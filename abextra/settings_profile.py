@@ -7,4 +7,3 @@ if 'test' in sys.argv:
         'NAME' : ':memory:',
         'TEST_NAME': ':memory:',
     }
-
