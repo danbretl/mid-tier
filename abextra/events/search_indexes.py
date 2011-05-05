@@ -13,6 +13,7 @@ class EventIndex(indexes.SearchIndex):
         """Used when the entire index for model is updated."""
         # We also want to index past events in case a user wants to find
         # older events.
-        return Event.objects.all()
+        # Inactive events should not be indexed
+        return Event.active.all()
 
 site.register(Event, EventIndex)
