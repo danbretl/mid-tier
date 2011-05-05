@@ -12,7 +12,7 @@ else:
     from learning import testing_simulation, testing_framework
 from learning import ml, settings, category_tree, user_behavior, simulation_shared
 from itertools import count
-from newapi.models import Consumer
+from api.models import Consumer
 from behavior.models import EventActionAggregate
 from preprocess.utils import MockInitializer
 import threading
@@ -597,7 +597,7 @@ class StressTesting(TestCase):
             print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
 
 
-    def test_category_city_api(self):
+    def test_most_api(self):
         client_temp = Client()
         # More comprehensive tests could check for more keys.
         apis = [
@@ -616,11 +616,7 @@ class StressTesting(TestCase):
             response = client_temp.get(url)
             all_objects = json.loads(response.content)
             for client in self.clients:
-                try:
-                    num = random.randrange(0,len(all_objects['objects']))
-                except:
-                    import ipdb; ipdb.set_trace()
-                    break
+                num = random.randrange(0,len(all_objects['objects']))
                 resource_uri = all_objects['objects'][num]['resource_uri']
                 for key in all_objects['objects'][num].keys():
                     api_obj = all_objects['objects'][num][key]
@@ -633,7 +629,17 @@ class StressTesting(TestCase):
         apis = ['/api/v1/price/']
 
     def test_user(self):
-        apis = ['/api/v1/user']
+        api = '/api/v1/registration/'
+        post_data = u'{"email": "some@example.com", "password1": "1234", "password2": "1234"}'
+        consumer = Consumer.objects.get(id=1)
+        auth_data = {'consumer_key' : consumer.key,
+                     'consumer_secret' : consumer.secret,
+                     'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3',}
+        encoded_params = '?' + urllib.urlencode(auth_data)
+        client = Client()
+        resp = client.post(api + encoded_params, data=post_data,
+                           content_type='application/json')
+        self.assertEqual(resp.status_code, 201)
 
     def test_event(self):
         apis = ['/api/v1/event/', '/api/v1/event_full/']
@@ -643,5 +649,19 @@ class StressTesting(TestCase):
 
 
     def test_event_action(self):
-        apis = ['/api/v1/eventaction/']
-
+        api = '/api/v1/eventaction/'
+        consumer = Consumer.objects.get(id=1)
+        auth_data = {'consumer_key' : consumer.key,
+                     'consumer_secret' : consumer.secret,
+                     'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3',}
+        encoded_params = '?' + urllib.urlencode(auth_data)
+        action = ['g', 'v', 'i', 'x']
+        events = Event.objects.all()
+        loops = len(events) * len(events)
+        for loop in range(loops):
+            client = self.clients[random.randrange(0,len(self.clients))]
+            event = Event.objects.order_by('?')[0]
+            random_action = action[random.randrange(0,len(action))]
+            post_data = u'{"action": "' + random_action + '", "event": "/api/v1/event/' + str(event.id) + '/"}'
+            resp = client.post(api + encoded_params, data=post_data, content_type='application/json')
+            self.assertEqual(resp.status_code, 201)
