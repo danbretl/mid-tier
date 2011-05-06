@@ -141,7 +141,7 @@ class EventSummaryResource(ModelResource):
 
     class Meta:
         queryset = EventSummary.objects.all()
-        allowed_methods = ()
+        allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         filtering = {
             'concrete_category': ('exact',),
