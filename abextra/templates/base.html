@@ -16,15 +16,17 @@
     </div>
 
     <!-- start login -->
-    <div id="top_login"> 
-      <form action="" method="post"> 
-        <span class="label" style="position: absolute; left: 28px;">Login</span> 
-        <input type="text" name="name"> 
-        <input type="password" name="pass"> 
-        <input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
-        <input type="submit" class="login_button" value=""> 
-        <a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
-      </form> 
+    <div id="top_login">
+      {% if not user.is_authenticated %}
+        <form action="" method="post"> 
+          <span class="label" style="position: absolute; left: 28px;">Login</span> 
+          <input type="text" name="name"> 
+          <input type="password" name="pass"> 
+          <input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
+          <input type="submit" class="login_button" value=""> 
+          <a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
+        </form>
+      {% endif %}
     </div>
     <!-- end login -->
 
