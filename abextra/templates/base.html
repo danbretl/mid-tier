@@ -10,41 +10,72 @@
 
   <!-- start header -->
   <div id="header">
-  	<div id="logo">
-  		<h1><a href="#"><span>Kwiqet </span></a></h1>
-  		<p>ALPHA USERS PORTAL</p>
-  	</div>
-  <!-- start login -->
-      <div id="top_login"> 
-  		<form action="https://www.leagueoflegends.com/user/login" method="post"> 
-  			<span class="label" style="position: absolute; left: 28px;">Login</span> 
-  			<input type="text" name="name"> 
-  			<input type="password" name="pass"> 
-  			<input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
-  			<input type="submit" class="login_button" value=""> 
-  			<a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
-  		</form> 
-  	</div>
-  <!-- end login -->
-  	<div id="menu">
-  		<ul id="main">
-  			<li class="current_page_item"><a href="#" class="first">Homepage</a></li>
-  			<li><a href="#">About Us</a></li>
-  			<li><a href="#">Contact Us</a></li>
-  		</ul>
-  	</div>
+    <div id="logo">
+      <h1><a href="#"><span>kwiqet</span></a></h1>
+      <p>let's go out tonight</p>
+    </div>
+    <!-- start login -->
+    <div id="top_login"> 
+      <form action="https://www.leagueoflegends.com/user/login" method="post"> 
+        <span class="label" style="position: absolute; left: 28px;">Login</span> 
+        <input type="text" name="name"> 
+        <input type="password" name="pass"> 
+        <input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
+        <input type="submit" class="login_button" value=""> 
+        <a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
+      </form> 
+    </div>
+    <!-- end login -->
+
+    <!-- begin menu -->
+    <div id="menu">
+      <ul id="main">
+        <li class="current_page_item"><a href="#" class="first">Homepage</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <!-- end menu -->
+
   </div>
   <!-- end header -->
 
-  <div id="body">
-    {% block body %}
-    <div class="content_title">
-    {% block content_title %}{% endblock %}
+  <!-- start page -->
+  <div id="wrapper">
+    <div id="page_single">
+      <div id="page-bg_single">
+        <!-- start main content -->
+        <div id="content_single">
+          <div class="flower"></div>
+
+          <div id="body">
+            {% block body %}
+            <div class="content_title">
+              {% block content_title %}{% endblock %}
+            </div>
+            <div class="content">
+              {% block content %}{% endblock %}
+            </div>
+            {% endblock %}
+          </div>
+
+        </div>
+        <!-- end content -->
+
+        <div style="clear: both;">&nbsp;</div>
+      </div>
     </div>
-    <div class="content">
-    {% block content %}{% endblock %}
-    </div>
-    {% endblock %}
   </div>
+  <!-- end page -->
+
+  <!-- begin footer -->
+  <div id="footer">
+    <div id="footer-bg">
+      <p class="copyright">&copy;&nbsp;&nbsp;2011 All Rights Reserved &nbsp;&bull;&nbsp; Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+      <p class="link"><a href="#">Privacy Policy</a>&nbsp;&#8226;&nbsp;<a href="#">Terms of Use</a></p>
+    </div>
+  </div>
+  <!-- end footer -->
+
 </body>
 </html>
