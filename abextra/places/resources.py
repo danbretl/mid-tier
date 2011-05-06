@@ -11,8 +11,7 @@ from api.authentication import ConsumerApiKeyAuthentication
 class CityResource(ModelResource):
     class Meta:
         queryset = City.objects.all()
-        allowed_methods = ('get',)
-        list_allowed_methods = ()
+        allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         fields = ('city', 'state')
 
@@ -24,8 +23,7 @@ class PointResource(ModelResource):
 
     class Meta:
         queryset = Point.objects.all()
-        allowed_methods = ('get',)
-        list_allowed_methods = ()
+        allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         fields = ('city',
             'latitude', 'longitude', 'address', 'zip', 'country'
@@ -45,8 +43,7 @@ class PlaceResource(ModelResource):
 
     class Meta:
         queryset = Place.objects.all()
-        allowed_methods = ('get',)
-        list_allowed_methods = ()
+        allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         fields = ('point',
             'title', 'description', 'unit', 'phone', 'url', 'email', 'image',

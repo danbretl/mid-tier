@@ -12,7 +12,8 @@ from django.contrib.auth.models import User
 class ApiKeyResource(ModelResource):
     class Meta:
         queryset = ApiKey.objects.all()
-        allowed_methods = ('get')
+        list_allowed_methods = ('get')
+        detail_allowed_methods = ()
         authentication = ConsumerBasicAuthentication()
         authorization = DjangoAuthorization()
         fields = ('key',)

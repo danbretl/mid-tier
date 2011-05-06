@@ -23,7 +23,7 @@ class EventActionResource(ModelResource):
 
     class Meta:
         queryset = EventAction.objects.all()
-        allowed_methods = ('post', 'delete')
+        list_allowed_methods = ('post', 'delete')
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         authorization = DjangoAuthorization()
@@ -91,7 +91,7 @@ class EventActionResource(ModelResource):
 class EventActionAggregateResource(ModelResource):
     class Meta:
         queryset = EventActionAggregate.objects.all()
-        allowed_methods = ('delete',)
+        list_allowed_methods = ('delete',)
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         authorization = DjangoAuthorization()

@@ -49,7 +49,7 @@ class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
-        allowed_methods = ('post',)
+        list_allowed_methods = ('post',)
         detail_allowed_methods = ()
         authentication = ConsumerAuthentication()
         authorization = DjangoAuthorization()

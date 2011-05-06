@@ -29,7 +29,8 @@ from learning import ml
 class CategoryResource(ModelResource):
     class Meta:
         queryset = Category.concrete.all()
-        allowed_methods = ('get',)
+        list_allowed_methods = ('get',)
+        detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
         fields = ('title', 'color')
@@ -43,8 +44,8 @@ class OccurrenceResource(ModelResource):
 
     class Meta:
         queryset = Occurrence.objects.all()
-        allowed_methods = ('get',)
         list_allowed_methods = ()
+        detail_allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         excludes = ('id',)
 
@@ -70,8 +71,8 @@ class EventResource(ModelResource):
 
     class Meta:
         queryset = Event.objects.all()
-        allowed_methods = ('get',)
         list_allowed_methods = ()
+        detail_allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         fields = ('concrete_category', 'abstract_categories', 'occurrences',
             'title', 'description', 'image', 'video_url', 'url'
@@ -141,7 +142,8 @@ class EventSummaryResource(ModelResource):
 
     class Meta:
         queryset = EventSummary.objects.all()
-        allowed_methods = ('get',)
+        list_allowed_methods = ('get',)
+        detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         filtering = {
             'concrete_category': ('exact',),
@@ -178,9 +180,6 @@ class EventSummaryResource(ModelResource):
 # = Event Recommendations =
 # =========================
 class EventRecommendationResource(EventSummaryResource):
-
-    class Meta(EventSummaryResource.Meta):
-        allowed_methods = ('get',)
 
     def build_filters(self, request, filters=None):
         if filters is None:

@@ -9,7 +9,7 @@ from prices.models import Price
 class PriceResource(ModelResource):
     class Meta:
         queryset = Price.objects.all()
-        allowed_methods = ('get',)
+        detail_allowed_methods = ()
         list_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         authorization = DjangoAuthorization()
