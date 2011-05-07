@@ -208,6 +208,10 @@ LOGGING = {
         'consumer.scrape': {
             'handlers': ['console'],
             'level': 'DEBUG',
+        },
+        'api.test' : {
+            'handlers': ['console'],
+            'level': 'DEBUG',
         }
     }
 }
