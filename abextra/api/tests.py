@@ -199,6 +199,9 @@ class StressTesting(TestCase):
             url = api + self.encoded_params
             self.assert200(url)
 
+    # Fails with a 500 error.
+    # Exact same failure reason as test_event_full.
+    # see below
     def test_featured_event(self):
         api = '/api/v1/event_featured/'
         url = api + self.encoded_params
@@ -214,7 +217,9 @@ class StressTesting(TestCase):
             self.assert200(url)
 
     #FAILING TEST - Investigate
-    #Failed with a 410 o_O
+    #Failed with a 500, internal server error. The problem lies with the jpeg
+    # decoding libraries. Tried with PNG as well without success.
+    # Not sure what the problem here is.
     def test_event_full(self):
         # Todo: separate out each of these tests
         # Testing event description endpoint.
