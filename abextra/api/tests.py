@@ -281,29 +281,30 @@ class StressTesting(TestCase):
 
 class ConcurrencyTest(TestCase):
     fixtures = ['auth', 'consumers', 'events', 'categories', 'places', 'user', 'eventsummary']
+    count = 1
 
-    class AsyncPostTestHandler(urllib2.HTTPHandler):
-        def http_response(self, req, response):
-            self.assertEqual(201,response.get_code())
+    def test_event(self):
+        import eventlet
+        from eventlet.green import urllib2
+        urls = ['http://www.cs.rutgers.edu/', 'http://www.google.com/']
+        urls = [u'{"email": "some@example.com", "password1": "1234", "password2": "1234"}',
+                u'{"email": "some2@example.com", "password1": "1234", "password2": "1234"}']
+
+        def fetch(data):
+            url = '/api/v1/registration/'
+            client = Client()
+            consumer = Consumer.objects.get(id=1)
+            encoded_params = '?'
+            encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
+                                                'consumer_secret' : consumer.secret,
+                                                'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF' + str(self.count)
+                                                })
+            client = Client()
+            response = client.post(url + encoded_params, data=data, content_type='application/json')
             return response
 
 
-    class AsyncGetTestHandler(urllib2.HTTPHandler):
-        def http_response(self, req, response):
-            #self.assertEqual(200,response.get_code())
-            print "URL: ", response.geturl()
-            print "Status: ", response.getcode()
-            return response
-
-
-    def test_user_registration(self):
-        api = '/api/v1/registration/'
-        post_data = u'{"email": "some@example.com", "password1": "1234", "password2": "1234"}'
-        num_items = 2
-        o1 = urllib2.build_opener(self.AsyncGetTestHandler)
-        t1 = threading.Thread(target=o1.open, args=('http://www.cs.rutgers.edu/',))
-        t1.start()
-        o2 = urllib2.build_opener(self.AsyncGetTestHandler)
-        t2 = threading.Thread(target=o1.open, args=('http://www.google.com/',))
-        t2.start()
-        print "We are asynchronous!"
+        pool = eventlet.GreenPool()
+        for response in pool.imap(fetch,urls):
+            self.assertEqual(201, response.status_code)
+            self.count += 1
