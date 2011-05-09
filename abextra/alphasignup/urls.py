@@ -87,15 +87,11 @@ urlpatterns = patterns('',
        name='userena_disabled'),
 
     # Change or Set Password
-    url(r'^(?P<username>\w+)/password_set/$',
+    url(r'^(?P<username>\w+)/password/$',
        alpha_views.password_change_or_set,
-       name='alpha_password_change_or_set'
+       name='userena_password_change'
     ),
 
-    # Change password
-    url(r'^(?P<username>\w+)/password/$',
-       userena_views.password_change,
-       name='userena_password_change'),
     url(r'^(?P<username>\w+)/password/complete/$',
        userena_views.direct_to_user_template,
        {'template_name': 'userena/password_complete.html'},
@@ -110,10 +106,10 @@ urlpatterns = patterns('',
     url(r'^(?P<username>\w+)/$',
        userena_views.profile_detail,
        name='userena_profile_detail'),
-    url(r'^page/(?P<page>[0-9]+)/$',
-       userena_views.profile_list,
-       name='userena_profile_list_paginated'),
-    url(r'^$',
-       userena_views.profile_list,
-       name='userena_profile_list'),
+    # url(r'^page/(?P<page>[0-9]+)/$',
+    #    userena_views.profile_list,
+    #    name='userena_profile_list_paginated'),
+    # url(r'^$',
+    #    userena_views.profile_list,
+    #    name='userena_profile_list'),
 )

@@ -3,7 +3,8 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="keywords" content="kwiqet" />
   {% block meta %}{% endblock %}
-  <link href="{{MEDIA_URL}}css/default.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{{ MEDIA_URL }}css/default.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{{ MEDIA_URL }}css/form.css" rel="stylesheet" type="text/css" media="screen" />
   <title>{% block title %}Kwiqet{% endblock %}</title>
 </head>
 <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
@@ -11,29 +12,31 @@
   <!-- start header -->
   <div id="header">
     <div id="logo">
-      <h1><a href="#"><span>kwiqet</span></a></h1>
+      <h1><a href="/"><span>kwiqet</span></a></h1>
       <p>let's go out tonight</p>
+
+      <div id="top_login">
+        <div class="welcome_text">
+          {% if user.is_authenticated %}
+            <span class='label'>Welcome Back, {{ user.first_name }} <span class='black'>|</span> <a href="{% url userena_signout %}">Logout</a></span>
+          {% else %}
+            <span><a href="{% url userena_signin %}">Login</a></span>
+          {% endif %}
+        </div>
+      </div>
+
     </div>
 
     <!-- start login -->
-    <div id="top_login">
-      {% if not user.is_authenticated %}
-        <form action="" method="post"> 
-          <span class="label" style="position: absolute; left: 28px;">Login</span> 
-          <input type="text" name="name"> 
-          <input type="password" name="pass"> 
-          <input type="hidden" name="form_id" id="edit-user-login" value="user_login"> 
-          <input type="submit" class="login_button" value=""> 
-          <a href="/account/recovery/password" class="forget_link">Forgot your password?</a>
-        </form>
-      {% endif %}
-    </div>
     <!-- end login -->
 
     <!-- begin menu -->
     <div id="menu">
       <ul id="main">
         <li class="current_page_item"><a href="#" class="first">Homepage</a></li>
+        {% if user.is_authenticated %}
+          <li><a href="{% url userena_profile_detail user.username %}"><span>Account</span></a></li>
+        {% endif %}
         <li><a href="#">About Us</a></li>
         <li><a href="#">Contact Us</a></li>
       </ul>
@@ -43,6 +46,7 @@
   </div>
   <!-- end header -->
 
+  {% block page %}
   <!-- start page -->
   <div id="wrapper">
     <div id="page_single">
@@ -70,6 +74,7 @@
     </div>
   </div>
   <!-- end page -->
+  {% endblock %}
 
   <!-- begin footer -->
   <div id="footer">

@@ -63,8 +63,11 @@ def password_change_or_set(request, username, template_name='userena/password_fo
     """
     user = get_object_or_404(User, username__iexact=username)
 
+    base_template = 'userena/base_userena_dual.html'
+
     if not user.has_usable_password():
         pass_form = SetPasswordForm
+        base_template = 'userena/base_userena.html'
 
     form = pass_form(user=user)
 
@@ -77,6 +80,7 @@ def password_change_or_set(request, username, template_name='userena/password_fo
     if not extra_context:
         extra_context = dict()
     extra_context['form'] = form
+    extra_context['base_template'] = base_template
     return direct_to_template(request, template_name, extra_context=extra_context)
 
 @secure_required
@@ -121,7 +125,7 @@ def activate(request, username, activation_key,
             messages.success(request, _('Your account has been activated! Please, set your password.'),
                              fail_silently=True)
 
-        redirect_to = reverse('alpha_password_change_or_set', kwargs={'username': username})
+        redirect_to = reverse('userena_password_change', kwargs={'username': username})
         return redirect(redirect_to)
     else:
         if not extra_context: extra_context = dict()

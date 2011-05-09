@@ -31,3 +31,6 @@ class AlphaSignupForm(SignupFormOnlyEmail):
         new_user.last_name = self.cleaned_data['last_name']
         new_user.save()
         return new_user
+
+class AlphaQuestionnaire(forms.ModelForm):
+    pass

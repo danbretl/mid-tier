@@ -78,11 +78,13 @@ SECRET_KEY = '3xh0mi2n)pvri!l^-8-@-xkjn^uc#q!79!yfdc-@qe&!4e4_em'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-        #     'django.template.loaders.eggs.Loader',
-    )),
+    # ('django.template.loaders.cached.Loader',
+    #     (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+            'django.template.loaders.eggs.Loader',
+    #     )
+    # ),
 )
 
 TEMPLATE_DIRS = (
@@ -101,11 +103,13 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 ANONYMOUS_USER_ID = -1
 
-LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-LOGIN_URL = '/accounts/signin/'
-LOGOUT_URL = '/accounts/signout/'
+LOGIN_REDIRECT_URL = '/alpha/%(username)s/'
+LOGIN_URL = '/alpha/signin/'
+LOGOUT_URL = '/alpha/signout/'
 
+USERENA_SIGNIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 USERENA_WITHOUT_USERNAMES = True
+USERENA_MUGSHOT_SIZE = 50
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',

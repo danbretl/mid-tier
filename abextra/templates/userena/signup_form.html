@@ -1,28 +1,37 @@
 {% extends 'userena/base_userena.html' %}
 {% load i18n %}
 
-{% block title %}{% trans "Signup" %}{% endblock %}
+{% block title %}{% trans "Kwiqet α signup " %}{% endblock %}
 
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    <fieldset>
-        <legend>Signup</legend>
-        {% for field in form %}
-        {{ field.errors }}
-        {% comment %} Displaying checkboxes differently {% endcomment %}
-        {% if field.name == 'tos' %}
-        <p class="checkbox">
-            <label for="id_{{ field.name }}">{{ field }} {{ field.label }}</label>
-        </p>
-        {% else %}
-        <p>
-            {{ field.label_tag }} 
-            {{ field }}
-        </p>
-        {% endif %}
-        {% endfor %}
-    </fieldset>
-    <input type="submit" value="{% trans "Signup"%}" />
+<form id="signup_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
+  {% csrf_token %}
+
+  <header class="info">
+    <h2>Kwiqet Alpha Signup</h2>
+    <div>Thanks for your interest.</div>
+  </header>
+
+  <ul>
+    {% for field in form %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        {{ field.label }}
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endfor %}
+
+    <li class="buttons">
+      <div>
+        <input id="saveForm" name="saveForm" class="btImg submit" type="image" src="{{ MEDIA_URL }}images/transparent.png" alt="Submit">
+      </div>
+    </li>
+  <ul>
+
 </form>
 {% endblock %}
