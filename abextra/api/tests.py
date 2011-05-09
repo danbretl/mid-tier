@@ -5,8 +5,9 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 from api.models import Consumer
-import urllib
+import urllib, urllib2
 from django.test import TestCase
+from django.core.management import call_command
 from django.test.client import Client
 from events.models import Event
 import threading
@@ -210,11 +211,25 @@ class StressTesting(TestCase):
     def test_eventsummary(self):
         api = '/api/v1/eventsummary/'
         url = api + self.encoded_params
-        self.assert200(url)
+        response = self.assert200(url)
+        # This should work for upto 20 since this api has a limit set to 20.
+        # Better than a hard-coded comparison to 10.
+        all_objects = json.loads(response.content)
+        self.assertEqual(len(Event.objects.all()),
+                             len(all_objects['objects']))
 
+        HAYSTACK_WHOOSH_PATH = '/home/whisky/Abextra/abexmid/abextra/fixtures/whoosh_index'
+        # Should be actually rebuilding index here, but rebuild raises an
+        # interactive question during clear, so only calling update for now.
+        # (./manage.py rebuild_index --noinput)
+        call_command('update_index')
+        # Both of these have been handpicked to return only one result and in
+        # particular, the first event. 
         for term in ['four', 'legend']:
             url = api + self.encoded_params + '&q=' + term
-            self.assert200(url)
+            response = self.assert200(url)
+            self.assertEqual(1,len(json.loads(response.content)['objects']))
+
 
     #FAILING TEST - Investigate
     #Failed with a 500, internal server error. The problem lies with the jpeg
@@ -228,6 +243,7 @@ class StressTesting(TestCase):
             #TODO: Fix fixture of occurrence for event 2: missing place.
             url = api + eventstr + "/" + self.encoded_params
             self.assert200(url)
+            # check content of event
 
     #FAILING TEST - Investigate
     #Failed with a 401 (unauthorized)
@@ -260,4 +276,34 @@ class StressTesting(TestCase):
     def assert200(self, url):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        return response
 
+
+class ConcurrencyTest(TestCase):
+    fixtures = ['auth', 'consumers', 'events', 'categories', 'places', 'user', 'eventsummary']
+
+    class AsyncPostTestHandler(urllib2.HTTPHandler):
+        def http_response(self, req, response):
+            self.assertEqual(201,response.get_code())
+            return response
+
+
+    class AsyncGetTestHandler(urllib2.HTTPHandler):
+        def http_response(self, req, response):
+            #self.assertEqual(200,response.get_code())
+            print "URL: ", response.geturl()
+            print "Status: ", response.getcode()
+            return response
+
+
+    def test_user_registration(self):
+        api = '/api/v1/registration/'
+        post_data = u'{"email": "some@example.com", "password1": "1234", "password2": "1234"}'
+        num_items = 2
+        o1 = urllib2.build_opener(self.AsyncGetTestHandler)
+        t1 = threading.Thread(target=o1.open, args=('http://www.cs.rutgers.edu/',))
+        t1.start()
+        o2 = urllib2.build_opener(self.AsyncGetTestHandler)
+        t2 = threading.Thread(target=o1.open, args=('http://www.google.com/',))
+        t2.start()
+        print "We are asynchronous!"
