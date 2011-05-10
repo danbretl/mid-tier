@@ -5,26 +5,36 @@
 
 {% block content %}
 <form action="" method="post">
+  {% csrf_token %}
+  
+  <form id="signin_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
     {% csrf_token %}
-    <fieldset>
-        <legend>{% trans "Signin" %}</legend>
-        {{ form.non_field_errors }}
-        {% for field in form %}
-        {{ field.errors }}
-        {% comment %} Displaying checkboxes differently {% endcomment %}
-        {% if field.name == 'remember_me' %}
-        <p class="checkbox">
-            <label for="id_{{ field.name }}">{{ field }} {{ field.label }}</label>
-        </p>
-        {% else %}
-        <p>
-            {{ field.label_tag }} 
-            {{ field }}
-        </p>
-        {% endif %}
-        {% endfor %}
-    </fieldset>
-    <input type="submit" value="{% trans "Signin" %}" />
+
+    <header class="info">
+      <h2>Hello, hello...</h2>
+    </header>
+
+    <ul>
+      {% for field in form %}
+      <li class="{% if field.errors %}error{% endif %}">
+        <label class="desc" for="id_{{ field.name }}">
+          {{ field.label }}
+          {% if field.field.required %}<span class="req">*</span>{% endif %}
+        </label>
+        <div>
+          {{ field }}
+        </div>
+        {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+      </li>
+      {% endfor %}
+
+      <li class="buttons">
+        <div>
+          <input id="saveForm" name="saveForm" class="btImg submit" type="image" src="{{ MEDIA_URL }}images/transparent.png" alt="Submit">
+        </div>
+      </li>
+    <ul>
+
     <p class="forgot-password"><a href="{% url userena_password_reset %}" title="Forgot your password?">Forgot your password?</a></p>
 </form>
 {% endblock %}
