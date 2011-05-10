@@ -61,6 +61,7 @@ class EventParser(BaseParser):
         form_data['title'] = data.get('title')
         form_data['description'] = data.get('description')
         form_data['url'] = data.get('url')
+        form_data['popularity_score'] = data.get('popularity_score')
 
         categories = data.get('categories') or []
         external_category_ids = []
