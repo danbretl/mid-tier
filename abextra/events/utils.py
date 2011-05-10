@@ -80,7 +80,7 @@ class CachedCategoryTree(object):
     def _parents(self, category, l):
         parent = category.parent
         if parent.parent:
-            l.append(parent)
+            l.append(category)
             self._parents(parent, l)
         return l
     def parents(self, category):
