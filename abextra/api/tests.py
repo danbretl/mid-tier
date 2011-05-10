@@ -10,10 +10,13 @@ from django.test import TestCase
 from django.core.management import call_command
 from django.test.client import Client
 from events.models import Event
+from datetime import datetime
 import threading
 import random
 import json
 import logging
+import eventlet
+from eventlet.green import urllib2
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -282,29 +285,46 @@ class StressTesting(TestCase):
 class ConcurrencyTest(TestCase):
     fixtures = ['auth', 'consumers', 'events', 'categories', 'places', 'user', 'eventsummary']
     count = 1
+    users = [str(e.id) for e in Event.objects.all()]
+    times = []
 
-    def test_event(self):
-        import eventlet
-        from eventlet.green import urllib2
-        urls = ['http://www.cs.rutgers.edu/', 'http://www.google.com/']
-        urls = [u'{"email": "some@example.com", "password1": "1234", "password2": "1234"}',
-                u'{"email": "some2@example.com", "password1": "1234", "password2": "1234"}']
-
-        def fetch(data):
-            url = '/api/v1/registration/'
-            client = Client()
-            consumer = Consumer.objects.get(id=1)
-            encoded_params = '?'
-            encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
-                                                'consumer_secret' : consumer.secret,
-                                                'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF' + str(self.count)
-                                                })
-            client = Client()
-            response = client.post(url + encoded_params, data=data, content_type='application/json')
-            return response
+    def fetch(self, data):
+        url = '/api/v1/registration/'
+        client = Client()
+        consumer = Consumer.objects.get(id=1)
+        encoded_params = '?'
+        encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
+                                            'consumer_secret' : consumer.secret,
+                                            'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF' + str(self.count)
+                                            })
+        client = Client()
+        start = datetime.now()
+        response = client.post(url + encoded_params, data=data, content_type='application/json')
+        self.times.append(datetime.now() - start)
+        return response
 
 
+    def test_simple_concurrencytest(self):
+        url = u'{"email": "some%s@example.com", "password1": "1234%s", "password2": "1234%s"}'
         pool = eventlet.GreenPool()
-        for response in pool.imap(fetch,urls):
+        for response in pool.imap(self.fetch,[self.get_user_data(url,u) for u in self.users]):
             self.assertEqual(201, response.status_code)
             self.count += 1
+
+    def get_user_data(self, str, userid):
+        return str%(userid,userid,userid)
+
+    def test_stress(self):
+        import datetime
+        url = u'{"email": "some%s@example.com", "password1": "1234%s", "password2": "1234%s"}'
+        pool = eventlet.GreenPool()
+        users = [self.get_user_data(url,u) for u in range(1000)]
+        start = datetime.datetime.now()
+        responses = pool.imap(self.fetch, users)
+        for response in responses:
+            self.assertEqual(201, response.status_code)
+            self.count += 1
+        print "Time taken: ", datetime.datetime.now() - start
+
+        average = sum([t.microseconds for t in self.times])/len(self.times)
+        print "Average: ", average*1.0/1000000
