@@ -120,6 +120,7 @@ class Event(models.Model):
     video_url = models.URLField(verify_exists=False, max_length=200, blank=True)
     concrete_category = models.ForeignKey(Category, related_name='events_concrete')
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
+    popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
 
     objects = EventManager()
