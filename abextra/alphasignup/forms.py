@@ -1,5 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
+from django.contrib.localflavor.us import forms as us_forms
 
 from accounts.models import UserProfile
 from alphasignup.models import AlphaQuestionnaire
@@ -32,9 +34,24 @@ class AlphaSignupForm(SignupFormOnlyEmail):
         new_user.save()
         return new_user
 
+
+from django.forms.widgets import RadioFieldRenderer
+class HorizontalRadioRenderer(RadioFieldRenderer):
+    """renders horizontal radio buttons"""
+    def render(self):
+        return mark_safe(u'\n'.join([u'%s\n' % w for w in self]))
+
 class AlphaQuestionnaireForm(forms.ModelForm):
+    zip = us_forms.USZipCodeField()
+
     class Meta:
         model = AlphaQuestionnaire
+        exclude = ('profile',)
+        widgets = {
+            'is_usage_info_ok': forms.RadioSelect(renderer=HorizontalRadioRenderer),
+            'is_mobile_planner': forms.RadioSelect(renderer=HorizontalRadioRenderer),
+            'is_app_dev': forms.RadioSelect(renderer=HorizontalRadioRenderer),
+        }
 
 class AlphaQuestionnaireAdminForm(AlphaQuestionnaireForm):
     pass

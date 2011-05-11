@@ -145,7 +145,7 @@ def questionnaire(request, username, template_name='userena/questionnaire.html')
 
     form = AlphaQuestionnaireForm()
     if request.method == "POST":
-        form = AlphaQuestionnaireForm(profile=user.profile, data=request.POST)
+        form = AlphaQuestionnaireForm(data=request.POST)
         if form.is_valid():
             form.save()
             messages.success(request,

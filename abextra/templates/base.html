@@ -9,12 +9,32 @@
 </head>
 <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
 
-  <!-- start header -->
+  {% block console %}
+  {% if form.errors or messages%}
+  <div id="console">
+      <div class="inner_structure">
+      {% if messages %}
+          <p class="success">
+          {% for message in messages %}
+          {{ message|safe }}
+          {% endfor %}
+          <a class="close" href="">Okay, thanks!</a></p>
+      {% endif %}
+      {% if form.errors %}
+          <p class="error">Please fix the errors below and try again. <a class="close" href="">Ack, I'll fix it.</a></p>
+      {% endif %}
+      </div>
+  </div>
+  {% endif %}
+  {% endblock %}
+
   <div id="header">
+    <!-- start header -->    
     <div id="logo">
       <h1><a href="/"><span>kwiqet</span></a></h1>
       <p>let's go out tonight</p>
 
+      <!-- start login -->
       <div id="top_login">
         <div class="welcome_text">
           {% if user.is_authenticated %}
@@ -24,11 +44,8 @@
           {% endif %}
         </div>
       </div>
-
+      <!-- end login -->
     </div>
-
-    <!-- start login -->
-    <!-- end login -->
 
     <!-- begin menu -->
     <div id="menu">
