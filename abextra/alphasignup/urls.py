@@ -8,7 +8,7 @@ from userena import views as userena_views
 from userena import settings as userena_settings
 
 from alphasignup import views as alpha_views
-from alphasignup.forms import AlphaSignupForm
+from alphasignup.forms import AlphaSignupForm, EditProfileAlphaForm
 
 
 urlpatterns = patterns('',
@@ -100,6 +100,7 @@ urlpatterns = patterns('',
     # Edit profile
     url(r'^(?P<username>\w+)/edit/$',
        userena_views.profile_edit,
+       {'edit_profile_form': EditProfileAlphaForm},
        name='userena_profile_edit'),
 
     # View profiles

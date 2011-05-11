@@ -4,7 +4,7 @@
 {% block title %}{% trans "Account setup" %}{% endblock %}
 
 {% block content %}
-<form id="account_details_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
+<form id="account_details_form" enctype="multipart/form-data" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
   {% csrf_token %}
 
   <header class="info">

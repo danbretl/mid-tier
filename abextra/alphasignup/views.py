@@ -142,12 +142,20 @@ from alphasignup.forms import AlphaQuestionnaireForm
 @secure_required
 def questionnaire(request, username, template_name='userena/questionnaire.html'):
     user = get_object_or_404(User, username__iexact=username)
+    profile = user.profile
 
-    form = AlphaQuestionnaireForm()
+    try:
+        instance = AlphaQuestionnaire.objects.get(profile=profile)
+    except AlphaQuestionnaire.DoesNotExist:
+        instance = AlphaQuestionnaire(profile=profile)
+
+    form = AlphaQuestionnaireForm(instance=instance)
     if request.method == "POST":
-        form = AlphaQuestionnaireForm(data=request.POST)
+        form = AlphaQuestionnaireForm(instance=instance, data=request.POST)
         if form.is_valid():
             form.save()
+            profile.alpha_status = 'P' # pending
+            profile.save()
             messages.success(request,
                 _('Thank you! We will let you know soon!'),
                 fail_silently=True

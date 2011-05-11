@@ -43,6 +43,26 @@ class HorizontalRadioRenderer(RadioFieldRenderer):
 
 class AlphaQuestionnaireForm(forms.ModelForm):
     zip = us_forms.USZipCodeField()
+    year_of_birth = forms.IntegerField(
+        widget=forms.TextInput(attrs={'size':'4'}),
+        min_value = 1910, max_value=2005,
+        error_messages={
+            'min_value': _('No way?!?'),
+            'max_value': _('Your parents are too liberal!')
+        }
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(AlphaQuestionnaireForm, self).__init__(*args, **kwargs)
+        self.base_fields['device_platform'].label = _('Mobile Platform')
+        self.base_fields['is_usage_info_ok'].label = \
+            _('May we use the data we collect from your usage in order to improve our application/future user experiences?')
+        self.base_fields['is_mobile_planner'].label = \
+            _('Do you frequently use mobile applications to plan outings with friends/schedule events and activities?')
+        self.base_fields['is_app_dev'].label = \
+            _('Are you an app developer or currently working on a mobile application?')
+        self.declared_fields['zip'].label = _('Postal Code')
+        self.declared_fields['year_of_birth'].label = _('Year of Birth')
 
     class Meta:
         model = AlphaQuestionnaire
@@ -55,3 +75,12 @@ class AlphaQuestionnaireForm(forms.ModelForm):
 
 class AlphaQuestionnaireAdminForm(AlphaQuestionnaireForm):
     pass
+
+
+# ====================
+# = UserProfile Form =
+# ====================
+from userena.forms import EditProfileForm
+class EditProfileAlphaForm(EditProfileForm):
+    class Meta(EditProfileForm.Meta):
+        exclude = ('user', 'privacy', 'alpha_status')
