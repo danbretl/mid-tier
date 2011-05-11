@@ -113,3 +113,10 @@ urlpatterns = patterns('',
     #    userena_views.profile_list,
     #    name='userena_profile_list'),
 )
+
+urlpatterns += patterns('',
+    url(r'^(?P<username>\w+)/questionnaire/$',
+        alpha_views.questionnaire,
+        name='alpha_questionnaire'
+    )
+)

@@ -1,0 +1,35 @@
+{% extends 'userena/base_userena_dual.html' %}
+{% load i18n %}
+
+{% block content %}
+<form id="email_change_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
+  {% csrf_token %}
+
+  <header class="info">
+    <h2>Alpha Questions</h2>
+    <div>testing 1234</div>
+  </header>
+
+  <ul>
+    {% for field in form %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        {{ field.label }}
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endfor %}
+
+    <li class="buttons">
+      <div>
+        <input id="saveForm" name="saveForm" class="btImg submit" type="image" src="{{ MEDIA_URL }}images/transparent.png" alt="Submit">
+      </div>
+    </li>
+  <ul>
+
+</form>
+{% endblock %}

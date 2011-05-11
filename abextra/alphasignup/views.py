@@ -132,3 +132,27 @@ def activate(request, username, activation_key,
         return direct_to_template(request,
                                   template_name,
                                   extra_context=extra_context)
+
+# =======================
+# = Alpha Questionnaire =
+# =======================
+from alphasignup.models import AlphaQuestionnaire
+from alphasignup.forms import AlphaQuestionnaireForm
+
+@secure_required
+def questionnaire(request, username, template_name='userena/questionnaire.html'):
+    user = get_object_or_404(User, username__iexact=username)
+
+    form = AlphaQuestionnaireForm()
+    if request.method == "POST":
+        form = AlphaQuestionnaireForm(profile=user.profile, data=request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request,
+                _('Thank you! We will let you know soon!'),
+                fail_silently=True
+            )
+            return redirect(reverse('userena_profile_detail', kwargs={'username': user.username}))
+
+    extra_context = dict(form=form)
+    return direct_to_template(request, template_name, extra_context=extra_context)

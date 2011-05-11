@@ -2,7 +2,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import UserProfile
-
+from alphasignup.models import AlphaQuestionnaire
 from userena.forms import SignupFormOnlyEmail
 
 class AlphaSignupForm(SignupFormOnlyEmail):
@@ -32,5 +32,9 @@ class AlphaSignupForm(SignupFormOnlyEmail):
         new_user.save()
         return new_user
 
-class AlphaQuestionnaire(forms.ModelForm):
+class AlphaQuestionnaireForm(forms.ModelForm):
+    class Meta:
+        model = AlphaQuestionnaire
+
+class AlphaQuestionnaireAdminForm(AlphaQuestionnaireForm):
     pass
