@@ -191,9 +191,20 @@ class EventRecommendationResource(EventSummaryResource):
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        # filter initial event queryset
-        events_qs = Event.active.future().filter(**orm_filters) \
-            .filter_user_actions(request.user, 'VI')
+        event_qs = None
+        if 'view' in filters:
+            if filters['view'] == 'popular':
+                events_qs = Event.active.future().filter(**orm_filters).order_by('-popularity_score')[:100]
+            elif filters['view'] == 'free':
+                ids = EventSummary.objects.filter(price_quantity_max=0).values_list('event',
+                                                                     flat=True)
+                events_qs = Event.active.future().filter(**orm_filters).filter(id__in=ids)[:100]
+            else:
+                events_qs = Event.objects.none()
+        else:
+            # filter initial event queryset
+            events_qs = Event.active.future().filter(**orm_filters) \
+                        .filter_user_actions(request.user, 'VI')
 
         # use machine learning
         recommended_events = ml.recommend_events(request.user, events_qs)
