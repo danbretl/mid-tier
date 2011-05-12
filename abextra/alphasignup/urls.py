@@ -105,7 +105,7 @@ urlpatterns = patterns('',
 
     # View profiles
     url(r'^(?P<username>\w+)/$',
-       userena_views.profile_detail,
+       alpha_views.profile_detail,
        name='userena_profile_detail'),
     # url(r'^page/(?P<page>[0-9]+)/$',
     #    userena_views.profile_list,

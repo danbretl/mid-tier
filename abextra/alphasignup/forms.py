@@ -54,6 +54,7 @@ class AlphaQuestionnaireForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AlphaQuestionnaireForm, self).__init__(*args, **kwargs)
+        import ipdb; ipdb.set_trace()
         self.base_fields['device_platform'].label = _('Mobile Platform')
         self.base_fields['is_usage_info_ok'].label = \
             _('May we use the data we collect from your usage in order to improve our application/future user experiences?')
@@ -72,10 +73,6 @@ class AlphaQuestionnaireForm(forms.ModelForm):
             'is_mobile_planner': forms.RadioSelect(renderer=HorizontalRadioRenderer),
             'is_app_dev': forms.RadioSelect(renderer=HorizontalRadioRenderer),
         }
-
-class AlphaQuestionnaireAdminForm(AlphaQuestionnaireForm):
-    pass
-
 
 # ====================
 # = UserProfile Form =

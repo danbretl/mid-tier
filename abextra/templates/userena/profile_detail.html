@@ -2,10 +2,11 @@
 {% load i18n %}
 
 {% block title %}{{ profile.user.first_name }}'s {% trans "profile" %}.{% endblock %}
-{% block content_title %}<h2>{{ profile.user.username }} {% if profile.user.get_full_name %}({{ profile.user.get_full_name }}){% endif %}</h2>{% endblock %}
+{% block content_title %}<h2>{% if profile.user.get_full_name %}{{ profile.user.get_full_name }}{% endif %}</h2>{% endblock %}
 
 {% block content %}
     <div id="details">
+      <p><strong>Your Alpha status:</strong>  {{ profile.alpha_status }}</p>
       <img src="{{ profile.get_mugshot_url }}" alt="{% trans 'Your mugshot' %}" />
       {% if profile.user.get_full_name %}
       <p><strong>{% trans "Name" %}</strong><br /> {{ profile.user.get_full_name }}</p>

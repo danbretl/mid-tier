@@ -133,6 +133,35 @@ def activate(request, username, activation_key,
                                   template_name,
                                   extra_context=extra_context)
 
+def profile_detail(request, username, template_name='userena/profile_detail.html', extra_context=None):
+    """
+    Detailed view of an user.
+
+    :param username:
+      String of the username of which the account should be viewed.
+
+    :param template_name:
+      String representing the template name that should be used to display
+      the account.
+
+    :param extra_context:
+      Dictionary of variables which should be supplied to the template. The
+      ``account`` key is always the current account.
+
+    **Context**
+
+    ``account``
+      Instance of the currently edited ``Account``.
+
+    """
+    user = get_object_or_404(User, username__iexact=username)
+    profile = user.get_profile()
+    if not profile.can_view_profile(request.user):
+        return HttpResponseForbidden(_("You don't have permission to view this profile."))
+    if not extra_context: extra_context = dict()
+    extra_context['profile'] = profile
+    return direct_to_template(request, template_name, extra_context=extra_context)
+
 # =======================
 # = Alpha Questionnaire =
 # =======================
@@ -142,7 +171,10 @@ from alphasignup.forms import AlphaQuestionnaireForm
 @secure_required
 def questionnaire(request, username, template_name='userena/questionnaire.html'):
     user = get_object_or_404(User, username__iexact=username)
-    profile = user.profile
+    profile = user.get_profile()
+
+    if not profile.can_view_profile(request.user):
+        return HttpResponseForbidden(_("You don't have permission to view this profile."))
 
     try:
         instance = AlphaQuestionnaire.objects.get(profile=profile)
