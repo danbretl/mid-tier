@@ -103,11 +103,12 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 ANONYMOUS_USER_ID = -1
 
-LOGIN_REDIRECT_URL = '/alpha/%(username)s/'
-LOGIN_URL = '/alpha/signin/'
-LOGOUT_URL = '/alpha/signout/'
+LOGIN_REDIRECT_URL = '/alpha/accounts/%(username)s/'
+LOGIN_URL = '/alpha/accounts/signin/'
+LOGOUT_URL = '/alpha/accounts/signout/'
 
 USERENA_SIGNIN_REDIRECT_URL = LOGIN_REDIRECT_URL
+USERENA_DEFAULT_PRIVACY = 'closed'
 USERENA_WITHOUT_USERNAMES = True
 USERENA_MUGSHOT_SIZE = 50
 

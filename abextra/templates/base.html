@@ -65,7 +65,7 @@
           {% endif %}
         {% endif %}
         <li class={% if current_tab == 'aboutus' %}current_page_item{% endif %}>
-          <a href="#">About Us</a>
+          <a href="{% url alpha_about_us %}">About Us</a>
         </li>
         <li class={% if current_tab == 'contactus' %}current_page_item{% endif %}>
           <a href="#">Contact Us</a>
@@ -108,12 +108,11 @@
   <!-- end page -->
   {% endblock %}
 
-
   <!-- begin footer -->
   <div id="footer">
     <div id="footer-bg">
-      <p class="copyright">&copy;&nbsp;&nbsp;2011 All Rights Reserved &nbsp;&bull;&nbsp; Kwiqet</p>
-      <p class="link"><a href="#">Privacy Policy</a>&nbsp;&#8226;&nbsp;<a href="#">Terms of Use</a></p>
+      <p class="copyright">&copy;&nbsp;&nbsp;2011 <a href="http://www.abextratech.com/">Abextra Inc.</a> All Rights Reserved.</p>
+      <p class="link">Contact Us: <a href="mailto:contact@kwiqet.com">contact@kwiqet.com</a>&nbsp;&#8226;&nbsp;<a href="#">Privacy Policy</a></p>
     </div>
   </div>
   <!-- end footer -->

@@ -1,1 +1,16 @@
-congrats
+{% load i18n %}{% autoescape off %}
+Howdy {{ user.first_name }},
+
+We are pleased to accept you into the Kwiqet Alpha program.
+You will be receiving an e-mail shortly briefly explaining how to install our application.
+Thank you for participating, and we are super-psyched to hear your feedback!
+
+{% trans "Please, follow the link below to download the app to your phone:" %}
+
+{{ protocol }}://{{ site.domain }}{% url userena_activate user.username %}
+
+
+Best,
+The Kwiqet Team
+{{ site.name }}
+{% endautoescape %}

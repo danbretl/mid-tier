@@ -26,7 +26,8 @@ urlpatterns = patterns('',
     # ============================
     url(r'^alpha/accounts/', include('alphasignup.urls')),
     url(r'^alpha/about/$', direct_to_template,
-        {'template': 'alphasignup/about.html'}
+        {'template': 'alphasignup/about.html'},
+        name='alpha_about_us'
     ),
 
     # ================

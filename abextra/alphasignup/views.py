@@ -136,6 +136,7 @@ def activate(request, username, activation_key,
                                   template_name,
                                   extra_context=extra_context)
 
+@secure_required
 def profile_detail(request, username, template_name='userena/profile_detail.html', extra_context=None):
     """
     Detailed view of an user.
@@ -212,6 +213,7 @@ def questionnaire(request, username, template_name='alphasignup/questionnaire.ht
     extra_context = dict(form=form)
     return direct_to_template(request, template_name, extra_context=extra_context)
 
+@login_required
 @secure_required
 def download(request, username, template_name='alphasignup/download.html'):
     user = get_object_or_404(User, username__iexact=username)
