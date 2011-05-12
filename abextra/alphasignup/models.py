@@ -22,3 +22,15 @@ class AlphaQuestionnaire(models.Model):
     year_of_birth = models.IntegerField()
 
     profile = models.OneToOneField(UserProfile, related_name='alpha_questionnaire')
+
+    def _user_email(self):
+        return self.profile.user.email
+    _user_email.admin_order_field = 'profile__user__email'
+
+    def _user_full_name(self):
+        return self.profile.user.get_full_name()
+    _user_full_name.admin_order_field = 'profile__user__last_name'
+
+    def _user_alpha_status(self):
+        return self.profile.alpha_status
+    _user_alpha_status.admin_order_field = 'profile__alpha_status'

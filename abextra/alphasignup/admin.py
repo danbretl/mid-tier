@@ -6,7 +6,7 @@ class AlphaQuestionnaireAdmin(admin.ModelAdmin):
     model = AlphaQuestionnaire
     fields = ('device_platform', 'zip', 'is_usage_info_ok', 'is_mobile_planner', 'is_app_dev', 'year_of_birth')
     readonly_fields = ('device_platform', 'zip', 'is_usage_info_ok', 'is_mobile_planner', 'is_app_dev', 'year_of_birth')
-    list_display = ('profile',)
+    list_display = ('_user_email', '_user_full_name', '_user_alpha_status')
     list_filter = ('profile__alpha_status',)
     actions = ('APPROVE', 'DENY')
 
