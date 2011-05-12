@@ -119,5 +119,9 @@ urlpatterns += patterns('',
     url(r'^(?P<username>\w+)/questionnaire/$',
         alpha_views.questionnaire,
         name='alpha_questionnaire'
-    )
+    ),
+    url(r'^(?P<username>\w+)/download/$',
+        alpha_views.download,
+        name='alpha_download'
+    ),
 )

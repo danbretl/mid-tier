@@ -75,6 +75,9 @@ def password_change_or_set(request, username, template_name='userena/password_fo
         form = pass_form(user=user, data=request.POST)
         if form.is_valid():
             form.save()
+            if userena_settings.USERENA_USE_MESSAGES:
+                messages.success(request, _('Your password has been updated.'),
+                                 fail_silently=True)
             return redirect(reverse('userena_profile_detail', kwargs={'username': user.username}))
 
     if not extra_context:
@@ -156,9 +159,18 @@ def profile_detail(request, username, template_name='userena/profile_detail.html
     """
     user = get_object_or_404(User, username__iexact=username)
     profile = user.get_profile()
+
+    if not profile.alpha_status:
+        redirect_to = reverse('alpha_questionnaire', kwargs={'username': username})
+        return redirect(redirect_to)
+
     if not profile.can_view_profile(request.user):
         return HttpResponseForbidden(_("You don't have permission to view this profile."))
     if not extra_context: extra_context = dict()
+
+    alpha_status_choices = dict(profile.ALPHA_STATUS_CHOICES)
+
+    extra_context['alpha_status'] = alpha_status_choices.get(profile.alpha_status)
     extra_context['profile'] = profile
     return direct_to_template(request, template_name, extra_context=extra_context)
 
@@ -169,7 +181,7 @@ from alphasignup.models import AlphaQuestionnaire
 from alphasignup.forms import AlphaQuestionnaireForm
 
 @secure_required
-def questionnaire(request, username, template_name='userena/questionnaire.html'):
+def questionnaire(request, username, template_name='alphasignup/questionnaire.html'):
     user = get_object_or_404(User, username__iexact=username)
     profile = user.get_profile()
 
@@ -180,6 +192,9 @@ def questionnaire(request, username, template_name='userena/questionnaire.html')
         instance = AlphaQuestionnaire.objects.get(profile=profile)
     except AlphaQuestionnaire.DoesNotExist:
         instance = AlphaQuestionnaire(profile=profile)
+    else:
+        if profile.alpha_status and profile.alpha_status in 'AD':
+            return redirect(reverse('userena_profile_detail', kwargs={'username': user.username}))
 
     form = AlphaQuestionnaireForm(instance=instance)
     if request.method == "POST":
@@ -195,4 +210,10 @@ def questionnaire(request, username, template_name='userena/questionnaire.html')
             return redirect(reverse('userena_profile_detail', kwargs={'username': user.username}))
 
     extra_context = dict(form=form)
+    return direct_to_template(request, template_name, extra_context=extra_context)
+
+@secure_required
+def download(request, username, template_name='alphasignup/download.html'):
+    user = get_object_or_404(User, username__iexact=username)
+    extra_context = dict()
     return direct_to_template(request, template_name, extra_context=extra_context)

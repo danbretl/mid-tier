@@ -29,7 +29,7 @@
   {% endblock %}
 
   <div id="header">
-    <!-- start header -->    
+    <!-- start header -->
     <div id="logo">
       <h1><a href="/"><span>kwiqet</span></a></h1>
       <p>let's go out tonight</p>
@@ -53,6 +53,9 @@
         <li class="current_page_item"><a href="#" class="first">Homepage</a></li>
         {% if user.is_authenticated %}
           <li><a href="{% url userena_profile_detail user.username %}"><span>Account</span></a></li>
+          {% if user.profile.alpha_status == 'A' %}
+            <li><a href="{% url alpha_download user.username %}"><span>Download</span></a></li>
+          {% endif %}
         {% endif %}
         <li><a href="#">About Us</a></li>
         <li><a href="#">Contact Us</a></li>

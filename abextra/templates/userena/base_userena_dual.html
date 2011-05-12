@@ -17,7 +17,7 @@
               <li><a href="{% url userena_profile_edit user.username %}">{% trans "Edit details" %} &raquo;</a></li>
               <li><a href="{% url userena_password_change user.username %}">{% trans "Change password" %} &raquo;</a></li>
               <li><a href="{% url userena_email_change user.username %}">{% trans "Change email" %} &raquo;</a></li>
-              {% if not user.profile.alpha_status %}
+              {% if not user.profile.alpha_status or user.profile.alpha_status == 'P' %}
                 <li><a href="{% url alpha_questionnaire user.username %}">{% trans "Alpha Questionnaire" %} &raquo;</a></li>
               {% endif %}
             </ul>

@@ -1,12 +1,27 @@
 {% load i18n %}{% autoescape off %}
-{% trans "Dear" %} {{ user.username }},
+Howdy {{ user.first_name }},
 
-{% trans "Thank you for signing up at" %} {{ site.name }}.
+Thanks so much for your interest in Kwiqet! By clicking the link below, you can get started on the Alpha process. This part of a product rollout is the first step, and it is meant to be held among friends and family exclusively. Your notes and comments can help us build a better Kwiqet for the Beta users (our next step) and the eventual mass-market launch.
+
+Basically, you're going to be asked a few questions in order to see if you qualify to be an Alpha user based on your location, level of awesome and height--just kidding. Well, about the second two...
+
+Being an Alpha user is important for any young product--but in our case, if you join the "Alpha Squad" (we'll provide you with matching "Alpha Squad" stamp-on tattoos in the mail) it's even cooler than usual. That's because every two weeks Abextra hosts super-fun free events that we learn about from Kwiqet's "Smart Events" list, and all Alpha users are invited! 
+
+I hope we can share this experience with you; should you become an Alpha user you will be of enormous help to us. I'm looking forward to hearing your feedback!
+
 
 {% trans "To activate your account you should click on the link below:" %}
 
 {{ protocol }}://{{ site.domain }}{% url userena_activate user.username activation_key %}
 
-{% trans "Sincerely" %},
+
+Best,
+The Kwiqet Team
 {{ site.name }}
+
+
+Abextra, Inc.
+805 Third Avenue
+Suite 1500 (Stanoff)
+New York, NY 10022
 {% endautoescape %}
