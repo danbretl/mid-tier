@@ -61,16 +61,7 @@ class EventParser(BaseParser):
         form_data['title'] = data.get('title')
         form_data['description'] = data.get('description')
         form_data['url'] = data.get('url')
-        popularity_score = data.get('popularity_score')
-        # The reason this is here and not it in the scrapers is because
-        # this field is optional in a sense and also needs to be normalized
-        # In the absence of this information (if unavailable for instance) we
-        # should not break the parse process.
-        if popularity_score:
-            form_data['popularity_score'] = int(popularity_score)
-        else:
-            form_data['popularity_score'] = 0
-
+        form_data['popularity_score'] = data.get('popularity_score')
         categories = data.get('categories') or []
         external_category_ids = []
         for category_data in categories:

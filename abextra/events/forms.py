@@ -97,6 +97,7 @@ class EventImportForm(EventForm):
         return getattr(EventImportForm, '_importer_user')
 
     slug = forms.SlugField(required=False)
+    popularity_score = forms.IntegerField(required=False)
     concrete_category = forms.ModelChoiceField(
         queryset=Category.concrete.all(), required=False,
         cache_choices=True
@@ -132,6 +133,12 @@ class EventImportForm(EventForm):
         event = self.instance
         source = cleaned_data['source']
         external_categories = cleaned_data['external_categories']
+        pop_score = cleaned_data['popularity_score']
+        if pop_score:
+            popularity_score = int(pop_score)
+        else:
+            popularity_score = 0
+        cleaned_data['popularity_score'] = popularity_score
         concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
         cleaned_data['concrete_category'] = self.fields['concrete_category'] \
             .clean(concrete_category.id)
