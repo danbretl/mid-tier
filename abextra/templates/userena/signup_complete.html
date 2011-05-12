@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Signup almost done!" %}{% endblock %}
+{% block navbar %}{% with current_tab="signup" %}{{ block.super }}{% endwith %}{% endblock %}
 
 {% block content_title %}<h2>{% trans "Signup" %}</h2>{% endblock %}
 

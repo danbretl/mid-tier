@@ -1,0 +1,13 @@
+{% extends 'userena/base_userena.html' %}
+
+{% block title %}About Us{% endblock %}
+{% block navbar %}{% with current_tab="aboutus" %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block content_title %}<h2>About Us</h2>{% endblock %}
+
+{% block content %}
+  <div class="entry">
+    <p>We live in a mobile era. The need to connect people to the things they love most, to mobilize individuals of similar interests, has long been a passion of ours, and "Kwiqet" provides us with the ultimate method of realizing our passion. Uniting people around common events and activities allows for them to try new things in accordance with their own interests, changing the way they interact with the world around them.</p>
+    <p>We believe that "Kwiqet" can inspire folks to enjoy the things they like doing best with the people they care about most, fostering offline interactions and rallying communities around fun events they'd never known about. "Kwiqet" allows you to discover the exciting opportunities around you--it is your ticket to the world. </p>
+  </div>
+{% endblock %}

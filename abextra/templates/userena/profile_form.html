@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Account setup" %}{% endblock %}
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
 
 {% block content %}
 <form id="account_details_form" enctype="multipart/form-data" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">

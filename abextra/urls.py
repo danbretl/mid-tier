@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.views.static import serve
+from django.views.generic.simple import direct_to_template
 
 from autocomplete.views import autocomplete
 
@@ -23,7 +24,10 @@ urlpatterns = patterns('',
     # ============================
     # = User Accounts via Userna =
     # ============================
-    (r'^alpha/', include('alphasignup.urls')),
+    url(r'^alpha/accounts/', include('alphasignup.urls')),
+    url(r'^alpha/about/$', direct_to_template,
+        {'template': 'alphasignup/about.html'}
+    ),
 
     # ================
     # = Autocomplete =

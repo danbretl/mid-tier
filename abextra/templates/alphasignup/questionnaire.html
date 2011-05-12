@@ -1,6 +1,9 @@
 {% extends 'userena/base_userena_dual.html' %}
 {% load i18n %}
 
+{% block title %}Alpha Questionnaire{% endblock %}
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
+
 {% block content %}
 <form id="alpha_questionnaire_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
   {% csrf_token %}

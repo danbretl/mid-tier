@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Kwiqet α signup " %}{% endblock %}
+{% block navbar %}{% with current_tab="signup" %}{{ block.super }}{% endwith %}{% endblock %}
 
 {% block content %}
 <form id="signup_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">

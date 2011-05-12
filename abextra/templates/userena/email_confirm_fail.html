@@ -2,6 +2,8 @@
 {% load i18n %}
 
 {% block title %}{% trans "Email verification failed." %}{% endblock %}
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
+
 {% block content_title %}<h2>{% trans "Your email could not be verified.." %}</h2>{% endblock %}
 
 {% block content %}

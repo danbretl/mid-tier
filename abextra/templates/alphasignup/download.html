@@ -2,7 +2,10 @@
 {% load i18n %}
 
 {% block title %}Download{% endblock %}
+{% block navbar %}{% with current_tab="download" %}{{ block.super }}{% endwith %}{% endblock %}
+
 {% block content_title %}<h2>Congrats! Let's get started...</h2>{% endblock %}
+
 
 {% block content %}
 <div>

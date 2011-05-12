@@ -21,7 +21,7 @@
           <a class="close" href="">Okay, thanks!</a></p>
       {% endif %}
       {% if form.errors %}
-          <p class="error">Please fix the errors below and try again. <a class="close" href="">Ack, I'll fix it.</a></p>
+          <p class="error">Please, fix the errors below and try again. <a class="close" href="">Ack, I'll fix it.</a></p>
       {% endif %}
       </div>
   </div>
@@ -32,7 +32,7 @@
     <!-- start header -->
     <div id="logo">
       <h1><a href="/"><span>kwiqet</span></a></h1>
-      <p>let's go out tonight</p>
+      <p>your ticket to the world</p>
 
       <!-- start login -->
       <div id="top_login">
@@ -48,19 +48,31 @@
     </div>
 
     <!-- begin menu -->
+    {% block navbar %}
     <div id="menu">
       <ul id="main">
-        <li class="current_page_item"><a href="#" class="first">Homepage</a></li>
+        <li class="{% if current_tab == 'home' %}current_page_item{% endif %}">
+            <a href="#" class="first">Homepage</a>
+        </li>
         {% if user.is_authenticated %}
-          <li><a href="{% url userena_profile_detail user.username %}"><span>Account</span></a></li>
+          <li class={% if current_tab == 'account' %}current_page_item{% endif %}>
+            <a href="{% url userena_profile_detail user.username %}"><span>Account</span></a>
+          </li>
           {% if user.profile.alpha_status == 'A' %}
-            <li><a href="{% url alpha_download user.username %}"><span>Download</span></a></li>
+            <li class={% if current_tab == 'download' %}current_page_item{% endif %}>
+              <a href="{% url alpha_download user.username %}"><span>Download</span></a>
+            </li>
           {% endif %}
         {% endif %}
-        <li><a href="#">About Us</a></li>
-        <li><a href="#">Contact Us</a></li>
+        <li class={% if current_tab == 'aboutus' %}current_page_item{% endif %}>
+          <a href="#">About Us</a>
+        </li>
+        <li class={% if current_tab == 'contactus' %}current_page_item{% endif %}>
+          <a href="#">Contact Us</a>
+        </li>
       </ul>
     </div>
+    {% endblock %}
     <!-- end menu -->
 
   </div>
@@ -96,10 +108,11 @@
   <!-- end page -->
   {% endblock %}
 
+
   <!-- begin footer -->
   <div id="footer">
     <div id="footer-bg">
-      <p class="copyright">&copy;&nbsp;&nbsp;2011 All Rights Reserved &nbsp;&bull;&nbsp; Design by <a href="http://www.freecsstemplates.org/">Free CSS Templates</a>.</p>
+      <p class="copyright">&copy;&nbsp;&nbsp;2011 All Rights Reserved &nbsp;&bull;&nbsp; Kwiqet</p>
       <p class="link"><a href="#">Privacy Policy</a>&nbsp;&#8226;&nbsp;<a href="#">Terms of Use</a></p>
     </div>
   </div>

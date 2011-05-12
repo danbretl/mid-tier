@@ -1,6 +1,8 @@
 {% extends 'userena/base_userena_dual.html' %}
 {% load i18n %}
 
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
+
 {% block content %}
 <form id="email_change_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
   {% csrf_token %}

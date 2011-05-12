@@ -2,6 +2,7 @@
 {% load i18n %}
 
 {% block title %}{% trans "Email changed!" %}{% endblock %}
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
 
 {% block content_title %}<h2>{% trans 'New email' %}</h2>{% endblock %}
 {% block content %}
