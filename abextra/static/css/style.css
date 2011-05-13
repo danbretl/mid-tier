@@ -1,0 +1,162 @@
+@charset "UTF-8";
+/* CSS Document */
+
+*{
+	margin:0;
+	padding:0;
+}
+ 
+html, body {
+	height:100%;
+}
+ 
+body {
+	background:#ffffff;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:1em;
+	text-align:center; /* horizontal centering for IE Win quirks */
+}
+
+h1{
+	font-size:2em;
+	font-style:bold;
+	color:#202020;
+}
+
+h2{
+	font-size:1.5em;
+	font-style:bold;
+	color:#202020;
+}
+
+h3{
+	font-size:1.2em;
+	font-style:bold;
+	color:#202020;
+}
+
+ul{
+	 list-style-type: none;	
+}
+
+.distance{
+	width:10px;
+	height:50%;
+	margin-bottom:-250px; /* half of container's height */
+	float:left;
+}
+
+div.bBox{
+	margin:0px auto;
+	position:relative;
+	clear:left;
+	height:500px;
+	width:800px;
+}
+
+div.pHolder{
+	margin:0px auto;
+	position:relative;
+	clear:left;
+	height:300px;
+	width:800px;
+}
+
+div.splash{
+	position:relative;
+	margin:10px 10px 10px 10px;
+	clear:both;
+}
+
+div.splash2{
+	float:right;
+	margin:10px 10px 10px 10px;
+	clear:both;
+}
+
+.alpha_button{
+	height: 40px;
+	width: 40px;
+	background:url(/static/images/alpha.png) 0 0 no-repeat;
+	border:none;
+	-moz-transition-property: opacity 0.5; /* Firefox */
+	-moz-transition-duration: .5s;
+	-moz-transition-timing-function: ease-out;
+	-o-transition-property: opacity 0.5; /* Opera */
+	-o-transition-duration: .5s;
+	-webkit-transition-property: opacity 0.5; /* Safari/Chrome */
+	-webkit-transition-duration: .5s;
+	opacity:0.5;
+}
+
+.alpha_button:hover{
+	-moz-transition-property: opacity 1; /* Firefox */
+	-moz-transition-duration: .5s;
+	-moz-transition-timing-function: ease-out;
+	-o-transition-property: opacity 1; /* Opera */
+	-o-transition-duration: .5s;
+	-webkit-transition-property: opacity 1; /* Safari/Chrome */
+	-webkit-transition-duration: .5s;
+	opacity:1;
+}
+
+.pBox{
+	width:100px;
+	height:300px;
+	float:left;
+}
+
+.pBox img{
+	-moz-transition-property: opacity 0.2; /* Firefox */
+	-moz-transition-duration: .5s;
+	-moz-transition-timing-function: ease-out;
+	-o-transition-property: opacity 0.2; /* Opera */
+	-o-transition-duration: .5s;
+	-webkit-transition-property: opacity 0.2; /* Safari/Chrome */
+	-webkit-transition-duration: .5s;
+	-webkit-box-reflect:below 2px -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.8, transparent), to(#ffffff));
+	opacity:0.2;
+}
+
+.pBox img:hover{
+	-moz-transition-property: opacity 1; /* Firefox */
+	-moz-transition-duration: 1s;
+	-moz-transition-timing-function: ease-out;
+	-o-transition-property: opacity 1; /* Opera */
+	-o-transition-duration: 1s;
+	-webkit-transition-property: opacity 1; /* Safari/Chrome */
+	-webkit-transition-duration: 1s;
+	opacity:1;
+}
+
+.pBlue{
+	background:#446ab3;
+}
+
+.pCyan{
+	background:#00aec6;
+}
+
+.pGreen{
+	background:#50b849;
+}
+
+.pYellow{
+	background:#d2be07;
+}
+
+.pOrange{
+	background:#e5a714;
+}
+
+.pSalmon{
+	background:#f15c72;
+}
+
+.pMagenta{
+	background:#d80b8c;	
+}
+
+.pPurple{
+	background:#812991;
+}

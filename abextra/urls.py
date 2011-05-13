@@ -34,6 +34,14 @@ urlpatterns = patterns('',
         name='alpha_about_us'
     ),
 
+    # ===========
+    # = Landing =
+    # ===========
+    url(r'^$', direct_to_template,
+        {'template': 'index.html'},
+        name='landing'
+    ),
+
     # ================
     # = Autocomplete =
     # ================
