@@ -4,12 +4,6 @@ Design by Free CSS Templates
 http://www.freecsstemplates.org
 Released for free under a Creative Commons Attribution 2.5 License
 */
-#console .inner_structure{width:700px;margin:0 auto;padding:0px 0;color:#252525;}
-#console p{position:relative;width:700px;margin:0;padding:0 10px 0 31px;line-height:30px;-webkit-border-radius:4px;-khtml-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
-#console .success{border:1px solid #d6e6cf;background:#d6e6cf url(/static/images/bg_console_success.gif) -15px 50% no-repeat;}
-#console .error{border:1px solid #f9686e;background:#f5e8e8 url(/static/images/bg_console_error.gif) -15px 50% no-repeat;}
-#console a.close{position:absolute;top:8px;right:6px;display:block;width:15px;height:15px;border:0;background:url(/static/images/bg_console_success.gif) top left no-repeat;text-indent:-99999px;}
-#console .error a.close{background:url(/static/images/bg_console_error.gif) top left no-repeat;}
 
 body {
 	margin: 0;
@@ -117,6 +111,50 @@ img.right {
 	color: #1C93D9;
 }
 
+/* Console Popup */
+
+#console .inner_structure{
+	width:700px;
+	margin:0 auto;
+	padding:0px 0;
+	color:#353535;
+}
+#console p{
+	position:relative;
+	width:700px;
+	margin:0;
+	padding:0 10px 0 31px;
+	line-height:30px;
+	-webkit-border-radius:4px;
+	-khtml-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+}
+
+#console .success{
+	border:1px solid #50b849;
+	background:#c5dec3 url(/static/images/bg_console_success.gif) -15px 50% no-repeat;
+}
+
+#console .error{
+	border:1px solid #f15c72;
+	background:#fadce0 url(/static/images/bg_console_error.gif) -15px 50% no-repeat;
+}
+
+#console a.close{
+	position:absolute;
+	top:8px;
+	right:6px;
+	display:block;
+	width:15px;
+	height:15px;
+	border:0;
+	background:url(/static/images/bg_console_success.gif) top left no-repeat;text-indent:-99999px;
+}
+
+#console .error a.close{
+	background:url(/static/images/bg_console_error.gif) top left no-repeat;
+}
 
 /* Login */
 
@@ -242,14 +280,15 @@ img.right {
 }
 
 #page-bg_single {
-    background: url(/static/images/img07.gif) no-repeat left top;
-    padding: 0px 10px;
+	background: url(/static/images/img07.gif) no-repeat left top;
+	padding: 0px 10px;
 }
 
 #page-bg_home {
-    background: url(/static/images/splash.png) no-repeat left top;
-    padding: 0px 0px;
+	background: url(/static/images/splash.png) no-repeat left top;
+	padding: 0px;
 }
+
 
 /* Latest Post */
 
