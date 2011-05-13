@@ -79,7 +79,7 @@ def random_tree_walk_algorithm(user, category=None, ctree=None, db=DJANGO_DB):
     """
 
     # Generate CategoryTree for user
-    user_tree = CategoryTree(user, category, ctree=ctree, db=db)
+    user_tree = CategoryTree(user, category, ctree=ctree, behavior_db=db)
 
     # Calculate scores for each Category in CategoryTree.
     # Score is calculated from GVIX.
@@ -487,7 +487,7 @@ def scoring_function(parent, outkey="score"):
     if not parent.get_parent():
         parent.insert_key_value(outkey, 0)
     else:
-        score = settings.scoringFunction(parent.get_score())
+        score = settings.scoringFunction(parent.score)
         parent.insert_key_value(outkey, score)
 
 
