@@ -172,7 +172,7 @@ INSTALLED_APPS = (
     'core',                         # ABEX core
     'events',                       # ABEX events
     'importer',                     # ABEX part of the scrape pipeline
-    'learning',                     # ABEX machine learning | recommendations
+    'thor',                         # ABEX machine learning | recommendations
     'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
     'prices',                       # ABEX prices
