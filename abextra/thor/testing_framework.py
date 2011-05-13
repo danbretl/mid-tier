@@ -6,7 +6,7 @@ Date Created: 2/15/2011
 """
 
 from matplotlib import pyplot as plt
-from learning import ml
+from thor import ml
 from behavior.models import EventActionAggregate
 from django.contrib.auth.models import User
 from events.models import Category
