@@ -134,6 +134,19 @@ def activate(request, username, activation_key,
         redirect_to = reverse('userena_password_change', kwargs={'username': username})
         return redirect(redirect_to)
     else:
+        # just in case they didn't set their password on the first try
+        try:
+            userena = UserenaSignup.objects.get(user__username=username)
+        except UserenaSignup.DoesNotExist:
+            pass
+        else:
+            if not userena.user.has_usable_password() and userena.activation_key == userena_settings.USERENA_ACTIVATED:
+                if userena_settings.USERENA_USE_MESSAGES:
+                    messages.success(request, _('Your account has been activated! Please, set your password.'),
+                                     fail_silently=True)
+                    redirect_to = reverse('userena_password_change', kwargs={'username': username})
+                    return redirect(redirect_to)
+        
         if not extra_context: extra_context = dict()
         return direct_to_template(request,
                                   template_name,
