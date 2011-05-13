@@ -67,7 +67,8 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
         # authenticate device
         try:
             udid = DeviceUdid.objects.select_related('user').get(
-                udid=DeviceUdid.objects.get_hexdigest(raw_udid)
+                udid=raw_udid
+                # udid=DeviceUdid.objects.get_hexdigest(raw_udid)   # doing raw
             )
         except (DeviceUdid.DoesNotExist, DeviceUdid.MultipleObjectsReturned):
             # create new user
