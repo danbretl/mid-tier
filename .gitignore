@@ -8,6 +8,10 @@ biketextmate.log
 .venv
 TAGS
 .emacs.desktop
-abextra/static/*_images
-abextra/whoosh_indexes/*
 requirements_local.txt
+
+mugshots/
+event_images/
+location_images/
+
+whoosh_indexes/
