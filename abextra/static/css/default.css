@@ -242,8 +242,13 @@ img.right {
 }
 
 #page-bg_single {
-	background: url(/static/images/img07.gif) no-repeat left top;
-	padding: 0px 10px;
+    background: url(/static/images/img07.gif) no-repeat left top;
+    padding: 0px 10px;
+}
+
+#page-bg_home {
+    background: url(/static/images/splash.png) no-repeat left top;
+    padding: 0px 0px;
 }
 
 /* Latest Post */

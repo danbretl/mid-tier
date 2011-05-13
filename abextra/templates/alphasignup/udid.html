@@ -1,0 +1,38 @@
+{% extends 'userena/base_userena_dual.html' %}
+{% load i18n %}
+
+{% block title %}Alpha Questionnaire{% endblock %}
+{% block navbar %}{% with current_tab="account" %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block content %}
+<form id="alpha_udid_form" class="wufoo topLabel page" autocomplete="off" action="" method="post" novalidate="">
+  {% csrf_token %}
+
+  <header class="info">
+    <h2>iPhone UDID</h2>
+    <div>Instructions: you can find your iPhone's UDID (Unique Device Identifier) like this ...</div>
+  </header>
+
+  <ul>
+    {% for field in form %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        {{ field.label }}
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endfor %}
+
+    <li class="buttons">
+      <div>
+        <input id="saveForm" name="saveForm" class="btImg submit" type="image" src="{{ MEDIA_URL }}images/transparent.png" alt="Submit">
+      </div>
+    </li>
+  <ul>
+
+</form>
+{% endblock %}

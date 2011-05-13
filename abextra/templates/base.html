@@ -52,7 +52,7 @@
     <div id="menu">
       <ul id="main">
         <li class="{% if current_tab == 'home' %}current_page_item{% endif %}">
-            <a href="#" class="first">Homepage</a>
+            <a href="{% url alpha_home %}" class="first">Homepage</a>
         </li>
         {% if user.is_authenticated %}
           <li class={% if current_tab == 'account' %}current_page_item{% endif %}>

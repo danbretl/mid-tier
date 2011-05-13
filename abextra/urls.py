@@ -24,6 +24,10 @@ urlpatterns = patterns('',
     # ============================
     # = User Accounts via Userna =
     # ============================
+    url(r'^alpha/$', direct_to_template,
+        {'template': 'alphasignup/index.html'},
+        name='alpha_home'
+    ),
     url(r'^alpha/accounts/', include('alphasignup.urls')),
     url(r'^alpha/about/$', direct_to_template,
         {'template': 'alphasignup/about.html'},

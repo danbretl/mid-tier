@@ -1,0 +1,22 @@
+{% extends 'userena/base_userena.html' %}
+{% block navbar %}{% with current_tab="home" %}{{ block.super }}{% endwith %}{% endblock %}
+
+{% block content %}
+<div id="page-bg_home">
+  <img src="{{ MEDIA_URL }}images/transparent.png" width="960" height="550" />
+  <div style="clear: both;">&nbsp;</div>
+</div>
+{% endblock %}
+
+{% block page %}
+<!-- start page -->
+<div id="wrapper">
+  <div id="page_single">
+    <div id="page-bg_home">
+      <img src="images/transparent.png" width="960" height="550" />
+      <div style="clear: both;">&nbsp;</div>
+    </div>
+  </div>
+</div>
+<!-- end page -->
+{% endblock %}

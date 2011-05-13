@@ -124,4 +124,8 @@ urlpatterns += patterns('',
         alpha_views.download,
         name='alpha_download'
     ),
+    url(r'^(?P<username>\w+)/udid/$',
+        alpha_views.device_udid,
+        name='alpha_udid'
+    ),
 )

@@ -22,6 +22,9 @@ from userena import settings as userena_settings
 
 from guardian.decorators import permission_required_or_403
 
+from api.models import DeviceUdid
+from api.forms import DeviceUdidSansUserForm
+
 @secure_required
 @permission_required_or_403('change_user', (User, 'username', 'username'))
 def password_change_or_set(request, username, template_name='userena/password_form.html',
@@ -181,6 +184,7 @@ def profile_detail(request, username, template_name='userena/profile_detail.html
 from alphasignup.models import AlphaQuestionnaire
 from alphasignup.forms import AlphaQuestionnaireForm
 
+@login_required
 @secure_required
 def questionnaire(request, username, template_name='alphasignup/questionnaire.html'):
     user = get_object_or_404(User, username__iexact=username)
@@ -201,9 +205,37 @@ def questionnaire(request, username, template_name='alphasignup/questionnaire.ht
     if request.method == "POST":
         form = AlphaQuestionnaireForm(instance=instance, data=request.POST)
         if form.is_valid():
-            form.save()
+            questions = form.save()
             profile.alpha_status = 'P' # pending
             profile.save()
+
+            # if iphone ask for udid
+            if questions.device_platform == 'I':
+                return redirect(reverse('alpha_udid', kwargs={'username': user.username}))
+
+            messages.success(request,
+                _('Thank you! We will let you know soon!'),
+                fail_silently=True
+            )
+            return redirect(reverse('userena_profile_detail', kwargs={'username': user.username}))
+
+    extra_context = dict(form=form)
+    return direct_to_template(request, template_name, extra_context=extra_context)
+
+@login_required
+@secure_required
+def device_udid(request, username, template_name='alphasignup/udid.html'):
+    user = get_object_or_404(User, username__iexact=username)
+    try:
+        instance = DeviceUdid.objects.get(user=request.user)
+    except DeviceUdid.DoesNotExist:
+        instance = DeviceUdid(user=request.user)
+
+    form = DeviceUdidSansUserForm(instance=instance)
+    if request.method == 'POST':
+        form = DeviceUdidSansUserForm(instance=instance, data=request.POST)
+        if form.is_valid():
+            form.save()
             messages.success(request,
                 _('Thank you! We will let you know soon!'),
                 fail_silently=True
