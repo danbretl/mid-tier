@@ -22,16 +22,13 @@
 
 from collections import defaultdict
 import math
-import itertools
-
 import numpy
 from bisect import bisect_left
 import random
 import settings
-from events.models import Event, Category
+from events.models import Category
 from events.utils import CachedCategoryTree
 from category_tree import CategoryTree
-from behavior.models import EventActionAggregate
 import user_behavior
 
 DJANGO_DB = user_behavior.UserBehaviorDjangoDB()
@@ -141,7 +138,7 @@ def random_tree_walk_algorithm(user, category=None, ctree=None, db=DJANGO_DB):
     #return sample_category_distribution([(x[0], x[1][0]) for x in
     #                            user_tree.get_all_category_scores_dictionary(["combined_probability"])], number)
     category_id_scores = [(x[0], x[1][0]) for x in user_tree.get_all_category_scores_dictionary(["combined_probability"])]
-    return dict(zip([x[0] for x in category_id_scores],normalize([x[1] for x in category_id_scores])))
+    return dict(zip([x[0] for x in category_id_scores], normalize([x[1] for x in category_id_scores])))
 
 
 def abstract_scoring_function(abstract_category_ids, dictionary_category_eaa):
@@ -176,16 +173,16 @@ def generate_category_mapping(event_query_set, categories_dict=None):
         categoryid_event_map[categoryid].append(event)
 
     if not categories_dict:
-        all_category_dict = dict([(category.id,category)
+        all_category_dict = dict([(category.id, category)
                                   for category in
                                   Category.objects.filter(category_type='C')])
     else:
-        all_category_dict = dict([(category.id,category)
+        all_category_dict = dict([(category.id, category)
                                   for category in categories_dict.keys()])
 
     # This is a dictionary of the form:
     # category_event_map[category# object] = set(event ids)
-    category_event_map = defaultdict(lambda: set())
+    category_event_map = defaultdict(set())
     for category_id in all_category_dict.keys():
         category = all_category_dict[category_id]
         event_ids = categoryid_event_map[category_id]
@@ -206,11 +203,11 @@ def get_event_score(user, event_ids, event_score):
     #Mapping between event ids and all abstract categories.
     event_cat_dict = Category.objects.for_events(tuple(event_ids), 'A')
     ctree = CachedCategoryTree()
-    event_abstract_score = random_tree_walk_algorithm(user,ctree.abstract_node,
+    event_abstract_score = random_tree_walk_algorithm(user, ctree.abstract_node,
                                                       ctree)
     #event_abstract_score is now a mapping of category objects to scores
     # Converting it to a mapping of category id to score
-    event_abstract_score = dict([(cat.id,value) for cat,value in event_abstract_score.items()])
+    event_abstract_score = dict([(cat.id, value) for cat,value in event_abstract_score.items()])
     # FIXME: This can be optimized.
     # Only calculate scores for events that you sample inside the
     # for category in categories loop.
@@ -247,13 +244,14 @@ def filter_events(user, event_query_set, categories_dict,
     """
     event_category = {}  # This is slightly confusing. The idea is that this
     if not events:
-        events = generate_category_mapping(event_query_set,categories_dict)
+        events = generate_category_mapping(event_query_set, categories_dict)
         #used for ranking by categories
-        event_category = dict([(e,categories_dict[k]) for k,v in events.items() for e in v])
+        event_category = dict([(e, categories_dict[k])
+                               for k,v in events.items() for e in v])
     # events is now a dictionary of concrete category keys mapping to event ids.
 
     #Optimization to return early if we don't have enough events:
-    if sum(map(len,events.values())) <= number:
+    if sum(map(len, events.values())) <= number:
         return [e for e in event_query_set]
 
     # Remove all concrete_categories that do not have any events.
@@ -325,7 +323,7 @@ def filter_events(user, event_query_set, categories_dict,
     #this can be made more efficient with a single query. Leaving out for now.
     if event_category:
         event_score_list = [(event_category[ev], ev) for ev in selected_events]
-        semi_sorted = semi_sort(event_score_list, min(3,len(selected_events)))
+        semi_sorted = semi_sort(event_score_list, min(3, len(selected_events)))
         return fuzzy_sort(semi_sorted)
 
     return [ev for ev in selected_events]
@@ -405,7 +403,10 @@ def score_combinator(parent, inkey1, inkey2, outkey):
 
 
 #usage: user_tree.top_down_recursion(score_multiplier,{"inkey":"score","function_of_parent":(lambda x: category_count[x]), "outkey":"multiplied_score"})
-def score_multiplier(parent,inkey,function_of_parent,outkey):
+def score_multiplier(parent, inkey, function_of_parent, outkey):
+    """
+    Stub
+    """
     try:
         parent.insert_key_value(outkey, parent.get_key_value(inkey) * function_of_parent(parent))
     except:
@@ -641,7 +642,8 @@ def sample_distribution(distribution, trials=1):
     """
     This is the factored out weighted sampling distribution.
     """
-    if not distribution: return []
+    if not distribution:
+        return []
     cumulative_distribution = numpy.cumsum(normalize([x[1]
                                                       for x in distribution]))
     return_list = []
