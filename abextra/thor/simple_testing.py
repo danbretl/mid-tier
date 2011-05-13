@@ -7,12 +7,11 @@ with how these work I intend to make them into test cases.
 
 While debugging, I usually thus used something like
 
-echo 'from learning import simple_testing' | python manage.py shell
+echo 'from thor import simple_testing' | python manage.py shell
 """
 
-from learning import testing_simulation
+from thor import testing_simulation, user_behavior
 from django.contrib.auth.models import User
-from learning import user_behavior
 import time
 
 u = User.objects.get(id=1)
@@ -29,7 +28,7 @@ def runtests():
     person = testing_simulation.TransitionSimulatedPerson(db=behavior_db, 
                                                 preference_file=pref_file)
     print "running rounds"
-    
+
     a = time.time()
     person.run_rounds(20, 20)
     print "Time to run rounds:", time.time() - a
