@@ -1,5 +1,4 @@
-from learning import helper
-from learning import ml
+from thor import helper, ml
 from CategoryTree import CategoryTree
 
 

@@ -1,4 +1,4 @@
-from learning import CategoryTree
+from thor import CategoryTree
 import unittest
 
 #-------------------------

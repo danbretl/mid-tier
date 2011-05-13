@@ -77,17 +77,17 @@ class SimulatedPreference:
     def __init__(self, name, g_prob, v_prob, i_prob, x_prob):
         """given probabilities of Going, Viewing, Ignoring or Xing a category"""
         self.name = name
-        
+
         total = g_prob + v_prob + i_prob + x_prob
         if (total != 1):
             raise ValueError("G+V+I+X must add up to 1, not " + str(total))
         self.distribution = zip([GO, VIEW, IGNORE, XOUT],
                                 [g_prob, v_prob, i_prob, x_prob])
-    
+
     def sample_action(self):
         """get one random from this preference distribution"""
         return ml.sample_category_distribution(self.distribution)[0]
-    
+
     def __repr__(self):
         return "<Preference: " + self.name + ">"
 
@@ -102,15 +102,15 @@ class PreferenceTransitionMatrix:
         initialize the matrix and distribution from the given preference
         file. The format of the file is tab or space delimited (with #
         for comments). Should documentation of this format go somewhere else?
-        
+
         # each preference and its GVIX distribution
         Preference1Name G   V   I   X
         Preference2Name G   V   I   X
         ...
-        
+
         # original distribution at top level, in order
         Preference1    Preference2    Preference3
-        
+
         # transition matrix
         .8  .1  .1
         ...
@@ -119,7 +119,7 @@ class PreferenceTransitionMatrix:
         # I've tried to cover a lot of common syntax errors, but there could
         # be others out there
         lines = [l[:-1] for l in open(preference_file) if not l.startswith("#")]
-        
+
         # get simulated preferences
         preferences = []
         i = 0
@@ -134,9 +134,9 @@ class PreferenceTransitionMatrix:
                 raise ParseError("Could not parse preference line")
             preferences.append(SimulatedPreference(spl[0], *map(float, spl[1:])))
             i += 1
-        
+
         num_prefs = len(preferences)
-        
+
         # get original distribution
         spl = re.split("\s+", lines[i])
         if len(spl) != num_prefs:
@@ -144,41 +144,41 @@ class PreferenceTransitionMatrix:
                              " is not equal to length of original " +
                              "distribution " + str(len(spl)))
         self.original_distribution = zip(preferences, map(float, spl))
-         
+
         # check for blank line (if you forgot it then matrix could be wrong)
         if lines[i+1] != "":
             raise ParseError("Need blank line between original distribution " +
                              "and transition matrix")
-         
+
         matrix = [re.split("\s+", l) for l in lines[i+2:]]
         lengths = list(set(map(len, matrix)))
-        
+
         # check if matrix is either wrong size or jagged
         print matrix, lengths
-        if (len(matrix) != num_prefs or len(lengths) != 1 or 
+        if (len(matrix) != num_prefs or len(lengths) != 1 or
             lengths[0] != num_prefs):
             raise ParseError("Number of preferences " + str(num_prefs) +
                              " is not equal to size of matrix")
-        
+
         self.transition_matrix = {}
         for pref, row in zip(preferences, matrix):
             self.transition_matrix[pref] = zip(preferences, map(float, row))
-     
+
     def get_preference_dictionary(self, ct):
         """passed a CachedCategoryTree, return category->preference dict"""
         # pass around a dictionary to add
         ret = {}
-        
+
         # start at the concrete node's children
         top_level = ct.children(ct.concrete_node)
-        
+
         for n in top_level:
             # assign randomly
             ret[n.id] = ml.sample_category_distribution(self.original_distribution)[0]
             self.__recurse_ct(ct, n, ret)
-        
+
         return ret
-            
+
     def __recurse_ct(self, ct, n, d):
         """given a cached category tree, a current node, and a dictionary of
         category->preference mappings"""
@@ -195,10 +195,10 @@ class Round:
         self.recommendations = recommendations
         self.actions = actions
         self.N = len(recommendations)
-        
+
         # save G, V, I, and X
         (self.G, self.V, self.I, self.X) = self.gvix()
-    
+
     def gvix(self):
         """return the tuple of G, V, I, and X quantities in this round"""
         return [self.actions.count(a) for a in ACTIONS]
@@ -208,25 +208,25 @@ class Person:
     """
     this is the class inherited by all Persons- it cannot be used itself
     """
-    def __init__(self, user=None, db=user_behavior.DJANGO_DB):
+    def __init__(self, user=None, behavior_db=user_behavior.DJANGO_DB):
         """optionally given a user, otherwise creates one. Optionally given
         a DB, otherwise uses default Django DB"""
         # rounds are a 2D array- first dimension is the round number, second
         # is the different trials for that round (so they can be averaged
         # easily)
         self.rounds = []
-        self.db = db
-        
+        self.db = behavior_db
+
         # keep a cached category tree
         self.ctree = CachedCategoryTree()
-        
+
         if user:
             self.user = user
             self.delete_user = False
         else:
             # Create and assign a new user.
-            # if necessary later delete the user as well. But this might not be 
-            # necessary since in Django we will be working with a fresh database 
+            # if necessary later delete the user as well. But this might not be
+            # necessary since in Django we will be working with a fresh database
             # that will in any case be destructed at the end of testing.
             self.delete_user = True
             success = False
@@ -234,26 +234,26 @@ class Person:
             while not success:
                 count += 1
                 try:
-                    self.user = User(username="test"+str(count), 
+                    self.user = User(username="test"+str(count),
                                      password='test'+str(count))
                     self.user.save()
                     success = True
                 except:
                     success = False
-        
+
         # initialize user
         self.db.initialize_user(self.user, self.delete_user)
-    
+
     def run_rounds(self, num_rounds=1, num_trials=1,
                          num_recommendations=settings.N):
         """the number of rounds is the list of individual recommendation
-        batches, the trials is the number of times the experiment is 
+        batches, the trials is the number of times the experiment is
         repeated (after resetting), and the number of recommendations is the
         number each"""
         trials = []
         for t in range(num_trials):
             print_carriage_return("Trial " + str(t))
-            
+
             rounds = []
             for i in range(num_rounds):
                 print_carriage_return("Round " + str(i))
@@ -261,13 +261,12 @@ class Person:
                 rounds.append(r)
             trials.append(rounds)
             self.db.clear()
-        
         # divide it so that it is a list of the different trials for each
         self.rounds = zip(*trials)
-    
+
     def run_round(self, num_recommendations=settings.N):
         """
-        run a single round with the given number of recommendations, adding 
+        run a single round with the given number of recommendations, adding
         to the behavior database and returning the Round object
         """
         cats = ml.recommend_categories(self.user, ctree=self.ctree,
@@ -275,13 +274,13 @@ class Person:
         categories = [c.id for c in
                       ml.sample_category_distribution(cats, settings.N)]
         actions = map(self.get_action, categories)
-        
+
         r = Round(categories, actions)
-        
+
         # add behavior and to rounds
         self.db.update_from_round(self.user, r)
         return r
-    
+
     def apply_average_rounds(self, func):
         """
         given a function, return it averaged over different trials of each
@@ -302,13 +301,13 @@ class Person:
             else:
                 raise TypeError("function returns " + str(cl) + ", not int, " +
                                 "float, list or tuple")
-        
+
         # if necessary, unzip averages before returning
         if cl == tuple or cl == list:
             return zip(*averages)
         else:
             return averages
-    
+
     def plot_gvix(self, outfile=None):
         """plot the G, V, I and X over rounds"""
         # get the sequences of G, V, I, and X separately
@@ -317,7 +316,7 @@ class Person:
             plt.plot(a, label=n)
         plt.legend()
         finish_plot(outfile)
-    
+
     def __del__(self):
         """clear info"""
         self.db.clear()
@@ -329,27 +328,27 @@ class DeterministicPerson(Person):
     and dislikes (always X's) everything else. This allows it to have
     precision and recall
     """
-    def __init__(self, liked_category_ids, user=None, db=user_behavior.DJANGO_DB):
+    def __init__(self, liked_category_ids, user=None, behavior_db=user_behavior.DJANGO_DB):
         """
         initialized with a list of category ID's the user likes (he will
         dislike all others)
         """
-        Person.__init__(self, user, db)
+        Person.__init__(self, user, behavior_db)
         self.liked_category_ids = set(liked_category_ids)
-    
+
     def get_action(self, category_id, event_id=None):
         """return G if the user likes it and X if he doesn't"""
         if category_id in self.liked_category_ids:
             return GO
         else:
             return XOUT
-    
+
     def get_precision_recall(self, r):
         """get precision and recall of given round"""
         precision = float(r.G) / r.N
         recall = (float(len(self.liked_category_ids.intersection(
                     set(r.recommendations)))) / len(self.liked_category_ids))
-        
+
         return (precision, recall)
 
     def plot_precision_recall(self, outfile):
@@ -366,38 +365,38 @@ class DiscretePreferencePerson(Person):
     A user whose interests fall into discrete Preference objects, one for each
     user
     """
-    def __init__(self, preference_map, user=None, db=None):
+    def __init__(self, preference_map, user=None, behavior_db=None):
         """given a dictionary of categories to Preference objects"""
-        Person.__init__(self, user, db)
+        Person.__init__(self, user, behavior_db)
         self.preference_map = preference_map
-        
+
         print freq_dict(self.preference_map.values())
 
     def get_action(self, category):
         """given a category, return an action (G, V, I, or X)"""
         return self.preference_map[category].sample_action()
-    
+
     def get_preference_distribution(self, r, preferences):
         """given a round and an ordered list of preferences, return the
         number in each preference"""
-        #return dict([(p.name, preferences.count(p)) 
+        #return dict([(p.name, preferences.count(p))
         #                for p in set(preferences)])
         pref_each = [self.preference_map[c] for c in r.recommendations]
         return [pref_each.count(p) for p in preferences]
-    
+
     def plot_preference_distribution(self, outfile=None):
         """create a plot of how many recommendations are given in each round to
         each preference"""
         prefs = list(set(self.preference_map.values()))
         func = lambda r: self.get_preference_distribution(r, prefs)
         average_preferences = self.apply_average_rounds(func)
-        
+
         print prefs
         print average_preferences
         for pref, seq in zip(prefs, average_preferences):
             plt.plot(seq, label=pref.name)
         plt.legend()
-        
+
         finish_plot(outfile)
 
 class TransitionSimulatedPerson(DiscretePreferencePerson):
@@ -406,11 +405,12 @@ class TransitionSimulatedPerson(DiscretePreferencePerson):
     categories. This one has preferences for each that are generated
     from a transition matrix
     """
-    def __init__(self, user=None, db=None, 
+    def __init__(self, user=None, behavior_db=None,
                         preference_file=DEFAULT_PREFERENCES_FILE):
         """initialize this user's behavior as a category->preference mapping"""
         transition_matrix = PreferenceTransitionMatrix(preference_file)
         ct = CachedCategoryTree()
         pref_map = transition_matrix.get_preference_dictionary(ct)
-        DiscretePreferencePerson.__init__(self, pref_map, user, db=db)
+        DiscretePreferencePerson.__init__(self, pref_map, user,
+                                          behavior_db=behavior_db)
 

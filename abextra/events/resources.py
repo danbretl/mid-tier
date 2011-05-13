@@ -21,7 +21,7 @@ from events.models import Event, Occurrence, Category, EventSummary
 from events.utils import CachedCategoryTree
 
 from behavior.models import EventAction
-from learning import ml
+from thor import ml
 
 # ============
 # = Category =
