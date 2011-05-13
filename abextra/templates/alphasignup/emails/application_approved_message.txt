@@ -7,7 +7,7 @@ Thank you for participating, and we are super-psyched to hear your feedback!
 
 {% trans "Please, follow the link below to download the app to your phone:" %}
 
-{{ protocol }}://{{ site.domain }}{% url userena_activate user.username %}
+{{ protocol }}://{{ site.domain }}{% url alpha_download user.username %}
 
 
 Best,
