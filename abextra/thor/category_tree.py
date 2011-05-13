@@ -70,6 +70,21 @@ class CategoryTree:
         list += [b for a in [tree.get_all_category_scores_dictionary(keys) for tree in self.children] for b in a]
         return list
 
+    def get_all_category_scores_dictionary(self, keys):
+        """
+        Input:  List of keys
+        Output: Flat list of (Categories,[values])
+        Return scores for keys for all Subtrees below it.
+        """
+        if self.get_parent():
+            list = [(self.category, [self.dictionary[key] for key in keys])]
+        else:
+            list = []
+        list += [b for a in [tree.get_all_category_scores_dictionary(keys) for tree in self.children] for b in a]
+        return list
+
+
+
     def get_parent(self):
         """
         Return category parent
