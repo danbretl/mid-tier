@@ -32,5 +32,9 @@ class AlphaQuestionnaire(models.Model):
     _user_full_name.admin_order_field = 'profile__user__last_name'
 
     def _user_alpha_status(self):
-        return self.profile.alpha_status
+        return dict(self.profile.ALPHA_STATUS_CHOICES)[self.profile.alpha_status]
     _user_alpha_status.admin_order_field = 'profile__alpha_status'
+
+    def _user_device_udid(self):
+        return self.profile.user.device_udid.udid
+    _user_device_udid.admin_order_field = 'profile__user__device_udid__udid'
