@@ -115,3 +115,19 @@ class CachedCategoryTree(object):
                 (c, i) for i, c in enumerate(self.bfs(self.concrete_node))
             )
         return max(categories, key=lambda c: self._bfs_concretes[c])
+
+
+def separate_concretes_abstracts(categories):
+    """
+    Given a list of categories, returns a tuple of two lists containing
+    concrete and abstract categories in the input list.
+    """
+    concretes = []
+    abstracts = []
+    for category in categories:
+        if category.category_type == 'C':
+            concretes.append(category)
+        elif category.category_type == 'A':
+            abstracts.append(category)
+
+        return (concretes, abstracts)

@@ -10,13 +10,12 @@ from pundit.arbiter import Arbiter
 class RulesTest(TestCase):
     """
     """
-    fixtures = ['events', 'categories', 'sources', 'external_categories.json']
+    fixtures = ['events', 'categories', 'sources', 'external_categories']
 
     def test_classify(self):
         """
         """
-        base_rule = BaseRule()
-        self.assertRaises(NotImplementedError, base_rule.classify, None, None)
+        self.assertRaises(TypeError, BaseRule)
 
     def test_SourceRule(self):
         """
