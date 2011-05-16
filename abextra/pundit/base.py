@@ -2,20 +2,29 @@
 Author: Vikas Menon
 Date: Apr 11 2011
 """
+from abc import ABCMeta, abstractmethod
 
-class BaseRule(object):
+class BaseRule:
     """
     Each rule has a clause, input and output
     For a given input, if the clause evaluates to true, the rule gets applied
     and an output is generated.
     """
+    __metaclass__ = ABCMeta
 
     def __init__(self):
         """
+        Each Rule must define its own init. Each init must contain the following
+        three member:
+        1) self.concrete_categories
+        2) self.abstract_categories
+        3) self.event
         """
-        pass
+        self.abstract_categories = self.concrete_categories = self.event = None
+        raise NotImplementedError
 
-    def classify(self, event, source, **kwargs):
+    @abstractmethod
+    def classify(self, event, source, external_categories, **kwargs):
         """
         Arguments:
         - `scraped_event`: This also includes outside information such as
@@ -35,7 +44,11 @@ class BaseRule(object):
         raise NotImplementedError
 
 
-    def get_concrete_category(self,event, spider, external_categories):
+    def get_concrete_category(self, event, spider, external_categories):
+        """
+        Given input event, spider (or the source) and external_categories
+        returns a list of concrete  categories
+        """
         if event == self.event:
             return self.concrete_categories
         else:
@@ -43,21 +56,12 @@ class BaseRule(object):
             return self.concrete_categories
 
     def get_abstract_category(self, event, spider, external_categories):
+        """
+        Given input event, spider (or the source) and external_categories
+        returns a list of abstract categories
+        """
         if event == self.event:
             return self.abstract_categories
         else:
             self.classify(event, spider, external_categories)
             return self.abstract_categories
-
-    # TODO: This seems fairly useful and shouldn't belong here.
-    #       This should be in some helper class
-    def separate_concretes_abstracts(self, categories):
-        concretes = []
-        abstracts = []
-        for category in categories:
-            if category.category_type == 'C':
-                concretes.append(category)
-            elif category.category_type == 'A':
-                abstracts.append(category)
-
-        return (concretes, abstracts)
