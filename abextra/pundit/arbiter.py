@@ -1,22 +1,20 @@
 """
-This module is the set of rules that get applied to an event.
-
-Each rule has a clause, input and output.
-Rules can be chained together to form a complex tree.
-
-For now:
-One and only one chain in the tree will ever get applied.
-Each chain is an ordered list of rules. 
-Each chain has an optional output_manipulator which can be implemented
-to massage the output for the next rule.
+Module implents Arbiter
 """
-from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
 
 class Arbiter(object):
     """
-    """
+    This module is the set of rules that get applied to an event.
 
+    Each rule has a clause, input and output.
+    Rules can be chained together to form a complex tree.
+    For now:
+    One and only one chain in the tree will ever get applied.
+    Each chain is an ordered list of rules.
+    Each chain has an optional output_manipulator which can be implemented
+    to massage the output for the next rule.
+    """
     def __init__(self, rules):
         """
         """
@@ -33,7 +31,9 @@ class Arbiter(object):
         raw_abstracts = []
         raw_concretes = []
         for rule in self.rules:
-            concretes, abstracts = rule.classify(event, source, external_categories=external_categories)
+            concretes, abstracts = rule.classify(event, source,
+                                                 external_categories=\
+                                                 external_categories)
 
             # Special handling for event classification rules.
             # Could later put this into a special class and abstract out
