@@ -10,7 +10,7 @@ from tastypie.authorization import DjangoAuthorization, Authorization
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
 from tastypie.http import HttpAccepted, HttpBadRequest, HttpCreated
-from tastypie.resources import ModelResource
+from tastypie.resources import Resource, ModelResource
 from tastypie.utils import dict_strip_unicode_keys
 from tastypie.utils.mime import determine_format, build_content_type
 from tastypie.validation import FormValidation
@@ -89,3 +89,29 @@ class UserResource(ModelResource):
             if user and created and user.api_key:
                 response.content = user.api_key.key
         return response
+
+# ==================
+# = Password Reset =
+# ==================
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.views import password_reset
+
+class PasswordResetResource(ModelResource):
+    class Meta:
+        queryset = User.objects.all()
+        list_allowed_methods = ('post',)
+        detail_allowed_methods = ()
+        authentication = ConsumerAuthentication()
+        authorization = DjangoAuthorization()
+        validation = FormValidation(form_class=PasswordResetForm)
+
+    def post_list(self, request, **kwargs):
+        deserialized = self.deserialize(request, request.raw_post_data, format=request.META.get('CONTENT_TYPE', 'application/json'))
+        bundle = self.build_bundle(data=dict_strip_unicode_keys(deserialized))
+        self.is_valid(bundle, request)
+        post = request.POST.copy()
+        post.update(bundle.data)
+        request.POST = post
+        request._dont_enforce_csrf_checks = True
+        response = password_reset(request)
+        return HttpCreated(location=response['location'])
