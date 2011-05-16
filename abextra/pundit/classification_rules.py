@@ -7,6 +7,7 @@ from collections import defaultdict
 
 from pundit.base import BaseRule
 from events.models import Source, Category
+from events.utils import separate_concretes_abstracts
 from importer.models import ExternalCategory, RegexCategory
 import re
 
@@ -241,7 +242,7 @@ class RegexRule(BaseRule):
                 categories.append(category)
         if  categories:
             self.concrete_categories, self.abstract_categories = \
-                                   self.separate_concretes_abstracts(categories)
+                                      separate_concretes_abstracts(categories)
 
 
 class TitleRegexRule(RegexRule):
