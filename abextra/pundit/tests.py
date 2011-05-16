@@ -1,24 +1,34 @@
+"""
+Author: Vikas Menon
+Last Modified: May 16th 2011
+"""
 from django.test import TestCase
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
-from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
+from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule, \
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
 from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
     """
+    Test Source and Source Category Rule. Both of these rules are currently
+    employed in production.
     """
     fixtures = ['events', 'categories', 'sources', 'external_categories']
 
     def test_classify(self):
         """
+        Test to ensure BaseRule cannot be instantiated without implementing
+        abstract method classify.
         """
         self.assertRaises(TypeError, BaseRule)
 
-    def test_SourceRule(self):
+    def test_source_rule(self):
         """
+        Ensure SourceRule works as expected on Fandango.
+        Invariant: All events imported from Fandango are movies.
         """
         source_rule = SourceRule()
         # MAke this test more comprehensive with more fandango objects.
@@ -30,24 +40,15 @@ class RulesTest(TestCase):
             self.assertEqual(event_category,
                              source_rule.classify(event, source))
 
-        self.assertEqual(event_category, source_rule.classify(event, source))
-
-    def test_SourceCategoryRule(self):
+    def test_source_category_rule(self):
         """
+        Ensure SourceCategoryRule works as expected with Villagevoice scrapes.
         """
         source_category_rule = SourceCategoryRule()
         for event in Event.objects.all():
-            # Here add an additional check for existence of the spiders
-            # information in the SourceCategoryModel
-            abstracts = None
-            try:
-                abstracts = event.categories.get()
-            except:
-                pass
-
             ext_cat_obj = ExternalCategory.objects.filter(
                 source__name='villagevoice',
-                concrete_category=event.concrete_category)[0]
+                concrete_category = event.concrete_category)[0]
 
             source = ext_cat_obj.source
             result = source_category_rule.classify(event, source, \
@@ -67,6 +68,10 @@ class ArbiterTest(TestCase):
 
     def test_chain(self):
         """
+        Test a simple chain in production. The more complex rules are arranged
+        at the start and the simpler rules are last.
+        We should consider a final stop rule that on failure assigns
+        unclassified
         """
         # Broad check
         arbiter = Arbiter([
@@ -80,25 +85,21 @@ class ArbiterTest(TestCase):
             ext_cat_objs = ExternalCategory.objects.filter(
                 concrete_category=event.concrete_category)
             for ext_cat_obj in ext_cat_objs:
-                concrete, abstracts = arbiter.apply_rules(event,
-                                                          source1,
-                                                          [ext_cat_obj])
+                concrete = arbiter.apply_rules(event, source1, [ext_cat_obj])[0]
                 if concrete:
                     break
 
             self.assertEqual(concrete, [event.concrete_category])
-            # Confirm that this does not compare a list of events to a
-            # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
-            source = Source.objects.get(id=2)
-            concrete, abstracts = arbiter.apply_rules(event,
-                                                       source2,
-                                                       [])
+            concrete = arbiter.apply_rules(event, source2, [])[0]
             self.assertEqual(concrete, [movie_category])
 
 
     def test_concrete_filters(self):
+        """
+        Stub
+        """
         arbiter = Arbiter([
             SourceCategoryRule(),
             SourceRule()
@@ -108,7 +109,7 @@ class ArbiterTest(TestCase):
         xids = ExternalCategory.objects.filter(xid__in=xid_list)
         for event in Event.objects.filter(concrete_category__id=28):
             concrete = arbiter.concrete_categories(event, source, xids)
-            self.assertEqual(event.concrete_category,concrete)
+            self.assertEqual(event.concrete_category, concrete)
 
 
 class RegexRulesTest(TestCase):
@@ -121,8 +122,9 @@ class RegexRulesTest(TestCase):
     fixtures = ['events', 'categories', 'sources',
                 'external_categories', 'regexcategories']
 
-    def test_DescriptionRegexRules(self):
+    def test_description_regex_rule(self):
         """
+        stub
         """
         event = Event.objects.get(id=2)
         source = Source.objects.get(name='villagevoice')
@@ -131,8 +133,9 @@ class RegexRulesTest(TestCase):
         drr_category = dregexrule.get_concrete_category(event, source, ext)[0]
         self.assertEqual(event.concrete_category, drr_category)
 
-    def test_TitleRegexRules(self):
+    def test_title_regex_rule(self):
         """
+        Stub
         """
         event = Event.objects.get(id=2)
         source = Source.objects.get(name='villagevoice')
@@ -141,7 +144,10 @@ class RegexRulesTest(TestCase):
         trr_category = tregexrule.get_concrete_category(event, source, ext)[0]
         self.assertEqual(event.concrete_category, trr_category)
 
-    def test_XIDRegexRule(self):
+    def test_xid_regex_rule(self):
+        """
+        Stub
+        """
         event = Event.objects.get(id=2)
         source = Source.objects.get(name='villagevoice')
         ext = ExternalCategory.objects.get(id=108)
@@ -149,7 +155,10 @@ class RegexRulesTest(TestCase):
         xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
         self.assertEqual(event.concrete_category, xrr_category)
 
-    def test_SemanticMatchRule(self):
+    def test_semantic_match_rule(self):
+        """
+        Stub
+        """
         event = Event.objects.get(id=2)
         source = Source.objects.get(name='villagevoice')
         category = Category.objects.get(title='Adventure')
