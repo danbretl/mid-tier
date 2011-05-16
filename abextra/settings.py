@@ -234,6 +234,10 @@ LOGGING = {
         'api.test' : {
             'handlers': ['console'],
             'level': 'DEBUG',
+        },
+        'pundit': {
+            'handleres':['console'],
+            'level': 'DEBUG',
         }
     }
 }

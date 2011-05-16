@@ -20,16 +20,16 @@ string   string  ForeignKey  ManyToMany
 TODO:
 Set up new SourceCategory table that fits with concrete and abstract
 Finish DirectMappingRule (abstract list setup, NULL handling)
-Write test cases
-
-Write Regex!
 """
 
-
 class DirectMappingRule(BaseRule):
+    """
+    """
     def __init__(self, rule_table, orderings):
-        """example ordering: (('Source', 'XID'), ('XID'))"""
-        mapping_dict = defaultdict(dict)
+        """
+        example ordering: (('Source', 'XID'), ('XID'))
+        """
+        self.mapping_dict = defaultdict(dict)
         for row in rule_table.objects.all():
             for ordering in orderings:
                 thiskey = tuple([row.getattr(o) for o in ordering])
@@ -38,9 +38,13 @@ class DirectMappingRule(BaseRule):
                 # TODO: I do not know if NULL translates to None
                 if None in thiskey:
                     continue
-                mapping_dict[ordering][thiskey] = (row.concrete, row.abstracts)
+                self.mapping_dict[ordering][thiskey] = (row.concrete,
+                                                        row.abstracts)
 
     def classify(self, event, source, xids):
+        """
+        stub
+        """
         # apply all rules to it in order
         concrete, abstract = None, []
 
@@ -72,6 +76,9 @@ class DirectMappingRule(BaseRule):
 
 
 class SourceCategoryMapRule(DirectMappingRule):
+    """
+    Stub
+    """
     def __init__(self):
         orderings = (('source', 'xids'), ('source'))
         DirectMappingRule.__init__(self, SourceCategory, orderings)
@@ -93,15 +100,17 @@ class SourceRule(BaseRule):
         self.concrete_categories = None
         self.abstract_categories = None
         #-------------------------------------
-        for src in Source.objects.select_related('default_concrete_category').all():
-            self.concrete_dict.setdefault(src, []).append(src.default_concrete_category)
+        field = 'default_concrete_category'
+        for src in Source.objects.select_related(field).all():
+            default_concrete = src.default_concrete_category
+            self.concrete_dict.setdefault(src, []).append(default_concrete)
             abstracts = []
             try:
                 abstracts = src.default_abstract_categories.all()
             except:
                 pass
 
-            self.abstract_dict.setdefault(src,[]).extend(abstracts)
+            self.abstract_dict.setdefault(src, []).extend(abstracts)
 
     def classify(self, event, source, **kwargs):
         """
@@ -124,7 +133,7 @@ class SourceRule(BaseRule):
         self.concrete_categories = results_concrete
         self.abstract_categories = results_abstract
         #------------------------------------------
-        return (results_concrete,results_abstract)
+        return (results_concrete, results_abstract)
 
 
 class SourceCategoryRule(BaseRule):
@@ -143,13 +152,17 @@ class SourceCategoryRule(BaseRule):
         self.concrete_categories = []
         self.abstract_categories = []
         #-------------------------------------
-
-        for ext_cat in ExternalCategory.objects.select_related('source', 'conrete_category', 'abstract_categories').all():
+        fields = 'source', 'conrete_category', 'abstract_categories'
+        for ext_cat in ExternalCategory.objects.select_related(*fields).all():
             key = (ext_cat.source, ext_cat)
             self.concrete.setdefault(key, []).append(ext_cat.concrete_category)
-            self.abstract.setdefault(key, []).extend(ext_cat.abstract_categories.all())
+            abstracts = ext_cat.abstract_categories.all()
+            self.abstract.setdefault(key, []).extend(abstracts)
 
     def classify(self, event, source, **kwargs):
+        """
+        Stub
+        """
         external_categories = kwargs['external_categories']
         results_concrete = []
         results_abstract = []
@@ -165,17 +178,8 @@ class SourceCategoryRule(BaseRule):
         self.concrete_categories = results_concrete
         self.abstract_categories = results_abstract
         #------------------------------------------
-        return (results_concrete,results_abstract)
+        return (results_concrete, results_abstract)
 
-
-"""
-TODO:
-
-REGEX and SOURCEREGEX rules work on the same table importer_regexcategory
-regex is a more general rule that gets applied to all sources if sourceregex
-fails when .
-source
-"""
 
 class RegexRule(BaseRule):
     """
@@ -205,23 +209,23 @@ class RegexRule(BaseRule):
         self.key = key
         if not regex_objects:
             if model:
-                regex_objs = RegexCategory.objects.select_related().filter(model_type=model)
+                regex_objs = RegexCategory.objects.select_related().\
+                             filter(model_type=model)
             else:
                 regex_objs = RegexCategory.objects.all()
         else:
             regex_objs = regex_objects
 
         self.default_rules = []
-        total_count = fail_count = 0
         for rgx_obj in regex_objs:
-            total_count +=1
             try:
                 self.default_rules.append((re.compile(rgx_obj.regex,
                                                       re.IGNORECASE),
                                            rgx_obj.category))
             except:
                 #Fails for some badly coded categories
-                fail_count += 1
+                #FIXME: Do error logging here
+                None
 
     def classify(self, event, source, xids):
         """
@@ -249,18 +253,21 @@ class TitleRegexRule(RegexRule):
     """Applies regexes to title of an event to discover
     concrete and abstract categories"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.title, 'TextRegex')
+        RegexRule.__init__(self, lambda e, s, x: e.title, 'TextRegex')
+
 
 class DescriptionRegexRule(RegexRule):
     """Applies regexes to description"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.description,'TextRegex')
+        RegexRule.__init__(self, lambda e, s, x: e.description,'TextRegex')
+
 
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
-        xkey = lambda e,s,x: " ".join([obj.name for obj in x])
+        xkey = lambda e, s, x: " ".join([obj.name for obj in x])
         RegexRule.__init__(self, xkey, 'XIDRegex')
+
 
 class SemanticCategoryMatchRule(RegexRule):
     """
@@ -269,9 +276,9 @@ class SemanticCategoryMatchRule(RegexRule):
     Note: Currently used only for abstract categorization.
     """
     def __init__(self):
-        xkey = lambda e,s,x: " ".join([obj.name for obj in x])
+        xkey = lambda e, s, x: " ".join([obj.name for obj in x])
         regex_objs = []
-        # Loop over all ABSTRACT categories only. 
+        # Loop over all ABSTRACT categories only.
         for category in Category.abstract.all():
             #we should get rid of any unwanted terms that could match
             # like genres or
