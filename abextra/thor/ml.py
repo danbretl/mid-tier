@@ -182,7 +182,7 @@ def generate_category_mapping(event_query_set, categories_dict=None):
 
     # This is a dictionary of the form:
     # category_event_map[category# object] = set(event ids)
-    category_event_map = defaultdict(set())
+    category_event_map = defaultdict(set)
     for category_id in all_category_dict.keys():
         category = all_category_dict[category_id]
         event_ids = categoryid_event_map[category_id]
