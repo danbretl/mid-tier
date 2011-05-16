@@ -219,7 +219,7 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'pundit': {
-            'handleres':['console'],
+            'handlers':['console'],
             'level': 'DEBUG',
         }
     }
