@@ -26,6 +26,8 @@ class BaseParser(object):
                     created, instance = True, form.save(commit=True)
                 else:
                     self.logger.error(form.errors)
+            except self.model.MultipleObjectsReturned:
+                created, instance = False, self.model.objects.filter(**key._asdict())[0]
             if instance:
                 self.cache[key] = instance
 
