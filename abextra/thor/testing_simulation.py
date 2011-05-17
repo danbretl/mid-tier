@@ -96,6 +96,8 @@ class PreferenceTransitionMatrix:
     This is used to assign preferences to a tree. It contains both the
     distribution of preferences at the top level and a transition matrix
     showing how one parent's preference affects its children
+    FIXME: The transition matrix functionality should be factored out into a
+    separate class.
     """
     def __init__(self, preference_file=DEFAULT_PREFERENCES_FILE):
         """
