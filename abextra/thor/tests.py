@@ -1,6 +1,7 @@
 from django.test import TestCase
 from thor import settings, user_behavior, testing_simulation, testing_framework
-from thor import category_tree, simulation_shared, ml
+from thor import simulation_shared, ml
+from thor.category_tree import CategoryTree
 from matplotlib import pyplot as plt
 from django.contrib.auth.models import User
 from events.models import Event, Category
@@ -17,19 +18,6 @@ class AlgorithmTest(TestCase):
         self.count = count()
         self.user = User.objects.get(username='tester_api')
         #MockInitializer().run()
-
-    def test_sampling_distribution(self):
-        """
-        test if the sampling distribution function is working as expected.
-        """
-        trials = 1000
-        distribution = [('H',0.5),('T',0.5)]
-        num_heads = ml.sample_distribution(distribution,trials).count('H')
-        result = [binom_test(num_heads,trials,1.0/2) for x in range(trials)]
-        mean = sum(result) / len(result)
-        # NOTE: Maybe this number should be higher. What is a good number?
-        self.assertTrue(mean > 0.05)
-
 
     def test_probabilistic_walk(self):
         #invariants:
@@ -279,3 +267,83 @@ class MLModuleTest(TestCase):
             self.assertEqual(topkFunction(self.unitArray), 1.0)
             self.assertEqual(topkFunction(self.emptyArray), 0.0)
             self.assertEqual(topkFunction(self.rangeArray), settings.mean(self.rangeArray[-k:]))
+
+    def test_sampling_distribution(self):
+        """
+        test if the sampling distribution function is working as expected.
+        """
+        trials = 1000
+        distribution = [('H',0.5),('T',0.5)]
+        num_heads = ml.sample_distribution(distribution,trials).count('H')
+        result = [binom_test(num_heads,trials,1.0/2) for x in range(trials)]
+        mean = sum(result) / len(result)
+        # NOTE: Maybe this number should be higher. What is a good number?
+        self.assertTrue(mean > 0.05)
+
+class CategoryTreeTest(TestCase):
+    fixtures = ['categories', 'users', 'auth']
+
+    def setUp(self):
+        self.user = User.objects.get(id=1)
+        self.category_tree = CategoryTree(self.user.id)
+
+    def test_init(self):
+        self.assertRaises(TypeError, CategoryTree)
+        # Also test with different combinations of parameters.
+
+    def test_get_all_category_scores_dictionary(self):
+        self.assertRaises(TypeError,
+                          self.category_tree.get_all_category_scores_dictionary)
+
+    def test_get_parent(self):
+        self.assertEqual(None, self.category_tree.parent)
+        for children in self.category_tree.children:
+            self.assertEqual(children.parent, self.category_tree)
+
+    def test_get_children(self):
+        children = Category.objects.filter(parent=self.category_tree.category)
+        test_result = [child.category for child in self.category_tree.children]
+        self.assertEqual(set(children), set(test_result))
+
+    def test_insert_key_value(self):
+        self.assertRaises(TypeError, self.category_tree.insert_key_value)
+        self.assertRaises(TypeError,
+                          self.category_tree.insert_key_value,
+                          'param1')
+        self.assertRaises(TypeError,
+                          self.category_tree.insert_key_value,
+                          'param1', 'param2', 'param3')
+        key_values = [('XYZ', 1), ('ABC', '2'), ('cde',(1,2))]
+        for key, value in key_values:
+            self.category_tree.insert_key_value(key, value)
+        self.assertEqual(self.category_tree.dictionary, dict(key_values))
+
+    def test_get_key_value(self):
+        self.assertRaises(TypeError, self.category_tree.get_key_value)
+        self.assertRaises(TypeError, self.category_tree.get_key_value, 1, 2)
+        self.assertEqual(self.category_tree.get_key_value(1), None)
+        key_values = [('XYZ', 1), ('ABC', '2'), ('cde',(1,2))]
+        for key, value in key_values:
+            self.category_tree.insert_key_value(key, value)
+            self.assertEqual(value, category_tree.get_key_value(key))
+
+    def test_subtree_score(self):
+        self.assertRaises(TypeError,self.category_tree.subtree_score)
+        self.assertRaises(TypeError,self.category_tree.subtree_score, 1, 2)
+        total = self.recursion_test(self.category_tree)
+        self.assertEqual(total, self.category_tree.subtree_score('score'))
+
+    def test_topdown_recursion(self):
+        # Need to come up with a creative solution to test these
+        # Any test I have come up with replicates the same code in the module
+        # and therefore isn't a sound test.
+        pass
+
+    def test_bottomup_recursion(self):
+        pass
+
+    def test_repr(self):
+        pass
+
+    def test_print_dictionary_key_values(self):
+        pass
