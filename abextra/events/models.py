@@ -144,7 +144,7 @@ class Event(models.Model):
             return self.image
 
         occurrences_with_place_image = list(self.occurrences.select_related('place') \
-            .only('place__image').filter(place__image__isnull=False)[:1])
+            .only('place__image').exclude(place__image__isnull=True).exclude(place__image__iexact='')[:1])
         if occurrences_with_place_image:
             return occurrences_with_place_image[0].place.image
 
