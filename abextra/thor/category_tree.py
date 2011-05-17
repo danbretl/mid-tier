@@ -57,7 +57,6 @@ class CategoryTree:
         else:
             self.score = ((0, 0, 0, 0))
 
-
     def get_all_category_scores_dictionary(self, keys):
         """
         Input:  List of keys
@@ -70,8 +69,6 @@ class CategoryTree:
             list = []
         list += [b for a in [tree.get_all_category_scores_dictionary(keys) for tree in self.children] for b in a]
         return list
-
-
 
     def get_parent(self):
         """
