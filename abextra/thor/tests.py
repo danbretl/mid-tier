@@ -114,7 +114,7 @@ class AlgorithmTest(TestCase):
         plt.xlabel("Trials")
         plt.ylabel("% of User preferred categories")
         #plt.legend()
-        plt.savefig("learning/test_results/recall.pdf")
+        plt.savefig("thor/test_results/recall.pdf")
         plt.cla()
         #import pdb; pdb.set_trace()
         self.assertTrue(True)
@@ -165,7 +165,7 @@ class AlgorithmTest(TestCase):
         plt.title("Rate of learning one category")
         plt.xlabel("Trials")
         plt.ylabel("% of all Recommendations")
-        plt.savefig("learning/test_results/test.pdf")
+        plt.savefig("thor/test_results/test.pdf")
         plt.cla()
         self.assertTrue(True)
 

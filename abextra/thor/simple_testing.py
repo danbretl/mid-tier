@@ -23,8 +23,8 @@ def runtests():
                        ['Bars', 'Clubs', 'Plays', 'Sculpture Events',
                         'Fallon', 'Wine', 'Shopping Event'])
     #person = testing_simulation.DeterministicPerson(category_ids)
-    #pref_file = "learning/preferences/twotypes.txt"
-    pref_file = "learning/preferences/default.txt"
+    #pref_file = "thor/preferences/twotypes.txt"
+    pref_file = "thor/preferences/default.txt"
     person = testing_simulation.TransitionSimulatedPerson(db=behavior_db, 
                                                 preference_file=pref_file)
     print "running rounds"
