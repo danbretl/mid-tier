@@ -28,10 +28,11 @@ class BaseParser(object):
                     self.logger.error(form.errors)
             except self.model.MultipleObjectsReturned:
                 created, instance = False, self.model.objects.filter(**key._asdict())[0]
+
             if instance:
                 self.cache[key] = instance
+                self.post_parse(data, instance)
 
-        self.post_parse(data, instance)
         result = (created, instance)
         self.logger.debug(result)
         return result
