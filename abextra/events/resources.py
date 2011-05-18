@@ -35,6 +35,10 @@ class CategoryResource(ModelResource):
         limit = 200
         fields = ('title', 'color', 'thumb')
 
+    def dehydrate_thumb(self, bundle):
+        category, data = bundle.obj, bundle.data
+        return category.thumb_path
+
 # ==============
 # = Occurrence =
 # ==============

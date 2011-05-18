@@ -63,6 +63,10 @@ class Category(models.Model):
     def icon_path(self):
         return os.path.split(self.icon.name)[-1] if self.icon else None
 
+    @property
+    def thumb_path(self):
+        return self.icon and os.path.split(self.thumb.name)[-1] or ''
+
     def parent_title(self):
         return self.parent.title
     parent_title.admin_order_field = 'parent__title'
