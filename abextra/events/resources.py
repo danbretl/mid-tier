@@ -33,7 +33,7 @@ class CategoryResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
-        fields = ('title', 'color')
+        fields = ('title', 'color', 'thumb')
 
 # ==============
 # = Occurrence =
