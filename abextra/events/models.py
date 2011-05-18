@@ -52,6 +52,7 @@ class Category(models.Model):
     association_coefficient = models.FloatField(default=0)
     # TODO bring this out into a OneToOne CategoryGraphics class
     icon = ImageField(upload_to='category_icons', blank=True, null=True)
+    thumb = ImageField(upload_to='category_thumbs', blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
 
     objects = CategoryManager()
