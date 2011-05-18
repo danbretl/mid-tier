@@ -21,11 +21,6 @@ class Arbiter(object):
         """
         """
         self.rules = rules
-        self.event = None
-        self.raw_concretes = None
-        self.raw_abstracts = None
-        self.filtered_concrete = None
-        self.filtered_abstract = None
         self.cachedcategorytree = CachedCategoryTree()
 
     def apply_rules(self, event, source, external_categories):
@@ -50,32 +45,9 @@ class Arbiter(object):
 
         return (raw_concretes, raw_abstracts)
 
-    def _apply_filters(self, event, source, ext_categories):
-        """
-        This function filters down the  concrete categories and returns
-        """
-        if not event:
-            return
-        if self.event == event:
-            return
-
-        self.event = event
-        raw_concretes, raw_abstracts = self.apply_rules(event,
-                                                        source,
-                                                        ext_categories)
-        raw_concretes = [category for category in raw_concretes if category]
-        #clean concrete and abstracts here
-        self.filtered_abstract = raw_abstracts
-        if raw_concretes:
-            self.filtered_concrete = self.cachedcategorytree \
-                                     .deepest_category(raw_concretes)
-        else:
-            self.filtered_concrete = None
-
     def abstract_categories(self, event, source, ext_category_xids=None):
-        self._apply_filters(event, source, ext_category_xids)
-        return self.filtered_abstract
+        return self.apply_rules(event, source, ext_category_xids)[1]
 
     def concrete_categories(self, event, source, ext_category_xids=None):
-        self._apply_filters(event, source, ext_category_xids)
-        return self.filtered_concrete
+        categories = self.apply_rules(event, source, ext_category_xids)[0]
+        return self.cachedcategorytree.deepest_category(categories)
