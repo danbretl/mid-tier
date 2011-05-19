@@ -26,7 +26,7 @@ class EventActionResource(ModelResource):
         list_allowed_methods = ('post', 'delete')
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
-        authorization = DjangoAuthorization()
+        # authorization = DjangoAuthorization()
         validation = FormValidation(form_class=EventActionForm)
 
     # FIXME extremely bastardized is_valid that also creates object
@@ -94,7 +94,7 @@ class EventActionAggregateResource(ModelResource):
         list_allowed_methods = ('delete',)
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
-        authorization = DjangoAuthorization()
+        # authorization = DjangoAuthorization()
 
     def obj_delete_list(self, request=None, **kwargs):
         """overriden to filter for the user"""
