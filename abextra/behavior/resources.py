@@ -2,7 +2,7 @@ from django.core.urlresolvers import resolve, Resolver404
 
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.authorization import DjangoAuthorization
+from tastypie.authorization import DjangoAuthorization, Authorization
 from tastypie.validation import FormValidation
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
 from tastypie.utils.mime import build_content_type
@@ -26,7 +26,8 @@ class EventActionResource(ModelResource):
         list_allowed_methods = ('post', 'delete')
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
-        authorization = DjangoAuthorization()
+        # authorization = DjangoAuthorization()
+        authorization = Authorization()
         validation = FormValidation(form_class=EventActionForm)
 
     # FIXME extremely bastardized is_valid that also creates object
@@ -94,7 +95,7 @@ class EventActionAggregateResource(ModelResource):
         list_allowed_methods = ('delete',)
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
-        authorization = DjangoAuthorization()
+        authorization = Authorization()
 
     def obj_delete_list(self, request=None, **kwargs):
         """overriden to filter for the user"""
