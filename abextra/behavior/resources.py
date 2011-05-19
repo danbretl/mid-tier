@@ -96,6 +96,7 @@ class EventActionAggregateResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         authorization = Authorization()
+        # authorization = DjangoAuthorization()
 
     def obj_delete_list(self, request=None, **kwargs):
         """overriden to filter for the user"""
