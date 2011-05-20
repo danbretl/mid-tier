@@ -14,7 +14,7 @@ from alphasignup.forms import AlphaSignupForm, EditProfileAlphaForm
 urlpatterns = patterns('',
     # Signup, signin and signout
     url(r'^signup/$',
-       userena_views.signup,
+       alpha_views.signup,
        {'signup_form': AlphaSignupForm},
        name='userena_signup'
     ),

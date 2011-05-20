@@ -18,6 +18,7 @@ from userena.models import UserenaSignup
 from userena.decorators import secure_required
 from userena.backends import UserenaAuthenticationBackend
 from userena.utils import signin_redirect, get_profile_model
+from userena import views as userena_views
 from userena import settings as userena_settings
 
 from guardian.decorators import permission_required_or_403
@@ -26,6 +27,12 @@ from api.models import DeviceUdid
 from api.forms import DeviceUdidSansUserForm
 
 from livesettings import config_value
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@staff_member_required
+def signup(request, signup_form=SignupForm, template_name='userena/signup_form.html', success_url=None, extra_context=None):
+    return userena_views.signup(request, signup_form, template_name, success_url, extra_context)
 
 @secure_required
 @permission_required_or_403('change_user', (User, 'username', 'username'))
