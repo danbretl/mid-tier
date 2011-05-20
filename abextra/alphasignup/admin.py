@@ -4,9 +4,9 @@ from alphasignup.models import AlphaQuestionnaire, AppDistribution
 class AlphaQuestionnaireAdmin(admin.ModelAdmin):
     """Admin for alpha questionnaires"""
     model = AlphaQuestionnaire
-    fields = ('_user_email', '_user_full_name', '_user_alpha_status', 'device_platform', '_user_device_udid', 'zip', 'is_usage_info_ok', 'is_mobile_planner', 'is_app_dev', 'year_of_birth',)
+    fields = ('_user_email', '_user_full_name', '_user_alpha_status', 'device_platform', '_user_device_udid', 'zip', 'is_usage_info_ok', 'is_mobile_planner', 'is_app_dev', 'year_of_birth')
     readonly_fields = ('_user_email', '_user_full_name', '_user_alpha_status', 'device_platform', '_user_device_udid', 'zip', 'is_usage_info_ok', 'is_mobile_planner', 'is_app_dev', 'year_of_birth')
-    list_display = ('_user_full_name', '_user_email', 'device_platform', '_user_alpha_status')
+    list_display = ('_user_full_name', '_user_email', 'device_platform', '_user_alpha_status', '_user_device_udid')
     list_filter = ('profile__alpha_status',)
     actions = ('APPROVE', 'DENY')
 
