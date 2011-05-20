@@ -1,16 +1,71 @@
-{% extends 'userena/base_userena.html' %}
+{% extends 'userena/base_userena_dual.html' %}
 {% load i18n %}
 
 {% block title %}Download{% endblock %}
 {% block navbar %}{% with current_tab="download" %}{{ block.super }}{% endwith %}{% endblock %}
 
-{% block content_title %}<h2>Congrats! Let's get started...</h2>{% endblock %}
+{% block page %}
+<!-- start page -->
+<div id="wrapper">
+  <div id="page_dual">
+    <div id="page-bg_dual">
+      <div id="sidebar1" class="sidebar">
+        <ul>
+          <li>
+            <ul>
+              <li>
+                <p>iPhone / iPod Touch</p>
+                <p>iOS version: 4.3.x</p>
+              </li>
+            </ul>
+            <ul>
+              <li><a href="{{ MEDIA_URL }}{{ app_dist.archive }}">Download</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
 
+      <!-- start main content -->
+      <div id="content_dual">
+        <div class="flower"></div>
 
-{% block content %}
-<div>
-  <h3>Instructions</h3>
-  <h3>Video</h3>
-  <h3>Download Link</h3>
+        <div id="body">
+          {% block body %}
+          <div class="content_title">
+            {% block content_title %}<h2>Let's get you started with the world!</h2>{% endblock %}
+          </div>
+          <div class="content">
+            {% block content %}
+            <div>
+              <div id="instructions">
+                <h3>Instructions</h3>
+                <ol>
+                  <li>Download the application archive.</li>
+                  <li>Unzip the application archive containing the application binary and your personalized certificate.</li>
+                  <li>Open iTunes.</li>
+                  <li>Attach your device to the computer and make sure it shows up in iTunes.</li>
+                  <li>Drag both files from the archive into iTunes.</li>
+                  <li>Confirm that the Kwiqet app is now in the Applications library.</li>
+                  <li>Sync your device.</li>
+                  <li>Enjoy the world!</li>
+                </ol>
+              </div>
+              <div id="video">
+                <h3>Video</h3>
+                <iframe width="425" height="349" src="http://www.youtube.com/embed/dGbuLiiyZBU" frameborder="0" allowfullscreen></iframe>
+              </div>
+            </div>
+            {% endblock %}
+          </div>
+          {% endblock %}
+        </div>
+
+      </div>
+      <!-- end content -->
+
+      <div style="clear: both;">&nbsp;</div>
+    </div>
+  </div>
 </div>
+<!-- end page -->
 {% endblock %}

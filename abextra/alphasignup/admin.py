@@ -1,5 +1,5 @@
 from django.contrib import admin
-from alphasignup.models import AlphaQuestionnaire
+from alphasignup.models import AlphaQuestionnaire, AppDistribution
 
 class AlphaQuestionnaireAdmin(admin.ModelAdmin):
     """Admin for alpha questionnaires"""
@@ -27,3 +27,5 @@ class AlphaQuestionnaireAdmin(admin.ModelAdmin):
         self.message_user(request, "Alpha applications successfully denied.")
 
 admin.site.register(AlphaQuestionnaire, AlphaQuestionnaireAdmin)
+
+admin.site.register(AppDistribution)

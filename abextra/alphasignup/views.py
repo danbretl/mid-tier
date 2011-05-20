@@ -25,6 +25,8 @@ from guardian.decorators import permission_required_or_403
 from api.models import DeviceUdid
 from api.forms import DeviceUdidSansUserForm
 
+from livesettings import config_value
+
 @secure_required
 @permission_required_or_403('change_user', (User, 'username', 'username'))
 def password_change_or_set(request, username, template_name='userena/password_form.html',
@@ -194,7 +196,7 @@ def profile_detail(request, username, template_name='userena/profile_detail.html
 # =======================
 # = Alpha Questionnaire =
 # =======================
-from alphasignup.models import AlphaQuestionnaire
+from alphasignup.models import AlphaQuestionnaire, AppDistribution
 from alphasignup.forms import AlphaQuestionnaireForm
 
 @login_required
@@ -262,5 +264,7 @@ def device_udid(request, username, template_name='alphasignup/udid.html'):
 @secure_required
 def download(request, username, template_name='alphasignup/download.html'):
     user = get_object_or_404(User, username__iexact=username)
-    extra_context = dict()
+    app_dist_id = config_value('ALPHA', 'APP_DIST_ID')
+    app_dist=get_object_or_404(AppDistribution, id=app_dist_id)
+    extra_context = dict(app_dist=app_dist)
     return direct_to_template(request, template_name, extra_context=extra_context)

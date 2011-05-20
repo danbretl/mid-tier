@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import UserProfile
+from alphasignup import config
 
 class AlphaQuestionnaire(models.Model):
     DEVICE_PLATFORM_CHOICES = (
@@ -38,3 +39,7 @@ class AlphaQuestionnaire(models.Model):
     def _user_device_udid(self):
         return self.profile.user.device_udid.udid
     _user_device_udid.admin_order_field = 'profile__user__device_udid__udid'
+
+class AppDistribution(models.Model):
+    version = models.CharField(max_length=20)
+    archive = models.FileField(upload_to='app_archives')
