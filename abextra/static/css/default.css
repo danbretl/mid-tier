@@ -412,10 +412,10 @@ img.right {
 .sidebar li h3 {
 	height: 24px;
 	margin: 0 0 0 0;
-	padding: 12px 15px 0px 15px;
+	padding: 0px 0px 12px 0px;
 	font-size: 16px;
-	font-weight: normal;
-	color: #000000;
+	font-weight: bold;
+	color: #454545;
 }
 
 .sidebar a {
@@ -427,6 +427,27 @@ img.right {
 
 .sidebar a:active{
 	font-weight:bold;	
+}
+
+.dlkwiqet {
+	display: block;
+	width:176px;
+	height:30px;
+	background: url(/static/images/download.png) no-repeat left top;
+	padding:0 15 0 15;
+}
+
+.dlkwiqet:hover {
+	background-position: 0px -31px;
+}
+
+.appartwork {
+	display:block;
+	-webkit-mask-image: url(/static/images/mask175.png);
+	-o-mask-image: url(/static/images/mask175.png);
+	-moz-mask-image: url(/static/images/mask175.png);
+	mask-image: url(/static/images/mask175.png);
+	box-shadow: 0px 0px 30px rgba(30, 28, 28, 0.6);
 }
 
 /* Search */
