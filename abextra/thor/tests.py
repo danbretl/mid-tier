@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from events.models import Event, Category
 from behavior.models import EventActionAggregate
 from itertools import count
-from scipy.stats import binom_test
+#from scipy.stats import binom_test
 from events.utils import CachedCategoryTree
 import random
 
