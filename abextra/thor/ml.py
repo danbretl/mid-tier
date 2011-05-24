@@ -30,6 +30,7 @@ from events.models import Category
 from events.utils import CachedCategoryTree
 from category_tree import CategoryTree
 import user_behavior
+import heapq
 
 DJANGO_DB = user_behavior.UserBehaviorDjangoDB()
 
@@ -328,38 +329,20 @@ def filter_events(user, event_query_set, categories_dict,
 
     return [ev for ev in selected_events]
 
-def semi_sort(events, top_sort=3):
+def semi_sort(events, top_k=3):
     """
-    This function sorts [(event_score,event)]*
-    such the the events with the top top_sort (say 3) scores
-    are always listed first.The rest of the events are not sorted
-    in any manner.
-
-    Since we always have only 20 events, not using any fancy
-    algorithms for semi-sort.
-
-    Time-Complexity is proportional to O(top_sort * len(events))
-    where top_sort has an upper bound of len(events)
-
-    ToDo: Nice to have: Make this more efficient.
-    Use a max heap for efficiency. Efficiency would then be
-    O(log(top_sort)*len(events))
-
-    Note:Python does not support a max heap by default
-         (maybe use a min heap with -ve values for keys) :(
+    Surprisingly, this is the more efficient implementation of semi_sort.
+    This happens because sort happens in C code.
+    This is useful only for small values:
+    for the general case prefer code like this:
+    def semi_sort(events, top_k=3):
+        heapstore = events[:top_k]
+        heapq.heapify(heapstore)
+        leftovers = [heapq.heappushpop(heapstore, ev) for ev in events[top_k:]]
+        return heapstore + leftovers
     """
-    for i in range(top_sort):
-        maximum = events[i]
-        pos = i
-        for j in range(i+1, len(events)):
-            if maximum < events[j]:
-                pos = j
-                maximum = events[j]
-
-        # Swap maximum with the top i'th position under evaluation.
-        events[pos], events[i] = events[i], events[pos]
-
-    return events
+    lst = sorted(items)[-top_k:]
+    return lst + [item for item in items if item not in lst]
 
 def fuzzy_sort(events):
     """
@@ -532,7 +515,7 @@ def normalize(lst):
     """
     # If input is empty, return an empty list
     if not lst:
-        return lst
+        return
 
     # Calculate sum: If the sums adds up to 0,
     #                  then this is a uniform distribution
