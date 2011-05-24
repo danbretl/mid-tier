@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from events.models import Event, Category
 from behavior.models import EventActionAggregate
 from itertools import count
-from scipy.stats import binom_test
+#from scipy.stats import binom_test
 from events.utils import CachedCategoryTree
 import random
 
@@ -279,6 +279,13 @@ class MLModuleTest(TestCase):
         mean = sum(result) / len(result)
         # NOTE: Maybe this number should be higher. What is a good number?
         self.assertTrue(mean > 0.05)
+
+    def test_semi_sort(self):
+        k = 10000
+        for i in range(2,5):
+            lst = range(k)
+            random.shuffle(lst)
+            self.assertEqual(set(ml.semi_sort(lst, i)[:i]), set(range(k)[-i:]))
 
 class CategoryTreeTest(TestCase):
     fixtures = ['categories', 'users', 'auth']
