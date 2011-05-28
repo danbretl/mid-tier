@@ -5,6 +5,8 @@ test validity of ical here: http://icalvalid.cloudapp.net/Default.aspx
 import vobject
 import urllib
 import settings
+from importer.parsers.locations import PlaceParser
+from events.models import Event, Occurrence
 
 class Parser:
     def __init__(self, file, delim='::'):
@@ -30,11 +32,40 @@ class Parser:
         Input : title
         Output: Event object (either existing or new)
         """
-        event = Event.objects.get(title=title)
+        events = Event.objects.filter(title=title)
+        event = None
         if not event:
             event = Event()
             event.title = title
+        elif len(events) > 1:
+            #raise error
+            pass
+        else:
+            event = events[0]
+
         return event
+
+    def get_occurrence_from_title_date_time(self, event, date, time,
+                                            enddate, endtime):
+        """
+        Incorporate use of enddate and endtime as well.
+        They are currently unused.
+        """
+        occurrences = Occurrence.objects.get(event=event, start_date=date,
+                                            start_time=time)
+        if not occurrences:
+            occurrence = Ocurrence()
+            occurrence.start_date = date
+            occurrence.start_time = time
+            occurrence.event  = event
+            return occurrence
+        elif len(occurrences) > 1:
+            # Validate if information is correct
+            # else raise error
+            pass
+        else:
+            #TODO: Validate all other information.
+            return occurrences[0]
 
     def save_model(self, model, dictionary):
         model_obj = model()
@@ -46,9 +77,9 @@ class Parser:
         """
         Given a url, saves an image and returns the path to that image.
         """
-        pass
+        return
 
-    def insert_location_info(self, location_string, delim1=self.address_delim,
+    def insert_location_info(self, location_string, delim1='::',
                              delim2='='):
         """
         #FIXME: How about reusing existing code instead of this?
@@ -63,9 +94,15 @@ class Parser:
         params = location_string.split(delim1)
         param_values = [(vals.split(delim2)) for vals in params]
         param_dict = dict([(key.lower(), val) for key, val in param_values])
-        return insert_location_dict(self, param_dict)
+        return self.insert_location_dict(param_dict)
 
     def insert_location_dict(self,  param_dict):
+        """
+        Input: Dictionary of keys that represent location parameters and their
+               values
+        Output: Tuple(Bool, Place) where Bool indicates if the Place was created
+                and stored into the Database
+        """
         return self.place_parser.parse(param_dict)
 
     def store_ocurrence_info(self, event, recurrence_string, location,
@@ -81,6 +118,15 @@ class Parser:
 
         ver 0.1: Ignoring recurrence string
         """
+        start_date = start_datetime.date()
+        start_time = start_datetime.time()
+        end_date = end_datetime.date()
+        end_time = end.datetime.time()
+        occurrence = self.get_occurrence_from_title_date_time(event, start_date,
+                                                              start_time,
+                                                              end_date,
+                                                              end_time)
+        occurrence.save()
 
     def get_events(self):
         """
@@ -96,5 +142,6 @@ class Parser:
                                        start_datetime, end_datetime)
             description = vevent.description.value
             if description:
-                event.description = description
+                event.description = incoming
+
             self.insert_attachments(event, vevent.contents['attach'])
