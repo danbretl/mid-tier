@@ -14,7 +14,7 @@ CLASS:PUBLIC
 CREATED:20110526T160644Z
 DESCRIPTION:This is the primary description
 LAST-MODIFIED:20110526T160902Z
-LOCATION:Street='93 Leonard';City='NY';State='NY';Name='Bowlmor Lanes';zip='10013'
+LOCATION:Street=93 Leonard::City=NY::State=NY::Name=Bowlmor Lanes::zip=10013
 SEQUENCE:0
 STATUS:CONFIRMED
 SUMMARY:event1
