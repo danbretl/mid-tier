@@ -251,14 +251,9 @@ CACHE_TIMEOUT = 60              # 1 minute
 # ============
 # = Haystack =
 # ============
+HAYSTACK_SITECONF  = 'search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
 HAYSTACK_DEFAULT_OPERATOR = 'OR'
-#Consider moving this to settings local.
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE' : 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH'   : '/home/vmenon/src/mid-tier/abextra/whoosh_indexes'
-        }
-    }
 
 
 
