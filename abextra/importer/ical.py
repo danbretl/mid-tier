@@ -21,12 +21,15 @@ class DictObj(dict):
             raise AttributeError
 
 class Parser:
-    def __init__(self, file_path=None, delim='::'):
+    def __init__(self, file_path=None, delim='::', file_url=None):
         """
-        Initialize parser from an iCal file.
+        Initialize parser from an iCal file or url.
         """
         if file_path:
             ical_file_handle = open(file_path)
+            self.parsedCal = vobject.readOne(ical_file_handle)
+        elif file_url:
+            ical_file_handle = urllib.urlopen(file_url)
             self.parsedCal = vobject.readOne(ical_file_handle)
         self.address_delim = delim
         self.event_parser = EventParser()
@@ -43,7 +46,12 @@ class Parser:
         This function checks if the objects already exist in the DB
         If they do not exist, objects get created.
         Otherwise, existing objects are utilized.
+        FIXME: This is bad because we enforce a structure. Ideally we should
+               be greocoding this information so we can have free form text
+               as address. This function needs to change.
         """
+        if not location_string:
+            return
         params = location_string.split(delim1)
         param_values = [(vals.split(delim2)) for vals in params]
         return dict([(key.lower(), val) for key, val in param_values])
@@ -80,7 +88,7 @@ class Parser:
         #FIXME: Better mechanism for identifyng source ical
         raw_event['source'] = Source.objects.get(name='iCal')
         #FIXME: Identify images and video links.
-        attachments = vevent.contents['attach']
+        attachments = vevent.contents.get('attach')
         #FIXME: Identify better mechanism for prices
         raw_occurrence['prices'] = []
         raw_occurrence['start_time'] = vevent.dtstart.value.time()
@@ -88,6 +96,7 @@ class Parser:
         raw_occurrence['end_date'] = vevent.dtend.value.date()
         raw_occurrence['end_time'] = vevent.dtend.value.time()
         #NOTE: Location does not need be a DictObj
+        # FIXME: The idea of enforcing a format structure is bad.
         location = self.extract_location_info(vevent.location.value)
         raw_occurrence['location'] = location
         raw_event['occurrences'] = [raw_occurrence]
