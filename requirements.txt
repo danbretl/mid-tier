@@ -26,3 +26,4 @@ sorl-thumbnail==11.05.2
 django-tastypie==0.9.7
 django-userena==1.0.0
 vobject==0.8.1c
+eventlet==0.9.15
