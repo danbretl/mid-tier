@@ -26,7 +26,7 @@ class SimpleTest(TestCase):
         self.assertEqual(1 + 1, 2)
 
 def test_concurrently(times):
-    """ 
+    """
     Add this decorator to small pieces of code that you want to test
     concurrently to make sure they don't raise exceptions when run at the
     same time.  E.g., some Django views that do a SELECT and then a subsequent
@@ -221,13 +221,13 @@ class StressTesting(TestCase):
         self.assertEqual(len(Event.objects.all()),
                              len(all_objects['objects']))
 
-        HAYSTACK_WHOOSH_PATH = '/home/whisky/Abextra/abexmid/abextra/fixtures/whoosh_index'
+        HAYSTACK_WHOOSH_PATH = '/home/whisky/src/mid-tier/abextra/fixtures/whoosh_index'
         # Should be actually rebuilding index here, but rebuild raises an
         # interactive question during clear, so only calling update for now.
         # (./manage.py rebuild_index --noinput)
         call_command('update_index')
         # Both of these have been handpicked to return only one result and in
-        # particular, the first event. 
+        # particular, the first event.
         for term in ['four', 'legend']:
             url = api + self.encoded_params + '&q=' + term
             response = self.assert200(url)
