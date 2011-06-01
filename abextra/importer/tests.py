@@ -43,10 +43,6 @@ class iCalParserTest(TestCase):
         })
 
 
-    def test_init(self):
-        # Expects atleast 1 argument
-        self.assertRaises(TypeError, Parser)
-
     def test_insert_location_info(self):
         parser = PlaceParser()
         try:
@@ -60,3 +56,18 @@ class iCalParserTest(TestCase):
             parser.parse(self.raw_event)
         except:
             self.fail('Event parser failed at parsing raw_dict')
+
+    def test_Parser(self):
+        parser = Parser()
+        file_path = 'importer/fixtures/test_ical.ics'
+        file_url = 'https://www.google.com/calendar/ical/mtj7g3j1jeivh80p2qa77fse0o%40group.calendar.google.com/public/basic.ics'
+        ical_parser = Parser(None,'::', file_url)
+        try:
+            ical_parser.get_events()
+        except:
+            self.fail('Could not run ical parser for urls')
+        ical_parser = Parser(file_path)
+        try:
+            ical_parser.get_events()
+        except:
+            self.fail('Could not run ical parser from file')
