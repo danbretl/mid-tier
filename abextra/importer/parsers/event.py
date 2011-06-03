@@ -9,6 +9,7 @@ from events.utils import CachedCategoryTree
 class ExternalCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
     fields = ['source', 'xid']
+    update_fields = ['name']
 
     def parse_form_data(self, data, form_data):
         source = Source.objects.get(name=data.source)
@@ -21,6 +22,7 @@ class ExternalCategoryParser(BaseParser):
 class OccurrenceParser(BaseParser):
     model_form = OccurrenceImportForm
     fields = ['event', 'start_date', 'place', 'start_time']
+    update_fields = []
     place_parser = PlaceParser()
     price_parser = PriceParser()
 
@@ -48,6 +50,7 @@ class OccurrenceParser(BaseParser):
 class EventParser(BaseParser):
     model_form = EventImportForm
     fields = ['xid',]
+    update_fields = ['description', 'image_url', 'image', 'popularity_score']
     occurrence_parser = OccurrenceParser()
     external_category_parser = ExternalCategoryParser()
 

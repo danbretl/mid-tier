@@ -4,6 +4,7 @@ from prices.forms import PriceImportForm
 class PriceParser(BaseParser):
     model_form = PriceImportForm
     fields = ['occurrence', 'quantity']
+    update_fields = ['remark', 'units']
 
     def parse_form_data(self, data, form_data):
         form_data['occurrence'] = data.occurrence
