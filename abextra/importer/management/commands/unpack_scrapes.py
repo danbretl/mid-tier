@@ -5,7 +5,8 @@ Author: Vikas Menon
 from django.core.management.base import LabelCommand
 import tarfile
 import tempfile
-import settings_local
+import os
+from django.conf import settings
 import shutil
 from importer.parsers.event import EventParser
 from importer.consumer import ScrapeFeedConsumer
@@ -20,8 +21,9 @@ class Command(LabelCommand):
         temp_dir = tempfile.mkdtemp()
         tar = tarfile.open(label)
         tar.extractall(temp_dir)
-        settings_local.SCRAPE_FEED_PATH = temp_dir + '/SCRAPE_FEED_PATH'
-        settings_local.SCRAPE_IMAGES_PATH = temp_dir + '/full/'
+        settings.SCRAPE_FEED_PATH = temp_dir + '/SCRAPE_FEED_PATH'
+        settings.SCRAPE_IMAGES_PATH = os.path.join(temp_dir,
+                                                   'SCRAPE_IMAGES_PATH')
         consumer = ScrapeFeedConsumer()
         parser = EventParser()
         for event in consumer.events():
