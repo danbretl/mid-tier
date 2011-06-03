@@ -31,6 +31,7 @@ class BaseParser(object):
 
             if instance:
                 self.cache[key] = instance
+                self.update_instance(form_data, instance)
                 self.post_parse(data, instance)
 
         result = (created, instance)
@@ -57,3 +58,11 @@ class BaseParser(object):
 
     def post_parse(self, obj_dict, instance):
         pass
+
+    def update_instance(self, data, instance):
+        for attribute in self.update_fields:
+            instance_value = instance.__getattribute__(attribute)
+            if not instance_value:
+                new_value = data.get(attribute)
+                if new_value:
+                    instance.__setattr__(attribute, new_value)

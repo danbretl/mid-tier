@@ -4,6 +4,7 @@ from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 class CityParser(BaseParser):
     model_form = CityImportForm
     fields = ['city', 'state']
+    update_fields = []
 
     def parse_form_data(self, data, form_data):
         form_data['city'] = data.get('city')
@@ -14,6 +15,7 @@ class CityParser(BaseParser):
 class PointParser(BaseParser):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
+    update_fields = []
     city_parser = CityParser()
 
     def parse_form_data(self, data, form_data):
@@ -33,6 +35,7 @@ class PointParser(BaseParser):
 class PlaceParser(BaseParser):
     model_form = PlaceImportForm
     fields = ['title', 'point']
+    update_fields = ['phone', 'url', 'image','image_url']
     point_parser = PointParser()
 
     def parse_form_data(self, data, form_data):
