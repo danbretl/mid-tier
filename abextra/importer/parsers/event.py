@@ -20,7 +20,7 @@ class ExternalCategoryParser(BaseParser):
 
 class OccurrenceParser(BaseParser):
     model_form = OccurrenceImportForm
-    fields = ['event', 'start_date']
+    fields = ['event', 'start_date', 'place', 'start_time']
     place_parser = PlaceParser()
     price_parser = PriceParser()
 
