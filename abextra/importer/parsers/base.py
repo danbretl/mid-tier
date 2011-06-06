@@ -61,8 +61,9 @@ class BaseParser(object):
 
     def update_instance(self, data, instance):
         for attribute in self.update_fields:
-            instance_value = instance.__getattribute__(attribute)
-            if not instance_value:
+            attribute_value = instance.__getattribute__(attribute)
+            if not attribute_value:
                 new_value = data.get(attribute)
                 if new_value:
                     instance.__setattr__(attribute, new_value)
+        # Review Q: Is a save necessary at the end of this update?
