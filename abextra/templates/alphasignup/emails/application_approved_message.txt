@@ -2,7 +2,6 @@
 Howdy {{ user.first_name }},
 
 We are pleased to accept you into the Kwiqet Alpha program.
-You will be receiving an e-mail shortly briefly explaining how to install our application.
 Thank you for participating, and we are super-psyched to hear your feedback!
 
 {% trans "Please, follow the link below to download the app to your phone:" %}
