@@ -6,8 +6,9 @@ class EventActionManager(models.Manager):
     def ignore_non_actioned_events(self, user, events):
         event_ids = map(lambda e: e.id if hasattr(e, 'id') else e, events)
         if event_ids:
-            ids_param = event_ids \
-                if len(event_ids) > 1 else event_ids[0]
+            # hack :: if just one element, duplicate to avoid sql syntax error
+            ids_param = event_ids if len(event_ids) > 1 else event_ids * 2
+            # run the raw query
             non_actioned_events = Event.objects.raw(
                 """SELECT `events_event`.`id` FROM `events_event`
                 LEFT JOIN `behavior_eventaction`
