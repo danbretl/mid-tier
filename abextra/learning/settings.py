@@ -15,7 +15,7 @@ learning_constant = 50 # learning constant. Affects learning speed.
 #This number should always be less than the learning_constant otherwise
 #the algorithm won't be able to distinguish between an X'ed category
 #from a category that has never been visited by a user.
-resistance = 0
+resistance = 1
 
 N = 20                 # Number of recommendations to the end user
 
@@ -31,7 +31,7 @@ def scoring_function(tup = (1,1,1,0.9), pow = (3,2,1)):
     G,V,I,X = tup
     g,v,i = pow
     #return (lambda y: ((F(y[0])**g)*G + (y[1]**v)*V + (y[2]**i)*I)*(X**y[3]) + learning_constant)
-    return (lambda y: (((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance) 
+    return (lambda y: (((y[0]**g)*G + (y[1]**v)*V + (y[2]**i)*I + learning_constant) *(X**y[3])) + resistance)
 
 scoringFunction = scoring_function((Gm,Vm,Im,Xp),(1.5,1,1))
 
