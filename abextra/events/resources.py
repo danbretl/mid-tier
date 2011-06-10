@@ -195,7 +195,7 @@ class EventRecommendationResource(EventSummaryResource):
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        events_qs = Event.active.future().filter(**orm_filters)
+        events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'VI')
         view = filters.get('view')
         if view:
             if view == 'popular':
@@ -208,9 +208,6 @@ class EventRecommendationResource(EventSummaryResource):
                 msg = "Invalid value for get parameter 'view'"
                 response = HttpBadRequest(content=msg)
                 raise ImmediateHttpResponse(response=response)
-        else:
-            # filter initial event queryset
-            events_qs = events_qs.filter_user_actions(request.user, 'VI')
 
         # use machine learning
         recommended_events = ml.recommend_events(request.user, events_qs)
