@@ -195,7 +195,7 @@ class EventRecommendationResource(EventSummaryResource):
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'VI')
+        events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'GX')
         view = filters.get('view')
         if view:
             if view == 'popular':

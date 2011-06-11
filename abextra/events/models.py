@@ -88,11 +88,11 @@ class EventMixin(object):
         instant = datetime.date.today()
         return self.distinct().filter(occurrences__start_date__gte=instant)
 
-    def filter_user_actions(self, user, actions='GVI'):
-        user_q = models.Q(actions__user=user)
-        actions_q = models.Q(actions__action__in=actions)
-        q = (user_q & actions_q) | models.Q(actions__isnull=True)
-        return self.filter(q)
+    def filter_user_actions(self, user, actions='GX'):
+        # FIXME hackish
+        exclusions = user.event_actions.filter(action__in=actions) \
+            .values_list('event_id', flat=True)
+        return self.exclude(id__in=exclusions)
 
     def featured(self):
         featured_event_id = config_value('EVENTS', 'FEATURED_EVENT_ID')

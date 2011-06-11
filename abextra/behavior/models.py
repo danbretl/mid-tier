@@ -28,7 +28,7 @@ class EventAction(models.Model):
         ('I', 'Ignored'),
         ('X', 'Deleted'),
     )
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, related_name='event_actions')
     event = models.ForeignKey(Event, related_name='actions')
     action = models.CharField(max_length=1, choices=ACTION_CHOICES)
     timestamp = models.DateTimeField(auto_now=True)
