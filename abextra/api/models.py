@@ -91,10 +91,9 @@ class DeviceUdidManager(models.Manager):
             return udid
 
 class DeviceUdid(models.Model):
-    user = models.OneToOneField(User, related_name='device_udid', null=True, blank=True)
     udid = models.CharField(max_length=40, unique=True)
+    user_anonymous = models.OneToOneField(User, related_name='device_udid_anonymous')
     users = models.ManyToManyField(User, related_name='device_udids')
-    user_anonymous = models.OneToOneField(User, related_name='device_udid_anonymous', null=True, blank=True)
 
     objects = DeviceUdidManager()
 
