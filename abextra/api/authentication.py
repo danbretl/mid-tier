@@ -66,27 +66,13 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
 
         # authenticate device
         try:
-            udid = DeviceUdid.objects.select_related('user').get(
+            udid = DeviceUdid.objects.select_related('user_anonymous').get(
                 udid=raw_udid
                 # udid=DeviceUdid.objects.get_hexdigest(raw_udid)   # doing raw
             )
         except (DeviceUdid.DoesNotExist, DeviceUdid.MultipleObjectsReturned):
-            # create new user
-            username = DeviceUdid.objects.generate_username_unique()
-            new_user = User.objects.create_user(username=username, email='')
-
-            # create device udid record
-            udid_form = DeviceUdidForm(data=dict(user=new_user.id, udid=raw_udid))
-            if udid_form.is_valid():
-                udid = udid_form.save()
-
-            # add to proper user group
-            group = Group.objects.get(name='device_user_anonymous')
-            new_user.groups.add(group)
-
-            request.user = new_user
-        else:
-            request.user = udid.user
+            udid = DeviceUdid.objects.create_udid_and_user(raw_udid)
+        request.user = udid.user_anonymous
 
         # authenticate api key
         if api_key:

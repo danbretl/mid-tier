@@ -1,7 +1,8 @@
 import uuid
 import hmac
+import re
 from hashlib import sha1
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 
 KEY_SIZE = 18
@@ -52,6 +53,10 @@ class Consumer(models.Model):
 from django.utils.crypto import salted_hmac
 
 class DeviceUdidManager(models.Manager):
+    udid_re = re.compile(
+        r'([0-9A-F]{8}(-[0-9A-F]{4}){3}-[0-9A-F]{12})|([0-9A-F]{40})', re.I
+    )
+
     def get_hexdigest(self, raw_udid):
         salt = 'QJ7@cqBQdLy$mqr+'
         hmac = salted_hmac(salt, raw_udid)
@@ -68,9 +73,28 @@ class DeviceUdidManager(models.Manager):
             new_username = self.generate_username(prefix=prefix, rand_length=rand_length)
         return new_username
 
+    def create_anonymous_user(self):
+        username_anonymous = self.generate_username_unique()
+        user_anonymous = User.objects.create_user(
+            username=username_anonymous, email=''
+        )
+        # add to proper user group
+        group = Group.objects.get(name='device_user_anonymous')
+        user_anonymous.groups.add(group)
+        return user_anonymous
+
+    def create_udid_and_user(self, raw_udid):
+        re_result = self.udid_re.search(raw_udid)
+        if re_result:
+            user_anonymous = self.create_anonymous_user()
+            udid = self.create(udid=re_result.group(), user_anonymous=user_anonymous)
+            return udid
+
 class DeviceUdid(models.Model):
-    user = models.OneToOneField(User, related_name='device_udid')
+    user = models.OneToOneField(User, related_name='device_udid', null=True, blank=True)
     udid = models.CharField(max_length=40, unique=True)
+    users = models.ManyToManyField(User, related_name='device_udids')
+    user_anonymous = models.OneToOneField(User, related_name='device_udid_anonymous', null=True, blank=True)
 
     objects = DeviceUdidManager()
 
