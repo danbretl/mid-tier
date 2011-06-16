@@ -96,6 +96,3 @@ class DeviceUdid(models.Model):
     users = models.ManyToManyField(User, related_name='device_udids')
 
     objects = DeviceUdidManager()
-
-    def __unicode__(self):
-        return u"%s for %s" % (self.udid, self.user)

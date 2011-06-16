@@ -23,4 +23,4 @@ class DeviceUdidForm(forms.ModelForm):
 
 class DeviceUdidSansUserForm(DeviceUdidForm):
     class Meta(DeviceUdidForm.Meta):
-        exclude = ('user',)
+        exclude = ('user_anonymous', 'users')

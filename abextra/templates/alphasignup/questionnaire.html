@@ -14,10 +14,10 @@
   </header>
 
   <ul>
-    {% for field in form %}
+    {% with form.device_platform as field %}
     <li class="{% if field.errors %}error{% endif %}">
       <label class="desc" for="id_{{ field.name }}">
-        {{ field.label }}
+        Mobile Platform
         {% if field.field.required %}<span class="req">*</span>{% endif %}
       </label>
       <div>
@@ -25,7 +25,72 @@
       </div>
       {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
     </li>
-    {% endfor %}
+    {% endwith %}
+
+    {% with form.is_usage_info_ok as field %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        May we use the data we collect from your usage in order to improve our application/future user experiences?
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endwith %}
+
+    {% with form.is_mobile_planner as field %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        Do you frequently use mobile applications to plan outings with friends/schedule events and activities?
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endwith %}
+
+    {% with form.is_app_dev as field %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        Are you an app developer or currently working on a mobile application?
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endwith %}
+
+    {% with form.zip as field %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        Postal Code
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endwith %}
+
+    {% with form.year_of_birth as field %}
+    <li class="{% if field.errors %}error{% endif %}">
+      <label class="desc" for="id_{{ field.name }}">
+        Year of Birth
+        {% if field.field.required %}<span class="req">*</span>{% endif %}
+      </label>
+      <div>
+        {{ field }}
+      </div>
+      {% if field.errors %}<p class="error">{{ field.errors }}</p>{% endif %}
+    </li>
+    {% endwith %}
 
     <li class="buttons">
       <div>

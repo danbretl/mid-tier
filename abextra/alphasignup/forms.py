@@ -52,18 +52,6 @@ class AlphaQuestionnaireForm(forms.ModelForm):
         }
     )
 
-    def __init__(self, *args, **kwargs):
-        super(AlphaQuestionnaireForm, self).__init__(*args, **kwargs)
-        self.base_fields['device_platform'].label = u'Mobile Platform'
-        self.base_fields['is_usage_info_ok'].label = \
-            u'May we use the data we collect from your usage in order to improve our application/future user experiences?'
-        self.base_fields['is_mobile_planner'].label = \
-            u'Do you frequently use mobile applications to plan outings with friends/schedule events and activities?'
-        self.base_fields['is_app_dev'].label = \
-            u'Are you an app developer or currently working on a mobile application?'
-        self.declared_fields['zip'].label = u'Postal Code'
-        self.declared_fields['year_of_birth'].label = u'Year of Birth'
-
     class Meta:
         model = AlphaQuestionnaire
         exclude = ('profile',)

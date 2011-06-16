@@ -248,10 +248,9 @@ def questionnaire(request, username, template_name='alphasignup/questionnaire.ht
 @secure_required
 def device_udid(request, username, template_name='alphasignup/udid.html'):
     user = get_object_or_404(User, username__iexact=username)
-    try:
-        instance = DeviceUdid.objects.get(user=request.user)
-    except DeviceUdid.DoesNotExist:
-        instance = DeviceUdid(user=request.user)
+
+    user_udids = request.user.device_udids.all()[:1]
+    instance = user_udids and user_udids[0] or DeviceUdid(user=request.user)
 
     form = DeviceUdidSansUserForm(instance=instance)
     if request.method == 'POST':
