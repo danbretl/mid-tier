@@ -50,10 +50,16 @@ class BaseParser(object):
         if images:
             image = images[0]
             path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
-            with open(path, 'rb') as f:
-                filename = os.path.split(f.name)[1]
-                file_data['image'] = SimpleUploadedFile(filename, f.read())
+            try:
+                with open(path, 'rb') as f:
+                    filename = os.path.split(f.name)[1]
+                    file_data['image'] = SimpleUploadedFile(filename, f.read())
+            except:
+                # Log error here.
+                file_data['image'] = None
+
         return file_data
+
 
     def post_parse(self, obj_dict, instance):
         pass
