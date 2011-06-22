@@ -12,7 +12,7 @@ from importer.parsers.event import EventParser
 from importer.consumer import ScrapeFeedConsumer
 
 class Command(LabelCommand):
-    help = 'Unpacks and optionall loads a packaged scrape into local DB'
+    help = 'Unpacks and optionally loads a packaged scrape into local DB'
 
     def handle_label(self, label, **options):
         self.unpack_load_data_temp(label)
