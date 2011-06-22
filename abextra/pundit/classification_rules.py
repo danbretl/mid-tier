@@ -235,20 +235,20 @@ class RegexRule(BaseRule):
                 # FIXME: error logging please!
                 fail_count += 1
 
-    def classify(self, event, source, xids):
+    def classify(self, event, source, external_categories):
         """
         rules = self.source_rules[source] + self.null_rules
         for regex, category in rules:
-            if regex.search(self.key(event,source,xids)):
+            if regex.search(self.key(event,source,external_categories)):
               assign category
         """
-        input_string = self.key(event, source, xids)
+        input_string = self.key(event, source, external_categories)
         if not input_string:
             return
 
         self.event = event
         self.concrete_categories = self.abstract_categories = []
-        categories = []
+        categories = concrete_categories = abstract_categories = []
         # The ignore_cats is bunch of categories to ignore if there is a match
         # Example items tuple in the for loop would be:
         # r'eurodance', <Category: Eurodance>, set(<Category: Dance>)
@@ -260,9 +260,9 @@ class RegexRule(BaseRule):
                 for cat in ignore_cats:
                     ignores_set.add(cat)
         if  categories:
-            return self.separate_concretes_abstracts([c for c in categories if c not in ignores_set])
-        else:
-            return ([],[])
+            concrete_categories, abstract_categories = \
+                                 self.separate_concretes_abstracts([c for c in categories if c not in ignores_set])
+        return (concrete_categories, abstract_categories)
 
 
 class TitleRegexRule(RegexRule):
@@ -296,11 +296,11 @@ class SemanticCategoryMatchRule(RegexRule):
             #we should get rid of any unwanted terms that could match
             # like genres or
             # Multiple matches for the same category should get more weight.
-            for word in category.title.lower().split():
-                regex_obj = RegexCategory()
-                regex_obj.regex = word
-                regex_obj.category = category
-                regex_objs.append(regex_obj)
+            word = category.title.lower()
+            regex_obj = RegexCategory()
+            regex_obj.regex = word
+            regex_obj.category = category
+            regex_objs.append(regex_obj)
         RegexRule.__init__(self, xkey, None, regex_objs)
 
 class LocationRule(BaseRule):
