@@ -83,7 +83,8 @@ class EventImportForm(EventForm):
             setattr(EventImportForm, '_arbiter',
                 pundit.Arbiter((
                         pundit.SourceCategoryRule(),
-                        pundit.SourceRule()
+                        pundit.SourceRule(),
+                        pundit.SemanticCategoryMatchRule(),
                 ))
             )
         return getattr(EventImportForm, '_arbiter')
@@ -135,10 +136,10 @@ class EventImportForm(EventForm):
         external_categories = cleaned_data['external_categories']
         pop_score = cleaned_data['popularity_score']
         cleaned_data['popularity_score'] = pop_score and int(pop_score) or 0
-        concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
+        concrete_category, abstract_categories = self.arbiter.concrete_abstract_categories(event, source, external_categories)
         cleaned_data['concrete_category'] = self.fields['concrete_category'] \
             .clean(concrete_category.id)
-
+        cleaned_data['categories'] = self.fields['categories'].clean([c.id for c in abstract_categories])
         return cleaned_data
 
 class OccurrenceImportForm(OccurrenceForm):
