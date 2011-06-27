@@ -64,6 +64,9 @@
             </li>
           {% endif %}
         {% endif %}
+	<li class={% if current_tab == 'blog' %}current_page_item{% endif %}>
+	  <a href="http://kwiqet.tumblr.com/"><span>Blog</span></a>
+        </li>
         <li class={% if current_tab == 'aboutus' %}current_page_item{% endif %}>
           <a href="{% url alpha_about_us %}">About Us</a>
         </li>
