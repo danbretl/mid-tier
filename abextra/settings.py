@@ -242,3 +242,9 @@ IPHONE_THUMB_OPTIONS = {
     # 'reflection_amount': 0.2,
     # 'reflection_opacity': 0.8
 }
+
+# =================================================
+# = Exceptional (https://www.getexceptional.com/) =
+# =================================================
+EXCEPTIONAL_API_KEY = 'b975339ad50b00a75f6c9211aa22fb66e59e01e3'
+MIDDLEWARE_CLASSES += ('djexceptional.ExceptionalMiddleware',)
