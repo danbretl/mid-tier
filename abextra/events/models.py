@@ -6,7 +6,6 @@ from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
-from places.models import Place
 
 import events.config
 from livesettings import config_value
@@ -115,6 +114,7 @@ class EventActiveManager(EventManager):
 
 class Event(models.Model):
     """Event model"""
+    from places.models import Place
     xid = models.CharField(_('external id'), max_length=200, blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
@@ -285,6 +285,7 @@ class OccurrenceManager(models.Manager, OccurrenceMixin):
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
+    from places.models import Place
     event = models.ForeignKey(Event, related_name='occurrences')
     place = models.ForeignKey(Place, related_name='occurrences')
     one_off_place = models.CharField(max_length=200, blank=True)
