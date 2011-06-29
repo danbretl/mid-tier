@@ -162,6 +162,7 @@ class RegexRulesTest(TestCase):
                                                                        source,
                                                                        [ext]))
 
+<<<<<<< HEAD
     def test_IgnoreCats(self):
         # If incoming cat is Eurodance.
         # Pundit's Regexrule should not classify as both Eurodance and Dance
@@ -174,6 +175,8 @@ class RegexRulesTest(TestCase):
         self.assertEqual([category], calculated_category)
 
 
+=======
+>>>>>>> location based classification rules
 class LocationRuleTest(TestCase):
     fixtures = ['events', 'categories', 'sources',
                 'external_categories', 'regexcategories', 'places']
@@ -188,6 +191,7 @@ class LocationRuleTest(TestCase):
                             set(location_rule.get_abstract_category(event, None, [])))
         self.assertEqual(expected_result, calculated_result)
 
+<<<<<<< HEAD
 
 class PlaceTypeRuleTest(TestCase):
     fixtures = ['events', 'categories', 'sources',
@@ -206,3 +210,5 @@ class PlaceTypeRuleTest(TestCase):
 
 
 
+=======
+>>>>>>> location based classification rules
