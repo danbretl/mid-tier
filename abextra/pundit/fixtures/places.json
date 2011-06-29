@@ -1,0 +1,30 @@
+[
+   {
+      "pk": 336,
+      "model": "places.place",
+      "fields": {
+         "status": 1,
+         "description": "",
+         "concrete_category": 147,
+         "title": "1500 Gallery",
+         "url": "",
+         "image": "",
+         "point": 211,
+         "place_types": [],
+         "modified": "2011-06-29 00:34:28",
+         "abstract_categories": [
+            2,
+            3,
+            6
+         ],
+         "email": "",
+         "phone": "917-362-0770",
+         "prefix": "",
+         "created": "2011-06-14 15:52:35",
+         "image_url": "",
+         "nickname": "",
+         "slug": "1500-gallery",
+         "unit": ""
+      }
+   }
+]
