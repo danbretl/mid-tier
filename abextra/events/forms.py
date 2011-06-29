@@ -83,8 +83,8 @@ class EventImportForm(EventForm):
             setattr(EventImportForm, '_arbiter',
                 pundit.Arbiter((
                         pundit.SourceCategoryRule(),
-                        pundit.SourceRule(),
                         pundit.SemanticCategoryMatchRule(),
+                        pundit.SourceRule(),
                 ))
             )
         return getattr(EventImportForm, '_arbiter')
