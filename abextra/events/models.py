@@ -263,6 +263,17 @@ class EventSummary(models.Model):
 
     objects = EventSummaryManager()
 
+class OccurrenceMixin(object):
+    def future(self):
+        return self.filter(start_date__gte=datetime.date.today())
+
+class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
+    pass
+
+class OccurrenceManager(models.Manager, OccurrenceMixin):
+    def get_query_set(self):
+        return OccurrenceQuerySet(self.model)
+
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
     event = models.ForeignKey(Event, related_name='occurrences')
@@ -273,6 +284,8 @@ class Occurrence(models.Model):
     end_date = models.DateField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     is_all_day = models.BooleanField(default=False)
+
+    objects = OccurrenceManager()
 
     class Meta:
         verbose_name_plural = _('occurrences')

@@ -47,7 +47,7 @@ class OccurrenceResource(ModelResource):
     prices = fields.ToManyField(PriceResource, 'prices')
 
     class Meta:
-        queryset = Occurrence.objects.all()
+        queryset = Occurrence.objects.future.all()
         list_allowed_methods = ()
         detail_allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
