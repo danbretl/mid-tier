@@ -122,7 +122,6 @@ class EventActiveManager(EventManager):
 
 class Event(models.Model):
     """Event model"""
-    from places.models import Place
     xid = models.CharField(_('external id'), max_length=200, blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
@@ -228,6 +227,7 @@ class Event(models.Model):
     @property
     def place(self):
         """Title and address of the most common place and distinct count"""
+        from places.models import Place
         place_counts = self.occurrences.values('place') \
             .annotate(place_count=models.Count('place')).order_by('-place_count')
         place_id = place_counts[0]['place']
