@@ -84,8 +84,8 @@ class Place(models.Model):
     place_types = models.ManyToManyField(PlaceType, blank=True)
     image = ImageField(upload_to='location_images', blank=True, null=True)
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
-    concrete_category = models.ForeignKey(Category, related_name='places_concrete')
-    abstract_categories = models.ManyToManyField(Category, related_name='places_abstract', verbose_name=_('abstract_categories'))
+    concrete_category = models.ForeignKey(Category, related_name='places_concrete', null=True)
+    abstract_categories = models.ManyToManyField(Category, related_name='places_abstract', verbose_name=_('abstract_categories'), null=True)
 
     class Meta:
         verbose_name = _('place')
