@@ -95,7 +95,6 @@ class ArbiterTest(TestCase):
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
-            source = Source.objects.get(id=2)
             concrete, abstracts = arbiter.apply_rules(event,
                                                        source2,
                                                        [])
@@ -162,6 +161,18 @@ class RegexRulesTest(TestCase):
         self.assertEqual([category], semantic_rule.get_abstract_category(event,
                                                                        source,
                                                                        [ext]))
+
+    def test_IgnoreCats(self):
+        # If incoming cat is Eurodance.
+        # Pundit's Regexrule should not classify as both Eurodance and Dance
+        event = Event.objects.get(id=10)
+        source = Source.objects.get(name='villagevoice')
+        category = Category.objects.get(title='Eurodance')
+        ext = ExternalCategory.objects.get(id=1081)
+        calculated_category = SemanticCategoryMatchRule().get_abstract_category(\
+            event,source,[ext])
+        self.assertEqual([category], calculated_category)
+
 
 class LocationRuleTest(TestCase):
     fixtures = ['events', 'categories', 'sources',
