@@ -29,6 +29,11 @@ class BaseParser(object):
                     self.logger.error(form.errors)
             except self.model.MultipleObjectsReturned:
                 created, instance = False, self.model.objects.filter(**key._asdict())[:1][0]
+            except AttributeError:
+                # This means the key did not get created correctly due to
+                # missing fields
+                # FIXME: Log this error
+                created, instance = False, False
 
             if instance:
                 self.cache[key] = instance
@@ -41,9 +46,14 @@ class BaseParser(object):
         return result
 
     def cache_key(self, form_data):
-        return self.KeyTuple(
-            **dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
-        )
+        try:
+            return self.KeyTuple(
+                **dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
+                )
+        except:
+            # This could happen if all the necessary fields for the parser are
+            # unavailable in the passed in form
+            return None
 
     def parse_form_data(self, obj_dict, form_data={}):
         raise NotImplementedError()
