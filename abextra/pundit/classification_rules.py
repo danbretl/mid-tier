@@ -212,14 +212,27 @@ class RegexRule(BaseRule):
 
         self.default_rules = []
         total_count = fail_count = 0
+
+        # This is O(n^2) there should be a better way of doing this.
+        # FIXME: Improve time complexity if this is too slow.
+        rules_bunch = defaultdict(set)
+        for regex_big in regex_objs:
+            for regex_small in regex_objs:
+                if regex_small.regex == regex_big.regex:
+                    continue
+                if regex_small.regex in regex_big.regex:
+                    rules_bunch[regex_big].add(regex_small.category)
+
         for rgx_obj in regex_objs:
             total_count +=1
             try:
                 self.default_rules.append((re.compile(rgx_obj.regex,
                                                       re.IGNORECASE),
-                                           rgx_obj.category))
+                                           rgx_obj.category,
+                                           rules_bunch[rgx_obj]))
             except:
                 #Fails for some badly coded categories
+                # FIXME: error logging please!
                 fail_count += 1
 
     def classify(self, event, source, xids):
@@ -236,12 +249,20 @@ class RegexRule(BaseRule):
         self.event = event
         self.concrete_categories = self.abstract_categories = []
         categories = []
-        for regex, category in self.default_rules:
+        # The ignore_cats is bunch of categories to ignore if there is a match
+        # Example items tuple in the for loop would be:
+        # r'eurodance', <Category: Eurodance>, set(<Category: Dance>)
+        # We store Dance in the list of ignored categories and later discard the match.
+        ignores_set = set()
+        for regex, category, ignore_cats in self.default_rules:
             if regex.search(input_string):
                 categories.append(category)
+                for cat in ignore_cats:
+                    ignores_set.add(cat)
         if  categories:
-            self.concrete_categories, self.abstract_categories = \
-                                   self.separate_concretes_abstracts(categories)
+            return self.separate_concretes_abstracts([c for c in categories if c not in ignores_set])
+        else:
+            return ([],[])
 
 
 class TitleRegexRule(RegexRule):
