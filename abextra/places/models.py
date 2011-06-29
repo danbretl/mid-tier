@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
+from events.models import Category
 
 
 
@@ -63,7 +64,7 @@ class Point(models.Model):
     class Meta:
         verbose_name = _('point')
         verbose_name_plural = _('points')
-        ordering = ('address',)
+       smart-operator: Automatically adds spaces around arithmetic operators. ordering = ('address',)
 
     def __unicode__(self):
         return u'%s' % self.address
