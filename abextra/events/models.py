@@ -89,7 +89,10 @@ class EventMixin(object):
     """
     def future(self):
         instant = datetime.date.today()
-        return self.distinct().filter(occurrences__start_date__gte=instant)
+        # This could be setting
+        future_instance = datetime.timedelta(days=61) + instant
+        return self.distinct().filter(occurrences__start_date__gte=instant).\
+               filter(occurrences__start_date__lte=future_instance)
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
