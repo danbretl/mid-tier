@@ -122,7 +122,6 @@ class EventActiveManager(EventManager):
 
 class Event(models.Model):
     """Event model"""
-    from places.models import Place
     xid = models.CharField(_('external id'), max_length=200, blank=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
