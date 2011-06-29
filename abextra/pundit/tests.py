@@ -1,10 +1,13 @@
 from django.test import TestCase
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
+from places.models import Place
 from importer.models import ExternalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
-     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
+     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
+     LocationRule
+
 from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
@@ -159,3 +162,18 @@ class RegexRulesTest(TestCase):
         self.assertEqual([category], semantic_rule.get_abstract_category(event,
                                                                        source,
                                                                        [ext]))
+
+class LocationRuleTest(TestCase):
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories', 'places']
+
+    def test_locationrule(self):
+        event = Event.objects.all()[0]
+        source = Source.objects.get(name='villagevoice')
+        place = Place.objects.get(id=336)
+        expected_result = ([place.concrete_category], set(place.abstract_categories.all()))
+        location_rule = LocationRule()
+        calculated_result = (location_rule.get_concrete_category(event, None, []),\
+                            set(location_rule.get_abstract_category(event, None, [])))
+        self.assertEqual(expected_result, calculated_result)
+
