@@ -336,9 +336,3 @@ class PlaceTypeRule(BaseRule):
                     results_abstract.extend(raw_abs)
 
         return (results_concrete, results_abstract)
-
-
-
-
-
-
