@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
+from events.models import Category
 
 class PlaceType(models.Model):
     """Place types model."""
@@ -83,6 +84,8 @@ class Place(models.Model):
     place_types = models.ManyToManyField(PlaceType, blank=True)
     image = ImageField(upload_to='location_images', blank=True, null=True)
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
+    concrete_category = models.ForeignKey(Category, related_name='places_concrete')
+    abstract_categories = models.ManyToManyField(Category, related_name='places_abstract', verbose_name=_('abstract_categories'))
 
     class Meta:
         verbose_name = _('place')
