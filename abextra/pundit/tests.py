@@ -188,6 +188,7 @@ class LocationRuleTest(TestCase):
                             set(location_rule.get_abstract_category(event, None, [])))
         self.assertEqual(expected_result, calculated_result)
 
+<<<<<<< HEAD
 
 class PlaceTypeRuleTest(TestCase):
     fixtures = ['events', 'categories', 'sources',
