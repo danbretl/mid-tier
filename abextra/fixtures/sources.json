@@ -1,22 +1,216 @@
 [
-    {
-        "pk": 1, 
-        "model": "events.source", 
-        "fields": {
-            "default_abstract_categories": [], 
-            "domain": "www.villagevoice.com", 
-            "default_concrete_category": 138, 
-            "name": "villagevoice"
-        }
-    }, 
-    {
-        "pk": 2, 
-        "model": "events.source", 
-        "fields": {
-            "default_abstract_categories": [], 
-            "domain": "www.fandango.com", 
-            "default_concrete_category": 29, 
-            "name": "fandango"
-        }
+  {
+    "pk": 1, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "www.villagevoice.com", 
+      "default_concrete_category": 138, 
+      "name": "villagevoice"
     }
+  }, 
+  {
+    "pk": 3, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "www.fandango.com", 
+      "default_concrete_category": 29, 
+      "name": "fandango"
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "whitney.org", 
+      "default_concrete_category": 121, 
+      "name": "whitney"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "townhall.lw1.mageenet.net", 
+      "default_concrete_category": 32, 
+      "name": "townhall"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "summerstage.org", 
+      "default_concrete_category": 137, 
+      "name": "summerstage"
+    }
+  }, 
+  {
+    "pk": 7, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "nyphil.org", 
+      "default_concrete_category": 30, 
+      "name": "nyphil"
+    }
+  }, 
+  {
+    "pk": 8, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "northernlightslive.com", 
+      "default_concrete_category": 137, 
+      "name": "northernlightslive"
+    }
+  }, 
+  {
+    "pk": 9, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "moma.org", 
+      "default_concrete_category": 121, 
+      "name": "moma"
+    }
+  }, 
+  {
+    "pk": 10, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "metoperafamily.org", 
+      "default_concrete_category": 132, 
+      "name": "metropolitanopera"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "lepoissonrouge.com", 
+      "default_concrete_category": 139, 
+      "name": "lepoissonrouge"
+    }
+  }, 
+  {
+    "pk": 12, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "galapagosartspace.com", 
+      "default_concrete_category": 171, 
+      "name": "galapagosartspace"
+    }
+  }, 
+  {
+    "pk": 13, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "filmlinc.com", 
+      "default_concrete_category": 136, 
+      "name": "filmlinc"
+    }
+  }, 
+  {
+    "pk": 14, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [
+        267
+      ], 
+      "domain": "elmuseo.org", 
+      "default_concrete_category": 121, 
+      "name": "elmuseo"
+    }
+  }, 
+  {
+    "pk": 15, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "citywinery.com", 
+      "default_concrete_category": 42, 
+      "name": "citywinery"
+    }
+  }, 
+  {
+    "pk": 16, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [
+        265
+      ], 
+      "domain": "cieloclub.com", 
+      "default_concrete_category": 137, 
+      "name": "cieloclub"
+    }
+  }, 
+  {
+    "pk": 17, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "brooklynmuseum.org", 
+      "default_concrete_category": 121, 
+      "name": "brooklynmuseum"
+    }
+  }, 
+  {
+    "pk": 18, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "brooklynbowl", 
+      "default_concrete_category": 137, 
+      "name": "brooklynbowl"
+    }
+  }, 
+  {
+    "pk": 19, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "anthologyfilmarchives.org", 
+      "default_concrete_category": 136, 
+      "name": "anthologyfilmarchives"
+    }
+  }, 
+  {
+    "pk": 20, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "boweryballroom.com", 
+      "default_concrete_category": 137, 
+      "name": "bowery"
+    }
+  }, 
+  {
+    "pk": 21, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "housingworks.org", 
+      "default_concrete_category": 140, 
+      "name": "housingworks"
+    }
+  }, 
+  {
+    "pk": 22, 
+    "model": "events.source", 
+    "fields": {
+      "default_abstract_categories": [], 
+      "domain": "newmuseum.org", 
+      "default_concrete_category": 121, 
+      "name": "newmuseum"
+    }
+  }
 ]
