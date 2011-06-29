@@ -270,7 +270,7 @@ class SemanticCategoryMatchRule(RegexRule):
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
         regex_objs = []
-        # Loop over all ABSTRACT categories only. 
+        # Loop over all ABSTRACT categories only.
         for category in Category.abstract.all():
             #we should get rid of any unwanted terms that could match
             # like genres or
@@ -281,3 +281,25 @@ class SemanticCategoryMatchRule(RegexRule):
                 regex_obj.category = category
                 regex_objs.append(regex_obj)
         RegexRule.__init__(self, xkey, None, regex_objs)
+
+class LocationRule(BaseRule):
+    """
+    Classify based on event location
+    """
+    def classify(self, event, spider, external_categories):
+        results_concrete = []
+        results_abstract = []
+        for place in event.places:
+            if place.concrete_category:
+                results_concrete.append(place.concrete_category)
+            raw_abs = place.abstract_categories.all()
+            if raw_abs:
+                results_abstract.extend(raw_abs)
+
+        return (results_concrete, results_abstract)
+
+
+
+
+
+
