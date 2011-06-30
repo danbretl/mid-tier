@@ -217,6 +217,7 @@ class Event(models.Model):
         All places for this event
         """
         from places.models import Place
+        # Optimization FIXME: optimize this with a single query.
         place_ids = self.occurrences.values('place')
         places = Place.objects.filter(id__in=place_ids)
         return places
