@@ -320,6 +320,24 @@ class LocationRule(BaseRule):
         return (results_concrete, results_abstract)
 
 
+class PlaceTypeRule():
+    """
+    Classify events based on place type
+    """
+    def classify(self, event, spider, external_categories):
+        results_concrete = []
+        results_abstract = []
+        for place in event.places:
+            for place_type in place.place_types:
+                if place_type.concrete_category:
+                    results_concrete.append(place_type.concrete_category)
+                raw_abs = place_type.abstract_categories.all()
+                if raw_abs:
+                    results_abstract.extend(raw_abs)
+
+        return (results_concrete, results_abstract)
+
+
 
 
 
