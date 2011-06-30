@@ -6,7 +6,7 @@ from importer.models import ExternalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
-     LocationRule
+     LocationRule, PlaceTypeRule
 
 from pundit.arbiter import Arbiter
 
@@ -187,4 +187,22 @@ class LocationRuleTest(TestCase):
         calculated_result = (location_rule.get_concrete_category(event, None, []),\
                             set(location_rule.get_abstract_category(event, None, [])))
         self.assertEqual(expected_result, calculated_result)
+
+
+class PlaceTypeRuleTest(TestCase):
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories', 'places']
+
+    def test_placetyperule(self):
+        event = Event.objects.all()[0]
+        place = Place.objects.get(id=336)
+        expected_concretes = [p_t.concrete_category for p_t in place.place_types.all() if p_t.concrete_category]
+        expected_abstracts = [a for b in [p_t.abstract_categories.all() for p_t in place.place_types.all()] for a in b if a]
+        expected_result = (expected_concretes, expected_abstracts)
+        placerule = PlaceTypeRule()
+        calculated_result = placerule.classify(event, None, None)
+        self.assertEqual(expected_result, calculated_result)
+
+
+
 

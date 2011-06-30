@@ -10,7 +10,7 @@
          "url": "",
          "image": "",
          "point": 211,
-         "place_types": [],
+         "place_types": [1],
          "modified": "2011-06-29 00:34:28",
          "abstract_categories": [
             2,
@@ -26,5 +26,21 @@
          "slug": "1500-gallery",
          "unit": ""
       }
-   }
+   },
+    {
+        "pk": 1,
+        "model": "places.placetype",
+        "fields": {
+            "abstract_categories": [
+                2,
+                3,
+                11,
+                202
+            ],
+            "slug": "test_type",
+            "concrete_category": 6,
+            "title": "test_type"
+        }
+    }
+
 ]
