@@ -320,7 +320,7 @@ class LocationRule(BaseRule):
         return (results_concrete, results_abstract)
 
 
-class PlaceTypeRule():
+class PlaceTypeRule(BaseRule):
     """
     Classify events based on place type
     """
@@ -328,7 +328,7 @@ class PlaceTypeRule():
         results_concrete = []
         results_abstract = []
         for place in event.places:
-            for place_type in place.place_types:
+            for place_type in place.place_types.all():
                 if place_type.concrete_category:
                     results_concrete.append(place_type.concrete_category)
                 raw_abs = place_type.abstract_categories.all()
