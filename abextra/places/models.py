@@ -9,6 +9,13 @@ class PlaceType(models.Model):
     """Place types model."""
     title = models.CharField(_('title'), max_length=100, unique=True)
     slug = models.SlugField(_('slug'), unique=True)
+    concrete_category = models.ForeignKey(Category,
+                                          related_name='place_concrete',
+                                          null=True)
+    abstract_categories = models.ManyToManyField(Category,
+                                                 related_name='place_abstract',
+                                                 verbose_name='abstract_categories',
+                                                 null=True)
 
     class Meta:
         verbose_name = _('place type')
