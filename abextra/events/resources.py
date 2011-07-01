@@ -39,39 +39,13 @@ class CategoryResource(ModelResource):
         category, data = bundle.obj, bundle.data
         return category.thumb_path
 
-# ==============
-# = Occurrence =
-# ==============
-class OccurrenceResource(ModelResource):
-    place = fields.ToOneField(PlaceResource, 'place')
-    prices = fields.ToManyField(PriceResource, 'prices')
-
-    class Meta:
-        queryset = Occurrence.objects.future.all()
-        list_allowed_methods = ()
-        detail_allowed_methods = ('get',)
-        authentication = ConsumerApiKeyAuthentication()
-        excludes = ('id',)
-
-    def get_object_list(self, request):
-        """overridden to select relatives"""
-        return super(OccurrenceResource, self).get_object_list(request) \
-            .select_related('place__point__city')
-
-class OccurrenceFullResource(OccurrenceResource):
-    place = fields.ToOneField(PlaceFullResource, 'place', full=True)
-    prices = fields.ToManyField(PriceResource, 'prices', full=True)
-
-    class Meta(OccurrenceResource.Meta):
-        resource_name = 'occurrence_full'
-
 # =========
 # = Event =
 # =========
 class EventResource(ModelResource):
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
     abstract_categories = fields.ToManyField(CategoryResource, 'categories')
-    occurrences = fields.ToManyField(OccurrenceResource, 'occurrences')
+    # occurrences = fields.ToManyField(OccurrenceResource, 'occurrences')
 
     class Meta:
         queryset = Event.objects.all()
@@ -112,27 +86,71 @@ class EventResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        return super(EventResource, self).get_object_list(request) \
-            .select_related('concrete_category',)
+        joined_qs = super(EventResource, self).get_object_list(request) \
+            .select_related('concrete_category')
+        return joined_qs
 
 
 class EventFullResource(EventResource):
-    occurrences = fields.ToManyField(OccurrenceFullResource, 'occurrences', full=True)
+    # occurrences = fields.ToManyField('events.api.resources.OccurrenceFullResource', 'occurrences', full=True)
 
     class Meta(EventResource.Meta):
         resource_name = 'event_full'
 
+
 class FeaturedEventResource(EventFullResource):
     class Meta(EventFullResource.Meta):
-        queryset = Event.objects.all()
+        queryset = Event.objects.featured()
         list_allowed_methods = ('get',)
         detail_allowed_methods = ()
         resource_name = 'event_featured'
 
+
+# ==============
+# = Occurrence =
+# ==============
+class OccurrenceResource(ModelResource):
+    event = fields.ToOneField(EventResource, 'event')
+    place = fields.ToOneField(PlaceResource, 'place')
+    prices = fields.ToManyField(PriceResource, 'prices')
+
+    class Meta:
+        queryset = Occurrence.objects.future()
+        list_allowed_methods = ('get',)
+        detail_allowed_methods = ('get',)
+        authentication = ConsumerApiKeyAuthentication()
+        excludes = ('id',)
+
     def get_object_list(self, request):
         """overridden to select relatives"""
-        return super(FeaturedEventResource, self).get_object_list(request) \
-            .featured()
+        return super(OccurrenceResource, self).get_object_list(request) \
+            .select_related('place__point__city')
+
+    def build_filters(self, filters=None):
+        """Allows flexible lookup by either PK or URI"""
+        if filters is None:
+            filters = {}
+
+        orm_filters = super(OccurrenceResource, self).build_filters(filters)
+
+        event_filter = orm_filters.get('event__exact')
+        if event_filter and event_filter.startswith('/'):
+            try:
+                view, args, kwargs = resolve(event_filter)
+            except Resolver404:
+                raise NotFound("The URL provided '%s' was not a link to a valid resource." % event_filter)
+            else:
+                orm_filters.update(event__exact=kwargs.get('pk'))
+
+        return orm_filters
+
+class OccurrenceFullResource(OccurrenceResource):
+    place = fields.ToOneField(PlaceFullResource, 'place', full=True)
+    prices = fields.ToManyField(PriceResource, 'prices', full=True)
+
+    class Meta(OccurrenceResource.Meta):
+        resource_name = 'occurrence_full'
+        filtering = {'event': ('exact',)}
 
 # =========================================
 # = Event Summary including Haystack search
