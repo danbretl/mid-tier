@@ -38,4 +38,3 @@ class MultiImportTest(TestCase):
         # Test is second scrape ran as expected on top of the existing scrape
         self.assert_event_counts()
         self.assert_occurrence_counts(event, 2)
-
