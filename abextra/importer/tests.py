@@ -30,7 +30,6 @@ class MultiImportTest(TestCase):
     def test_multiImport(self):
         # Create 2 scrape.tar.gz files containing almost similar information
         call_command('unpack_scrapes', 'importer/fixtures/scrape1.tar.gz')
-        self.assert_event_counts()
         # Test if command was successful
         call_command('unpack_scrapes', 'importer/fixtures/scrape2.tar.gz')
         # Test is second scrape ran as expected on top of the existing scrape
