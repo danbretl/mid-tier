@@ -3,6 +3,7 @@ from django.contrib.localflavor.us import forms as us_forms
 from django.template.defaultfilters import slugify
 from places.models import Place, Point, City
 from core.fields import USPhoneNumberFieldSoftFail
+from events.models import Category
 
 # ==============
 # = Base Forms =
@@ -28,6 +29,14 @@ class PlaceImportForm(PlaceForm):
     slug = forms.SlugField(required=False)
     status = forms.TypedChoiceField(empty_value=1, coerce=int, required=False)
     phone = USPhoneNumberFieldSoftFail(required=False)
+    concrete_category = forms.ModelChoiceField(
+        queryset=Category.concrete.all(), required=False,
+        cache_choices=True
+        )
+    abstract_categories = forms.ModelMultipleChoiceField(
+        queryset=Category.abstract.all(), required=False,
+        cache_choices=True
+        )
 
     def clean_slug(self):
         title = self.cleaned_data['title']

@@ -164,7 +164,7 @@ class SourceCategoryRule(BaseRule):
         self.concrete_categories = results_concrete
         self.abstract_categories = results_abstract
         #------------------------------------------
-        return (results_concrete,results_abstract)
+        return ([r for r in results_concrete if r], results_abstract)
 
 
 """
