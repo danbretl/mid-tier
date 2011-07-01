@@ -32,7 +32,7 @@ class BaseParser(object):
                 # This means the key did not get created correctly due to
                 # missing fields
                 # FIXME: Log this error
-                created, instance = False, False
+                created, instance = False, None
 
             if instance:
                 self.cache[key] = instance

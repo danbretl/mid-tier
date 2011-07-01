@@ -1,7 +1,6 @@
 from importer.parsers.tests import *
 
 from django.test import TestCase
-from importer.consumer import ScrapeFeedConsumer
 """
 Author: Vikas Menon
 Date: April 6th, 2011
@@ -16,7 +15,7 @@ a) Test the consumer:
         C) Test _register
         D) Test all properties
         E) Test internal methods (_items)
-    
+
 
 b) Test the parsers
     1) Test the BaseParser
@@ -44,6 +43,21 @@ Building a simple test_scrape.feed
 3) 6 Locations
    - !Most locations have a unique guid, but some share the same.
 4) 8 categories
-   - !Most categories have a unique guid, but some share the same. 
+   - !Most categories have a unique guid, but some share the same.
 -------------------------------------------------
 """
+from django.core.management import call_command
+
+class MultiImportTest(TestCase):
+    """
+    """
+    # example usage: call_command('my_command', 'foo', bar='baz')
+    fixtures = ['categories', 'sources', 'auth', 'external_categories_all']
+
+    def test_multiImport(self):
+        # Create 2 scrape.tar.gz files containing almost similar information
+        call_command('unpack_scrapes', 'importer/fixtures/scrape1.tar.gz')
+        # Test if command was successful
+        import ipdb; ipdb.set_trace()
+        call_command('unpack_scrapes', 'importer/fixtures/scrape2.tar.gz')
+        # Test is second scrape ran as expected on top of the existing scrape
