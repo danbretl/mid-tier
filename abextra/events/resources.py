@@ -45,7 +45,7 @@ class CategoryResource(ModelResource):
 class EventResource(ModelResource):
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
     abstract_categories = fields.ToManyField(CategoryResource, 'categories')
-    # occurrences = fields.ToManyField(OccurrenceResource, 'occurrences')
+    occurrences = fields.ToManyField('events.resources.OccurrenceResource', 'occurrences')
 
     class Meta:
         queryset = Event.objects.all()
@@ -92,7 +92,7 @@ class EventResource(ModelResource):
 
 
 class EventFullResource(EventResource):
-    # occurrences = fields.ToManyField('events.api.resources.OccurrenceFullResource', 'occurrences', full=True)
+    occurrences = fields.ToManyField('events.resources.OccurrenceFullResource', 'occurrences', full=True)
 
     class Meta(EventResource.Meta):
         resource_name = 'event_full'
