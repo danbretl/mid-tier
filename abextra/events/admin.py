@@ -35,7 +35,7 @@ class CategoryAutocomplete(AutocompleteSettings):
     login_required = True
     queryset = Category.concrete.all()
     search_fields = ('^title',)
-autocomplete.register(Event.concrete_category, CategoryAutocomplete)
+# autocomplete.register(Event.concrete_category, CategoryAutocomplete)
 
 # ==============================
 # = Event / Occurrence(inline) =
