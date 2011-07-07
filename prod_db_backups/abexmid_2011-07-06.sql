@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.1.49-1ubuntu8.1)
 # Database: abexmid
-# Generation Time: 2011-07-06 16:48:53 -0400
+# Generation Time: 2011-07-06 18:46:16 -0400
 # ************************************************************
 
 
@@ -361,7 +361,7 @@ CREATE TABLE `auth_message` (
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`),
   KEY `auth_message_fbfc09f1` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 
 
@@ -733,7 +733,7 @@ CREATE TABLE `behavior_eventaction` (
   UNIQUE KEY `behavior_eventaction_user_id_59a79d097e2a642d_uniq` (`user_id`,`event_id`),
   KEY `behavior_eventaction_fbfc09f1` (`user_id`),
   KEY `behavior_eventaction_e9b82f95` (`event_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13061 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13119 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `behavior_eventaction` WRITE;
 /*!40000 ALTER TABLE `behavior_eventaction` DISABLE KEYS */;
@@ -2829,7 +2829,7 @@ VALUES
 	(2305,136,843,'I','2011-06-14 17:40:18'),
 	(2306,136,902,'I','2011-06-14 17:40:18'),
 	(2307,136,975,'I','2011-06-14 17:40:18'),
-	(2308,136,977,'I','2011-06-14 17:40:18'),
+	(2308,136,977,'V','2011-07-06 18:39:28'),
 	(2309,136,1028,'I','2011-06-14 17:40:18'),
 	(2310,136,1318,'I','2011-06-14 17:40:18'),
 	(7691,134,1072,'I','2011-06-17 00:01:09'),
@@ -4947,7 +4947,7 @@ VALUES
 	(9332,154,355,'I','2011-06-20 20:41:36'),
 	(9331,154,286,'I','2011-06-20 20:41:36'),
 	(9330,154,163,'I','2011-06-20 20:41:36'),
-	(8377,144,116,'I','2011-06-17 16:15:07'),
+	(8377,144,116,'V','2011-07-06 18:18:14'),
 	(8378,144,131,'V','2011-06-17 17:16:22'),
 	(8379,144,397,'V','2011-06-29 13:02:45'),
 	(8380,144,426,'I','2011-06-17 16:15:07'),
@@ -4984,7 +4984,7 @@ VALUES
 	(12639,136,1675,'I','2011-07-05 19:10:04'),
 	(12638,136,1624,'V','2011-07-06 13:33:53'),
 	(12637,136,1363,'I','2011-07-05 19:10:04'),
-	(12636,136,740,'I','2011-07-05 19:10:04'),
+	(12636,136,740,'V','2011-07-06 18:39:17'),
 	(12144,127,661,'I','2011-07-01 07:40:27'),
 	(8622,126,116,'I','2011-06-17 16:24:29'),
 	(8623,126,129,'I','2011-06-17 16:24:29'),
@@ -5153,7 +5153,7 @@ VALUES
 	(8509,134,1089,'V','2011-06-21 17:23:06'),
 	(8510,134,282,'I','2011-06-17 16:20:36'),
 	(8511,134,569,'I','2011-06-17 16:20:36'),
-	(8512,134,904,'I','2011-06-17 16:20:36'),
+	(8512,134,904,'V','2011-07-06 18:20:49'),
 	(8513,144,271,'V','2011-06-29 12:58:18'),
 	(8514,144,365,'I','2011-06-17 16:20:37'),
 	(8515,144,918,'I','2011-06-17 16:20:37'),
@@ -7696,7 +7696,65 @@ VALUES
 	(13057,137,1908,'I','2011-07-06 16:27:10'),
 	(13058,137,1934,'I','2011-07-06 16:27:10'),
 	(13059,137,1947,'I','2011-07-06 16:27:10'),
-	(13060,137,2081,'I','2011-07-06 16:27:10');
+	(13060,137,2081,'I','2011-07-06 16:27:10'),
+	(13061,114,104,'I','2011-07-06 16:51:06'),
+	(13062,114,213,'I','2011-07-06 16:51:06'),
+	(13063,114,215,'X','2011-07-06 16:51:22'),
+	(13064,114,480,'I','2011-07-06 16:51:06'),
+	(13065,114,557,'I','2011-07-06 16:51:06'),
+	(13066,114,647,'I','2011-07-06 16:51:06'),
+	(13067,114,949,'I','2011-07-06 16:51:06'),
+	(13068,114,1391,'I','2011-07-06 16:51:06'),
+	(13069,114,1419,'I','2011-07-06 16:51:06'),
+	(13070,114,1474,'I','2011-07-06 16:51:06'),
+	(13071,114,1488,'I','2011-07-06 16:51:06'),
+	(13072,114,1586,'X','2011-07-06 16:51:36'),
+	(13073,114,1624,'I','2011-07-06 16:51:06'),
+	(13074,114,1763,'I','2011-07-06 16:51:06'),
+	(13075,114,1793,'I','2011-07-06 16:51:07'),
+	(13076,114,1825,'I','2011-07-06 16:51:07'),
+	(13077,114,1848,'I','2011-07-06 16:51:07'),
+	(13078,114,1859,'I','2011-07-06 16:51:07'),
+	(13079,114,1903,'V','2011-07-06 16:51:12'),
+	(13080,114,1950,'I','2011-07-06 16:51:07'),
+	(13081,134,1363,'I','2011-07-06 18:07:33'),
+	(13082,134,1546,'I','2011-07-06 18:07:33'),
+	(13083,134,1690,'I','2011-07-06 18:07:33'),
+	(13084,134,1729,'I','2011-07-06 18:07:33'),
+	(13085,134,1884,'I','2011-07-06 18:07:33'),
+	(13086,134,1890,'I','2011-07-06 18:07:33'),
+	(13087,134,1947,'I','2011-07-06 18:07:33'),
+	(13088,134,2095,'I','2011-07-06 18:07:33'),
+	(13089,144,687,'I','2011-07-06 18:14:24'),
+	(13090,144,892,'I','2011-07-06 18:14:24'),
+	(13091,144,1363,'I','2011-07-06 18:14:24'),
+	(13092,144,1448,'V','2011-07-06 18:14:32'),
+	(13093,144,1605,'I','2011-07-06 18:14:24'),
+	(13094,144,1655,'I','2011-07-06 18:14:24'),
+	(13095,144,1700,'I','2011-07-06 18:14:24'),
+	(13096,144,1790,'I','2011-07-06 18:14:24'),
+	(13097,144,1885,'I','2011-07-06 18:14:24'),
+	(13098,144,1887,'I','2011-07-06 18:14:24'),
+	(13099,144,215,'I','2011-07-06 18:15:09'),
+	(13100,144,279,'I','2011-07-06 18:15:09'),
+	(13101,144,424,'V','2011-07-06 18:16:28'),
+	(13102,144,425,'I','2011-07-06 18:15:09'),
+	(13103,144,768,'I','2011-07-06 18:15:09'),
+	(13104,144,1390,'V','2011-07-06 18:15:52'),
+	(13105,144,1428,'I','2011-07-06 18:15:09'),
+	(13106,144,1457,'I','2011-07-06 18:15:09'),
+	(13107,144,1482,'V','2011-07-06 18:16:57'),
+	(13108,144,1487,'I','2011-07-06 18:15:09'),
+	(13109,144,1650,'V','2011-07-06 18:15:19'),
+	(13110,144,1780,'I','2011-07-06 18:15:09'),
+	(13111,144,269,'I','2011-07-06 18:16:47'),
+	(13112,144,577,'I','2011-07-06 18:16:47'),
+	(13113,144,1530,'V','2011-07-06 18:18:33'),
+	(13114,144,1625,'I','2011-07-06 18:16:47'),
+	(13115,136,483,'I','2011-07-06 18:37:14'),
+	(13116,136,1640,'I','2011-07-06 18:37:14'),
+	(13117,136,2009,'I','2011-07-06 18:37:14'),
+	(13118,136,2109,'V','2011-07-06 18:43:28');
 
 /*!40000 ALTER TABLE `behavior_eventaction` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -7719,7 +7777,7 @@ CREATE TABLE `behavior_eventactionaggregate` (
   UNIQUE KEY `behavior_eventactionaggregate_user_id_ef3a7a7fe51f1c_uniq` (`user_id`,`category_id`),
   KEY `behavior_eventactionaggregate_fbfc09f1` (`user_id`),
   KEY `behavior_eventactionaggregate_42dc49bc` (`category_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1266 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1270 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `behavior_eventactionaggregate` WRITE;
 /*!40000 ALTER TABLE `behavior_eventactionaggregate` DISABLE KEYS */;
@@ -7806,17 +7864,17 @@ VALUES
 	(1222,147,169,0,0,20,0),
 	(1221,147,137,1,2,20,0),
 	(1220,147,2,0,0,1,4),
-	(81,144,33,2,3,20,1),
-	(82,144,137,0,5,50,1),
+	(81,144,33,2,3,23,1),
+	(82,144,137,0,7,54,1),
 	(83,144,170,0,2,0,0),
 	(84,144,173,0,3,50,8),
-	(85,144,142,0,2,8,1),
+	(85,144,142,0,4,7,1),
 	(86,144,174,0,0,2,1),
-	(87,144,2,0,10,17,2),
+	(87,144,2,0,10,18,2),
 	(88,144,139,0,1,3,0),
-	(89,144,187,0,4,21,1),
-	(90,144,27,0,2,9,1),
-	(91,144,169,0,3,41,3),
+	(89,144,187,0,4,23,1),
+	(90,144,27,0,2,12,1),
+	(91,144,169,0,3,43,3),
 	(92,144,149,0,1,4,1),
 	(93,144,29,0,1,5,5),
 	(94,144,38,0,0,11,6),
@@ -7843,20 +7901,20 @@ VALUES
 	(115,148,33,0,0,7,0),
 	(116,148,138,0,0,2,0),
 	(117,148,2,0,0,12,0),
-	(118,134,33,0,9,23,0),
+	(118,134,33,0,9,25,0),
 	(119,134,137,0,16,163,2),
 	(120,134,169,0,6,44,1),
 	(121,134,170,1,1,0,0),
-	(122,134,173,1,13,90,0),
+	(122,134,173,1,13,94,0),
 	(123,134,149,0,4,4,0),
 	(124,134,174,0,1,2,0),
 	(125,134,117,0,5,24,0),
-	(126,134,187,0,6,28,0),
+	(126,134,187,0,6,29,0),
 	(127,134,142,0,2,12,0),
 	(128,134,29,0,0,12,0),
 	(129,134,2,0,2,21,2),
 	(130,134,16,0,1,4,0),
-	(131,134,125,1,1,28,0),
+	(131,134,125,1,2,27,0),
 	(132,137,38,0,1,5,0),
 	(133,137,170,0,0,2,0),
 	(134,137,173,1,7,33,0),
@@ -7871,7 +7929,7 @@ VALUES
 	(143,134,27,0,3,13,0),
 	(144,134,4,0,4,27,0),
 	(145,134,38,0,8,15,0),
-	(146,134,171,0,8,15,0),
+	(146,134,171,0,8,16,0),
 	(147,135,170,0,0,2,0),
 	(148,135,149,0,0,5,0),
 	(149,135,117,0,0,9,0),
@@ -7898,10 +7956,10 @@ VALUES
 	(170,139,149,0,0,6,0),
 	(1219,147,117,0,0,8,1),
 	(725,103,174,0,0,2,0),
-	(173,136,173,1,9,113,0),
+	(173,136,173,1,9,115,0),
 	(174,136,170,0,1,1,0),
 	(175,136,142,0,6,9,0),
-	(176,136,169,0,1,52,1),
+	(176,136,169,0,1,53,1),
 	(177,136,149,0,2,6,0),
 	(178,136,174,0,2,1,0),
 	(179,136,171,0,0,35,0),
@@ -7910,11 +7968,11 @@ VALUES
 	(182,136,33,4,2,39,0),
 	(183,136,163,0,1,5,1),
 	(184,136,138,0,0,18,0),
-	(185,136,137,0,7,178,1),
+	(185,136,137,0,8,177,1),
 	(186,137,125,0,2,11,0),
 	(187,148,174,0,0,2,0),
 	(188,148,137,0,0,26,0),
-	(189,136,187,0,8,24,0),
+	(189,136,187,0,9,23,0),
 	(190,136,124,0,0,11,0),
 	(191,136,139,0,0,5,0),
 	(192,137,27,0,0,6,1),
@@ -7946,11 +8004,11 @@ VALUES
 	(218,139,163,0,1,4,0),
 	(219,144,117,0,0,16,4),
 	(220,144,121,0,0,12,0),
-	(221,144,138,0,3,11,0),
-	(222,144,125,1,4,31,0),
+	(221,144,138,0,3,13,0),
+	(222,144,125,1,5,32,0),
 	(223,144,127,0,2,5,0),
 	(224,144,124,0,2,6,1),
-	(225,144,28,0,2,4,0),
+	(225,144,28,0,2,6,0),
 	(226,139,4,0,0,23,0),
 	(227,139,197,0,0,2,0),
 	(228,139,29,0,0,12,0),
@@ -8120,9 +8178,9 @@ VALUES
 	(649,126,170,0,0,2,0),
 	(650,126,117,0,0,2,0),
 	(1079,163,142,0,0,2,0),
-	(652,144,34,0,0,12,1),
+	(652,144,34,0,1,12,1),
 	(653,144,114,0,0,11,0),
-	(654,144,140,0,0,4,0),
+	(654,144,140,0,1,4,0),
 	(655,144,163,0,1,4,2),
 	(1253,130,27,0,0,3,0),
 	(1252,130,169,0,0,4,0),
@@ -8230,19 +8288,19 @@ VALUES
 	(801,141,140,0,0,1,0),
 	(802,141,29,0,0,2,0),
 	(803,114,2,0,0,10,4),
-	(804,114,33,1,2,0,0),
-	(805,114,27,0,3,1,0),
-	(806,114,173,1,6,28,0),
+	(804,114,33,1,2,3,0),
+	(805,114,27,0,3,3,0),
+	(806,114,173,1,7,32,0),
 	(807,114,187,0,0,2,1),
 	(808,114,169,0,1,15,3),
-	(809,114,38,0,0,3,0),
+	(809,114,38,0,0,4,0),
 	(810,114,139,0,1,0,0),
-	(811,114,142,0,1,1,0),
-	(812,114,137,0,1,6,1),
+	(811,114,142,0,1,3,0),
+	(812,114,137,0,1,6,2),
 	(813,114,117,0,2,9,1),
 	(814,114,174,0,0,0,2),
-	(815,114,171,0,3,4,0),
-	(816,114,125,1,1,13,0),
+	(815,114,171,0,3,5,0),
+	(816,114,125,1,1,14,0),
 	(1214,156,197,0,0,1,0),
 	(839,153,187,1,1,4,0),
 	(840,153,27,0,1,4,0),
@@ -8316,7 +8374,7 @@ VALUES
 	(908,114,4,0,1,11,0),
 	(909,114,34,0,2,1,0),
 	(910,114,197,0,0,0,1),
-	(911,114,138,0,2,3,0),
+	(911,114,138,0,2,3,1),
 	(912,114,28,0,0,1,0),
 	(913,114,124,0,2,2,0),
 	(914,103,4,0,0,4,0),
@@ -8467,7 +8525,11 @@ VALUES
 	(1245,147,28,0,0,8,0),
 	(1263,147,170,0,0,2,0),
 	(1264,147,149,0,1,2,0),
-	(1265,147,16,0,0,1,0);
+	(1265,147,16,0,0,1,0),
+	(1266,114,170,0,0,1,0),
+	(1267,114,149,0,0,2,0),
+	(1268,136,308,0,1,0,0),
+	(1269,136,30,0,1,0,0);
 
 /*!40000 ALTER TABLE `behavior_eventactionaggregate` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -8490,7 +8552,7 @@ CREATE TABLE `django_admin_log` (
   PRIMARY KEY (`id`),
   KEY `django_admin_log_fbfc09f1` (`user_id`),
   KEY `django_admin_log_e4470c6e` (`content_type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1318 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=1321 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `django_admin_log` WRITE;
 /*!40000 ALTER TABLE `django_admin_log` DISABLE KEYS */;
@@ -9813,7 +9875,10 @@ VALUES
 	(1314,'2011-06-17 18:16:24',1,51,'1','AppDistribution object',2,'Changed archive.'),
 	(1315,'2011-06-17 18:25:21',1,51,'1','AppDistribution object',2,'Changed archive.'),
 	(1316,'2011-06-20 18:33:24',1,51,'1','AppDistribution object',2,'Changed archive.'),
-	(1317,'2011-06-20 18:44:21',1,51,'1','AppDistribution object',2,'Changed archive.');
+	(1317,'2011-06-20 18:44:21',1,51,'1','AppDistribution object',2,'Changed archive.'),
+	(1318,'2011-07-06 18:28:27',1,20,'2108','',1,''),
+	(1319,'2011-07-06 18:28:59',1,20,'2108','',3,''),
+	(1320,'2011-07-06 18:36:27',1,20,'2109','Taylor Swift',1,'');
 
 /*!40000 ALTER TABLE `django_admin_log` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -10585,7 +10650,7 @@ CREATE TABLE `events_event` (
   KEY `events_event_c3edbe75` (`submitted_by_id`),
   KEY `events_event_af70c15` (`concrete_category_id`),
   FULLTEXT KEY `titlesearch` (`title`)
-) ENGINE=MyISAM AUTO_INCREMENT=2108 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2110 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `events_event` WRITE;
 /*!40000 ALTER TABLE `events_event` DISABLE KEYS */;
@@ -12704,7 +12769,8 @@ VALUES
 	(2104,'http://www.villagevoice.com/events/hot-pepper-and-sworn-to-the-drum-a-tribute-to-francisco-aguabella-2649614/','\"Hot Pepper and Sworn To the Drum: A Tribute to Francisco Aguabella\"','hot-pepper-and-sworn-to-the-drum-a-tribute-to-fran','',4,'2011-07-05 19:03:37','2011-07-05 19:03:37','http://www.villagevoice.com/events/hot-pepper-and-sworn-to-the-drum-a-tribute-to-francisco-aguabella-2649614/','','',173,'',1,0),
 	(2105,'http://www.villagevoice.com/events/harvey-stein-2654437/','Harvey Stein','harvey-stein','Harvey Stein discusses his collection of photos of the iconic locale, spanning 40 years.',4,'2011-07-05 19:03:37','2011-07-05 19:03:37','http://www.villagevoice.com/events/harvey-stein-2654437/','','',34,'',1,0),
 	(2106,'http://www.villagevoice.com/events/pablo-zieglers-buenos-aires-conexion-2647052/','Pablo Ziegler\'s Buenos Aires Conexion','pablo-zieglers-buenos-aires-conexion','',4,'2011-07-05 19:03:38','2011-07-05 19:03:38','http://www.villagevoice.com/events/pablo-zieglers-buenos-aires-conexion-2647052/','','',137,'',1,0),
-	(2107,'http://www.villagevoice.com/events/spencers-gifts-2654570/','Spencers Gifts','spencers-gifts','',4,'2011-07-05 19:03:38','2011-07-05 19:03:38','http://www.villagevoice.com/events/spencers-gifts-2654570/','','',137,'',1,0);
+	(2107,'http://www.villagevoice.com/events/spencers-gifts-2654570/','Spencers Gifts','spencers-gifts','',4,'2011-07-05 19:03:38','2011-07-05 19:03:38','http://www.villagevoice.com/events/spencers-gifts-2654570/','','',137,'',1,0),
+	(2109,'','Taylor Swift','','The SPEAK NOW WORLD TOUR 2011 is one of the most-anticipated musical experiences of the year, as Taylor’s live show is renowned for her incredibly high-energy theatrical presentation of graphics, sets and visual elements, all conceptualized by Taylor herself. During the course of her show, Taylor plays a variety of instruments and has multiple wardrobe changes. Each show, Taylor performs hit after hit from her three Big Machine Records albums, including the chart-topping ’’Mine,’’ ’’Love Story,’’ ’’You Belong With Me,’’ ’’Our Song,’’ and ’’Fifteen.’’',NULL,'2011-07-06 18:36:27','2011-07-06 18:36:27','http://www.prucenter.com/default.asp?id=87&objid=880','','',30,'event_images/TaylorSwiftImage.png',1,0);
 
 /*!40000 ALTER TABLE `events_event` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -12723,8 +12789,17 @@ CREATE TABLE `events_event_categories` (
   UNIQUE KEY `events_event_categories_event_id_1876fbdb72d815d7_uniq` (`event_id`,`category_id`),
   KEY `events_event_categories_e9b82f95` (`event_id`),
   KEY `events_event_categories_42dc49bc` (`category_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+LOCK TABLES `events_event_categories` WRITE;
+/*!40000 ALTER TABLE `events_event_categories` DISABLE KEYS */;
+
+INSERT INTO `events_event_categories` (`id`, `event_id`, `category_id`)
+VALUES
+	(1,2109,308);
+
+/*!40000 ALTER TABLE `events_event_categories` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
 # Dump of table events_eventsummary
@@ -14608,6 +14683,7 @@ VALUES
 	(1,'2011-07-07','2011-07-07',1,'21:35:00','21:35:00',1,NULL,NULL,'Film Forum','209 W. Houston St., New York, NY 10014',1,1847,173,136,'The Man Who Fell to Earth'),
 	(1,'2011-07-07','2011-07-07',1,'21:15:00','21:15:00',1,NULL,NULL,'BAM','30 Lafayette Ave., Brooklyn, NY 11217',1,1848,173,136,'How to Marry a Millionaire'),
 	(1,'2011-07-27','2011-07-27',1,'23:00:00','23:00:00',1,NULL,NULL,'Royale Bar','506 Fifth Ave., New York, NY 10036',1,1849,28,139,'Jonny Porkpie\'s Royale Royale'),
+	(1,'2011-07-23','2011-07-23',1,'19:00:00','19:00:00',1,NULL,NULL,'Prudential Center','165 Mulberry Street, Newark, NJ 07102',1,2109,30,137,'Taylor Swift'),
 	(1,'2011-07-09','2011-07-09',1,'19:30:00','19:30:00',1,NULL,NULL,'MOMA, Roy and Niuta Titus Theaters','11 W. 53rd St., New York, NY 10020',1,1850,173,136,'All in This Tea'),
 	(1,'2011-07-12','2011-07-12',1,'21:00:00','21:00:00',1,10,10,'Mercury Lounge','217 E. Houston St., New York, NY 10002',1,1851,137,137,'The Belle Brigade+Nightmare & the Cat'),
 	(1,'2011-07-24','2011-07-24',1,'00:00:00','00:00:00',1,19,19,'Lion Theatre','410 W. 42nd St., New York, NY 10036',1,1852,125,139,'36th Annual Samuel French Off Off Broadway Short Play Festival'),
@@ -14889,7 +14965,7 @@ CREATE TABLE `events_occurrence` (
   PRIMARY KEY (`id`),
   KEY `events_occurrence_e9b82f95` (`event_id`),
   KEY `events_occurrence_c4391d6c` (`place_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2600 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=2601 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `events_occurrence` WRITE;
 /*!40000 ALTER TABLE `events_occurrence` DISABLE KEYS */;
@@ -15060,6 +15136,7 @@ VALUES
 	(253,253,183,'','2011-06-30','00:00:00',NULL,NULL,0),
 	(254,254,69,'','2011-06-22','18:30:00',NULL,NULL,0),
 	(257,257,168,'','2011-06-18','21:00:00',NULL,NULL,0),
+	(2600,2109,499,'','2011-07-23','19:00:00',NULL,NULL,0),
 	(259,259,186,'','2011-06-14','18:30:00',NULL,NULL,0),
 	(260,260,1,'','2011-06-16','20:30:00',NULL,NULL,0),
 	(261,261,87,'','2011-06-16','18:00:00',NULL,NULL,0),
@@ -17483,7 +17560,7 @@ LOCK TABLES `livesettings_setting` WRITE;
 
 INSERT INTO `livesettings_setting` (`id`, `site_id`, `group`, `key`, `value`)
 VALUES
-	(2,1,'EVENTS','FEATURED_EVENT_ID','12');
+	(2,1,'EVENTS','FEATURED_EVENT_ID','2109');
 
 /*!40000 ALTER TABLE `livesettings_setting` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -21144,10 +21221,23 @@ LOCK TABLES `thumbnail_kvstore` WRITE;
 
 INSERT INTO `thumbnail_kvstore` (`key`, `value`)
 VALUES
+	('sorl-thumbnail||thumbnails||d653abe9e40bc6476aa584dab81eafae','[\"a1498363b57b825bdc94582bc912d20b\", \"c486228bc5f048638748feae321b0784\"]'),
+	('sorl-thumbnail||image||c486228bc5f048638748feae321b0784','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/67/39/6739f040e6da5cf5467c741a35325445.jpg\", \"size\": [533, 300]}'),
 	('sorl-thumbnail||thumbnails||5e7f42983461ebd5b146bc0fb3ed439c','[\"79b3bcfdf78643feb8f782dd7ed6e534\"]'),
 	('sorl-thumbnail||image||9b6811a77896fbcfff55791c5f8eef2f','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"location_images/55f8b62602f2392ae36278676a6b02d816e73b96_3.jpg\", \"size\": [340, 209]}'),
 	('sorl-thumbnail||image||17c39ff447172d69a04c0e3690d5b669','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/89/5a/895a1c16a52e118a972d5831e225122a.jpg\", \"size\": [488, 300]}'),
 	('sorl-thumbnail||thumbnails||9b6811a77896fbcfff55791c5f8eef2f','[\"17c39ff447172d69a04c0e3690d5b669\"]'),
+	('sorl-thumbnail||image||e4d6467bc7431121aad4b3c213313783','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"location_images/0948dc62c87e9c76125e705dbfd51c5931707938_3.jpg\", \"size\": [340, 255]}'),
+	('sorl-thumbnail||image||26947f8d531e93bd35c04162635bac84','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/c6/cb/c6cbec6ce0e8570efc6aec32531032f7.jpg\", \"size\": [400, 300]}'),
+	('sorl-thumbnail||thumbnails||e4d6467bc7431121aad4b3c213313783','[\"26947f8d531e93bd35c04162635bac84\"]'),
+	('sorl-thumbnail||image||56d857e546b1a22a969e520aa14480ee','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"location_images/97dea625e1deacca6d53293e5fcc35e34c74d06d_2.jpg\", \"size\": [340, 227]}'),
+	('sorl-thumbnail||image||b541638581b0b039879f6fcb944da88b','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/d5/48/d5481649581492b17aa91d63055e2e43.jpg\", \"size\": [449, 300]}'),
+	('sorl-thumbnail||thumbnails||56d857e546b1a22a969e520aa14480ee','[\"b541638581b0b039879f6fcb944da88b\"]'),
+	('sorl-thumbnail||image||7ec0526e77cd6e0cc525e5b1aac90708','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"location_images/c112dbe5a57376bd8ab16cff692b57aa530f2e04_2.jpg\", \"size\": [340, 227]}'),
+	('sorl-thumbnail||image||c070bca072755a5312a8836f6eaaccec','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/7a/09/7a097050b5cfe83674c526057efbe232.jpg\", \"size\": [449, 300]}'),
+	('sorl-thumbnail||thumbnails||7ec0526e77cd6e0cc525e5b1aac90708','[\"c070bca072755a5312a8836f6eaaccec\"]'),
+	('sorl-thumbnail||image||d653abe9e40bc6476aa584dab81eafae','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"event_images/TaylorSwiftImage.png\", \"size\": [640, 360]}'),
+	('sorl-thumbnail||image||a1498363b57b825bdc94582bc912d20b','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/54/0a/540a9dfae0fe8090ba6b54f921074ce1.jpg\", \"size\": [150, 84]}'),
 	('sorl-thumbnail||image||79b3bcfdf78643feb8f782dd7ed6e534','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/18/4a/184af873065acd88a4818e43512a2301.jpg\", \"size\": [400, 300]}'),
 	('sorl-thumbnail||image||5a5d4c671bfb55d33ceb35817e1f9cb6','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"category_icons/museums2crop.jpg\", \"size\": [1024, 576]}'),
 	('sorl-thumbnail||image||69618b0f66112c7939e30dd3796bec30','{\"storage\": \"django.core.files.storage.FileSystemStorage\", \"name\": \"cache/f2/36/f23627fd3eec57d9b1e22ed026c8be47.jpg\", \"size\": [533, 300]}'),
