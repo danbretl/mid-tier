@@ -57,18 +57,26 @@ PROJECT_ROOT = os.path.dirname(__file__)
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'static')
-STATIC_DOC_ROOT = MEDIA_ROOT
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+# STATIC_DOC_ROOT = MEDIA_ROOT
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = '/site_media/media/'
+
+# URL to use when referring to static files located in STATIC_ROOT.
+# Example: "/site_media/static/" or "http://static.example.com/"
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+
+# URL to use when referring to static files located in STATIC_ROOT.
+# Example: "/site_media/static/" or "http://static.example.com/"
+STATIC_URL = '/site_media/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # URL that handles the autocomplete's required front-end resources
 AUTOCOMPLETE_MEDIA_PREFIX = '/static/autocomplete/media/'
@@ -135,6 +143,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',      # user messages
     'django.contrib.admin',         # admin
     'django.contrib.admindocs',     # admin documentation
+    'django.contrib.staticfiles',   # statics
 
     'fabtastic',                    # deployments
     'gunicorn',                     # gunicorn | app server
