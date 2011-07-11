@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.views.static import serve
 from django.views.generic.simple import direct_to_template
 
 from autocomplete.views import autocomplete
@@ -45,13 +44,19 @@ urlpatterns = patterns('',
     # ================
     # = Autocomplete =
     # ================
-    url('^autocomplete/', include(autocomplete.urls)),
+    url(r'^autocomplete/', include(autocomplete.urls)),
+)
 
-    # ===========
-    # = Statics =
-    # ===========
-    url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_DOC_ROOT}),
+# ===========
+# = Statics =
+# ===========
+from django.views.static import serve
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += (
+    url(r'^site\_media\/media\/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to',
-        {'url': '/static/images/favicon.ico'}
+        {'url': settings.STATIC_URL + 'images/favicon.ico'}
     ),
 )

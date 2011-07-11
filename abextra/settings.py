@@ -57,8 +57,7 @@ PROJECT_ROOT = os.path.dirname(__file__)
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
-# STATIC_DOC_ROOT = MEDIA_ROOT
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -67,11 +66,15 @@ MEDIA_URL = '/site_media/media/'
 
 # URL to use when referring to static files located in STATIC_ROOT.
 # Example: "/site_media/static/" or "http://static.example.com/"
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static_root/')
 
 # URL to use when referring to static files located in STATIC_ROOT.
 # Example: "/site_media/static/" or "http://static.example.com/"
 STATIC_URL = '/site_media/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static/'),
+)
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

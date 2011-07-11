@@ -77,7 +77,7 @@ div.splash2{
 .alpha_button{
 	height: 40px;
 	width: 40px;
-	background:url(/static/images/alpha.png) 0 0 no-repeat;
+	background:url(/site_media/static/images/alpha.png) 0 0 no-repeat;
 	border:none;
 	-moz-transition-property: opacity 0.5; /* Firefox */
 	-moz-transition-duration: .5s;

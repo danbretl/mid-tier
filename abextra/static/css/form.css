@@ -254,7 +254,7 @@ input.text, input.search, input.file, textarea.textarea, select.select{
 input.submit{
 	height:24px;
 	width:130px;
-	background:url(/static/images/submit.png) 0 0 no-repeat;
+	background:url(/site_media/static/images/submit.png) 0 0 no-repeat;
 }
 
 input.submit:hover {
@@ -266,7 +266,7 @@ input.text, input.search, textarea.textarea{
 	border-left:1px solid #c3c3c3;
 	border-right:1px solid #c3c3c3;
 	border-bottom:1px solid #ddd;
-	background:#fff url(/static/images/fieldbg.gif) repeat-x top;
+	background:#fff url(/site_media/static/images/fieldbg.gif) repeat-x top;
 }
 
 input.nospin::-webkit-inner-spin-button,
