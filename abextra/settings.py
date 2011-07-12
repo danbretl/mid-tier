@@ -146,6 +146,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',      # user messages
     'django.contrib.admin',         # admin
     'django.contrib.admindocs',     # admin documentation
+    'django.contrib.comments',      # comments
     'django.contrib.staticfiles',   # statics
 
     'fabtastic',                    # deployments
@@ -159,6 +160,10 @@ INSTALLED_APPS = (
     'userena',                      # accounts and registration
     'guardian',                     # object level permissions  | userena dep
     'easy_thumbnails',              # thumbnails                | userena dep
+
+    'voting',                       # django voting     | voice dep
+    'gravatar',                     # django gravatar   | voice dep
+    'djangovoice',                  # feedback and issue tracking
 
     'accounts',                     # ABEX user profile extensions
     'alphasignup',                  # ABEX simple web front for Alpha signup

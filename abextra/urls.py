@@ -45,6 +45,12 @@ urlpatterns = patterns('',
     # = Autocomplete =
     # ================
     url(r'^autocomplete/', include(autocomplete.urls)),
+
+    # =======================
+    # = Feedback / Comments =
+    # =======================
+    url(r'^comments/', include('django.contrib.comments.urls')),
+    url(r'^feedback/', include('djangovoice.urls')),
 )
 
 # ===========

@@ -1,0 +1,133 @@
+{% extends "djangovoice/feedback_base.html" %}
+{% load gravatar %}
+{% load voting_tags %}
+{% load djangovoice_tags %}
+{% load comments %}
+
+{% block title %}{% trans "Feedback" %}{% endblock %}
+
+{% block actions %}
+{% if user.is_staff or user == feedback.user %}
+<li><a href="{% url djangovoice_edit feedback.id %}">{% trans "Edit" %} &rarr;</a></li>
+<li><a href="{% url djangovoice_delete feedback.id %}">{% trans "Delete" %} &rarr;</a></li>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+{% if feedback.duplicate %}
+<div id="feedback-duplicate">{% trans "Duplicate of" %} <a href="{{ feedback.duplicate.get_absolute_url }}">{{ feedback.duplicate.title }}</a></div>
+<div class="clear"></div>
+{% endif %}
+
+<div class="votes">
+    {% score_for_object feedback as score %}
+    {{ score.score|default:0 }}
+    <p class="num-votes">
+        {% blocktrans %}
+        from {{ score.num_votes }} Vote{{ score.num_votes|pluralize }}
+        {% endblocktrans %}
+    </p>
+    <div class="clear"></div>
+    <div id="vote-down">
+        <form class="vote-button" method="post" action="{{ feedback.get_absolute_url }}down/">
+            {% csrf_token %}
+            <input class="button" type="submit" name="up" value="&minus;1">
+        </form>
+    </div>
+    <div id="vote-up">
+        <form class="vote-button" method="post" action="{{ feedback.get_absolute_url }}up/">
+            {% csrf_token %}
+            <input class="button" type="submit" name="down" value="+1">
+        </form>
+    </div>
+    <div class="clear"></div>
+</div>
+
+<h1 id="feedback-detail-heading">
+    <span class="feedback-type feedback-type-{{ feedback.type.slug }}"> {{ feedback.type.title }}</span>
+    {{ feedback.title }}
+    <span class="feedback-status feedback-status-{{ feedback.status.slug }}">{{ feedback.status.title }}</span>
+</h1>
+
+<p>
+    <span class="feedback-user">
+        {% if feedback.user %}
+        {% trans "Submitted by:" %}
+        <a href="{{ feedback.user.get_absolute_url }}" class="avatar" title="{% trans "View profile" %}">{% gravatar feedback.user.username 15 %}</a>
+        <a href="{{ feedback.user.get_absolute_url }}" title="{% trans "View profile" %}">{% user_name feedback.user %}</a>
+        {% else %}
+        {% trans "Submitted anonymously" %}
+        {% endif %}
+    </span>
+    <span class="feedback-date">{% trans "on" %} {{ feedback.created|date:"d M Y" }}</span>
+</p>
+
+<div class="clear"></div>
+<br />
+{% if feedback.description %}<p>{{ feedback.description|urlize|linebreaksbr }}</p>{% endif %}
+
+
+{% get_comment_count for feedback as comment_count %}
+{% get_comment_list for feedback as comment_list %}
+
+<h2>
+    {% blocktrans %}
+    Comments ({{ comment_count }})
+    {% endblocktrans %}
+</h2>
+
+{% if comment_list %}
+<hr />
+
+{% for comment in comment_list %}
+<div class="message{% if comment.user.is_staff %} staff{% endif %}">
+    <a name="{{ message.id }}"></a>
+    <div class="content">
+        <div class="avatar">
+            {% gravatar comment.user.username 40 %}
+        </div>
+        {% if comment.user.is_staff %}
+        <div class="staff">
+            {% trans "Staff" %}
+        </div>
+        {% endif %}
+        <div class="message-content">
+            <div class="details">
+                {% trans "From:" %}<strong>
+                    {% ifequal comment.user user %}
+                    {% trans "you" %}
+                    {% else %}
+                    <a href="{{ comment.user.get_absolute_url }}">{% user_name comment.user %}</a>
+                    {% endifequal %}
+                </strong>
+                {% trans "on" %} {{ comment.submit_date|date:"M d Y" }} {% trans "at" %} {{ comment.submit_date|date:"fA" }}
+            </div>
+            <p>{{ comment.comment|urlize|linebreaksbr }}</p>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+{% endfor %}
+
+{% else %}
+<p>{% trans "No one has commented. Have your say." %}</p>
+{% endif %}
+
+{% if user.is_authenticated %}
+<h2>{% trans "Leave a comment" %}</h2>
+{% get_comment_form for feedback as form %}
+<form action="{% comment_form_target %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ feedback.get_absolute_url }}" />
+    {{ form.comment }}
+    {{ form.honeypot }}
+    {{ form.content_type }}
+    {{ form.object_pk }}
+    {{ form.timestamp }}
+    {{ form.security_hash }}
+    <br /><input type="submit" value="{% trans "Post comment" %}" id="id_submit" />
+</form>
+{% endif %}
+
+{% endblock %}
