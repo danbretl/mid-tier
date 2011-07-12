@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.defaults import *
 from django.contrib import admin
-from django.views.generic.simple import direct_to_template
+from django.views.generic import TemplateView
 
 from autocomplete.views import autocomplete
 
@@ -23,21 +23,20 @@ urlpatterns = patterns('',
     # ============================
     # = User Accounts via Userna =
     # ============================
-    url(r'^alpha/$', direct_to_template,
-        {'template': 'alphasignup/index.html'},
+    url(r'^alpha/$',
+        TemplateView.as_view(template_name='alphasignup/index.html'),
         name='alpha_home'
     ),
     url(r'^alpha/accounts/', include('alphasignup.urls')),
-    url(r'^alpha/about/$', direct_to_template,
-        {'template': 'alphasignup/about.html'},
+    url(r'^alpha/about/$',
+        TemplateView.as_view(template_name='alphasignup/about.html'),
         name='alpha_about_us'
     ),
 
     # ===========
     # = Landing =
     # ===========
-    url(r'^$', direct_to_template,
-        {'template': 'index.html'},
+    url(r'^$', TemplateView.as_view(template_name='index.html'),
         name='landing'
     ),
 
