@@ -25,7 +25,9 @@ class CategoryAdmin(AdminImageMixin, admin.ModelAdmin):
     search_fields = ('title',)
     list_filter = ('category_type',)
     list_display = ('title', 'parent_title', 'category_type', 'is_associative', 'icon')
-    fields = ('parent', 'title', 'is_associative', 'association_coefficient', 'icon', 'thumb', 'color')
+    fields = ('parent', 'title', 'is_associative', 'association_coefficient', 
+        'color', 'image', 'button_icon', 'small_icon') + \
+        ('icon', 'thumb', ) # FIXME remove deprecated graphics
     inlines = [
         CategoriesInline
     ]

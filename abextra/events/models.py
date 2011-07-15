@@ -51,8 +51,11 @@ class Category(models.Model):
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
     # TODO bring this out into a OneToOne CategoryGraphics class
-    icon = ImageField(upload_to='category_icons', blank=True, null=True)
-    thumb = ImageField(upload_to='category_thumbs', blank=True, null=True)
+    icon = ImageField(upload_to='category_icons', blank=True, null=True) # FIXME deprecated remove
+    image = ImageField(upload_to='category_images', blank=True, null=True)
+    thumb = ImageField(upload_to='category_thumbs', blank=True, null=True) # FIXME deprecated remove
+    button_icon = ImageField(upload_to='category_button_icons', blank=True, null=True)
+    small_icon = ImageField(upload_to='category_small_icons', blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
 
     objects = CategoryManager()

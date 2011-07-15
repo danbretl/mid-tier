@@ -33,8 +33,18 @@ class CategoryResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
-        fields = ('title', 'color', 'thumb')
+        fields = ('title', 'color', 'button_icon', 'small_icon') + \
+            ('thumb',) # FIXME remove deprecated graphic fields
 
+    def dehydrate_button_icon(self, bundle):
+        category, data = bundle.obj, bundle.data
+        return category.button_icon.url if category.button_icon else None
+
+    def dehydrate_small_icon(self, bundle):
+        category, data = bundle.obj, bundle.data
+        return category.small_icon.url if category.small_icon else None
+
+    # FIXME remove deprecated
     def dehydrate_thumb(self, bundle):
         category, data = bundle.obj, bundle.data
         return category.thumb_path
@@ -56,6 +66,7 @@ class EventResource(ModelResource):
             'title', 'description', 'image', 'video_url', 'url'
         )
 
+    # TODO refactor into separate fields / hydration methods when ctree becomes thread-local
     def dehydrate(self, bundle):
         """inject extra info"""
         event, data = bundle.obj, bundle.data
