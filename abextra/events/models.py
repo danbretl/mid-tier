@@ -51,8 +51,11 @@ class Category(models.Model):
     is_associative = models.BooleanField(default=True)
     association_coefficient = models.FloatField(default=0)
     # TODO bring this out into a OneToOne CategoryGraphics class
-    icon = ImageField(upload_to='category_icons', blank=True, null=True)
-    thumb = ImageField(upload_to='category_thumbs', blank=True, null=True)
+    icon = ImageField(upload_to='category_icons', blank=True, null=True) # FIXME deprecated remove
+    image = ImageField(upload_to='category_images', blank=True, null=True)
+    thumb = ImageField(upload_to='category_thumbs', blank=True, null=True) # FIXME deprecated remove
+    button_icon = ImageField(upload_to='category_button_icons', blank=True, null=True)
+    small_icon = ImageField(upload_to='category_small_icons', blank=True, null=True)
     color = models.CharField(max_length=7, blank=True)
 
     objects = CategoryManager()
@@ -263,6 +266,17 @@ class EventSummary(models.Model):
 
     objects = EventSummaryManager()
 
+class OccurrenceMixin(object):
+    def future(self):
+        return self.filter(start_date__gte=datetime.date.today())
+
+class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
+    pass
+
+class OccurrenceManager(models.Manager, OccurrenceMixin):
+    def get_query_set(self):
+        return OccurrenceQuerySet(self.model)
+
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
     event = models.ForeignKey(Event, related_name='occurrences')
@@ -273,6 +287,8 @@ class Occurrence(models.Model):
     end_date = models.DateField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     is_all_day = models.BooleanField(default=False)
+
+    objects = OccurrenceManager()
 
     class Meta:
         verbose_name_plural = _('occurrences')

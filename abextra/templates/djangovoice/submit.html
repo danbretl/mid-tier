@@ -1,0 +1,23 @@
+{% extends "djangovoice/feedback_base.html" %}
+
+{% block title %}{% trans "Feedback" %}{% endblock %}
+
+{# FIXME: Where is it? #}
+{% block location %}Feedback{% endblock %}
+
+{% block content %}
+<h1>{% trans "Feedback" %}</h1>
+
+<form action="{% url djangovoice_submit %}" method="post">
+    {% csrf_token %}
+    <table>
+        {% for field in form %}
+        {% include "djangovoice/includes/fields.html" %}
+        {% endfor %}
+        <tr>
+            <td></td>
+            <td><br /><input type="submit" value="{% trans "Submit" %}" /></td>
+        </tr>
+    </table>
+</form>
+{% endblock %}

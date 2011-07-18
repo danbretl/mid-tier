@@ -1,4 +1,4 @@
-import logging
+import logging, os
 from itertools import count, chain
 from django.utils import simplejson
 from django.conf import settings
@@ -6,7 +6,7 @@ from core.utils import Bunch
 
 class ScrapeFeedReader(object):
     def __init__(self, path=None):
-        self.path = path or settings.SCRAPE_FEED_PATH
+        self.path = path or os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_FEED_FILENAME)
 
     def read(self):
         with open(self.path) as feed:

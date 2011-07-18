@@ -3,8 +3,8 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   <meta name="keywords" content="kwiqet" />
   {% block meta %}{% endblock %}
-  <link href="{{ MEDIA_URL }}css/default.css" rel="stylesheet" type="text/css" media="screen" />
-  <link href="{{ MEDIA_URL }}css/form.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{{ STATIC_URL }}css/default.css" rel="stylesheet" type="text/css" media="screen" />
+  <link href="{{ STATIC_URL }}css/form.css" rel="stylesheet" type="text/css" media="screen" />
   <title>{% block title %}Kwiqet{% endblock %}</title>
 </head>
 <body id="{% block body_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
@@ -64,6 +64,9 @@
             </li>
           {% endif %}
         {% endif %}
+	<li class={% if current_tab == 'blog' %}current_page_item{% endif %}>
+	  <a href="http://kwiqet.tumblr.com/"><span>Blog</span></a>
+        </li>
         <li class={% if current_tab == 'aboutus' %}current_page_item{% endif %}>
           <a href="{% url alpha_about_us %}">About Us</a>
         </li>

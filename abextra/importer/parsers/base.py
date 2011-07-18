@@ -49,7 +49,7 @@ class BaseParser(object):
         images = data.get('images')
         if images:
             image = images[0]
-            path = os.path.join(settings.SCRAPE_IMAGES_PATH, image['path'])
+            path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
             with open(path, 'rb') as f:
                 filename = os.path.split(f.name)[1]
                 file_data['image'] = SimpleUploadedFile(filename, f.read())

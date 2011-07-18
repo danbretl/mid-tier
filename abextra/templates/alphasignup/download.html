@@ -14,18 +14,18 @@
           <li>
             <ul>
               <li>
-                <img class="appartwork" src="{{ MEDIA_URL }}images/kwiqet-icon-175-175.png">
+                <img class="appartwork" src="{{ STATIC_URL }}images/kwiqet-icon-175-175.png">
               </li>
               <li>
-                <a class="dlkwiqet" href="{{ MEDIA_URL }}{{ app_dist.archive }}" alt="Download Kwiqet Alpha"></a>
+                <a class="dlkwiqet" href="{{ STATIC_URL }}{{ app_dist.archive }}" alt="Download Kwiqet Alpha"></a>
               </li>
             </ul>
             <ul>
               <li>
-                <h3>Kwiqet 0.1.0 for iPhone / iPod Touch</h3>
+                <h3>Kwiqet {{ app_dist.version }} for iPhone / iPod Touch</h3>
                 <h4>Requirements</h4>
-                <p class="requirements">iOS version: 4.3.x</p>
-                <p class="requirements">iTunes version: 10.x</p>
+                <p class="requirements">iOS version: 4.x+</p>
+                <p class="requirements">iTunes version: 10.x+</p>
               </li>
             </ul>
           </li>
@@ -59,7 +59,7 @@
               </div>
               <div id="video">
                 <h3>Video</h3>
-                <iframe width="425" height="349" src="http://www.youtube.com/embed/U7QUhMXq5ZM" frameborder="0" allowfullscreen></iframe>
+                <iframe width="425" height="349" src="http://www.youtube.com/embed/fvOAd1L4aZc" frameborder="0" allowfullscreen></iframe>
               </div>
             </div>
             {% endblock %}

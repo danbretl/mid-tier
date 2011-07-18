@@ -10,8 +10,12 @@ TAGS
 .emacs.desktop
 requirements_local.txt
 
-mugshots/
-event_images/
-location_images/
-
+# search index
 whoosh_indexes/
+
+# media folder :: mostly should be ignored, except for some 'static' resources
+abextra/media/cache/
+abextra/media/mugshots/
+abextra/media/event_images/
+abextra/media/location_images/
+abextra/media/app_archives/

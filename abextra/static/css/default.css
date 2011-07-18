@@ -8,7 +8,7 @@ Released for free under a Creative Commons Attribution 2.5 License
 body {
 	margin: 0;
 	padding: 0;
-	background: #EBEBEB url(/static/images/img01.gif) repeat-x left top;
+	background: #EBEBEB url(/site_media/static/images/img01.gif) repeat-x left top;
 	text-align: justify;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 12px;
@@ -71,7 +71,7 @@ img.right {
 	width: 960px;
 	height: 100px;
 	margin: 0 auto;
-	background: url(/static/images/img02.gif) no-repeat left top;
+	background: url(/site_media/static/images/img02.gif) no-repeat left top;
 }
 
 #logo h1 {
@@ -133,12 +133,12 @@ img.right {
 
 #console .success{
 	border:1px solid #50b849;
-	background:#c5dec3 url(/static/images/bg_console_success.gif) -15px 50% no-repeat;
+	background:#c5dec3 url(/site_media/static/images/bg_console_success.gif) -15px 50% no-repeat;
 }
 
 #console .error{
 	border:1px solid #f15c72;
-	background:#fadce0 url(/static/images/bg_console_error.gif) -15px 50% no-repeat;
+	background:#fadce0 url(/site_media/static/images/bg_console_error.gif) -15px 50% no-repeat;
 }
 
 #console a.close{
@@ -149,11 +149,11 @@ img.right {
 	width:15px;
 	height:15px;
 	border:0;
-	background:url(/static/images/bg_console_success.gif) top left no-repeat;text-indent:-99999px;
+	background:url(/site_media/static/images/bg_console_success.gif) top left no-repeat;text-indent:-99999px;
 }
 
 #console .error a.close{
-	background:url(/static/images/bg_console_error.gif) top left no-repeat;
+	background:url(/site_media/static/images/bg_console_error.gif) top left no-repeat;
 }
 
 /* Login */
@@ -201,7 +201,7 @@ img.right {
 #top_login .login_button {
 	height:24px;
 	width:24px;
-	background:url(/static/images/img09.gif) 0 0 no-repeat;
+	background:url(/site_media/static/images/img09.gif) 0 0 no-repeat;
 	border:none;
 	}
 
@@ -265,27 +265,27 @@ img.right {
 #page_dual {
 	width: 960px;
 	margin: 0 auto;
-	background: url(/static/images/img05.gif) repeat-y left top;
+	background: url(/site_media/static/images/img05.gif) repeat-y left top;
 }
 
 #page_single {
 	width: 960px;
 	margin: 0 auto;
-	background: url(/static/images/img08.gif) repeat-y left top;
+	background: url(/site_media/static/images/img08.gif) repeat-y left top;
 }
 
 #page-bg_dual {
-	background: url(/static/images/img06.gif) no-repeat left top;
+	background: url(/site_media/static/images/img06.gif) no-repeat left top;
 	padding: 0px 10px;
 }
 
 #page-bg_single {
-	background: url(/static/images/img07.gif) no-repeat left top;
+	background: url(/site_media/static/images/img07.gif) no-repeat left top;
 	padding: 0px 10px;
 }
 
 #page-bg_home {
-	background: url(/static/images/splash.png) no-repeat left top;
+	background: url(/site_media/static/images/splash.png) no-repeat left top;
 	padding: 0px;
 }
 
@@ -326,7 +326,7 @@ img.right {
 	letter-spacing: -1px;
 	font-size: 3em;
 	font-weight: normal;
-	background: url(/static/images/img04.gif) repeat-x left bottom;
+	background: url(/site_media/static/images/img04.gif) repeat-x left bottom;
 }
 
 .title a {
@@ -338,7 +338,7 @@ img.right {
 }
 
 .byline {
-	background: url(/static/images/img04.jpg) repeat-x left bottom;
+	background: url(/site_media/static/images/img04.jpg) repeat-x left bottom;
 	padding-bottom: 10px;
 }
 
@@ -396,7 +396,7 @@ img.right {
 .sidebar li li {
 	margin: 0 20px 0 15px;
 	padding: 8px 0px;
-	background: url(/static/images/img04.gif) repeat-x left bottom;
+	background: url(/site_media/static/images/img04.gif) repeat-x left bottom;
 }
 
 
@@ -433,7 +433,7 @@ img.right {
 	display: block;
 	width:176px;
 	height:30px;
-	background: url(/static/images/download.png) no-repeat left top;
+	background: url(/site_media/static/images/download.png) no-repeat left top;
 	padding:0 15 0 15;
 }
 
@@ -443,10 +443,10 @@ img.right {
 
 .appartwork {
 	display:block;
-	-webkit-mask-image: url(/static/images/mask175.png);
-	-o-mask-image: url(/static/images/mask175.png);
-	-moz-mask-image: url(/static/images/mask175.png);
-	mask-image: url(/static/images/mask175.png);
+	-webkit-mask-image: url(/site_media/static/images/mask175.png);
+	-o-mask-image: url(/site_media/static/images/mask175.png);
+	-moz-mask-image: url(/site_media/static/images/mask175.png);
+	mask-image: url(/site_media/static/images/mask175.png);
 	box-shadow: 0px 0px 30px rgba(30, 28, 28, 0.6);
 }
 

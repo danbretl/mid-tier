@@ -37,7 +37,7 @@ class AlphaQuestionnaire(models.Model):
     _user_alpha_status.admin_order_field = 'profile__alpha_status'
 
     def _user_device_udid(self):
-        return self.profile.user.device_udid.udid
+        return self.profile.user.device_udids.all()[:1].iterator().next().udid
     _user_device_udid.admin_order_field = 'profile__user__device_udid__udid'
 
 class AppDistribution(models.Model):
