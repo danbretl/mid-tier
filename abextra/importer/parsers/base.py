@@ -23,7 +23,6 @@ class BaseParser(object):
                 file_data = self.parse_file_data(data, {})
                 form = self.model_form(data=form_data, files=file_data)
                 if form.is_valid():
-                    import ipdb; ipdb.set_trace()
                     created, instance = True, form.save(commit=True)
                 else:
                     self.logger.error(form.errors)
@@ -68,5 +67,5 @@ class BaseParser(object):
                 file_data['image'] = SimpleUploadedFile(filename, f.read())
         return file_data
 
-    def post_parse(self, obj_dict, instance):
+    def post_parse(self, obj_dict, instance, form_data):
         pass
