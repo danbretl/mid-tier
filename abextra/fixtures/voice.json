@@ -1,0 +1,54 @@
+[
+    {
+        "pk": 1, 
+        "model": "djangovoice.status", 
+        "fields": {
+            "default": true, 
+            "status": "open", 
+            "slug": "new", 
+            "title": "New"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangovoice.status", 
+        "fields": {
+            "default": false, 
+            "status": "open", 
+            "slug": "accepted", 
+            "title": "Accepted"
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "djangovoice.type", 
+        "fields": {
+            "slug": "idea", 
+            "title": "Idea"
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "djangovoice.type", 
+        "fields": {
+            "slug": "problem", 
+            "title": "Problem"
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "djangovoice.type", 
+        "fields": {
+            "slug": "question", 
+            "title": "Question"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "djangovoice.type", 
+        "fields": {
+            "slug": "general", 
+            "title": "General"
+        }
+    }
+]
