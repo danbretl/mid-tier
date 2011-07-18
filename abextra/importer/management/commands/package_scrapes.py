@@ -19,6 +19,8 @@ class Command(NoArgsCommand):
         for file_to_tar in files_list:
             tar.add(os.path.join(images_folder, file_to_tar),
                     'SCRAPE_IMAGES_PATH/' + file_to_tar)
-        tar.add(settings.SCRAPE_FEED_PATH, 'SCRAPE_FEED_PATH')
+        tar.add(os.path.join(settings.SCRAPE_FEED_PATH,
+                             settings.SCRAPE_FEED_FILENAME),
+                             'SCRAPE_FEED_PATH')
         tar.close()
 
