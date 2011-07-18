@@ -7,7 +7,7 @@ from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
-
+from places.models import Place
 import events.config
 from livesettings import config_value
 
@@ -226,7 +226,6 @@ class Event(models.Model):
     @property
     def place(self):
         """Title and address of the most common place and distinct count"""
-        from places.models import Place
         place_counts = self.occurrences.values('place') \
             .annotate(place_count=models.Count('place')).order_by('-place_count')
         place_id = place_counts[0]['place']
@@ -238,7 +237,6 @@ class Event(models.Model):
         """
         All places for this event
         """
-        from places.models import Place
         # Optimization FIXME: optimize this with a single query.
         place_ids = self.occurrences.values('place')
         places = Place.objects.filter(id__in=place_ids)
@@ -322,7 +320,6 @@ class OccurrenceManager(models.Manager, OccurrenceMixin):
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
-    from places.models import Place
     event = models.ForeignKey(Event, related_name='occurrences')
     place = models.ForeignKey(Place, related_name='occurrences')
     one_off_place = models.CharField(max_length=200, blank=True)
