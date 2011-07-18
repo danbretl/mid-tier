@@ -43,3 +43,5 @@ class ConditionalCategoryModelAdmin(admin.ModelAdmin):
     search_fields = ('regex',)
 
 admin.site.register(ConditionalCategoryModel, ConditionalCategoryModelAdmin)
+
+admin.site.register(EventExternalCats, EventExternalCatAdmin)
