@@ -21,7 +21,9 @@ class Command(LabelCommand):
         temp_dir = tempfile.mkdtemp()
         tar = tarfile.open(label)
         tar.extractall(temp_dir)
-        settings.SCRAPE_FEED_PATH = temp_dir + '/SCRAPE_FEED_PATH'
+
+        settings.SCRAPE_FEED_PATH = temp_dir
+        settings.SCRAPE_FEED_FILENAME = 'SCRAPE_FEED_PATH'
         settings.SCRAPE_IMAGES_PATH = os.path.join(temp_dir,
                                                    'SCRAPE_IMAGES_PATH')
         consumer = ScrapeFeedConsumer()
