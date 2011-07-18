@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from events.models import Source, Category
+from events.models import Source, Category, Event
 
 class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
@@ -20,6 +20,10 @@ class ExternalCategory(models.Model):
     class Meta:
         verbose_name_plural = _('external categories')
 
+    def __str__(self):
+        #return self.name + ' (xid: ' + self.xid + ')'
+        return self.name
+
 
 class RegexCategory(models.Model):
     """
@@ -32,3 +36,13 @@ class RegexCategory(models.Model):
     category = models.ForeignKey(Category,
                                  related_name='source_regex_categories',
                                  blank=True, null=True)
+
+
+class EventExternalCats(models.Model):
+    """
+    Store an incoming events external categories.
+    This will be useful for later analysis and testing of pundits performance.
+    """
+    external_category = models.ForeignKey(ExternalCategory,
+                                          related_name='event_external_cat')
+    event = models.ForeignKey(Event, related_name='event_external_cat')
