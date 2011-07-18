@@ -46,3 +46,6 @@ class EventExternalCats(models.Model):
     external_category = models.ForeignKey(ExternalCategory,
                                           related_name='event_external_cat')
     event = models.ForeignKey(Event, related_name='event_external_cat')
+
+    class Meta:
+        unique_together = (('external_category', 'event'),)
