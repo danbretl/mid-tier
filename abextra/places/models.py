@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
-from events.models import Category
+
 
 
 class PlaceType(models.Model):
