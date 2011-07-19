@@ -276,6 +276,18 @@ class DescriptionRegexRule(RegexRule):
     def __init__(self):
         RegexRule.__init__(self, lambda e,s,x: e.description,'TextRegex')
 
+class ArtistRegexRule(RegexRule):
+    """Searches title for artists and applies abstract/concrete tags """
+    def __init__(self):
+        RegexRule.__init__(self, lambda e, s, x: e.title, 'ArtistRegex')
+
+class ConditionalConcreteRule(RegexRule):
+    """ """
+    def __init__(self):
+        RegexRule.__init__(self,
+                           lambda e, s, x: e.title,
+                           'ConditionalConcreteRule')
+
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
@@ -325,8 +337,7 @@ class PlaceTypeRule(BaseRule):
     Classify events based on place type
     """
     def classify(self, event, spider, external_categories):
-        results_concrete = []
-        results_abstract = []
+        results_concrete = results_abstract = []
         for place in event.places:
             for place_type in place.place_types.all():
                 if place_type.concrete_category:
@@ -336,3 +347,26 @@ class PlaceTypeRule(BaseRule):
                     results_abstract.extend(raw_abs)
 
         return (results_concrete, results_abstract)
+
+class ConditionalCategoryRule(BaseRule):
+    """
+    """
+    def __init__(self, key=lambda e, s, x: e.title):
+        self.key = key
+        self.rules = defaultdict(list)
+        for obj in ConditionalCategoryModel.objects.all():
+            self.rules[obj.conditional_category].append(
+                (re.compile(obj.regex), obj.category)
+                )
+
+    def classify(self, event, spider, external_categories):
+        categories = []
+        input_string = self.key(event, spider, external_categories)
+        for regex, category in self.rules[event.concrete_category]:
+            if regex.search(input_string):
+                categories.append(category)
+
+        if  categories:
+            return self.separate_concretes_abstracts(categories)
+        else:
+            return ([], [])
