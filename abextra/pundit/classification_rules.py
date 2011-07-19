@@ -269,7 +269,7 @@ class TitleRegexRule(RegexRule):
     """Applies regexes to title of an event to discover
     concrete and abstract categories"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.title, 'TextRegex')
+        RegexRule.__init__(self, lambda e,s,x: e.title, 'TitleRegex')
 
 class DescriptionRegexRule(RegexRule):
     """Applies regexes to description"""
