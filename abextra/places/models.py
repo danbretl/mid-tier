@@ -5,7 +5,6 @@ from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
 
 
-
 class PlaceType(models.Model):
     """Place types model."""
     title = models.CharField(_('title'), max_length=100, unique=True)
