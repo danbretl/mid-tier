@@ -38,6 +38,23 @@ class RegexCategory(models.Model):
                                  related_name='source_regex_categories',
                                  blank=True, null=True)
 
+class ConditionalCategoryModel(models.Model):
+    """
+    Once concrete categorization has been performed, we can use context to
+    better categorize abstract categories.
+    For example a sports event with Pirate can be classified under the
+    Pittsburgh Pirates instead of the abstract category Pirates.
+    The idea is to use contextual information when available.
+    This is a very painful but somewhat necessary hack.
+    """
+    conditional_category = models.ForeignKey(Category,
+                                             related_name='conditional_category',
+                                             blank=True, null=True, default=None)
+    regex = models.CharField(max_length=100)
+    category = models.ForeignKey(Category,
+                                 related_name='classified_category',
+                                 blank=False, null=False)
+
 
 class EventExternalCats(models.Model):
     """
