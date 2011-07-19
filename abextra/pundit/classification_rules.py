@@ -8,6 +8,8 @@ from collections import defaultdict
 from pundit.base import BaseRule
 from events.models import Source, Category
 from importer.models import ExternalCategory, RegexCategory
+from importer.models import ConditionalCategoryModel
+
 import re
 
 ### NOTES ###
@@ -356,7 +358,7 @@ class ConditionalCategoryRule(BaseRule):
         self.rules = defaultdict(list)
         for obj in ConditionalCategoryModel.objects.all():
             self.rules[obj.conditional_category].append(
-                (re.compile(obj.regex), obj.category)
+                (re.compile(obj.regex, re.IGNORECASE), obj.category)
                 )
 
     def classify(self, event, spider, external_categories):
@@ -366,7 +368,7 @@ class ConditionalCategoryRule(BaseRule):
             if regex.search(input_string):
                 categories.append(category)
 
-        if  categories:
+        if categories:
             return self.separate_concretes_abstracts(categories)
         else:
             return ([], [])
