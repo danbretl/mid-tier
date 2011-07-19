@@ -1,0 +1,11 @@
+[
+    {
+        "pk": 1,
+        "model": "importer.conditionalcategorymodel",
+        "fields": {
+            "regex": "Yankee",
+            "category": 1,
+            "conditional_category": 2
+        }
+    }
+]
