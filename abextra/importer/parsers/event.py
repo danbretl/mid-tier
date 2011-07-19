@@ -38,7 +38,7 @@ class OccurrenceParser(BaseParser):
 
         return form_data
 
-    def post_parse(self, data, instance, form_data):
+    def post_parse(self, data, instance):
         occurrence = instance
 
         # prices
@@ -77,7 +77,7 @@ class EventParser(BaseParser):
 
         return form_data
 
-    def post_parse(self, data, instance, form_data):
+    def post_parse(self, data, instance):
         event = instance
 
         # occurrences
@@ -94,15 +94,3 @@ class EventParser(BaseParser):
 
         # event summary
         EventSummary.objects.for_event(event, self.ctree)
-
-        # add external_categories to the EventExternalCats table.
-        for ext_cat in form_data['external_categories']:
-            row = EventExternalCats.objects.filter(
-                external_category__id=ext_cat,
-                event=event)
-            if not row:
-                ev_ext_cat = EventExternalCats()
-                ev_ext_cat.event = event
-                ev_ext_cat.external_category = ExternalCategory.objects.get(
-                    id=ext_cat)
-                ev_ext_cat.save()
