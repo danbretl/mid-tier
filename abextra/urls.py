@@ -3,6 +3,8 @@ from django.conf.urls.defaults import *
 from django.contrib import admin
 from django.views.generic import TemplateView
 
+from events.views import EventDetailView
+
 from autocomplete.views import autocomplete
 
 admin.autodiscover()
@@ -50,6 +52,13 @@ urlpatterns = patterns('',
     # =======================
     url(r'^comments/', include('django.contrib.comments.urls')),
     url(r'^feedback/', include('djangovoice.urls')),
+
+    # ==========
+    # = Events =
+    # ==========
+    url(r'^event/(?P<slug>[-\w]+)/(?P<secret_key>[0-9a-f]{10})/$',
+        EventDetailView.as_view(), name='event_detail'
+    ),
 )
 
 # ===========

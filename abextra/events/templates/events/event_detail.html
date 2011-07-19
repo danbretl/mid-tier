@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/event_card.css" />
+  <!-- Place this tag in your head or just before your close body tag -->
+  <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+  <title>Default Kwiqet Event</title>
+</head>
+
+<body>
+<!-- Wrapper -->
+<div id="wrapper">
+	<!-- Header which currently includes:
+    Logo file: Whatever x 25 px
+    A link that perhaps emails us  -->
+	<div id="header">
+    	<div id="logo">
+        <a href="http://www.kwiqet.com"><img src="{{ STATIC_URL }}images/transparent.png" width="176" height="50" border="0"/></a>
+      </div>
+	</div>
+
+    <!-- Event Card consists of:
+    Col 1: {
+     Color-coded title bar: Screen width x 30px  -- Recommend using some logic 		 		 to determine the id in HTML... id names are 
+     Event Picture: 320 x 180px
+     Time, Date, Price: 320 x 30px
+     Venue: 320 x 90px}
+    Col 2: {
+     Some styled text for our company/app: 320 x ?
+     Event description: 320 x ?}
+    Col 3: {
+     Map: 180 x 180px}-->
+
+   	{% with summary=event.summary %}
+	<div id="eventtitle" class="_{{ summary.concrete_parent_category.slug }}">
+  		<span>{{ event.title|title }}</span>
+	</div>
+    <div class="leftcol">
+    	<div id="eventpicture"><img width="320" height="180" src="{{ event.best_image.url }}"/></div>
+		<div id="eventdate" class="cardtxt">{{ occurrence.start_date }}</div>
+    	<div id="eventtime" class="cardtxt">{{ occurrence.start_time }}</div>
+      <div id="eventprice" class="cardtxt">Price: {% if summary.price_quantity_min > 0 %}{{ summary.price_quantity_min }}{% if summary.price_quantity_max > summary.price_quantity_min %} - {{ summary.price_quantity_max }}{% endif %}{% else %}FREE{% endif %}</div>
+      {% endwith %}
+    	<div id="eventvenue" class="cardtxt">
+    	  {% with occurrence.place as place %}
+    		<span class="venuename">{{ place.title }}</span>
+    		{% with place.point as point %}
+        <span class="venueadd">{{ point.address }}</span>
+        <span class="venueadd">{% with point.city as city %}{{ city.city }}, {{ city.state }}{% endwith %}</span>
+        <span class="venuephone">{{ place.phone }}</span>
+        <div id="eventmap"><img src="http://maps.google.com/maps/api/staticmap?center={{ point.latitude }},{{ point.longitude }}&zoom=15&markers=color:blue|{{ point.latitude }},{{ point.longitude }}&size=318x180&sensor=false">
+        {% endwith %}
+        {% endwith %}
+      </div>
+		</div>
+    </div>
+    <div class="midcol">
+    	<div id="tagline">Kwiqet is a neat app. You should tell all your friends about it so you guys can get more events like this one. It is on iPhone, Android, and iPad. It also doubles as a worldly ticket, and you can't buy those in too many places. Not to mention we're giving the derned things out.
+    	</div>
+        <div class=cardtxt id="eventdesc">{{ event.description }}</div>
+    
+    <!-- Share Bar:
+    Twitter -- http://twitter.com/about/resources/tweetbutton
+    FB -- http://developers.facebook.com/docs/reference/plugins/like/#
+    Email -- Up to you -->
+    <!--	
+        <div id="share_bar">
+        	<!-- Tweet -->
+   			<!-- <a href="http://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+            <!-- Facebook Like -->
+        	<!--<div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#appId=210861478950952&xfbml=1"></script><fb:like href="" send="true" layout="button_count" width="40" show_faces="false" font="tahoma"></fb:like>
+            <!-- Place this tag where you want the +1 button to render -->
+			<!-- <g:plusone size="medium"></g:plusone></li>
+        </div>
+        -->
+    </div>
+    <div class="push"></div>
+</div>
+	<!-- begin footer --> 
+	<div id="footer"> 
+    	<div id="footer-bg"> 
+      	<ul>
+        	<li><a href="http://kwiqet.tumblr.com">Blog</a></li>
+        	<li><a href="http://www.kwiqet.com/alpha/about">About Kwiqet</a></li>
+            <li><a href="mailto:contact@kwiqet.com">Contact Us</a></li>
+        </ul>
+        <span>&copy; 2011 <a href="http://www.abextratech.com/">Abextra Inc.</a> All Rights Reserved.</span> 
+    	</div> 
+  	</div> 
+  <!-- end footer --> 
+</body>
+</html>

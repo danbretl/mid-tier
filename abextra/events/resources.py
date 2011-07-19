@@ -1,5 +1,6 @@
-from django.core.urlresolvers import resolve, Resolver404
+from django.core.urlresolvers import resolve, Resolver404, reverse
 from django.conf import settings
+from django.contrib.sites.models import Site
 from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
@@ -65,6 +66,14 @@ class EventResource(ModelResource):
         fields = ('concrete_category', 'abstract_categories', 'occurrences',
             'title', 'description', 'image', 'video_url', 'url'
         )
+
+    def dehydrate_url(self, bundle):
+        event, data = bundle.obj, bundle.data
+        kwargs = dict(slug=event.slug, secret_key=event.secret_key)
+        return ''.join((
+            Site.objects.get_current().domain,
+            reverse('event_detail', kwargs=kwargs)
+        ))
 
     # TODO refactor into separate fields / hydration methods when ctree becomes thread-local
     def dehydrate(self, bundle):

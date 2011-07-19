@@ -255,7 +255,7 @@ HAYSTACK_DEFAULT_OPERATOR = 'OR'
 # = eventure specific settings =
 # ==============================
 IPHONE_THUMB_OPTIONS = {
-    'geometry_string': '640x300',
+    'geometry_string': '640x360',
     # 'reflection_amount': 0.2,
     # 'reflection_opacity': 0.8
 }

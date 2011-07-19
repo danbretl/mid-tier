@@ -1,6 +1,7 @@
 import os
 import datetime
 from collections import defaultdict
+from binascii import hexlify
 
 from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
@@ -108,6 +109,9 @@ class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
 
+    def make_random_secret_key(self):
+        return hexlify(os.urandom(5))
+
 class EventActiveManager(EventManager):
     def get_query_set(self):
         return super(EventActiveManager, self).get_query_set().filter(is_active=True)
@@ -130,6 +134,7 @@ class Event(models.Model):
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    secret_key = models.CharField(blank=True, max_length=10)
 
     objects = EventManager()
     active = EventActiveManager()
@@ -163,6 +168,23 @@ class Event(models.Model):
         concrete_parent_category = ctree.surface_parent(concrete_category)
         if concrete_parent_category and concrete_parent_category.icon:
             return concrete_parent_category.icon
+
+    @property
+    def best_image(self):
+        if self.image:
+            return self.image
+
+        occurrences_with_place_image = list(self.occurrences.select_related('place') \
+            .only('place__image').exclude(place__image__isnull=True).exclude(place__image__iexact='')[:1])
+        if occurrences_with_place_image:
+            return occurrences_with_place_image[0].place.image
+
+        if self.concrete_category.image:
+            return self.concrete_category.image
+
+        concrete_parent_category = self.summary.concrete_parent_category
+        if concrete_parent_category and concrete_parent_category.image:
+            return concrete_parent_category.image
 
     @property
     def date_range(self):
