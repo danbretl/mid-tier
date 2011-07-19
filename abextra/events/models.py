@@ -137,6 +137,7 @@ class Event(models.Model):
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     secret_key = models.CharField(blank=True, max_length=10)
+    external_categories = models.ManyToManyField('importer.ExternalCategory')
 
     objects = EventManager()
     active = EventActiveManager()
