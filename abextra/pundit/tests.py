@@ -2,11 +2,11 @@ from django.test import TestCase
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from places.models import Place
-from importer.models import ExternalCategory
+from importer.models import ExternalCategory, ConditionalCategoryModel
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
-     LocationRule, PlaceTypeRule
+     LocationRule, PlaceTypeRule, ConditionalCategoryRule
 
 from pundit.arbiter import Arbiter
 
@@ -202,6 +202,21 @@ class PlaceTypeRuleTest(TestCase):
         placerule = PlaceTypeRule()
         calculated_result = placerule.classify(event, None, None)
         self.assertEqual(expected_result, calculated_result)
+
+
+class ConditionalCategoryModelTest(TestCase):
+
+    fixtures = ['events', 'categories', 'sources', 'external_categories',
+               'conditionalcategorymodel']
+
+    def test_condtionalcategoryrule(self):
+        event = Event.objects.filter(concrete_category__id=2)[0]
+        c_model = ConditionalCategoryModel.objects.all()[0]
+        c_rule = ConditionalCategoryRule(key=lambda e, s, x: 'Yankees vs Orioles')
+        expected_categories = c_rule.separate_concretes_abstracts([c_model.category])
+        calculated_result = c_rule.classify(event, None, None)
+        self.assertEqual(expected_categories, calculated_result)
+
 
 
 
