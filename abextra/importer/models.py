@@ -30,7 +30,8 @@ class RegexCategory(models.Model):
     Maps external categories to internal categories by checking with a regular
     expression string.
     """
-    source = models.ForeignKey(Source, related_name='source_regex_categories')
+    source = models.ForeignKey(Source, related_name='source_regex_categories',
+                               blank=True, null=True)
     regex = models.CharField(max_length=100)
     model_type = models.CharField(max_length=50, blank=True, null=True)
     category = models.ForeignKey(Category,
