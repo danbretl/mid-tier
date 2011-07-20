@@ -70,10 +70,11 @@ class EventResource(ModelResource):
     def dehydrate_url(self, bundle):
         event, data = bundle.obj, bundle.data
         kwargs = dict(slug=event.slug, secret_key=event.secret_key)
-        return ''.join((
-            Site.objects.get_current().domain,
-            reverse('event_detail', kwargs=kwargs)
-        ))
+        return '%(protocol)s://%(domain)s%(uri)s' % {
+            'protocol': 'http',
+            'domain': Site.objects.get_current().domain,
+            'uri': reverse('event_detail', kwargs=kwargs),
+        }
 
     # TODO refactor into separate fields / hydration methods when ctree becomes thread-local
     def dehydrate(self, bundle):
