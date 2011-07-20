@@ -40,7 +40,7 @@
     	<div id="eventpicture"><img width="320" height="180" src="{{ event.best_image.url }}"/></div>
 		<div id="eventdate" class="cardtxt">{{ occurrence.start_date }}</div>
     	<div id="eventtime" class="cardtxt">{{ occurrence.start_time }}</div>
-      <div id="eventprice" class="cardtxt">Price: {% if summary.price_quantity_min  %}{% if summary.price_quantity_min > 0 %}{{ summary.price_quantity_min }}{% if summary.price_quantity_max > summary.price_quantity_min %} - {{ summary.price_quantity_max }}{% endif %}{% else %}FREE{% endif %}{% else %}No price available{% endif %}</div>
+      <div id="eventprice" class="cardtxt">Price: {% if summary.price_quantity_min  %}{% if summary.price_quantity_min > 0 %}${{ summary.price_quantity_min|floatformat:"-2" }}{% if summary.price_quantity_max > summary.price_quantity_min %}-{{ summary.price_quantity_max|floatformat:"-2" }}{% endif %}{% else %}FREE{% endif %}{% else %}No price available{% endif %}</div>
       {% endwith %}
     	<div id="eventvenue" class="cardtxt">
     	  {% with occurrence.place as place %}
@@ -48,7 +48,7 @@
     		{% with place.point as point %}
         <span class="venueadd">{{ point.address }}</span>
         <span class="venueadd">{% with point.city as city %}{{ city.city }}, {{ city.state }}{% endwith %}</span>
-        <span class="venuephone">{% if place.point %}{{ place.phone }}{% else %}Phone number not available{% endif %}</span>
+        <span class="venuephone">{% if place.phone %}{{ place.phone }}{% else %}Phone number not available{% endif %}</span>
         <div id="eventmap"><img src="http://maps.google.com/maps/api/staticmap?center={{ point.latitude }},{{ point.longitude }}&zoom=15&markers=color:blue|{{ point.latitude }},{{ point.longitude }}&size=318x180&sensor=false">
         {% endwith %}
         {% endwith %}
