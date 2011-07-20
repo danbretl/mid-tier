@@ -58,7 +58,7 @@
     <div class="midcol">
     	<div id="tagline">Kwiqet is a neat app. You should tell all your friends about it so you guys can get more events like this one. It is on iPhone, Android, and iPad. It also doubles as a worldly ticket, and you can't buy those in too many places. Not to mention we're giving the derned things out.
     	</div>
-        <div class=cardtxt id="eventdesc">{{ event.description }}</div>
+        <div class=cardtxt id="eventdesc">{% if event.description %}{{ event.description }}{% else %}Description not available{% endif %}</div>
     
     <!-- Share Bar:
     Twitter -- http://twitter.com/about/resources/tweetbutton
