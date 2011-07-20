@@ -3,7 +3,7 @@ from django.contrib import admin
 from autocomplete.views import autocomplete, AutocompleteSettings
 from autocomplete.admin import AutocompleteAdmin
 
-from importer.models import ExternalCategory, RegexCategory, EventExternalCats
+from importer.models import ExternalCategory, RegexCategory
 from importer.models import ConditionalCategoryModel
 from importer.forms import ExternalCategoryAdminForm
 from events.models import Category
@@ -34,15 +34,6 @@ class SourceRegexAdmin(admin.ModelAdmin):
     search_fields = ('source',)
 
 admin.site.register(RegexCategory, SourceRegexAdmin)
-
-class EventExternalCatAdmin(admin.ModelAdmin):
-    model = EventExternalCats
-    list_display = ('external_category', 'event',)
-    fields = ('external_category', 'event',)
-    list_filter = ('external_category__name',)
-    search_fields = ('event',)
-
-admin.site.register(EventExternalCats, EventExternalCatAdmin)
 
 class ConditionalCategoryModelAdmin(admin.ModelAdmin):
     model = ConditionalCategoryModel
