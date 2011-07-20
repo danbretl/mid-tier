@@ -53,8 +53,9 @@ class EventAdmin(AdminImageMixin, AutocompleteAdmin, admin.ModelAdmin):
     """A skinny version of EventAdmin used for categorization parties"""
     form = EventAdminForm
     search_fields = ('title',)
-    fields = ('title', 'description', 'concrete_category', 'categories', 'is_active', 'url', 'image', 'video_url')
-    readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url',)
+    fields = ('title', 'description', 'slug', 'concrete_category', 'categories', 'is_active', 'url', 'image', 'video_url')
+    prepopulated_fields = {'slug': ('title',)}
+    # readonly_fields = ('title', 'description', 'url', 'image_url', 'video_url',)
     list_display = ('title', 'created', '_concrete_category', '_abstract_categories')
     list_filter = ('concrete_category',)
     filter_horizontal = ('categories',)
