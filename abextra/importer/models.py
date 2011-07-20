@@ -54,16 +54,3 @@ class ConditionalCategoryModel(models.Model):
     category = models.ForeignKey(Category,
                                  related_name='classified_category',
                                  blank=False, null=False)
-
-
-class EventExternalCats(models.Model):
-    """
-    Store an incoming events external categories.
-    This will be useful for later analysis and testing of pundits performance.
-    """
-    external_category = models.ForeignKey(ExternalCategory,
-                                          related_name='event_external_cat')
-    event = models.ForeignKey(Event, related_name='event_external_cat')
-
-    class Meta:
-        unique_together = (('external_category', 'event'),)
