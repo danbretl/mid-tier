@@ -1,3 +1,5 @@
+import os
+
 from django.core.urlresolvers import resolve, Resolver404, reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -39,11 +41,13 @@ class CategoryResource(ModelResource):
 
     def dehydrate_button_icon(self, bundle):
         category, data = bundle.obj, bundle.data
-        return category.button_icon.url if category.button_icon else None
+        if category.button_icon:
+            return os.path.basename(category.button_icon.name)
 
     def dehydrate_small_icon(self, bundle):
         category, data = bundle.obj, bundle.data
-        return category.small_icon.url if category.small_icon else None
+        if category.small_icon:
+            return os.path.basename(category.small_icon.name)
 
     # FIXME remove deprecated
     def dehydrate_thumb(self, bundle):
@@ -99,9 +103,13 @@ class EventResource(ModelResource):
         data.update(concrete_category_breadcrumbs=concrete_category_breadcrumb_uris)
 
         # detail image thumbnail
-        image = event.image_chain(ctree)
-        detail_thumb = get_thumbnail(image, **settings.IPHONE_THUMB_OPTIONS)
-        data.update(thumbnail_detail=detail_thumb.url)
+        try:
+            image = event.image_chain(ctree)
+        except:
+            pass
+        else:
+            detail_thumb = get_thumbnail(image, **settings.IPHONE_THUMB_OPTIONS)
+            data.update(thumbnail_detail=detail_thumb.url)
 
         return super(EventResource, self).dehydrate(bundle)
 
