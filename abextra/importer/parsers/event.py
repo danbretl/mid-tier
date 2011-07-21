@@ -5,7 +5,6 @@ from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from events.models import Source, EventSummary
 from events.utils import CachedCategoryTree
-from importer.models import ExternalCategory
 
 class ExternalCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
