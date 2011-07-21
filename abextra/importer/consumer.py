@@ -39,17 +39,9 @@ class ScrapeFeedConsumer(object):
     def items(self, item_type, source=None):
         source_regs = (self.registry[source],) if source \
             else self.registry.itervalues()
-        gen_it_list = []
-        for source_reg in source_regs:
-            try:
-                gen_it_list.append(source_reg[item_type].itervalues())
-            except KeyError:
-                pass
-        return chain(*gen_it_list)
-
-        # return chain(
-        #     *(source_reg[item_type].itervalues() for source_reg in source_regs)
-        #     )
+        return chain(
+            *(source_reg[item_type].itervalues() for source_reg in source_regs)
+        )
 
     def categories(self, source=None):
         return self.items('category', source)
@@ -91,14 +83,8 @@ class ScrapeFeedConsumer(object):
         # FIXME hacked in until proper M2M M2ONE ONE2M relaters
         prices_by_occurrence_guid = {}
         for guid, price in prices.iteritems():
-            # Adding a try-except
-            # Handle the case where a scrape may not have occurrence_guids
-            try:
-                prices_by_occurrence_guid.setdefault(price.occurrence_guid, [])\
-                                                                  .append(price)
-            except:
-                #FIXME: log an error message
-                pass
+            prices_by_occurrence_guid.setdefault(price.occurrence_guid, []) \
+                .append(price)
 
         for guid, occurrence in occurrences.items():
             try:
