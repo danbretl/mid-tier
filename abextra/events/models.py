@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from sorl.thumbnail import ImageField
 from places.models import Place
+
 import events.config
 from livesettings import config_value
 
@@ -137,7 +138,7 @@ class Event(models.Model):
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    secret_key = models.CharField(blank=True, max_length=10)
+    secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
     external_categories = models.ManyToManyField('importer.ExternalCategory')
 
     objects = EventManager()
@@ -196,10 +197,7 @@ class Event(models.Model):
         # FIXME refactor into SQL aggregation
         dates = self.occurrences.values_list('start_date', flat=True) \
             .distinct()
-        if dates:
-            return min(dates), max(dates), len(dates)
-        else:
-            return None, None, 0
+        return min(dates), max(dates), len(dates)
 
     @property
     def time_range(self):
@@ -208,10 +206,7 @@ class Event(models.Model):
         # FIXME naive in assumption of at least one start_time
         times = self.occurrences.values_list('start_time', flat=True) \
             .filter(start_time__isnull=False).distinct()
-        if times:
-            return min(times), max(times), len(times)
-        else:
-            return None, None, 0
+        return min(times), max(times), len(times) if times else None, None, 0
 
     @property
     def price_range(self):
@@ -243,7 +238,6 @@ class Event(models.Model):
         place_ids = self.occurrences.values('place')
         places = Place.objects.filter(id__in=place_ids)
         return places
-
 
     def __unicode__(self):
         return self.title
