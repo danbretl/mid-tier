@@ -20,8 +20,7 @@ class ExternalCategory(models.Model):
     class Meta:
         verbose_name_plural = _('external categories')
 
-    def __str__(self):
-        #return self.name + ' (xid: ' + self.xid + ')'
+    def __unicode__(self):
         return self.name
 
 
