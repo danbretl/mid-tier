@@ -109,7 +109,8 @@ class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
 
-    def make_random_secret_key(self):
+    @staticmethod
+    def make_random_secret_key():
         return hexlify(os.urandom(5))
 
 class EventActiveManager(EventManager):
@@ -134,7 +135,7 @@ class Event(models.Model):
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    secret_key = models.CharField(blank=True, max_length=10)
+    secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
 
     objects = EventManager()
     active = EventActiveManager()
