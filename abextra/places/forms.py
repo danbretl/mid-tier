@@ -51,7 +51,4 @@ class CityImportForm(CityForm):
     def clean_slug(self):
         city = self.cleaned_data.get('city')
         state = self.cleaned_data.get('state')
-        if not city and not state:
-            return None
-        else:
-            return slugify(u'-'.join((city, state)))[:50]
+        return slugify(u'-'.join((city, state)))[:50]
