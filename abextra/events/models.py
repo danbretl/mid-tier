@@ -87,12 +87,12 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
-    def future(self):
+    def future(self, delta=None):
         instant = datetime.date.today()
-        # This could be setting
-        future_instance = datetime.timedelta(days=61) + instant
-        return self.distinct().filter(occurrences__start_date__gte=instant).\
-               filter(occurrences__start_date__lte=future_instance)
+        qs = self.distinct().filter(occurrences__start_date__gte=instant)
+        if delta:
+            qs = qs.filter(occurrences__start_date__lte=instant + delta)
+        return qs
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish

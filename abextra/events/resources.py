@@ -1,3 +1,4 @@
+import datetime
 from django.core.urlresolvers import resolve, Resolver404, reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -234,7 +235,8 @@ class EventRecommendationResource(EventSummaryResource):
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'GX')
+        dt = datetime.timedelta(days=settings.RECOMMENDATION_EVENT_HORIZON_DAYS)
+        events_qs = Event.active.future(dt).filter(**orm_filters).filter_user_actions(request.user, 'GX')
         view = filters.get('view')
         if view:
             if view == 'popular':
