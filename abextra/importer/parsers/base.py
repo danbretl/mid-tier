@@ -31,8 +31,6 @@ class BaseParser(object):
 
             if instance:
                 self.cache[key] = instance
-                # Passing form_data instead of data
-                # Better to pass pre processed data to avoid reprocessing.
                 self.post_parse(data, instance)
 
         result = (created, instance)
