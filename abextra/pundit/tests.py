@@ -219,4 +219,3 @@ class ConditionalCategoryModelTest(TestCase):
 
 
 
-
