@@ -324,7 +324,9 @@ class LocationRule(BaseRule):
     def classify(self, event, spider, external_categories):
         results_concrete = []
         results_abstract = []
-        for place in event.places:
+        place_ids = event.occurrences.values('place')
+        event_places = Place.objects.filter(id__in=place_ids)
+        for place in event_places:
             if place.concrete_category:
                 results_concrete.append(place.concrete_category)
             raw_abs = place.abstract_categories.all()
@@ -340,7 +342,9 @@ class PlaceTypeRule(BaseRule):
     """
     def classify(self, event, spider, external_categories):
         results_concrete = results_abstract = []
-        for place in event.places:
+        place_ids = event.occurrences.values('place')
+        event_places = Place.objects.filter(id__in=place_ids)
+        for place in event_places:
             for place_type in place.place_types.all():
                 if place_type.concrete_category:
                     results_concrete.append(place_type.concrete_category)
