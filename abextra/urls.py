@@ -69,8 +69,12 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += (
-    url(r'^site\_media\/media\/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^favicon\.ico$', 'django.views.generic.simple.redirect_to',
         {'url': settings.STATIC_URL + 'images/favicon.ico'}
     ),
 )
+
+if settings.DEBUG:
+    urlpatterns += (
+        url(r'^site\_media\/media\/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    )
