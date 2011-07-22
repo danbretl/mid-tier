@@ -163,12 +163,12 @@ class Event(models.Model):
             return occurrences_with_place_image[0].place.image
 
         concrete_category = ctree.get(id=self.concrete_category_id)
-        if concrete_category.icon:
-            return concrete_category.icon
+        if concrete_category.image:
+            return concrete_category.image
 
         concrete_parent_category = ctree.surface_parent(concrete_category)
-        if concrete_parent_category and concrete_parent_category.icon:
-            return concrete_parent_category.icon
+        if concrete_parent_category and concrete_parent_category.image:
+            return concrete_parent_category.image
 
     @property
     def best_image(self):
