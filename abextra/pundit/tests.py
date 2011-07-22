@@ -2,7 +2,7 @@ from django.test import TestCase
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
 from places.models import Place
-from importer.models import ExternalCategory, ConditionalCategoryModel
+from importer.models import ExternalCategory, ConditionalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
@@ -211,7 +211,7 @@ class ConditionalCategoryModelTest(TestCase):
 
     def test_condtionalcategoryrule(self):
         event = Event.objects.filter(concrete_category__id=2)[0]
-        c_model = ConditionalCategoryModel.objects.all()[0]
+        c_model = ConditionalCategory.objects.all()[0]
         c_rule = ConditionalCategoryRule(key=lambda e, s, x: 'Yankees vs Orioles')
         expected_categories = c_rule.separate_concretes_abstracts([c_model.category])
         calculated_result = c_rule.classify(event, None, None)

@@ -5,13 +5,12 @@ from events.models import Source, Category, Event
 class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
     name = models.CharField(max_length=100)
-    source = models.ForeignKey(Source, related_name='external_concrete_category')
+    source = models.ForeignKey(Source)
     concrete_category = models.ForeignKey(Category,
-                                          related_name='external_concrete_category',
+                                          related_name='_external_conc_category',
                                           blank=True, null=True)
-    abstract_categories = models.ManyToManyField(Category,
-                                                 related_name='external_abstract_categories',
-                                                 blank=True, null=True)
+    abstract_categories = models.ManyToManyField(Category, blank=True,
+                                                 null=True)
 
     def category_title(self):
         return self.category.title
@@ -29,15 +28,12 @@ class RegexCategory(models.Model):
     Maps external categories to internal categories by checking with a regular
     expression string.
     """
-    source = models.ForeignKey(Source, related_name='source_regex_categories',
-                               blank=True, null=True)
+    source = models.ForeignKey(Source, blank=True, null=True)
     regex = models.CharField(max_length=100)
     model_type = models.CharField(max_length=50, blank=True, null=True)
-    category = models.ForeignKey(Category,
-                                 related_name='source_regex_categories',
-                                 blank=True, null=True)
+    category = models.ManyToManyField(Category, blank=True, null=True)
 
-class ConditionalCategoryModel(models.Model):
+class ConditionalCategory(models.Model):
     """
     Once concrete categorization has been performed, we can use context to
     better categorize abstract categories.
@@ -46,10 +42,8 @@ class ConditionalCategoryModel(models.Model):
     The idea is to use contextual information when available.
     This is a very painful but somewhat necessary hack.
     """
-    conditional_category = models.ForeignKey(Category,
-                                             related_name='conditional_category',
-                                             blank=True, null=True, default=None)
+    conditional_category = models.ForeignKey(Category, blank=True, null=True,
+                                             related_name='_conditional_category',
+                                             default=None)
     regex = models.CharField(max_length=100)
-    category = models.ForeignKey(Category,
-                                 related_name='classified_category',
-                                 blank=False, null=False)
+    category = models.ManyToManyField(Category, blank=False, null=False)

@@ -8,7 +8,7 @@ from collections import defaultdict
 from pundit.base import BaseRule
 from events.models import Source, Category
 from importer.models import ExternalCategory, RegexCategory
-from importer.models import ConditionalCategoryModel
+from importer.models import ConditionalCategory
 
 import re
 
@@ -360,7 +360,7 @@ class ConditionalCategoryRule(BaseRule):
     def __init__(self, key=lambda e, s, x: e.title):
         self.key = key
         self.rules = defaultdict(list)
-        for obj in ConditionalCategoryModel.objects.all():
+        for obj in ConditionalCategory.objects.all():
             self.rules[obj.conditional_category].append(
                 (re.compile(obj.regex, re.IGNORECASE), obj.category)
                 )
