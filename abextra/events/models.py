@@ -229,16 +229,6 @@ class Event(models.Model):
         place = Place.objects.select_related('point__city').get(id=place_id)
         return place.title, place.address, len(place_counts)
 
-    @property
-    def places(self):
-        """
-        All places for this event
-        """
-        # Optimization FIXME: optimize this with a single query.
-        place_ids = self.occurrences.values('place')
-        places = Place.objects.filter(id__in=place_ids)
-        return places
-
     def __unicode__(self):
         return self.title
 
