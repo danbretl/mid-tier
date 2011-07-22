@@ -4,7 +4,7 @@ from autocomplete.views import autocomplete, AutocompleteSettings
 from autocomplete.admin import AutocompleteAdmin
 
 from importer.models import ExternalCategory, RegexCategory
-from importer.models import ConditionalCategoryModel
+from importer.models import ConditionalCategory
 from importer.forms import ExternalCategoryAdminForm
 from events.models import Category
 
@@ -35,11 +35,11 @@ class SourceRegexAdmin(admin.ModelAdmin):
 
 admin.site.register(RegexCategory, SourceRegexAdmin)
 
-class ConditionalCategoryModelAdmin(admin.ModelAdmin):
-    model = ConditionalCategoryModel
+class ConditionalCategoryAdmin(admin.ModelAdmin):
+    model = ConditionalCategory
     list_display = ('conditional_category', 'regex', 'category')
     fields = ('conditional_category', 'regex', 'category')
     list_filter = ('conditional_category', 'regex')
     search_fields = ('regex',)
 
-admin.site.register(ConditionalCategoryModel, ConditionalCategoryModelAdmin)
+admin.site.register(ConditionalCategory, ConditionalCategoryAdmin)
