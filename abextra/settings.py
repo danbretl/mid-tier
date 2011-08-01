@@ -12,8 +12,8 @@ MANAGERS = ADMINS
 # db connections and credentials should be defined in higher-level settings
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'abexmid',
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'kwiqet',
         'HOST': '',                     # Set to empty string for localhost.
         'PORT': '',                     # Set to empty string for default.
         'TEST_CHARSET': 'utf8',
