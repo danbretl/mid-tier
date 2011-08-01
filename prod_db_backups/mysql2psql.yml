@@ -4,7 +4,7 @@ mysql:
  socket: /opt/local/var/run/mysql5/mysqld.sock
  username: root
  password: bj200ex
- database: abexmid
+ database: abexmid2psql
 
 destination:
  # if file is given, output goes to file, else postgres
