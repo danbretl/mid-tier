@@ -33,11 +33,7 @@ class Arbiter(object):
         raw_abstracts = []
         raw_concretes = []
         for rule in self.rules:
-            try:
-                concretes, abstracts = rule.classify(event, source, external_categories=external_categories)
-            except:
-                # this means we got nothing from the rule
-                continue
+            concretes, abstracts = rule.classify(event, source, external_categories=external_categories)
 
             # Special handling for event classification rules.
             # Could later put this into a special class and abstract out
