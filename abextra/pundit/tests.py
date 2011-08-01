@@ -218,5 +218,3 @@ class ConditionalCategoryModelTest(TestCase):
         self.assertEqual(expected_categories, calculated_result)
 
 
-
-
