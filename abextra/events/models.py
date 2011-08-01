@@ -202,7 +202,6 @@ class Event(models.Model):
     @property
     def time_range(self):
         """Min and max of event times and distinct count"""
-        # FIXsmart-operator: Automatically adds spaces around arithmetic operators.ME refactor into SQL aggregation
         # FIXME naive in assumption of at least one start_time
         times = self.occurrences.values_list('start_time', flat=True) \
             .filter(start_time__isnull=False).distinct()
@@ -301,7 +300,7 @@ class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
     pass
 
 class OccurrenceManager(models.Manager, OccurrenceMixin):
-    def get_quesmart-operator: Automatically adds spaces around arithmetic operators.ry_set(self):
+    def get_query_set(self):
         return OccurrenceQuerySet(self.model)
 
 class Occurrence(models.Model):

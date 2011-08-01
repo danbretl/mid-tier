@@ -283,13 +283,6 @@ class ArtistRegexRule(RegexRule):
     def __init__(self):
         RegexRule.__init__(self, lambda e, s, x: e.title, 'ArtistRegex')
 
-class ConditionalConcreteRule(RegexRule):
-    """ """
-    def __init__(self):
-        RegexRule.__init__(self,
-                           lambda e, s, x: e.title,
-                           'ConditionalConcreteRule')
-
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
@@ -361,8 +354,8 @@ class ConditionalCategoryRule(BaseRule):
         self.key = key
         self.rules = defaultdict(list)
         for obj in ConditionalCategory.objects.all():
-            self.rules[obj.conditional_category].append(
-                (re.compile(obj.regex, re.IGNORECASE), obj.category)
+            self.rules[obj.conditional_concrete_category].append(
+                (re.compile(obj.regex, re.IGNORECASE), obj.resulting_categories)
                 )
 
     def classify(self, event, spider, external_categories):

@@ -6,11 +6,8 @@ class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
     name = models.CharField(max_length=100)
     source = models.ForeignKey(Source)
-    concrete_category = models.ForeignKey(Category,
-                                          related_name='_external_conc_category',
-                                          blank=True, null=True)
-    abstract_categories = models.ManyToManyField(Category, blank=True,
-                                                 null=True)
+    concrete_category = models.ForeignKey(Category, related_name='externalcategory_concrete_set', blank=True, null=True)
+    abstract_categories = models.ManyToManyField(Category, blank=True, null=True)
 
     def category_title(self):
         return self.category.title
@@ -28,6 +25,7 @@ class RegexCategory(models.Model):
     Maps external categories to internal categories by checking with a regular
     expression string.
     """
+    # FIXME convert to a more explicit m2m relationship
     source = models.ForeignKey(Source, blank=True, null=True)
     regex = models.CharField(max_length=100)
     model_type = models.CharField(max_length=50, blank=True, null=True)
@@ -42,8 +40,6 @@ class ConditionalCategory(models.Model):
     The idea is to use contextual information when available.
     This is a very painful but somewhat necessary hack.
     """
-    conditional_category = models.ForeignKey(Category, blank=True, null=True,
-                                             related_name='_conditional_category',
-                                             default=None)
+    conditional_concrete_category = models.ForeignKey(Category, related_name='conditional_concrete_category')
+    resulting_categories = models.ManyToManyField(Category)
     regex = models.CharField(max_length=100)
-    category = models.ManyToManyField(Category, blank=False, null=False)

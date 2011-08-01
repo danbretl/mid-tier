@@ -62,7 +62,7 @@ class Point(models.Model):
     class Meta:
         verbose_name = _('point')
         verbose_name_plural = _('points')
-       smart-operator: Automatically adds spaces around arithmetic operators. ordering = ('address',)
+        ordering = ('address',)
 
     def __unicode__(self):
         return u'%s' % self.address
