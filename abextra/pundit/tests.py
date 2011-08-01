@@ -1,10 +1,13 @@
 from django.test import TestCase
 from importer.models import ExternalCategory
 from events.models import Event, Category, Source
-from importer.models import ExternalCategory
+from places.models import Place
+from importer.models import ExternalCategory, ConditionalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
-     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule
+     SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
+     LocationRule, PlaceTypeRule, ConditionalCategoryRule
+
 from pundit.arbiter import Arbiter
 
 class RulesTest(TestCase):
@@ -92,7 +95,6 @@ class ArbiterTest(TestCase):
             # Manager
             # Tests for abstracts don't work yet.
             # self.assertEqual(abstracts, event.categories)
-            source = Source.objects.get(id=2)
             concrete, abstracts = arbiter.apply_rules(event,
                                                        source2,
                                                        [])
@@ -159,3 +161,60 @@ class RegexRulesTest(TestCase):
         self.assertEqual([category], semantic_rule.get_abstract_category(event,
                                                                        source,
                                                                        [ext]))
+
+    def test_IgnoreCats(self):
+        # If incoming cat is Eurodance.
+        # Pundit's Regexrule should not classify as both Eurodance and Dance
+        event = Event.objects.get(id=10)
+        source = Source.objects.get(name='villagevoice')
+        category = Category.objects.get(title='Eurodance')
+        ext = ExternalCategory.objects.get(id=1081)
+        calculated_category = SemanticCategoryMatchRule().get_abstract_category(\
+            event,source,[ext])
+        self.assertEqual([category], calculated_category)
+
+
+class LocationRuleTest(TestCase):
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories', 'places']
+
+    def test_locationrule(self):
+        event = Event.objects.all()[0]
+        source = Source.objects.get(name='villagevoice')
+        place = Place.objects.get(id=336)
+        expected_result = ([place.concrete_category], set(place.abstract_categories.all()))
+        location_rule = LocationRule()
+        calculated_result = (location_rule.get_concrete_category(event, None, []),\
+                            set(location_rule.get_abstract_category(event, None, [])))
+        self.assertEqual(expected_result, calculated_result)
+
+
+class PlaceTypeRuleTest(TestCase):
+    fixtures = ['events', 'categories', 'sources',
+                'external_categories', 'regexcategories', 'places']
+
+    def test_placetyperule(self):
+        event = Event.objects.all()[0]
+        place = Place.objects.get(id=336)
+        expected_concretes = [p_t.concrete_category for p_t in place.place_types.all() if p_t.concrete_category]
+        expected_abstracts = [a for b in [p_t.abstract_categories.all() for p_t in place.place_types.all()] for a in b if a]
+        expected_result = (expected_concretes, expected_abstracts)
+        placerule = PlaceTypeRule()
+        calculated_result = placerule.classify(event, None, None)
+        self.assertEqual(expected_result, calculated_result)
+
+
+class ConditionalCategoryModelTest(TestCase):
+
+    fixtures = ['events', 'categories', 'sources', 'external_categories',
+               'conditionalcategorymodel']
+
+    def test_condtionalcategoryrule(self):
+        event = Event.objects.filter(concrete_category__id=2)[0]
+        c_model = ConditionalCategory.objects.all()[0]
+        c_rule = ConditionalCategoryRule(key=lambda e, s, x: 'Yankees vs Orioles')
+        expected_categories = c_rule.separate_concretes_abstracts([c_model.category])
+        calculated_result = c_rule.classify(event, None, None)
+        self.assertEqual(expected_categories, calculated_result)
+
+

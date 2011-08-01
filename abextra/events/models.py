@@ -88,9 +88,12 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
-    def future(self):
+    def future(self, delta=None):
         instant = datetime.date.today()
-        return self.distinct().filter(occurrences__start_date__gte=instant)
+        qs = self.distinct().filter(occurrences__start_date__gte=instant)
+        if delta:
+            qs = qs.filter(occurrences__start_date__lte=instant + delta)
+        return qs
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
@@ -136,6 +139,7 @@ class Event(models.Model):
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
+    external_categories = models.ManyToManyField('importer.ExternalCategory')
 
     objects = EventManager()
     active = EventActiveManager()
@@ -198,11 +202,10 @@ class Event(models.Model):
     @property
     def time_range(self):
         """Min and max of event times and distinct count"""
-        # FIXME refactor into SQL aggregation
         # FIXME naive in assumption of at least one start_time
         times = self.occurrences.values_list('start_time', flat=True) \
             .filter(start_time__isnull=False).distinct()
-        return min(times), max(times), len(times)
+        return min(times), max(times), len(times) if times else None, None, 0
 
     @property
     def price_range(self):

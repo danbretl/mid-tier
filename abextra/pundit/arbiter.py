@@ -6,7 +6,7 @@ Rules can be chained together to form a complex tree.
 
 For now:
 One and only one chain in the tree will ever get applied.
-Each chain is an ordered list of rules. 
+Each chain is an ordered list of rules.
 Each chain has an optional output_manipulator which can be implemented
 to massage the output for the next rule.
 """
@@ -51,3 +51,8 @@ class Arbiter(object):
     def concrete_categories(self, event, source, ext_category_xids=None):
         categories = self.apply_rules(event, source, ext_category_xids)[0]
         return self.cachedcategorytree.deepest_category(categories)
+
+    def concrete_abstract_categories(self, event, source, ext_category_xids=None):
+        concrete, abstract = self.apply_rules(event, source, ext_category_xids)
+        filtered_concrete = self.cachedcategorytree.deepest_category(concrete)
+        return (filtered_concrete, abstract)

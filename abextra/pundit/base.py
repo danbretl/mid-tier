@@ -36,18 +36,12 @@ class BaseRule(object):
 
 
     def get_concrete_category(self,event, spider, external_categories):
-        if event == self.event:
-            return self.concrete_categories
-        else:
-            self.classify(event, spider, external_categories)
-            return self.concrete_categories
+        concrete, abstract = self.classify(event, spider, external_categories)
+        return concrete
 
     def get_abstract_category(self, event, spider, external_categories):
-        if event == self.event:
-            return self.abstract_categories
-        else:
-            self.classify(event, spider, external_categories)
-            return self.abstract_categories
+        concrete, abstract = self.classify(event, spider, external_categories)
+        return abstract
 
     # TODO: This seems fairly useful and shouldn't belong here.
     #       This should be in some helper class

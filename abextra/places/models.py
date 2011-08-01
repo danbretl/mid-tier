@@ -4,10 +4,18 @@ from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
 from sorl.thumbnail import ImageField
 
+
 class PlaceType(models.Model):
     """Place types model."""
     title = models.CharField(_('title'), max_length=100, unique=True)
     slug = models.SlugField(_('slug'), unique=True)
+    concrete_category = models.ForeignKey('events.Category',
+                                          related_name='place_concrete',
+                                          null=True)
+    abstract_categories = models.ManyToManyField('events.Category',
+                                                 related_name='place_abstract',
+                                                 verbose_name='abstract_categories',
+                                                 null=True)
 
     class Meta:
         verbose_name = _('place type')
@@ -83,6 +91,8 @@ class Place(models.Model):
     place_types = models.ManyToManyField(PlaceType, blank=True)
     image = ImageField(upload_to='location_images', blank=True, null=True)
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
+    concrete_category = models.ForeignKey('events.Category', related_name='places_concrete', null=True)
+    abstract_categories = models.ManyToManyField('events.Category', related_name='places_abstract', verbose_name=_('abstract_categories'), null=True)
 
     class Meta:
         verbose_name = _('place')

@@ -8,6 +8,8 @@ from collections import defaultdict
 from pundit.base import BaseRule
 from events.models import Source, Category
 from importer.models import ExternalCategory, RegexCategory
+from importer.models import ConditionalCategory
+
 import re
 
 ### NOTES ###
@@ -164,7 +166,7 @@ class SourceCategoryRule(BaseRule):
         self.concrete_categories = results_concrete
         self.abstract_categories = results_abstract
         #------------------------------------------
-        return (results_concrete,results_abstract)
+        return ([r for r in results_concrete if r], results_abstract)
 
 
 """
@@ -212,48 +214,74 @@ class RegexRule(BaseRule):
 
         self.default_rules = []
         total_count = fail_count = 0
+
+        # This is O(n^2) there should be a better way of doing this.
+        # FIXME: Improve time complexity if this is too slow.
+        rules_bunch = defaultdict(set)
+        for regex_big in regex_objs:
+            for regex_small in regex_objs:
+                if regex_small.regex == regex_big.regex:
+                    continue
+                if regex_small.regex in regex_big.regex:
+                    rules_bunch[regex_big].add(regex_small.category)
+
         for rgx_obj in regex_objs:
             total_count +=1
             try:
                 self.default_rules.append((re.compile(rgx_obj.regex,
                                                       re.IGNORECASE),
-                                           rgx_obj.category))
+                                           rgx_obj.category,
+                                           rules_bunch[rgx_obj]))
             except:
                 #Fails for some badly coded categories
+                # FIXME: error logging please!
                 fail_count += 1
 
-    def classify(self, event, source, xids):
+    def classify(self, event, source, external_categories):
         """
         rules = self.source_rules[source] + self.null_rules
         for regex, category in rules:
-            if regex.search(self.key(event,source,xids)):
+            if regex.search(self.key(event,source,external_categories)):
               assign category
         """
-        input_string = self.key(event, source, xids)
+        input_string = self.key(event, source, external_categories)
         if not input_string:
             return
 
         self.event = event
         self.concrete_categories = self.abstract_categories = []
-        categories = []
-        for regex, category in self.default_rules:
+        categories = concrete_categories = abstract_categories = []
+        # The ignore_cats is bunch of categories to ignore if there is a match
+        # Example items tuple in the for loop would be:
+        # r'eurodance', <Category: Eurodance>, set(<Category: Dance>)
+        # We store Dance in the list of ignored categories and later discard the match.
+        ignores_set = set()
+        for regex, category, ignore_cats in self.default_rules:
             if regex.search(input_string):
                 categories.append(category)
+                for cat in ignore_cats:
+                    ignores_set.add(cat)
         if  categories:
-            self.concrete_categories, self.abstract_categories = \
-                                   self.separate_concretes_abstracts(categories)
+            concrete_categories, abstract_categories = \
+                                 self.separate_concretes_abstracts([c for c in categories if c not in ignores_set])
+        return (concrete_categories, abstract_categories)
 
 
 class TitleRegexRule(RegexRule):
     """Applies regexes to title of an event to discover
     concrete and abstract categories"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.title, 'TextRegex')
+        RegexRule.__init__(self, lambda e,s,x: e.title, 'TitleRegex')
 
 class DescriptionRegexRule(RegexRule):
     """Applies regexes to description"""
     def __init__(self):
         RegexRule.__init__(self, lambda e,s,x: e.description,'TextRegex')
+
+class ArtistRegexRule(RegexRule):
+    """Searches title for artists and applies abstract/concrete tags """
+    def __init__(self):
+        RegexRule.__init__(self, lambda e, s, x: e.title, 'ArtistRegex')
 
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
@@ -270,14 +298,74 @@ class SemanticCategoryMatchRule(RegexRule):
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
         regex_objs = []
-        # Loop over all ABSTRACT categories only. 
+        # Loop over all ABSTRACT categories only.
         for category in Category.abstract.all():
             #we should get rid of any unwanted terms that could match
             # like genres or
             # Multiple matches for the same category should get more weight.
-            for word in category.title.lower().split():
-                regex_obj = RegexCategory()
-                regex_obj.regex = word
-                regex_obj.category = category
-                regex_objs.append(regex_obj)
+            word = category.title.lower()
+            regex_obj = RegexCategory()
+            regex_obj.regex = word
+            regex_obj.category = category
+            regex_objs.append(regex_obj)
         RegexRule.__init__(self, xkey, None, regex_objs)
+
+class LocationRule(BaseRule):
+    """
+    Classify based on event location
+    """
+    def classify(self, event, spider, external_categories):
+        results_concrete = []
+        results_abstract = []
+        place_ids = event.occurrences.values('place')
+        event_places = Place.objects.filter(id__in=place_ids)
+        for place in event_places:
+            if place.concrete_category:
+                results_concrete.append(place.concrete_category)
+            raw_abs = place.abstract_categories.all()
+            if raw_abs:
+                results_abstract.extend(raw_abs)
+
+        return (results_concrete, results_abstract)
+
+
+class PlaceTypeRule(BaseRule):
+    """
+    Classify events based on place type
+    """
+    def classify(self, event, spider, external_categories):
+        results_concrete = results_abstract = []
+        place_ids = event.occurrences.values('place')
+        event_places = Place.objects.filter(id__in=place_ids)
+        for place in event_places:
+            for place_type in place.place_types.all():
+                if place_type.concrete_category:
+                    results_concrete.append(place_type.concrete_category)
+                raw_abs = place_type.abstract_categories.all()
+                if raw_abs:
+                    results_abstract.extend(raw_abs)
+
+        return (results_concrete, results_abstract)
+
+class ConditionalCategoryRule(BaseRule):
+    """
+    """
+    def __init__(self, key=lambda e, s, x: e.title):
+        self.key = key
+        self.rules = defaultdict(list)
+        for obj in ConditionalCategory.objects.all():
+            self.rules[obj.conditional_concrete_category].append(
+                (re.compile(obj.regex, re.IGNORECASE), obj.resulting_categories)
+                )
+
+    def classify(self, event, spider, external_categories):
+        categories = []
+        input_string = self.key(event, spider, external_categories)
+        for regex, category in self.rules[event.concrete_category]:
+            if regex.search(input_string):
+                categories.append(category)
+
+        if categories:
+            return self.separate_concretes_abstracts(categories)
+        else:
+            return ([], [])
