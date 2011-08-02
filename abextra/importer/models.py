@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from events.models import Source, Category, Event
+from events.models import Source, Category
 
 class ExternalCategory(models.Model):
     xid = models.CharField(max_length=300)
@@ -25,10 +25,16 @@ class RegexCategory(models.Model):
     Maps external categories to internal categories by checking with a regular
     expression string.
     """
+    MODEL_CHOICES = (
+        ('T', 'TitleRegex'),
+        ('A', 'ArtistRegext'),
+        ('X', 'XIDRegex'),
+        ('R', 'TextRegex'),
+        )
     # FIXME convert to a more explicit m2m relationship
-    source = models.ForeignKey(Source, blank=True, null=True)
+    sources = models.ManyToManyField(Source)
     regex = models.CharField(max_length=100)
-    model_type = models.CharField(max_length=50, blank=True, null=True)
+    model_type = models.CharField(max_length=5, choices=MODEL_CHOICES)
     category = models.ManyToManyField(Category, blank=True, null=True)
 
 class ConditionalCategory(models.Model):

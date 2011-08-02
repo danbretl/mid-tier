@@ -1,8 +1,7 @@
 from django.test import TestCase
-from importer.models import ExternalCategory
+from importer.models import ExternalCategory, ConditionalCategory
 from events.models import Event, Category, Source
 from places.models import Place
-from importer.models import ExternalCategory, ConditionalCategory
 from pundit.base import BaseRule
 from pundit.classification_rules import SourceRule, SemanticCategoryMatchRule,\
      SourceCategoryRule, DescriptionRegexRule, TitleRegexRule, XIDRegexRule,\
@@ -43,11 +42,7 @@ class RulesTest(TestCase):
         for event in Event.objects.all():
             # Here add an additional check for existence of the spiders
             # information in the SourceCategoryModel
-            abstracts = None
-            try:
-                abstracts = event.categories.get()
-            except:
-                pass
+            #abstracts = event.categories.all()
 
             ext_cat_obj = ExternalCategory.objects.filter(
                 source__name='villagevoice',
@@ -180,7 +175,6 @@ class LocationRuleTest(TestCase):
 
     def test_locationrule(self):
         event = Event.objects.all()[0]
-        source = Source.objects.get(name='villagevoice')
         place = Place.objects.get(id=336)
         expected_result = ([place.concrete_category], set(place.abstract_categories.all()))
         location_rule = LocationRule()

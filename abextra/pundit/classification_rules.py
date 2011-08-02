@@ -9,6 +9,7 @@ from pundit.base import BaseRule
 from events.models import Source, Category
 from importer.models import ExternalCategory, RegexCategory
 from importer.models import ConditionalCategory
+from places.models import Place
 
 import re
 
@@ -212,7 +213,7 @@ class RegexRule(BaseRule):
         else:
             regex_objs = regex_objects
 
-        self.default_rules = []
+        self.default_rules = defaultdict(list)
         total_count = fail_count = 0
 
         # This is O(n^2) there should be a better way of doing this.
@@ -228,10 +229,12 @@ class RegexRule(BaseRule):
         for rgx_obj in regex_objs:
             total_count +=1
             try:
-                self.default_rules.append((re.compile(rgx_obj.regex,
-                                                      re.IGNORECASE),
-                                           rgx_obj.category,
-                                           rules_bunch[rgx_obj]))
+                for source in rgx_obj.sources.all():
+                    self.default_rules[source].append(
+                        (re.compile(rgx_obj.regex,
+                                    re.IGNORECASE),
+                         rgx_obj.category,
+                         rules_bunch[rgx_obj]))
             except:
                 #Fails for some badly coded categories
                 # FIXME: error logging please!
@@ -256,7 +259,7 @@ class RegexRule(BaseRule):
         # r'eurodance', <Category: Eurodance>, set(<Category: Dance>)
         # We store Dance in the list of ignored categories and later discard the match.
         ignores_set = set()
-        for regex, category, ignore_cats in self.default_rules:
+        for regex, category, ignore_cats in self.default_rules[source]:
             if regex.search(input_string):
                 categories.append(category)
                 for cat in ignore_cats:
