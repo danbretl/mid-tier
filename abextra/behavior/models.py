@@ -4,21 +4,13 @@ from events.models import Event, Category
 
 class EventActionManager(models.Manager):
     def ignore_non_actioned_events(self, user, events):
-        event_ids = map(lambda e: e.id if hasattr(e, 'id') else e, events)
-        if event_ids:
-            # hack :: if just one element, duplicate to avoid sql syntax error
-            ids_param = event_ids if len(event_ids) > 1 else event_ids * 2
-            # run the raw query
-            non_actioned_events = Event.objects.raw(
-                """SELECT `events_event`.`id` FROM `events_event`
-                LEFT JOIN `behavior_eventaction`
-                ON (`events_event`.`id` = `behavior_eventaction`.`event_id` AND `behavior_eventaction`.`user_id` = %s)
-                WHERE (`events_event`.`id` IN %s) AND (`behavior_eventaction`.`id` IS NULL)
-                """, [user.id, ids_param]
-            )
-            if non_actioned_events:
-                for event in non_actioned_events:
-                    self.model(event=event, user=user, action='I').save()
+        actioned_event_ids = user.event_actions.filter(event__in=events) \
+            .values_list('event_id', flat=True)
+        # FIXME since events are passed in as ids it's a bit inefficient
+        events = Event.objects.filter(id__in=events)
+        non_actioned_events = events.exclude(id__in=actioned_event_ids)
+        for event in non_actioned_events:
+            self.model(event=event, user=user, action='I').save()
 
 class EventAction(models.Model):
     """Represents user's action on a particular event."""
