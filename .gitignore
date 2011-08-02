@@ -9,6 +9,7 @@ biketextmate.log
 TAGS
 .emacs.desktop
 requirements_local.txt
+*_flymake.py
 
 # search index
 whoosh_indexes/
