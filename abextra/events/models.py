@@ -34,13 +34,13 @@ class CategoryManager(models.Manager):
 
 class CategoryConcreteManager(models.Manager):
     def get_query_set(self):
-           return super(CategoryConcreteManager, self).get_query_set() \
-               .filter(category_type__exact='C')
+       return super(CategoryConcreteManager, self).get_query_set() \
+           .filter(category_type__exact='C')
 
 class CategoryAbstractManager(models.Manager):
     def get_query_set(self):
-           return super(CategoryAbstractManager, self).get_query_set() \
-               .filter(category_type__exact='A')
+       return super(CategoryAbstractManager, self).get_query_set() \
+           .filter(category_type__exact='A')
 
 class Category(models.Model):
     """Category model"""

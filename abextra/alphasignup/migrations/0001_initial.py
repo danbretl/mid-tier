@@ -16,9 +16,18 @@ class Migration(SchemaMigration):
             ('is_usage_info_ok', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_mobile_planner', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('is_app_dev', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('year_of_birth', self.gf('django.db.models.fields.IntegerField')()),
             ('profile', self.gf('django.db.models.fields.related.OneToOneField')(related_name='alpha_questionnaire', unique=True, to=orm['accounts.UserProfile'])),
         ))
         db.send_create_signal('alphasignup', ['AlphaQuestionnaire'])
+
+        # Adding model 'AppDistribution'
+        db.create_table('alphasignup_appdistribution', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('version', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('archive', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
+        ))
+        db.send_create_signal('alphasignup', ['AppDistribution'])
 
 
     def backwards(self, orm):
@@ -26,13 +35,17 @@ class Migration(SchemaMigration):
         # Deleting model 'AlphaQuestionnaire'
         db.delete_table('alphasignup_alphaquestionnaire')
 
+        # Deleting model 'AppDistribution'
+        db.delete_table('alphasignup_appdistribution')
+
 
     models = {
         'accounts.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
+            'alpha_status': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'default': "'registered'", 'max_length': '15'}),
+            'privacy': ('django.db.models.fields.CharField', [], {'default': "'closed'", 'max_length': '15'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'alphasignup.alphaquestionnaire': {
@@ -43,7 +56,14 @@ class Migration(SchemaMigration):
             'is_mobile_planner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_usage_info_ok': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'profile': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'alpha_questionnaire'", 'unique': 'True', 'to': "orm['accounts.UserProfile']"}),
+            'year_of_birth': ('django.db.models.fields.IntegerField', [], {}),
             'zip': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'})
+        },
+        'alphasignup.appdistribution': {
+            'Meta': {'object_name': 'AppDistribution'},
+            'archive': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'version': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
