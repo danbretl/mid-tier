@@ -201,9 +201,6 @@ class RegexRule(BaseRule):
         1) source_rules   -> When we have both Source specified
         2) default_rules  -> When no source is specified.
         """
-        self.event = None
-        self.concrete_categories = None
-        self.abstract_categories = None
         self.key = key
         if not regex_objects:
             if model:
@@ -224,7 +221,8 @@ class RegexRule(BaseRule):
                 if regex_small.regex == regex_big.regex:
                     continue
                 if regex_small.regex in regex_big.regex:
-                    rules_bunch[regex_big].add(regex_small.category)
+                    for cat in regex_small.categories.all():
+                        rules_bunch[regex_big].add(cat)
 
         for rgx_obj in regex_objs:
             total_count +=1
@@ -233,7 +231,7 @@ class RegexRule(BaseRule):
                     self.default_rules[source].append(
                         (re.compile(rgx_obj.regex,
                                     re.IGNORECASE),
-                         rgx_obj.category,
+                         rgx_obj.categories.all(),
                          rules_bunch[rgx_obj]))
             except:
                 #Fails for some badly coded categories
@@ -249,19 +247,18 @@ class RegexRule(BaseRule):
         """
         input_string = self.key(event, source, external_categories)
         if not input_string:
-            return
+            return ([], [])
 
         self.event = event
-        self.concrete_categories = self.abstract_categories = []
         categories = concrete_categories = abstract_categories = []
         # The ignore_cats is bunch of categories to ignore if there is a match
         # Example items tuple in the for loop would be:
         # r'eurodance', <Category: Eurodance>, set(<Category: Dance>)
         # We store Dance in the list of ignored categories and later discard the match.
         ignores_set = set()
-        for regex, category, ignore_cats in self.default_rules[source]:
+        for regex, cats, ignore_cats in self.default_rules[source]:
             if regex.search(input_string):
-                categories.append(category)
+                categories.extend(cats)
                 for cat in ignore_cats:
                     ignores_set.add(cat)
         if  categories:
@@ -274,23 +271,23 @@ class TitleRegexRule(RegexRule):
     """Applies regexes to title of an event to discover
     concrete and abstract categories"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.title, 'TitleRegex')
+        RegexRule.__init__(self, lambda e,s,x: e.title, 'T')
 
 class DescriptionRegexRule(RegexRule):
     """Applies regexes to description"""
     def __init__(self):
-        RegexRule.__init__(self, lambda e,s,x: e.description,'TextRegex')
+        RegexRule.__init__(self, lambda e,s,x: e.description,'R')
 
 class ArtistRegexRule(RegexRule):
     """Searches title for artists and applies abstract/concrete tags """
     def __init__(self):
-        RegexRule.__init__(self, lambda e, s, x: e.title, 'ArtistRegex')
+        RegexRule.__init__(self, lambda e, s, x: e.title, 'A')
 
 class XIDRegexRule(RegexRule):
     """Applies regexes to  XID"""
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
-        RegexRule.__init__(self, xkey, 'XIDRegex')
+        RegexRule.__init__(self, xkey, 'X')
 
 class SemanticCategoryMatchRule(RegexRule):
     """
@@ -300,7 +297,8 @@ class SemanticCategoryMatchRule(RegexRule):
     """
     def __init__(self):
         xkey = lambda e,s,x: " ".join([obj.name for obj in x])
-        regex_objs = []
+        self.regex_objs = []
+        sources =  Source.objects.all()
         # Loop over all ABSTRACT categories only.
         for category in Category.abstract.all():
             #we should get rid of any unwanted terms that could match
@@ -308,10 +306,16 @@ class SemanticCategoryMatchRule(RegexRule):
             # Multiple matches for the same category should get more weight.
             word = category.title.lower()
             regex_obj = RegexCategory()
+            regex_obj.save()
             regex_obj.regex = word
-            regex_obj.category = category
-            regex_objs.append(regex_obj)
-        RegexRule.__init__(self, xkey, None, regex_objs)
+            regex_obj.sources = sources
+            regex_obj.categories = [category]
+            self.regex_objs.append(regex_obj)
+        RegexRule.__init__(self, xkey, None, self.regex_objs)
+
+    def __del__(self):
+        for regex_obj in self.regex_objs:
+            del regex_obj
 
 class LocationRule(BaseRule):
     """
@@ -358,15 +362,16 @@ class ConditionalCategoryRule(BaseRule):
         self.rules = defaultdict(list)
         for obj in ConditionalCategory.objects.all():
             self.rules[obj.conditional_concrete_category].append(
-                (re.compile(obj.regex, re.IGNORECASE), obj.resulting_categories)
+                (re.compile(obj.regex, re.IGNORECASE),
+                 obj.resulting_categories.all())
                 )
 
     def classify(self, event, spider, external_categories):
         categories = []
         input_string = self.key(event, spider, external_categories)
-        for regex, category in self.rules[event.concrete_category]:
+        for regex, cats in self.rules[event.concrete_category]:
             if regex.search(input_string):
-                categories.append(category)
+                categories.extend(cats)
 
         if categories:
             return self.separate_concretes_abstracts(categories)

@@ -4,8 +4,8 @@
         "model": "importer.conditionalcategory",
         "fields": {
             "regex": "Yankee",
-            "category": 1,
-            "conditional_category": 2
+            "resulting_categories": [2],
+            "conditional_concrete_category": 1
         }
     }
 ]

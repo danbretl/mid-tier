@@ -35,7 +35,7 @@ class RegexCategory(models.Model):
     sources = models.ManyToManyField(Source)
     regex = models.CharField(max_length=100)
     model_type = models.CharField(max_length=5, choices=MODEL_CHOICES)
-    category = models.ManyToManyField(Category, blank=True, null=True)
+    categories = models.ManyToManyField(Category, blank=True, null=True)
 
 class ConditionalCategory(models.Model):
     """

@@ -136,16 +136,16 @@ class RegexRulesTest(TestCase):
         source = Source.objects.get(name='villagevoice')
         ext = ExternalCategory.objects.get(id=108)
         tregexrule = TitleRegexRule()
-        trr_category = tregexrule.get_concrete_category(event, source, ext)[0]
-        self.assertEqual(event.concrete_category, trr_category)
+        trr_category = tregexrule.get_concrete_category(event, source, [ext])
+        self.assertEqual(event.concrete_category, trr_category[0])
 
     def test_XIDRegexRule(self):
         event = Event.objects.get(id=2)
         source = Source.objects.get(name='villagevoice')
         ext = ExternalCategory.objects.get(id=108)
         xregexrule = XIDRegexRule()
-        xrr_category = xregexrule.get_concrete_category(event, source, [ext])[0]
-        self.assertEqual(event.concrete_category, xrr_category)
+        xrr_category = xregexrule.get_concrete_category(event, source, [ext])
+        self.assertEqual(event.concrete_category, xrr_category[0])
 
     def test_SemanticMatchRule(self):
         event = Event.objects.get(id=2)
@@ -166,6 +166,7 @@ class RegexRulesTest(TestCase):
         ext = ExternalCategory.objects.get(id=1081)
         calculated_category = SemanticCategoryMatchRule().get_abstract_category(\
             event,source,[ext])
+        import ipdb; ipdb.set_trace()
         self.assertEqual([category], calculated_category)
 
 
@@ -207,8 +208,8 @@ class ConditionalCategoryModelTest(TestCase):
         event = Event.objects.filter(concrete_category__id=2)[0]
         c_model = ConditionalCategory.objects.all()[0]
         c_rule = ConditionalCategoryRule(key=lambda e, s, x: 'Yankees vs Orioles')
-        expected_categories = c_rule.separate_concretes_abstracts([c_model.category])
         calculated_result = c_rule.classify(event, None, None)
+        expected_categories = c_rule.separate_concretes_abstracts([c_model.conditional_concrete_category])
         self.assertEqual(expected_categories, calculated_result)
 
 
