@@ -1,5 +1,5 @@
 """Django settings for abextra project."""
-import os, sys
+import os
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
