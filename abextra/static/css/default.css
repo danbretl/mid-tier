@@ -5,6 +5,10 @@ http://www.freecsstemplates.org
 Released for free under a Creative Commons Attribution 2.5 License
 */
 
+html, body{
+  height: 100%;
+}
+
 body {
 	margin: 0;
 	padding: 0;
@@ -59,19 +63,19 @@ img.right {
 	margin: 0 0 0 20px;
 }
 
+/* Header */
+
 #header {
-	width: 1000px;
-	height: 153 px;
+	width: 960px;
+	height: 150 px;
 	margin: 0 auto;
 }
-
-/* Header */
 
 #logo {
 	width: 960px;
 	height: 100px;
 	margin: 0 auto;
-	background: url(/site_media/static/images/img02.gif) no-repeat left top;
+	background: url(/site_media/static/images/img02.png) no-repeat left top;
 }
 
 #logo h1 {
@@ -256,6 +260,13 @@ img.right {
 }
 
 /* Wrapper */
+#pagewrapper{
+	width:960px;
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -70px;
+}
 
 #wrapper {
 }
@@ -559,3 +570,29 @@ img.right {
 #footer .copyright {
 	float: left;
 }
+
+/* Text Box Homepage */
+#textbox {
+	float: right;
+	position:relative;
+	top:-440px;
+	right:100px;
+	width: 260px;
+	height: 260px;
+	padding: 20px;
+}
+
+/* Tiny Fader CSS */
+
+.sliderbutton {float:left; display:none; width:32px; padding-top:134px}
+.sliderbutton img {cursor:pointer}
+.sliderbutton img:hover {background:#666}
+#slideshow {float:left; width:960px; height:550px; border:none; background: url(static/images/splash.png) no-repeat left top;
+	padding: 0px;}
+#slides {position:relative; width:192px; height:288px; list-style:none; top: 88px; left:106px; overflow:hidden}
+#slides li {width:192px; height:288px}
+
+.pagination {float:left; display:none; list-style:none; height:25px; margin:15px 0 0 32px}
+.pagination li {float:left; cursor:pointer; padding:5px 8px; background:#666; border:1px solid #999; margin:0 4px 0 0; text-align:center; color:#222}
+.pagination li:hover {background:#777; border:1px solid #bbb; color:#000}
+li.current {border:1px solid #ccc; background:#888}
