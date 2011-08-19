@@ -572,22 +572,32 @@ img.right {
 }
 
 /* Text Box Homepage */
-#textbox {
-	float: right;
-	position:relative;
-	top:-440px;
-	right:100px;
-	width: 260px;
-	height: 260px;
-	padding: 20px;
+/*#textbox {
+    position:absolute;
+    top:270px;
+    right:450px;
+    width: 260px;
+    height: 260px;
+    padding: 20px;
 }
+*/
+#textbox {
+    float: right;
+    position: relative;
+    top: -365px;
+    right: 100px;
+    width: 260px;
+    padding: 0px 20px 0px 20px;
+    text-align: left;
+}
+
 
 /* Tiny Fader CSS */
 
 .sliderbutton {float:left; display:none; width:32px; padding-top:134px}
 .sliderbutton img {cursor:pointer}
 .sliderbutton img:hover {background:#666}
-#slideshow {float:left; width:960px; height:550px; border:none; background: url(static/images/splash.png) no-repeat left top;
+#slideshow {float:left; width:960px; height:550px; border:none; background: url(/site_media/static/images/splash.png) no-repeat left top;
 	padding: 0px;}
 #slides {position:relative; width:192px; height:288px; list-style:none; top: 88px; left:106px; overflow:hidden}
 #slides li {width:192px; height:288px}

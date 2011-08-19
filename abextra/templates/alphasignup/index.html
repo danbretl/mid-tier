@@ -1,15 +1,60 @@
 {% extends 'userena/base_userena.html' %}
 {% block navbar %}{% with current_tab="home" %}{{ block.super }}{% endwith %}{% endblock %}
 
+{% block script_base %}
+  <script type="text/javascript" src="{{ STATIC_URL }}js/tinyfader.js"></script>
+{% endblock %}
+
 {% block page %}
 <!-- start page -->
-<div id="wrapper">
-  <div id="page_single">
-    <div id="page-bg_home">
-      <img src="{{ STATIC_URL }}images/transparent.png" width="960" height="550" />
-      <div style="clear: both;">&nbsp;</div>
+<div id="page_single">
+  <div id="page-bg_home">
+    <div id="slideshow">
+      <ul id="slides">
+        <li><img src="{{ STATIC_URL }}images/SS0.png" width="192" height="288" alt="Featured Event" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS1.png" width="192" height="288" alt="Featured Event" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS2.png" width="192" height="288" alt="Event List" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS3.png" width="192" height="288" alt="Filters" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS4.png" width="192" height="288" alt="Search" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS5.png" width="192" height="288" alt="Event Card" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS6.png" width="192" height="288" alt="Map" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS7.png" width="192" height="288" alt="Event w/ Multi Occurences" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS8.png" width="192" height="288" alt="Occurence Picker" /></li>
+        <li><img src="{{ STATIC_URL }}images/SS9.png" width="192" height="288" alt="Facebook Event Creation" /></li>
+      </ul>
     </div>
   </div>
+  <ul id="pagination" class="pagination">
+    <li onclick="slideshow.pos(0)">1</li>
+    <li onclick="slideshow.pos(1)">2</li>
+    <li onclick="slideshow.pos(2)">3</li>
+    <li onclick="slideshow.pos(3)">4</li>
+    <li onclick="slideshow.pos(4)">5</li>
+    <li onclick="slideshow.pos(5)">6</li>
+    <li onclick="slideshow.pos(6)">7</li>
+    <li onclick="slideshow.pos(7)">8</li>
+    <li onclick="slideshow.pos(8)">9</li>
+    <li onclick="slideshow.pos(9)">10</li>
+  </ul>
+  <div id="textbox">
+    <p>It's the cheapest, most personalized way to go out! Kwiqet simplifies the process of organizing a group of friends around an event, finding something the entire group is interested in, and making it cheaper as more friends start attending.</p>
+    <p>You won't want to leave home without it!</p>
+  </div>
+  <div style="clear: both; height:1px;"></div>
 </div>
 <!-- end page -->
+{% endblock %}
+
+{% block bottom_js %}
+<script type="text/javascript">
+  var slideshow = new TINY.fader.fade('slideshow', {
+    id: 'slides',
+    auto: 4,
+    resume: true,
+    navid: 'pagination',
+    activeclass: 'current',
+    visible: true,
+    position: 0
+  });
+</script>
 {% endblock %}

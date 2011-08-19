@@ -31,11 +31,13 @@
   {% endif %}
   {% endblock %}
 
+  <!-- pagewrap start -->
+  <div id="pagewrapper"> 
+
   <div id="header">
     <!-- start header -->
     <div id="logo">
-      <h1><a href="/"><span>kwiqet</span></a></h1>
-      <p>Tickets to celebrate and share</p>
+      <h1><a href="/"></a></h1>
 
       <!-- start login -->
       <div id="top_login">
@@ -111,6 +113,9 @@
   <!-- end page -->
   {% endblock %}
 
+  <!-- pagewrap end -->
+  </div>
+
   <!-- begin footer -->
   <div id="footer">
     <div id="footer-bg">
@@ -119,6 +124,8 @@
     </div>
   </div>
   <!-- end footer -->
+
+{% block bottom_js %}{% endblock %}
 
 </body>
 </html>
