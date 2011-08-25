@@ -6,6 +6,7 @@ from binascii import hexlify
 from django.db import models, connection
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from core.fields import VectorField
 from sorl.thumbnail import ImageField
 from places.models import Place
 
@@ -108,6 +109,17 @@ class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
 
+    def ft_search(self, terms):
+        keywords = '|'.join(terms.split())
+        return self.get_query_set().select_related().extra(
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}', search_vector, \
+                to_tsquery('pg_catalog.english', %s))"},
+            where=("search_vector @@ to_tsquery('pg_catalog.english', %s)",),
+            params=(keywords,),
+            select_params=(keywords,),
+            order_by=('-rank',)
+        )
+
     @staticmethod
     def make_random_secret_key():
         return hexlify(os.urandom(5))
@@ -135,6 +147,7 @@ class Event(models.Model):
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
+    search_vector = VectorField()
 
     objects = EventManager()
     active = EventActiveManager()
