@@ -1,8 +1,11 @@
 import os
 
 from django.core.urlresolvers import resolve, Resolver404, reverse
+from django.core.paginator import Paginator, InvalidPage
 from django.conf import settings
+from django.conf.urls.defaults import *
 from django.contrib.sites.models import Site
+from django.http import Http404
 from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
@@ -12,6 +15,7 @@ from tastypie.authorization import DjangoAuthorization
 from tastypie.validation import FormValidation
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
 from tastypie.http import HttpAccepted, HttpBadRequest
+from tastypie.utils import trailing_slash
 from tastypie.utils.mime import determine_format, build_content_type
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
@@ -181,10 +185,9 @@ class OccurrenceFullResource(OccurrenceResource):
         resource_name = 'occurrence_full'
         filtering = {'event': ('exact',)}
 
-# =========================================
-# = Event Summary including Haystack search
-# =========================================
-from haystack.query import SearchQuerySet
+# =================
+# = Event Summary =
+# =================
 
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventFullResource, 'event')
@@ -220,12 +223,37 @@ class EventSummaryResource(ModelResource):
             else:
                 orm_filters.update(concrete_parent_category__exact=kwargs['pk'])
 
-        if 'q' in filters:
-            sqs = SearchQuerySet().auto_query(filters['q'])
-
-            orm_filters["pk__in"] = [ i.pk for i in sqs ]
-
         return orm_filters
+
+    def override_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
+        ]
+
+    def get_search(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        self.is_authenticated(request)
+        self.throttle_check(request)
+
+        # Do the query.
+        events = Event.objects.only('id').ft_search(request.GET.get('q', '')).select_related('summary')
+        paginator = Paginator(events, 20)
+
+        try:
+            page = paginator.page(int(request.GET.get('page', 1)))
+        except InvalidPage:
+            raise Http404("Sorry, no results on that page.")
+
+        objects = []
+
+        for result in page.object_list:
+            bundle = self.full_dehydrate(result.summary)
+            objects.append(bundle)
+
+        object_list = {'objects': objects}
+
+        self.log_throttled_access(request)
+        return self.create_response(request, object_list)
 
 # =========================
 # = Event Recommendations =

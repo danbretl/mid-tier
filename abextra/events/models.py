@@ -102,16 +102,9 @@ class EventMixin(object):
         featured_event_id = config_value('EVENTS', 'FEATURED_EVENT_ID')
         return self.filter(id=featured_event_id)
 
-class EventQuerySet(models.query.QuerySet, EventMixin):
-    pass
-
-class EventManager(models.Manager, EventMixin):
-    def get_query_set(self):
-        return EventQuerySet(self.model)
-
     def ft_search(self, terms):
         keywords = '|'.join(terms.split())
-        return self.get_query_set().select_related().extra(
+        return self.select_related().extra(
             select={'rank': "ts_rank_cd('{0,0,0.2,0.8}', search_vector, \
                 to_tsquery('pg_catalog.english', %s))"},
             where=("search_vector @@ to_tsquery('pg_catalog.english', %s)",),
@@ -119,6 +112,13 @@ class EventManager(models.Manager, EventMixin):
             select_params=(keywords,),
             order_by=('-rank',)
         )
+
+class EventQuerySet(models.query.QuerySet, EventMixin):
+    pass
+
+class EventManager(models.Manager, EventMixin):
+    def get_query_set(self):
+        return EventQuerySet(self.model)
 
     @staticmethod
     def make_random_secret_key():
