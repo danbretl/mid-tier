@@ -151,7 +151,6 @@ INSTALLED_APPS = (
 
     'fabtastic',                    # deployments
     'gunicorn',                     # gunicorn | app server
-    'haystack',                     # text indexing and search
     'livesettings',                 # live settings ;)
     'registration',                 # user registration app
     'sorl.thumbnail',               # thumbnails
@@ -243,13 +242,6 @@ LOGGING = {
 # ===============
 CACHE_PREFIX = str(SITE_ID)
 CACHE_TIMEOUT = 60              # 1 minute
-
-# ============
-# = Haystack =
-# ============
-HAYSTACK_SITECONF  = 'search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_DEFAULT_OPERATOR = 'OR'
 
 # ==============================
 # = eventure specific settings =

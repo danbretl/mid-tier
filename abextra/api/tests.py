@@ -221,11 +221,6 @@ class StressTesting(TestCase):
         self.assertEqual(len(Event.objects.all()),
                              len(all_objects['objects']))
 
-        HAYSTACK_WHOOSH_PATH = '/home/whisky/Abextra/abexmid/abextra/fixtures/whoosh_index'
-        # Should be actually rebuilding index here, but rebuild raises an
-        # interactive question during clear, so only calling update for now.
-        # (./manage.py rebuild_index --noinput)
-        call_command('update_index')
         # Both of these have been handpicked to return only one result and in
         # particular, the first event. 
         for term in ['four', 'legend']:
