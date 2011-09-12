@@ -152,7 +152,6 @@ INSTALLED_APPS = (
     'fabtastic',                    # deployments
     'gunicorn',                     # gunicorn | app server
     'livesettings',                 # live settings ;)
-    'registration',                 # user registration app
     'sorl.thumbnail',               # thumbnails
     'south',                        # migrations managements
     'tastypie',                     # new api assistance
