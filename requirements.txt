@@ -37,7 +37,6 @@ docutils==0.7
 easy-thumbnails==1.0-alpha-17
 eventful==0.3
 fanstatic==0.11.2
-fts==0.1-pre
 gunicorn==0.12.2
 httplib2==0.6.0
 ipdb==0.3
