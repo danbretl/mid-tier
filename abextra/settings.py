@@ -222,6 +222,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
+        'importer.eventful_import': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         'importer.parser': {
             'handlers': ['console'],
             'level': 'DEBUG',
