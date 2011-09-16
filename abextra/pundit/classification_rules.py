@@ -110,7 +110,6 @@ class SourceRule(BaseRule):
                     since the event django object does not support such fields.
         """
         # if not kwargs.get('external_categories'):
-        #     import ipdb; ipdb.set_trace()
         results_concrete = []
         results_abstract = []
         if source:

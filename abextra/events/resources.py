@@ -285,7 +285,12 @@ class EventRecommendationResource(EventSummaryResource):
                 raise ImmediateHttpResponse(response=response)
 
         # use machine learning
+        # FIXME look into ml to make return consistent (either ids or objs)
         recommended_events = ml.recommend_events(request.user, events_qs)
+
+        # FIXME ugly plug :: see above
+        recommended_events = all(hasattr(e, 'pk') for e in recommended_events) \
+                and [e.pk for e in recommended_events] or recommended_events
 
         # preprocess ignores
         EventAction.objects.ignore_non_actioned_events(request.user, recommended_events)
