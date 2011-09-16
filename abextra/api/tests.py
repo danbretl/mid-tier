@@ -6,6 +6,7 @@ Replace this with more appropriate tests for your application.
 """
 from api.models import Consumer
 import urllib, urllib2
+from ipdb import set_trace 
 from django.test import TestCase
 from django.core.management import call_command
 from django.test.client import Client
@@ -112,33 +113,7 @@ class StressTesting(TestCase):
                                         })
     events = [str(e.id) for e in Event.objects.all()]
     client = Client()
-
-    # Consider this for automated testing.
-    def x_test_all_apis(self):
-        base_url = 'http://testsv.abextratech.com'
-        consumer_secret = '7fb49b90f41a832f3d5cc12f1b9ed56795c5748a'
-        consumer_key = 'rngQ5ZSe3FmzYJ3cgL'
-        udid = '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
-        params = urllib.urlencode({'consumer_key' : consumer_key,
-                                   'consumer_secret' : consumer_secret,
-                                   'udid' : udid,
-                                   'format': 'json'})
-        # The more automated we want to make this the less assumptions we will
-        # need to make.
-        f = urllib.urlopen(base_url + '/api/v1/?' + params)
-        apis = json.loads(f.readline())
-        for model in apis.keys():
-            #Test apis here
-            schema_url = apis[model]['schema']
-            list_endpoint = apis[model]['list_endpoint']
-            schema = json.loads(urllib.urlopen( base_url
-                                              + schema_url
-                                              + params).readline())
-            # Now hit the url and get some objects.
-            # Ensure each of the URLS conforms to this schema
-            # (such checks will likely have also been performed in tastypie's
-            # unit tests)
-
+    
     def x_simple_client_learn(self):
         clients = []
         num_clients = 100
@@ -239,8 +214,9 @@ class StressTesting(TestCase):
         api = '/api/v1/event_full/'
         for eventstr in self.events[0:1]:
             #TODO: Fix fixture of occurrence for event 2: missing place.
-            url = api + eventstr + "/" + self.encoded_params
-            self.assert200(url)
+						url = api + eventstr + "/" + self.encoded_params
+						resp = self.client.get(url)
+						self.assert200(url)
             # check content of event
 
     #FAILING TEST - Investigate
@@ -261,14 +237,14 @@ class StressTesting(TestCase):
             self.assertEqual(resp.status_code, 201)
 
     def test_simple_event_action(self):
-        api = '/api/v1/eventaction/'
-        event = Event.objects.get(id=1)
-        action = 'g'
-        post_data = u'{"action": "%s", "event": "/api/v1/event/%i/"}' % (action, event.id)
-        resp = self.client.post(api + self.encoded_params,
-                                data=post_data,
-                                content_type='application/json')
-        self.assertEqual(resp.status_code, 201)
+				api = '/api/v1/eventaction/'
+				event = Event.objects.get(id=1)
+				action = 'g'
+				post_data = u'{"action": "%s", "event": "/api/v1/event/%i/"}' % (action, event.id)
+				resp = self.client.post(api + self.encoded_params,
+												data=post_data,
+												content_type='application/json')
+				self.assertEqual(resp.status_code, 201)
 
 
     def assert200(self, url):
