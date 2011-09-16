@@ -1,17 +1,13 @@
-.bzr*
 *.pyc
 settings_*.py
 *~
-biketextmate.log
-.ropeproject/
 *#*
 .venv
+biketextmate.log
 TAGS
-.emacs.desktop
 requirements_local.txt
 
-# search index
-whoosh_indexes/
+category_graphs/
 
 # media folder :: mostly should be ignored, except for some 'static' resources
 abextra/media/cache/
