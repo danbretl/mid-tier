@@ -95,7 +95,8 @@ class EventMixin(object):
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
-        exclusions = user.event_actions.filter(event__in=self, action__in=actions)
+        exclusions = user.event_actions.filter(event__in=self, action__in=actions) \
+            .values_list('event_id', flat=True)
         return self.exclude(id__in=exclusions)
 
     def featured(self):
