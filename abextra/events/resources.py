@@ -271,6 +271,28 @@ class EventRecommendationResource(EventSummaryResource):
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
         events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'GX')
+
+        # new and inefficient occurrence wise price filter
+        price_min = filters.get('price_min')
+        price_max = filters.get('price_max')
+        if price_min:
+            try:
+                price_min = int(price_min)
+            except ValueError, e:
+                raise e
+            else:
+                events_qs = \
+                    events_qs.filter(occurrences__prices__quantity__gte=price_min)
+        if price_max:
+            try:
+                price_max = int(price_max)
+            except ValueError, e:
+                raise e
+            else:
+                events_qs = \
+                    events_qs.filter(occurrences__prices__quantity__lte=price_max)
+
+        # should be deprecated as soon as proper filtering is in place
         view = filters.get('view')
         if view:
             if view == 'popular':
