@@ -1,4 +1,5 @@
 import os
+import datetime
 
 from django.core.urlresolvers import resolve, Resolver404, reverse
 from django.core.paginator import Paginator, InvalidPage
@@ -270,27 +271,30 @@ class EventRecommendationResource(EventSummaryResource):
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        events_qs = Event.active.future().filter(**orm_filters).filter_user_actions(request.user, 'GX')
+        events_qs = Event.active.filter(**orm_filters)
 
-        # new and inefficient occurrence wise price filter
-        price_min = filters.get('price_min')
-        price_max = filters.get('price_max')
+        # new and inefficient occurrence-wise price filter
+        price_min, price_max = map(filters.get, ('price_min', 'price_max'))
         if price_min:
-            try:
-                price_min = int(price_min)
-            except ValueError, e:
-                raise e
-            else:
-                events_qs = \
-                    events_qs.filter(occurrences__prices__quantity__gte=price_min)
+            price_min = int(price_min)
+            events_qs = events_qs.filter(occurrences__prices__quantity__gte=price_min)
         if price_max:
-            try:
-                price_max = int(price_max)
-            except ValueError, e:
-                raise e
-            else:
-                events_qs = \
-                    events_qs.filter(occurrences__prices__quantity__lte=price_max)
+            price_max = int(price_max)
+            events_qs = events_qs.filter(occurrences__prices__quantity__lte=price_max)
+
+        # new and inefficient occurrence-wise date filter
+        date_range = map(filters.get, ('dtstart_earliest', 'dtstart_latest'))
+        if all(date_range):
+            mkdate = lambda d: datetime.datetime.strptime(d, '%Y-%m-%d').date()
+            dtstart_earliest, dtstart_latest = map(mkdate, date_range)
+            events_qs = events_qs.filter(
+                occurrences__start_date__gte=dtstart_earliest,
+                occurrences__start_date__lte=dtstart_latest
+            )
+        else:
+            events_qs = events_qs.future()
+
+        events_qs = events_qs.filter_user_actions(request.user, 'GX')
 
         # should be deprecated as soon as proper filtering is in place
         view = filters.get('view')
