@@ -156,6 +156,13 @@ class Event(models.Model):
     class Meta:
         verbose_name_plural = _('events')
 
+    def save(self, *args, **kwargs):
+        if self.pk and self.occurrences.count():
+            from events.utils import CachedCategoryTree
+            ctree = CachedCategoryTree()
+            EventSummary.objects.for_event(self, ctree).save()
+        super(Event, self).save(*args, **kwargs)
+
     def _concrete_category(self):
         """Used only by the admin site"""
         return self.concrete_category.title
@@ -248,7 +255,7 @@ class EventSummaryManager(models.Manager):
             'event':  Event to be summarized.
             'commit': A flag that saves the self summary if set. Mostly for debugging.
         Summarize a single self for the UI.
-        Why: Performance. This ensure when a user makes a request, we don't need
+        Why: Performance. When a user makes a request, we don't need
         to perform any joins and can return information from a single table.
         """
         occurrence_count = event.occurrences.count()
