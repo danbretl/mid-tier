@@ -15,6 +15,8 @@ class BaseParser(object):
     def parse(self, data):
         form_data = self.parse_form_data(data, {})
         key = self.cache_key(form_data)
+        if not key:
+            return (False, None)
         created, instance = False, self.cache.get(key)
         if not instance:
             try:
@@ -38,22 +40,27 @@ class BaseParser(object):
         return result
 
     def cache_key(self, form_data):
-        return self.KeyTuple(
-            **dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
-        )
+        kwargs = dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
+        # import ipdb; ipdb.set_trace()
+        try:
+            key = self.KeyTuple(self.KeyTuple(**kwargs))
+        except:
+            return None
+        return key
 
     def parse_form_data(self, obj_dict, form_data={}):
         raise NotImplementedError()
 
     def parse_file_data(self, data, file_data):
-        images = data.get('images')
-        if images:
-            image = images[0]
-            path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
-            with open(path, 'rb') as f:
-                filename = os.path.split(f.name)[1]
-                file_data['image'] = SimpleUploadedFile(filename, f.read())
-        return file_data
+        # images = data.get('images')
+        # if images:
+            # image = images[0]
+            # path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
+            # with open(path, 'rb') as f:
+                # filename = os.path.split(f.name)[1]
+                # file_data['image'] = SimpleUploadedFile(filename, f.read())
+        # return file_data
+        pass
 
     def post_parse(self, obj_dict, instance):
         pass
