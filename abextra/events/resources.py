@@ -282,6 +282,16 @@ class EventRecommendationResource(EventSummaryResource):
             price_max = int(price_max)
             events_qs = events_qs.filter(occurrences__prices__quantity__lte=price_max)
 
+        # new and inefficient occurrence-wise time filter
+        time_range = map(filters.get, ('tstart_earliest', 'tstart_latest'))
+        if all(time_range):
+            mktime = lambda t: datetime.datetime.strptime(t, '%H%M').time()
+            tstart_earliest, tstart_latest = map(mktime, time_range)
+            events_qs = events_qs.filter(
+                occurrences__start_time__gte=tstart_earliest,
+                occurrences__start_time__lte=tstart_latest
+                )
+
         # new and inefficient occurrence-wise date filter
         date_range = map(filters.get, ('dtstart_earliest', 'dtstart_latest'))
         if all(date_range):
