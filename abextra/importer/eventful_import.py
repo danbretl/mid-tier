@@ -1,8 +1,8 @@
-import eventful
+import eventful_api.eventful_api as eventful
 import logging
 import itertools
 from django.conf import settings
-
+import events.models
 
 class EventfulImporter(object):
 
@@ -46,13 +46,21 @@ class EventfulImporter(object):
                 (self.current_page, page_count))
 
         for ix_page in range(self.current_page, page_count + 1):
-            self.current_page=ix_page
+            self.current_page = ix_page
             for event in self.import_page(ix_page):
                 # import ipdb; ipdb.set_trace()
-                self.process_event(event)
+                event = self.process_event(event)
                 self.events.append(event)
             self.logger.info('Fetched %d/%d events so far' %
                     (self.count, self.total_items))
+
+    # FIXME: implement JSON dump events & settings
+    def json_dump():
+        pass
+
+    # FIXME: implement JSON load events & settings
+    def json_load():
+        pass
 
     def import_page(self, page_number):
         page = self.api.call('/events/search', q=self.query,
@@ -67,6 +75,10 @@ class EventfulImporter(object):
     def process_event(self, e):
         # preprocess event response
         # convert to native objects
+        # FIXME: use django forms to import
+        # e = events.models.Event(xid=e['id'],
+                # description=e['description'], url=e['url'],
+                # created=e['created'], title=e['title'])
         # self.logger.info('Processing event %s' % e['title'])
         self.count += 1
         return e
