@@ -121,10 +121,6 @@ class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
 
-    @staticmethod
-    def make_random_secret_key():
-        return hexlify(os.urandom(5))
-
 class EventActiveManager(EventManager):
     def get_query_set(self):
         return super(EventActiveManager, self).get_query_set().filter(is_active=True)
@@ -159,7 +155,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         # secret key generation
         if not self.secret_key:
-            self.secret_key = self.objects.make_random_secret_key()
+            self.secret_key = self.random_secret_key()
 
         # FIXME haxord summarization
         if self.pk and self.occurrences.count():
@@ -168,6 +164,10 @@ class Event(models.Model):
             EventSummary.objects.for_event(self, ctree).save()
 
         super(Event, self).save(*args, **kwargs)
+
+    @staticmethod
+    def random_secret_key():
+        return hexlify(os.urandom(5))
 
     def _concrete_category(self):
         """Used only by the admin site"""
