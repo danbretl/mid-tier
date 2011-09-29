@@ -147,7 +147,7 @@ class Event(models.Model):
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
+    secret_key = models.CharField(blank=True, max_length=10)
     search_vector = VectorField()
 
     objects = EventManager()
@@ -157,10 +157,16 @@ class Event(models.Model):
         verbose_name_plural = _('events')
 
     def save(self, *args, **kwargs):
+        # secret key generation
+        if not self.secret_key:
+            self.secret_key = self.objects.make_random_secret_key()
+
+        # FIXME haxord summarization
         if self.pk and self.occurrences.count():
             from events.utils import CachedCategoryTree
             ctree = CachedCategoryTree()
             EventSummary.objects.for_event(self, ctree).save()
+
         super(Event, self).save(*args, **kwargs)
 
     def _concrete_category(self):
