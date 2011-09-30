@@ -148,6 +148,7 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',     # admin documentation
     'django.contrib.comments',      # comments
     'django.contrib.staticfiles',   # statics
+    'django.contrib.gis',           # gis
 
     'fabtastic',                    # deployments
     'gunicorn',                     # gunicorn | app server

@@ -121,10 +121,6 @@ class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
 
-    @staticmethod
-    def make_random_secret_key():
-        return hexlify(os.urandom(5))
-
 class EventActiveManager(EventManager):
     def get_query_set(self):
         return super(EventActiveManager, self).get_query_set().filter(is_active=True)
@@ -147,7 +143,7 @@ class Event(models.Model):
     categories = models.ManyToManyField(Category, related_name='events_abstract', verbose_name=_('abstract categories'))
     popularity_score = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
-    secret_key = models.CharField(blank=True, max_length=10, default=EventManager.make_random_secret_key())
+    secret_key = models.CharField(blank=True, max_length=10)
     search_vector = VectorField()
 
     objects = EventManager()
@@ -155,6 +151,23 @@ class Event(models.Model):
 
     class Meta:
         verbose_name_plural = _('events')
+
+    def save(self, *args, **kwargs):
+        # secret key generation
+        if not self.secret_key:
+            self.secret_key = self.random_secret_key()
+
+        # FIXME haxord summarization
+        if self.pk and self.occurrences.count():
+            from events.utils import CachedCategoryTree
+            ctree = CachedCategoryTree()
+            EventSummary.objects.for_event(self, ctree).save()
+
+        super(Event, self).save(*args, **kwargs)
+
+    @staticmethod
+    def random_secret_key():
+        return hexlify(os.urandom(5))
 
     def _concrete_category(self):
         """Used only by the admin site"""
@@ -248,7 +261,7 @@ class EventSummaryManager(models.Manager):
             'event':  Event to be summarized.
             'commit': A flag that saves the self summary if set. Mostly for debugging.
         Summarize a single self for the UI.
-        Why: Performance. This ensure when a user makes a request, we don't need
+        Why: Performance. When a user makes a request, we don't need
         to perform any joins and can return information from a single table.
         """
         occurrence_count = event.occurrences.count()
