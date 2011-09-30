@@ -12,10 +12,16 @@ class SimpleApiConsumer(object):
 
         # a green pile for images w/ fairly high concurrency
         # (webservers are ok with it)
-        self.image_pile = eventlet.GreenPile(30)
+        self.event_image_pile = eventlet.GreenPile(15)
         # a green pile for event details w/ lower concurrency
         # (appservers are not too ok with it)
-        self.event_pile = eventlet.GreenPile(15)
+        self.event_detail_pile = eventlet.GreenPile(10)
+        # a green pile for venue images w/ fairly high concurrency
+        # (webservers are ok with it)
+        self.venue_image_pile = eventlet.GreenPile(15)
+        # a green pile for venue details w/ lower concurrency
+        # (appservers are not too ok with it)
+        self.venue_detail_pile= eventlet.GreenPile(10)
 
         # prepare image download directory
         if not os.path.exists(img_dir):
@@ -32,41 +38,61 @@ class SimpleApiConsumer(object):
 
     def process_event_summary(self, summary):
         # schedule a fetch of event details
-        self.event_pile.spawn(self.fetch_event_details, summary['id'])
-        # schedule a fetch of the event image
-        if summary.get('image'):
-            self.image_pile.spawn(self.fetch_event_image, summary)
+        self.event_detail_pile.spawn(self.fetch_event_details, summary['id'])
+        # schedule a fetch of venue details + image
+        self.event_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
+
+    def fetch_venue_details(self, venue_id):
+        venue_detail = self.api.call('/venues/get', id=venue_id)
+        # import ipdb; ipdb.set_trace()
+        images = venue_detail.get('images')
+        if images:
+            self.venue_image_pile.spawn(self.fetch_image, images, venue_id)
+        return venue_detail
 
     def fetch_event_details(self, event_id):
-        return self.api.call('/events/get', id=event_id)
+        event_detail = self.api.call('/events/get', id=event_id)
+        images = event_detail.get('images')
+        if images:
+            self.event_image_pile.spawn(self.fetch_image, images, event_id)
+        return event_detail
 
-    def fetch_event_image(self, event):
-        img_dict = event.get('image')
-        url = img_dict['url'].replace('small', 'edpborder500')
+
+    def fetch_image(self, images_dict, parent_id):
+        img_dict = images_dict.get('image')
+        # import ipdb; ipdb.set_trace()
+        if isinstance (img_dict, (tuple, list)):
+            url = img_dict[0]['small']['url'].replace('small', 'original')
+        else:
+            url = img_dict['small']['url'].replace('small', 'original')
         request = urllib2.Request(url)
         try:
             img = urllib2.urlopen(request)
-        except urllib2.HTTPError, e:
+        except (urllib2.URLError, urllib2.HTTPError), e:
+            # FIXME: use logger to print these error messages
             print "HTTP Error:", e.code, url
-        except urllib2.URLError, e:
-            print "URL Error:", e.reason, url
         else:
-            filename = os.path.join(self.img_dir, event['id']+'.png')
+            filename = os.path.join(self.img_dir, parent_id+'.png')
             with open(filename, 'w') as f:
                 f.write(img.read())
-            return dict(id=event['id'], filename=filename, url=url)
-        return dict(id=event['id'], filename=None, url=url)
+            return dict(id=parent_id, filename=filename, url=url)
+
     def consume(self, **kwargs):
         images_by_event_id = {}
         raw_summaries = self.fetch_event_summaries(**kwargs)['event']
         self.process_event_summaries(raw_summaries)
-        images_by_event_id = dict((img['id'], img) for img in self.image_pile)
+        images_by_event_id = dict((img['id'], img) for img in self.event_image_pile if img)
+        images_by_venue_id = dict((img['id'], img) for img in self.venue_image_pile if img)
         def extend_with_image(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
                 event['image_local'] = image_local
+            if event.has_key('venue_id'):
+                venue_image_local = images_by_venue_id.get(event['venue_id'])
+                if venue_image_local:
+                    event['venue_image_local'] = venue_image_local
             return event
-        events = itertools.imap(extend_with_image, self.event_pile)
+        events = itertools.imap(extend_with_image, self.event_detail_pile)
         # import ipdb; ipdb.set_trace()
         return events
 

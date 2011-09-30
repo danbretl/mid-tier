@@ -205,7 +205,11 @@ LOGGING = {
         'null': {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
-        }
+        },
+        'file':{
+            'level' : 'DEBUG',
+            'class' : 'logging.FileHandler',
+            'filename': 'debug.log'}
     },
     'loggers': {
         # 'django': {
@@ -223,11 +227,11 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'importer.eventful_import': {
-            'handlers': ['console'],
+            'handlers': ['console','file'],
             'level': 'DEBUG',
         },
         'importer.parser': {
-            'handlers': ['console'],
+            'handlers': ['console','file'],
             'level': 'DEBUG',
         },
         'consumer.scrape': {

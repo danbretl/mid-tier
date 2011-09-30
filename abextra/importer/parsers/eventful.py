@@ -46,9 +46,10 @@ class EventfulPriceParser(PriceParser):
                 form_data['quantity'] = '0.00'
         else:
             quantities = parse_prices(data.get('price'))
-            form_data['quantity'] = quantities[0]
-            # if len(quantities) > 1:
-                # print "FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK"
+            try:
+                form_data['quantity'] = quantities[0]
+            except:
+                self.logger.warn('Error parsing price <%s>' % data.get('price'))
         return form_data
 
 
@@ -58,6 +59,7 @@ class EventfulCityParser(CityParser):
         form_data['city'] = data.get('city')
         form_data['state'] = data.get('region')
         #TODO: Try and get this from geocoding information.
+        # import ipdb; ipdb.set_trace()
         return form_data
 
 class EventfulPointParser(PointParser):
@@ -163,15 +165,21 @@ class EventfulEventParser(EventParser):
         form_data['description'] = data.get('description')
         form_data['url'] = data.get('url')
         # form_data['popularity_score'] = data.get('popularity_score')
-        categories = data.get('categories').get('category') or []
-        if not isinstance(categories, list):
-            categories = [categories]
         external_category_ids = []
-        for category_data in categories:
-            created, external_category = self.external_category_parser.parse(category_data)
-            if created:
-                external_category_ids.append(external_category.id)
+        categories = data.get('categories')
+        if categories:
+            category_wrapper =  categories.get('category')
+            if category_wrapper:
+                if not isinstance(category_wrapper, (list, tuple)):
+                    categories = [category_wrapper]
+                else:
+                    categories = category_wrapper
 
+                for category_data in categories:
+                    created, external_category = self.external_category_parser.parse(category_data)
+                    if created:
+                        external_category_ids.append(external_category.id)
+        form_data['external_categories'] = external_category_ids
         # FIXME: incorporate eventlet image fetcher before crawler
         # parses but after search results and individual events are
         # crawled

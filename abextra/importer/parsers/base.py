@@ -40,13 +40,13 @@ class BaseParser(object):
         return result
 
     def cache_key(self, form_data):
-        kwargs = dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
         try:
-            key = self.KeyTuple(**kwargs)
-        except:
+            kwargs = dict((f, form_data[f]) for f in self.fields)
+        except KeyError:
             self.logger.warn("Can't create key given %s" % str(form_data))
             return None
-        return key
+        else:
+            return self.KeyTuple(**kwargs)
 
     def parse_form_data(self, obj_dict, form_data={}):
         raise NotImplementedError()
