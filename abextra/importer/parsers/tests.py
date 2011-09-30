@@ -5,6 +5,7 @@ from importer.parsers.locations import CityParser, PointParser, PlaceParser
 from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
 from importer.parsers.price import PriceParser
 from importer.parsers.eventful import EventfulEventParser
+from importer.eventful_import import EventfulImporter
 
 # class ExternalCategoryParserTest(TestCase):
 #     fixtures = ['sources'] # ,'external_categories']
@@ -73,17 +74,17 @@ class EventfulParserTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
     def setUp(self):
-        self.consumer = SimpleApiConsumer()
-        self.parser = EventfulEventParser()
+        # self.consumer = SimpleApiConsumer()
+        # self.parser = EventfulEventParser()
+        self.importer = EventfulImporter(page_size=40)
 
     def test_parse(self):
-        events = self.consumer.consume(location='NYC', date='Today',
-                page_size=30, page_number=5)
-        for event in events:
-            # print event
-            # print "Process this event? (Y/n)"
-            # action = raw_input()
-            # if 'y' in action.lower():
-            self.parser.parse(event)
+        events = self.importer.import_events(total_pages=10) 
+        # for event in events:
+            # try:
+                # event_obj = self.parser.parse(event)
+            # except ValueError as parse_err:
+                # self.logger.warn("Encountered exception while parsing:")
+                # self.logger.warn(parse_err.args)
 
 
