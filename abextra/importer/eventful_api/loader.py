@@ -1,12 +1,14 @@
 import os
 import eventlet
+import itertools
+from django.conf import settings
 from eventlet.green import urllib, urllib2
 from eventful_api import API
 
 class SimpleApiConsumer(object):
-    def __init__(self, img_dir='images'):
+    def __init__(self, img_dir=settings.SCRAPE_IMAGES_PATH, api_key='D9knBLC95spxXSqr'):
         # instantiate api
-        self.api = API('D9knBLC95spxXSqr')
+        self.api = API(api_key)
 
         # a green pile for images w/ fairly high concurrency
         # (webservers are ok with it)
@@ -52,21 +54,19 @@ class SimpleApiConsumer(object):
             filename = os.path.join(self.img_dir, event['id']+'.png')
             with open(filename, 'w') as f:
                 f.write(img.read())
-        return dict(id=event['id'], filename=filename, url=url)
-
+            return dict(id=event['id'], filename=filename, url=url)
+        return dict(id=event['id'], filename=None, url=url)
     def consume(self, **kwargs):
+        images_by_event_id = {}
         raw_summaries = self.fetch_event_summaries(**kwargs)['event']
         self.process_event_summaries(raw_summaries)
-        return self.event_pile
+        images_by_event_id = dict((img['id'], img) for img in self.image_pile)
+        def extend_with_image(event):
+            image_local = images_by_event_id.get(event['id'])
+            if image_local:
+                event['image_local'] = image_local
+            return event
+        events = itertools.imap(extend_with_image, self.event_pile)
+        # import ipdb; ipdb.set_trace()
+        return events
 
-if __name__ == '__main__':
-    consumer = SimpleApiConsumer()
-    events = consumer.consume(location='NYC', date='Today', page_size=20)
-    imgs = dict((img['id'], img) for img in consumer.image_pile)
-    import ipdb; ipdb.set_trace()
-    # at this point you should have all the necessary event details + images
-    # all that's needed to create our own events using parsers
-    for e_k in events.keys():
-        events['image']['path'] = imgs.filename
-        events['image']['url'] = imgs.url
-    print list(events)

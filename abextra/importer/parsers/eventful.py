@@ -15,17 +15,16 @@ from importer.parsers.rrule_converter import RRuleConverter
 from importer.parsers.event import ExternalCategoryParser
 from importer.parsers.event import EventParser, OccurrenceParser
 
-class EventfulPriceParser(PriceParser):
-    _quantity_re = re.compile(r'(\d+(?:\.\d{2})?)|free')
+_quantity_re = re.compile(r'(\d+(?:\.\d{2})?)|free')
 
-    # FIXME: this kind of regex logic should not be in a parser;
-    # refactor to a form later so it's not muddying up the parsers
+# FIXME: this kind of regex logic should not be in a parser;
+# refactor to a form later so it's not muddying up the parsers
 
-    class SoldOutException(Exception):
-        """Usually raised by price parser generators."""
-        pass
+class SoldOutException(Exception):
+    """Usually raised by price parser generators."""
+    pass
 
-    def parse_prices(price_string):
+def parse_prices(price_string):
         price_string = price_string.lower()
         prices = _quantity_re.findall(price_string)
         if not prices:
@@ -33,16 +32,23 @@ class EventfulPriceParser(PriceParser):
                 raise SoldOutException()
             else:
                 return None
-        return tuple(float(price) if price else 0.00 for price in prices)
+        return tuple(price if price else '0.00' for price in prices)
 
+
+
+class EventfulPriceParser(PriceParser):
 
     def parse_form_data(self, data, form_data):
-        form_data['occurrence'] = data.occurrence
+        form_data['occurrence'] = data.get('occurrence')
         form_data['units'] = 'dollar'
-        if int(data.get('free')):
-            form_data['quantity'] = 0.00
+        if data.get('free'):
+            if int(data.get('free')):
+                form_data['quantity'] = '0.00'
         else:
-            form_data['quantity'] = parse_prices(data.get('price'))
+            quantities = parse_prices(data.get('price'))
+            form_data['quantity'] = quantities[0]
+            # if len(quantities) > 1:
+                # print "FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK"
         return form_data
 
 
@@ -68,6 +74,7 @@ class EventfulPointParser(PointParser):
         created, city = self.city_parser.parse(data)
         if city:
             form_data['city'] = city.id
+        # import ipdb; ipdb.set_trace()
         return form_data
 
 class EventfulPlaceParser(PlaceParser):
@@ -115,18 +122,23 @@ class EventfulOccurrenceParser(OccurrenceParser):
         form_data['event'] = data.get('event')
         form_data['start_date'] = data.get('start_date')
         form_data['end_date'] = data.get('end_date')
-        t_i = date_parser.parse(data.get('start_time'))
-        if data.get('stop_time'):
-            t_f = date_parser.parse(data.get('stop_time'))
+        try:
+            t_i = date_parser.parse(data.get('start_time'))
+            if data.get('stop_time'):
+                t_f = date_parser.parse(data.get('stop_time'))
+            else:
+                t_f = t_i
+        except:
+            self.logger.warn("Error parsing occurrence for eventful event <%s>" %data.get('title'))
         else:
-            t_f = t_i
-        form_data['end_date'] = data.get('end_date')
-        form_data['start_time'] = t_i.strftime("%H:%M:%S")
-        form_data['end_time'] = t_f.strftime("%H:%M:%S")
+            form_data['start_date'] = t_i.strftime("%Y-%m-%d")
+            form_data['end_date'] = t_f.strftime("%Y-%m-%d")
+            form_data['start_time'] = t_i.strftime("%H:%M:%S")
+            form_data['end_time'] = t_f.strftime("%H:%M:%S")
 
 
-        created, place = self.place_parser.parse(data)
-        form_data['place'] = place.id if place else None
+            created, place = self.place_parser.parse(data)
+            form_data['place'] = place.id if place else None
 
         return form_data
 
@@ -134,9 +146,10 @@ class EventfulOccurrenceParser(OccurrenceParser):
         occurrence = instance
 
         # prices
-        for price_data in data.prices:
-            price_data['occurrence'] = occurrence.id
-            self.price_parser.parse(price_data)
+        price = data.get('price')
+        if price:
+            data['occurrence'] = occurrence.id
+            self.price_parser.parse(data)
 
 class EventfulEventParser(EventParser):
     occurrence_parser = EventfulOccurrenceParser()
@@ -184,39 +197,48 @@ class EventfulEventParser(EventParser):
         event = instance
         # occurrences
         recurrence_dict = data.get('recurrence')
-        # import ipdb; ipdb.set_trace()
         if recurrence_dict:
             rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
             if rdates:
                 rdate = rdates.get('rdate')
-                for date in rdate:
-                    occurrence_form_data = data.copy()
-                    occurrence_form_data['event'] = event.id
-                    occurrence_form_data['start_time'] = date
-                    self.occurrence_parser.parse(occurrence_form_data)
+                if rdate:
+                    if not isinstance (rdate, (tuple, list)):
+                        rdate = [rdate]
+                    for date in rdate:
+                        occurrence_form_data = data.copy()
+                        occurrence_form_data['event'] = event.id
+                        occurrence_form_data['start_time'] = date
+                        self.occurrence_parser.parse(occurrence_form_data)
 
             if rrules:
                 rrule = rrules.get('rrule')
                 if rrule:
-                    results = self.rr_converter.convert(rrule)
-                    if isinstance(results, (list, tuple)):
-                        dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
+                    try:
+                        results = self.rr_converter.convert(rrule)
+                    except:
+                        self.logger.warn('Error trying to parse rrule %s' % rrule)
                     else:
-                        dates = results[:settings.MAX_RECURRENCE]
-                    for date in dates:
-                        occurrence_form_data = data.copy()
-                        occurrence_form_data['event'] = event.id
-                        if not isinstance(date, datetime.datetime):
-                            import ipdb; ipdb.set_trace()
-                        occurrence_form_data['start_time'] = date.strftime('%x %X')
-                        self.occurrence_parser.parse(occurrence_form_data)
+                        if isinstance(results, (list, tuple)):
+                            dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
+                        else:
+                            dates = results[:settings.MAX_RECURRENCE]
+                        for date in dates:
+                            occurrence_form_data = data.copy()
+                            occurrence_form_data['event'] = event.id
+                            if not isinstance(date, datetime.datetime):
+                                self.logger.warn('This is not a datetime.') 
+                            occurrence_form_data['start_time'] = date.strftime('%x %X')
+                            self.occurrence_parser.parse(occurrence_form_data)
+                            # print 'Total occurrences for %s: %d' % (event.id,
+                                    # event.occurrences.count())
 
+        # import ipdb; ipdb.set_trace()
 
         # sanity check  FIXME ugly
-        # occurrence_count = event.occurrences.count()
-        # if not occurrence_count:
-            # self.logger.warn('Dropping Event: no parsable occurrences')
-            # event.delete()
-            # return
+        occurrence_count = event.occurrences.count()
+        if not occurrence_count:
+            self.logger.warn('Dropping Event: no parsable occurrences')
+            event.delete()
+            return
 
 

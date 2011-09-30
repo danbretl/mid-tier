@@ -41,10 +41,10 @@ class BaseParser(object):
 
     def cache_key(self, form_data):
         kwargs = dict((f, form_data[f]) for f in self.fields if form_data.has_key(f))
-        # import ipdb; ipdb.set_trace()
         try:
-            key = self.KeyTuple(self.KeyTuple(**kwargs))
+            key = self.KeyTuple(**kwargs)
         except:
+            self.logger.warn("Can't create key given %s" % str(form_data))
             return None
         return key
 

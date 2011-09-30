@@ -72,8 +72,3 @@ class RRuleConverter(object):
         if isinstance(raw_rrules, (list,tuple)) and len(raw_rrules) > 1:
             return map(self._convert, raw_rrules)
         return self._convert(raw_rrules)
-
-if __name__ == '__main__':
-    rrule_converter = RRuleConverter()
-    rrule_raw = ['FREQ=DAILY;BYHOUR=10;BYMINUTE=00;UNTIL=20070527T235959', 'FREQ=DAILY;BYHOUR=17;BYMINUTE=00;UNTIL=20070527T235959', 'FREQ=DAILY;INTERVAL=1']
-    print rrule_converter.convert(rrule_raw)
