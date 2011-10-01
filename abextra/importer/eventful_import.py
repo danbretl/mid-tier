@@ -62,14 +62,14 @@ class EventfulImporter(object):
             events = self.consumer.consume(location=self.location, date='Today',
                 page_size=self.page_size, page_number=self.current_page)
             for event in events:
-                try:
-                    self.process_event(event)
-                    event_obj = self.parser.parse(event)
+                # try:
+                self.process_event(event)
+                event_obj = self.parser.parse(event)
                     # THIS IS VERY UGLY
                 # FIXME
                 # HANDLE THA DAMN EXCEPTIONS
-                except Exception as e:
-                    import ipdb; ipdb.set_trace()
+                # except Exception as e:
+                    # import ipdb; ipdb.set_trace()
                     # raise e
                     # self.logger.warn("Encountered %s exception while parsing" %
                             # type(exception))
