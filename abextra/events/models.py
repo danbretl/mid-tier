@@ -90,8 +90,11 @@ class EventMixin(object):
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
     def future(self):
-        instant = datetime.date.today()
-        return self.distinct().filter(occurrences__start_date__gte=instant)
+        """filter starting today after this instant, unless all day"""
+        now = datetime.datetime.now()
+        start_date_q = models.Q(occurrences__start_date__gte=now.date())
+        start_time_q = models.Q(occurrences__start_time__gte=now.time()) | models.Q(occurrences__start_time=None)
+        return self.filter(start_date_q, start_time_q)
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
@@ -317,7 +320,11 @@ class EventSummary(models.Model):
 
 class OccurrenceMixin(object):
     def future(self):
-        return self.filter(start_date__gte=datetime.date.today())
+        """filter starting today after this instant, unless all day"""
+        now = datetime.datetime.now()
+        start_date_q = models.Q(start_date__gte=now.date())
+        start_time_q = models.Q(start_time__gte=now.time()) | models.Q(start_time=None)
+        return self.filter(start_date_q, start_time_q)
 
 class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
     pass
