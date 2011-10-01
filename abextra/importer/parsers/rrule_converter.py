@@ -10,37 +10,36 @@ class BaseArgConverter(object):
         return self._convert_value(value)
 
 class ConstantArgConverter(BaseArgConverter):
-    kwargs = {'freq', 'wkst', 'byweekday'}
+    kwargs = ('freq', 'wkst', 'byweekday')
 
     def _convert_value(self, value):
         return getattr(rrule, value.upper())
 
 class BooleanArgConverter(BaseArgConverter):
-    kwargs = {'cache'}
+    kwargs = ('cache')
 
     def _convert_value(self, value):
         return bool(value)
 
 class DateTimeArgConverter(BaseArgConverter):
-    kwargs = {'dtstart', 'until'}
+    kwargs = ( 'dtstart', 'until' )
 
     def _convert_value(self, value):
         return parser.parse(value)
 
 class IntegerArgConverter(BaseArgConverter):
-    kwargs = {'bysetpos', 'bymonth', 'bymonthday', 'byyearday',
+    kwargs = ('bysetpos', 'bymonth', 'bymonthday', 'byyearday',
         'byweekno', 'byhour', 'byminute', 'bysecond', 'byeaster',
-        'count', 'interval'
-    }
+        'count', 'interval')
 
     def _convert_value(self, value):
         return int(value)
 
 class ArgConverter(object):
-    registry = {
+    registry = (
         ConstantArgConverter, BooleanArgConverter,
         DateTimeArgConverter, IntegerArgConverter,
-    }
+    )
 
     def __init__(self):
         self.arg_to_converter = dict()
