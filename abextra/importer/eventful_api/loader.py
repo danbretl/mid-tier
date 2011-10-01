@@ -40,15 +40,15 @@ class SimpleApiConsumer(object):
         # schedule a fetch of event details
         self.event_detail_pile.spawn(self.fetch_event_details, summary['id'])
         # schedule a fetch of venue details + image
-        self.event_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
+        self.venue_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
 
     def fetch_venue_details(self, venue_id):
         venue_detail = self.api.call('/venues/get', id=venue_id)
-        # import ipdb; ipdb.set_trace()
         images = venue_detail.get('images')
         if images:
             self.venue_image_pile.spawn(self.fetch_image, images, venue_id)
         return venue_detail
+        # return 'test'
 
     def fetch_event_details(self, event_id):
         event_detail = self.api.call('/events/get', id=event_id)
@@ -83,16 +83,21 @@ class SimpleApiConsumer(object):
         self.process_event_summaries(raw_summaries)
         images_by_event_id = dict((img['id'], img) for img in self.event_image_pile if img)
         images_by_venue_id = dict((img['id'], img) for img in self.venue_image_pile if img)
-        def extend_with_image(event):
+        # import ipdb; ipdb.set_trace()
+        venues_by_venue_id = dict((v['id'], v) for v in self.venue_detail_pile if v)
+        def extend_with_details(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
                 event['image_local'] = image_local
-            if event.has_key('venue_id'):
+
+            venue_id = event.get('venue_id')
+            if venue_id:
+                event['venue_details'] = venues_by_venue_id[venue_id]
                 venue_image_local = images_by_venue_id.get(event['venue_id'])
                 if venue_image_local:
-                    event['venue_image_local'] = venue_image_local
+                    event['venue_details']['image_local'] = venue_image_local
             return event
-        events = itertools.imap(extend_with_image, self.event_detail_pile)
+        events = itertools.imap(extend_with_details, self.event_detail_pile)
         # import ipdb; ipdb.set_trace()
         return events
 
