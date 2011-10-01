@@ -59,7 +59,6 @@ class EventfulCityParser(CityParser):
         form_data['city'] = data.get('city')
         form_data['state'] = data.get('region')
         #TODO: Try and get this from geocoding information.
-        # import ipdb; ipdb.set_trace()
         return form_data
 
 class EventfulPointParser(PointParser):
@@ -76,7 +75,6 @@ class EventfulPointParser(PointParser):
         created, city = self.city_parser.parse(data)
         if city:
             form_data['city'] = city.id
-        # import ipdb; ipdb.set_trace()
         return form_data
 
 class EventfulPlaceParser(PlaceParser):
@@ -131,7 +129,7 @@ class EventfulOccurrenceParser(OccurrenceParser):
             else:
                 t_f = t_i
         except:
-            self.logger.warn("Error parsing occurrence for eventful event <%s>" %data.get('title'))
+            self.logger.warn("Error parsing occurrence for eventful event <%s>" % data.get('title'))
         else:
             form_data['start_date'] = t_i.strftime("%Y-%m-%d")
             form_data['end_date'] = t_f.strftime("%Y-%m-%d")
@@ -239,8 +237,6 @@ class EventfulEventParser(EventParser):
                             self.occurrence_parser.parse(occurrence_form_data)
                             # print 'Total occurrences for %s: %d' % (event.id,
                                     # event.occurrences.count())
-
-        # import ipdb; ipdb.set_trace()
 
         # sanity check  FIXME ugly
         occurrence_count = event.occurrences.count()
