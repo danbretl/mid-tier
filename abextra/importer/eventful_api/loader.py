@@ -6,7 +6,7 @@ from eventlet.green import urllib, urllib2
 from eventful_api import API
 
 class SimpleApiConsumer(object):
-    def __init__(self, img_dir=settings.SCRAPE_IMAGES_PATH, api_key='D9knBLC95spxXSqr'):
+    def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
         # instantiate api
         self.api = API(api_key)
 
@@ -75,7 +75,7 @@ class SimpleApiConsumer(object):
             filename = os.path.join(self.img_dir, parent_id+'.png')
             with open(filename, 'w') as f:
                 f.write(img.read())
-            return dict(id=parent_id, filename=filename, url=url)
+            return dict(id=parent_id, path=filename, url=url)
 
     def consume(self, **kwargs):
         images_by_event_id = {}
@@ -88,14 +88,14 @@ class SimpleApiConsumer(object):
         def extend_with_details(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
-                event['image_local'] = image_local
+                event['images'] = [image_local]
 
             venue_id = event.get('venue_id')
             if venue_id:
                 event['venue_details'] = venues_by_venue_id[venue_id]
                 venue_image_local = images_by_venue_id.get(event['venue_id'])
                 if venue_image_local:
-                    event['venue_details']['image_local'] = venue_image_local
+                    event['venue_details']['images'] = [venue_image_local]
             return event
         events = itertools.imap(extend_with_details, self.event_detail_pile)
         # import ipdb; ipdb.set_trace()

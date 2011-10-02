@@ -73,7 +73,6 @@ class EventfulImporter(object):
                     # raise e
                     # self.logger.warn("Encountered %s exception while parsing" %
                             # type(exception))
-             
             self.logger.info('Fetched %d/%d events so far' %
                     (self.count, self.total_items))
 
