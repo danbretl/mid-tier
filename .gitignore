@@ -8,6 +8,8 @@ settings_*.py
 biketextmate.log
 TAGS
 requirements_local.txt
+.idea/
+debug.log
 
 category_graphs/
 
