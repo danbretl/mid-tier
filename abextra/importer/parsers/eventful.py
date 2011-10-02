@@ -70,7 +70,8 @@ class EventfulPointParser(PointParser):
         form_data['address'] = data.get('address') or ''
         form_data['latitude'] = data.get('latitude')
         form_data['longitude'] = data.get('longitude')
-        form_data['zip'] = data.get('postal_code') or ''
+        # FIXME: deal with form_data not having zip code
+        form_data['zip'] = data.get('postal_code') or '10000'
         form_data['country'] = 'US'
         created, city = self.city_parser.parse(data)
         if city:
@@ -88,6 +89,12 @@ class EventfulPlaceParser(PlaceParser):
         form_data['title'] = data.get('title')
         form_data['phone'] = data.get('phone') or ''
         form_data['url'] = data.get('url')
+
+        venue_details = data.get('venue_details')
+        if venue_details:
+            venue_images = venue_details.get('images')
+            if venue_images:
+                form_data['images'] = venue_images
 
         # image = data.get('image')
         # form_data['image_url'] = image['url']
@@ -188,16 +195,6 @@ class EventfulEventParser(EventParser):
             form_data['image_url'] = image['url']
 
         return form_data
-
-    def parse_file_data(self, data, file_data):
-        image = data.get('image')
-        if image:
-            path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
-            with open(path, 'rb') as f:
-                filename = os.path.split(f.name)[1]
-                file_data['image'] = SimpleUploadedFile(filename, f.read())
-        return file_data
-
 
     def post_parse(self, data, instance):
         event = instance
