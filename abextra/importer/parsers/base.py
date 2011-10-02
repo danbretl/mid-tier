@@ -1,6 +1,9 @@
+import os
 import logging
 from itertools import chain
 from collections import namedtuple
+from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BaseParser(object):
     logger = logging.getLogger('importer.parser')
@@ -45,7 +48,7 @@ class BaseParser(object):
                 self.cache[key] = instance
 
         self.logger.debug((created, instance))
-        return created, instance 
+        return created, instance
 
     def cache_key(self, form_data):
         sig_fields = self.fields or form_data.keys()
