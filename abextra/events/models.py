@@ -4,6 +4,7 @@ from collections import defaultdict
 from binascii import hexlify
 
 from django.db import models, connection
+from django.db.models import Min, Max, Count
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from core.fields import VectorField
@@ -219,31 +220,20 @@ class Event(models.Model):
     @property
     def date_range(self):
         """Min and max of event dates and distinct count"""
-        # FIXME refactor into SQL aggregation
-        dates = self.occurrences.values_list('start_date', flat=True) \
-            .distinct()
-        return min(dates), max(dates), len(dates)
+        return self.occurrences\
+                .aggregate(min=Min('start_date'), max=Max('start_date'), count=Count('pk'))
 
     @property
     def time_range(self):
         """Min and max of event times and distinct count"""
-        # FIXME refactor into SQL aggregation
-        # FIXME naive in assumption of at least one start_time
-        times = self.occurrences.values_list('start_time', flat=True) \
-            .filter(start_time__isnull=False).distinct()
-        return min(times), max(times), len(times)
+        return self.occurrences\
+                .aggregate(min=Min('start_time'), max=Max('start_time'), count=Count('pk'))
 
     @property
     def price_range(self):
         """Min and max of event prices"""
-        # FIXME refactor into SQL aggregation
-        # FIXME circular import is bothersome
-        # FIXME naive in regards to units
-        from prices.models import Price
-        prices = Price.objects.filter(occurrence__in=self.occurrences.all()) \
-            .values_list('quantity', flat=True).distinct()
-        if prices:
-            return min(prices), max(prices), len(prices)
+        return self.occurrences\
+                .aggregate(min=Min('prices__quantity'), max=Max('prices__quantity'), count=Count('prices'))
 
     @property
     def place(self):
@@ -280,18 +270,18 @@ class EventSummaryManager(models.Manager):
         summary.concrete_parent_category_id = ctree \
             .surface_parent(ctree.get(id=event.concrete_category_id)).id
 
+        min_max_count = ('min', 'max', 'count')
         summary.start_date_earliest, summary.start_date_latest, \
-            summary.start_date_distinct_count = event.date_range
+            summary.start_date_distinct_count = map(event.date_range.get, min_max_count)
 
         summary.start_time_earliest, summary.start_time_latest, \
-            summary.start_time_distinct_count = event.time_range
+            summary.start_time_distinct_count = map(event.time_range.get, min_max_count)
+
+        summary.price_quantity_min, summary.price_quantity_max, _ = \
+                map(event.price_range.get, min_max_count)
 
         summary.place_title, summary.place_address, \
             summary.place_distinct_count = event.place
-
-        price_range = event.price_range
-        if price_range:
-            summary.price_quantity_min, summary.price_quantity_max, _ = price_range
 
         if commit:
             summary.save()
