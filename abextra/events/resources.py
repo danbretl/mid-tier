@@ -258,6 +258,36 @@ class EventSummaryResource(ModelResource):
 
         return orm_filters
 
+    # FIXME deprecated should be removed after 0.1
+    def override_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
+        ]
+    def get_search(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        self.is_authenticated(request)
+        self.throttle_check(request)
+
+        # Do the query.
+        events = Event.objects.only('id').ft_search(request.GET.get('q', '')).select_related('summary')
+        paginator = Paginator(events, 20)
+
+        try:
+            page = paginator.page(int(request.GET.get('page', 1)))
+        except InvalidPage:
+            raise Http404("Sorry, no results on that page.")
+
+        objects = []
+
+        for result in page.object_list:
+            bundle = self.full_dehydrate(result.summary)
+            objects.append(bundle)
+
+        object_list = {'objects': objects}
+
+        self.log_throttled_access(request)
+        return self.create_response(request, object_list)
+
 # =========================
 # = Event Recommendations =
 # =========================
