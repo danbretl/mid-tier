@@ -108,7 +108,7 @@ class EventMixin(object):
 
     def ft_search(self, terms):
         keywords = '|'.join(terms.split())
-        return self.select_related().extra(
+        return self.extra(
             select={'rank': "ts_rank_cd('{0,0,0.2,0.8}', search_vector, \
                 to_tsquery('pg_catalog.english', %s))"},
             where=("search_vector @@ to_tsquery('pg_catalog.english', %s)",),
