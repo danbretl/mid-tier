@@ -19,6 +19,7 @@ class ExternalCategory(models.Model):
 
     class Meta:
         verbose_name_plural = _('external categories')
+        unique_together = (('source', 'xid'),)
 
 
 class RegexCategory(models.Model):
