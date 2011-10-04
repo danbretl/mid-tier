@@ -111,9 +111,9 @@ class EventMixin(object):
     def ft_search(self, terms):
         keywords = '|'.join(terms.split())
         return self.extra(
-            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}', search_vector, \
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\", \
                 to_tsquery('pg_catalog.english', %s))"},
-            where=("search_vector @@ to_tsquery('pg_catalog.english', %s)",),
+            where=("\"events_event\".\"search_vector\" @@ to_tsquery('pg_catalog.english', %s)",),
             params=(keywords,),
             select_params=(keywords,),
             order_by=('-rank',)
@@ -248,7 +248,25 @@ class Event(models.Model):
     def __unicode__(self):
         return self.title
 
-class EventSummaryManager(models.Manager):
+class EventSummaryMixin(object):
+    def ft_search(self, terms):
+        keywords = '|'.join(terms.split())
+        return self.select_related('event').extra(
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\", \
+                to_tsquery('pg_catalog.english', %s))"},
+            where=("\"events_event\".\"search_vector\" @@ to_tsquery('pg_catalog.english', %s)",),
+            params=(keywords,),
+            select_params=(keywords,),
+            order_by=('-rank',)
+        )
+
+class EventSummaryQuerySet(models.query.QuerySet, EventSummaryMixin):
+    pass
+
+class EventSummaryManager(models.Manager, EventSummaryMixin):
+    def get_query_set(self):
+        return EventSummaryQuerySet(self.model)
+
     def for_event(self, event, ctree, commit=True):
         """
         Arguments:

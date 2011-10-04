@@ -207,8 +207,7 @@ class EventSummaryResource(ModelResource):
         .select_related('event', 'concrete_category', 'concrete_parent_category')
 
     def build_filters(self, filters=None):
-        if filters is None:
-            filters = dict()
+        filters = filters or dict()
         orm_filters = super(EventSummaryResource, self).build_filters(filters)
 
         # work with filter values that are Category resource uri(s)
@@ -249,14 +248,26 @@ class EventSummaryResource(ModelResource):
             orm_filters.update(event__occurrences__start_date__gte=dtstart_earliest)
             orm_filters.update(event__occurrences__start_date__lte=dtstart_latest)
 
-        # FIXME super hardcore inefficient -- full-text search should just live
-        # on the summary itself
-        ft_string = filters.get('q')
-        if ft_string:
-            events = Event.objects.only('id').ft_search(ft_string)
-            orm_filters.update(event__in=events)
-
         return orm_filters
+
+    def obj_get_list(self, request=None, **kwargs):
+        """overridden just to pass the `request` as an arg to build_filters"""
+        filters = request.GET.copy() if hasattr(request, 'GET') else dict()
+
+        # Update with the provided kwargs.
+        filters.update(kwargs)
+        applicable_filters = self.build_filters(filters=filters)
+
+        qs = self.get_object_list(request).filter(**applicable_filters)
+        q_filter = filters.get('q', None)
+        if q_filter:
+            qs = qs.ft_search(q_filter)
+
+        try:
+            print qs.query
+            return qs
+        except ValueError:
+            raise NotFound("Invalid resource lookup data provided (mismatched type).")
 
     # FIXME deprecated should be removed after 0.1
     def override_urls(self):
