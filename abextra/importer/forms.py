@@ -9,7 +9,7 @@ class ExternalCategoryForm(forms.ModelForm):
 
 class ExternalCategoryAdminForm(ExternalCategoryForm):
     concrete_category = forms.ModelChoiceField(
-        queryset=Category.objects.all().order_by('title'),
+        queryset=Category.concrete.all().order_by('title'),
         empty_label="Select an internal category",
         required=False
     )
@@ -22,5 +22,6 @@ class ExternalCategoryAdminForm(ExternalCategoryForm):
 class ExternalCategoryImportForm(ExternalCategoryForm):
     source = forms.ModelChoiceField(
         queryset=Source.objects.all(),
-        cache_choices=True
+        cache_choices=True,
+        to_field_name='name'
     )

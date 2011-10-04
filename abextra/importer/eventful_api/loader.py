@@ -9,6 +9,7 @@ class SimpleApiConsumer(object):
     def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
         # instantiate api
         self.api = API(api_key)
+        self.venue_ids = set()
 
         # a green pile for images w/ fairly high concurrency
         # (webservers are ok with it)
@@ -40,7 +41,9 @@ class SimpleApiConsumer(object):
         # schedule a fetch of event details
         self.event_detail_pile.spawn(self.fetch_event_details, summary['id'])
         # schedule a fetch of venue details + image
-        self.venue_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
+        if not summary['venue_id'] in self.venue_ids:
+            self.venue_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
+            self.venue_ids.add(summary['venue_id'])
 
     def fetch_venue_details(self, venue_id):
         venue_detail = self.api.call('/venues/get', id=venue_id)
@@ -70,9 +73,10 @@ class SimpleApiConsumer(object):
             img = urllib2.urlopen(request)
         except (urllib2.URLError, urllib2.HTTPError), e:
             # FIXME: use logger to print these error messages
-            print "HTTP Error:", e.code, url
+            print "Internets Error:", url
         else:
-            filename = os.path.join(self.img_dir, parent_id+'.png')
+            suffix = '.'+url.split('.')[-1]
+            filename = os.path.join(self.img_dir, parent_id+suffix)
             with open(filename, 'w') as f:
                 f.write(img.read())
             return dict(id=parent_id, path=filename, url=url)
@@ -88,14 +92,14 @@ class SimpleApiConsumer(object):
         def extend_with_details(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
-                event['images'] = [image_local]
+                event['image_local'] = [image_local]
 
             venue_id = event.get('venue_id')
             if venue_id:
                 event['venue_details'] = venues_by_venue_id[venue_id]
                 venue_image_local = images_by_venue_id.get(event['venue_id'])
                 if venue_image_local:
-                    event['venue_details']['images'] = [venue_image_local]
+                    event['venue_image_local'] = [venue_image_local]
             return event
         events = itertools.imap(extend_with_details, self.event_detail_pile)
         # import ipdb; ipdb.set_trace()
