@@ -90,16 +90,17 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
+    @property
+    def _future_filter(self):
+        return dict(occurrences__start_datetime__gte=datetime.datetime.now())
+
     def future(self):
         """filter starting today after this instant, unless all day"""
-        now = datetime.datetime.now()
-        start_date_q = models.Q(occurrences__start_date__gte=now.date())
-        start_time_q = models.Q(occurrences__start_time__gte=now.time()) | models.Q(occurrences__start_time=None)
-        return self.filter(start_date_q, start_time_q)
+        return self.filter(**self._future_filter)
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
-        exclusions = user.event_actions.filter(event__in=self, action__in=actions) \
+        exclusions = user.event_actions.filter(action__in=actions) \
             .values_list('event_id', flat=True)
         return self.exclude(id__in=exclusions)
 
@@ -312,9 +313,8 @@ class OccurrenceMixin(object):
     def future(self):
         """filter starting today after this instant, unless all day"""
         now = datetime.datetime.now()
-        start_date_q = models.Q(start_date__gte=now.date())
-        start_time_q = models.Q(start_time__gte=now.time()) | models.Q(start_time=None)
-        return self.filter(start_date_q, start_time_q)
+        start_datetime_q = models.Q(start_datetime__gte=now)
+        return self.filter(start_datetime_q)
 
 class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
     pass
@@ -330,6 +330,7 @@ class Occurrence(models.Model):
     one_off_place = models.CharField(max_length=200, blank=True)
     start_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
+    start_datetime = models.DateTimeField()
     end_date = models.DateField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     is_all_day = models.BooleanField(default=False)
@@ -338,6 +339,11 @@ class Occurrence(models.Model):
 
     class Meta:
         verbose_name_plural = _('occurrences')
+
+    def save(self, *args, **kwargs):
+        self.start_datetime = datetime.datetime\
+                .combine(self.start_date, self.start_time or datetime.time())
+        super(Occurrence, self).save(*args, **kwargs)
 
     @property
     def is_past(self): pass

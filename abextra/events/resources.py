@@ -309,7 +309,9 @@ class EventRecommendationResource(EventSummaryResource):
             orm_filters[k.split('__', 1)[1]] = v
 
         # declare Events queryset through active manager, with future filtering, orm_filters and action filters
-        events_qs = Event.active.future().filter_user_actions(request.user, 'GX').filter(**orm_filters)
+        orm_filters.update(Event.objects._future_filter)
+        events_qs = Event.active.filter(**orm_filters).filter_user_actions(request.user, 'GX')
+        # print events_qs.query
 
         # FIXME deprecated
         # should be deprecated as soon as proper filtering is in place
