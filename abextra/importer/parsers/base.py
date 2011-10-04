@@ -9,6 +9,7 @@ class BaseParser(object):
     logger = logging.getLogger('importer.parser')
     model_form = None
     fields = []
+    img_dict_key = 'image_local' 
 
     def __init__(self):
         self.model = self.model_form._meta.model
@@ -33,7 +34,8 @@ class BaseParser(object):
                 # could be invalid, because already exists in db
                 flat_errors = chain.from_iterable(form.errors.itervalues())
                 if any('already exists' in e.lower() for e in flat_errors):
-                    attrs = dict((f, getattr(form.instance, f)) for f in form.fields.iterkeys())
+                    sig_fields = self.fields or form.fields.keys()
+                    attrs = dict((f, getattr(form.instance, f)) for f in sig_fields)
                     created, instance = False, self.model.objects.get(**attrs)
                 # form is invalid due to bad data, create nothing
                 else:
@@ -59,7 +61,8 @@ class BaseParser(object):
         raise NotImplementedError()
 
     def parse_file_data(self, data, file_data):
-        images = data.get('images')
+        
+        images = data.get(self.img_dict_key)
         if images:
             image = images[0]
             path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])

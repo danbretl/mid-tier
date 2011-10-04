@@ -53,7 +53,7 @@ class EventfulImporter(object):
         self.logger.info('Found %d current events in %s' %
                 (self.total_items, self.location))
         self.logger.info('Fetching %d pages (%d events per page) ...' %
-                (page_count, self.page_size))
+                (last_page - self.current_page, self.page_size))
         self.logger.info('Starting from page %d/%d' %
                 (self.current_page, page_count))
 

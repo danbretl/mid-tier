@@ -245,6 +245,8 @@ LOGGING = {
     }
 }
 
+IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
+
 # ===============
 # = Keyed Cache =
 # ===============

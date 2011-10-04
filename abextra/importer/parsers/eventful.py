@@ -1,6 +1,7 @@
 import re
 import os
 import datetime
+import HTMLParser
 from dateutil import parser as date_parser
 from django.conf import settings
 from itertools import chain
@@ -80,6 +81,7 @@ class EventfulPointParser(PointParser):
 
 class EventfulPlaceParser(PlaceParser):
     point_parser = EventfulPointParser()
+    img_dict_key='venue_image_local'
 
     def parse_form_data(self, data, form_data):
         created, point = self.point_parser.parse(data)
@@ -90,28 +92,23 @@ class EventfulPlaceParser(PlaceParser):
         form_data['phone'] = data.get('phone') or ''
         form_data['url'] = data.get('url')
 
-        venue_details = data.get('venue_details')
-        if venue_details:
-            venue_images = venue_details.get('images')
-            if venue_images:
-                form_data['images'] = venue_images
-
-        # image = data.get('image')
-        # form_data['image_url'] = image['url']
-
+        venue_images = data.get('venue_image_local')
+        if venue_images:
+            form_data['venue_image_local'] = venue_images
         return form_data
 
 
 class EventfulCategoryParser(ExternalCategoryParser):
     model_form = ExternalCategoryImportForm
+    html_parser = HTMLParser.HTMLParser()
     fields = ['source', 'xid']
 
     def parse_form_data(self, data, form_data):
-        source = Source.objects.get(name='eventful')
-        form_data['source'] = source.id
+        form_data['source'] = 'eventful'
         form_data['xid'] = data.get('id')
-        form_data['name'] = data.get('name')
-
+        name = data.get('name')
+        if name:
+            form_data['name'] = self.html_parser.unescape(name)
         return form_data
 
 class EventfulOccurrenceParser(OccurrenceParser):
@@ -162,6 +159,7 @@ class EventfulEventParser(EventParser):
     occurrence_parser = EventfulOccurrenceParser()
     external_category_parser = EventfulCategoryParser()
     rr_converter = RRuleConverter()
+    img_dict_key='image_local'
 
     def parse_form_data(self, data, form_data):
         form_data['source'] = 'eventful'
@@ -182,8 +180,9 @@ class EventfulEventParser(EventParser):
 
                 for category_data in categories:
                     created, external_category = self.external_category_parser.parse(category_data)
-                    if created:
+                    if external_category:
                         external_category_ids.append(external_category.id)
+
         form_data['external_categories'] = external_category_ids
         # FIXME: incorporate eventlet image fetcher before crawler
         # parses but after search results and individual events are
