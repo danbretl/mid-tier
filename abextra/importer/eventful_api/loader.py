@@ -1,6 +1,8 @@
 import os
 import eventlet
 import itertools
+from PIL import Image
+from StringIO import StringIO
 from django.conf import settings
 from eventlet.green import urllib, urllib2
 from eventful_api import API
@@ -40,8 +42,11 @@ class SimpleApiConsumer(object):
         return resp
 
     def process_event_summaries(self, summaries):
-        for summary in summaries:
-            self.process_event_summary(summary)
+        if isinstance(summaries, (list, tuple)):
+            for summary in summaries:
+                self.process_event_summary(summary)
+        else:
+            self.process_event_summary(summaries)
 
     def process_event_summary(self, summary):
         # schedule a fetch of event details
@@ -55,7 +60,7 @@ class SimpleApiConsumer(object):
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
         if images:
-            self.venue_image_pile.spawn(self.fetch_venue_image, images, venue_id)
+            self.venue_image_pile.spawn(self.fetch_image, images, venue_id)
         return venue_detail
 
     def fetch_event_details(self, event_id):
@@ -78,30 +83,19 @@ class SimpleApiConsumer(object):
             # FIXME: use logger to print these error messages
             print "Internets Error:", url
         else:
-            suffix = '.'+url.split('.')[-1]
-            filename = os.path.join(self.img_dir, parent_id+suffix)
-            with open(filename, 'w') as f:
-                f.write(img.read())
-            return dict(id=parent_id, path=filename, url=url)
-
-    def fetch_venue_image(self, images_dict, parent_id):
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
-        else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        request = urllib2.Request(url)
-        try:
-            img = urllib2.urlopen(request)
-        except (urllib2.URLError, urllib2.HTTPError), e:
-            # FIXME: use logger to print these error messages
-            print "Internets Error:", url
-        else:
-            suffix = '.'+url.split('.')[-1]
-            filename = os.path.join(self.img_dir, parent_id+suffix)
-            with open(filename, 'w') as f:
-                f.write(img.read())
-            return dict(id=parent_id, path=filename, url=url)
+            img_dat = img.read()
+            im = Image.open(StringIO(img_dat))
+            width, height = im.size
+            # FIXME: migrate image dimension checking logic to form so that it
+            # can be reused
+            if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
+                suffix = '.'+url.split('.')[-1]
+                filename = os.path.join(self.img_dir, parent_id+suffix)
+                with open(filename, 'w') as f:
+                    f.write(img_dat)
+                return dict(id=parent_id, path=filename, url=url)
+            else:
+                print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
 
     def consume(self, **kwargs):
         response = self.fetch_event_summaries(**kwargs)

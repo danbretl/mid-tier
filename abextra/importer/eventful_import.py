@@ -20,7 +20,7 @@ class EventfulImporter(object):
 
     def import_events(self, total_pages=0):
 
-        last_page = self.page_size
+        last_page = self.page_size + 1
         fetched_meta = False
 
         self.logger.info('Beginning import of eventful events...') 
