@@ -1,6 +1,5 @@
 import logging
 import itertools
-import eventful
 from django.conf import settings
 from importer.parsers.eventful import EventfulEventParser
 from importer.eventful_api.loader import SimpleApiConsumer
@@ -13,7 +12,6 @@ class EventfulImporter(object):
         self.parser = EventfulEventParser()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
-        self.api = eventful.API(settings.EVENTFUL_API_KEY)
         self.events = []
         self.page_size = page_size 
         self.query = query
@@ -21,24 +19,13 @@ class EventfulImporter(object):
         self.total_items = 0
         self.current_page = current_page 
 
-    # custom __getstate__ and __setstate__ for pickling and unpickling
-
-    def __getstate__(self):
-        result = self.__dict__.copy()
-        result['api'] = settings.EVENTFUL_API_KEY
-        del result['logger']
-        return result
-
-    def __setstate__(self, dict):
-        self.__dict__ = dict
-        self.api = eventful.API(settings.EVENTFUL_API_KEY)
-        self.logger = logging.getLogger('importer.eventful_import')
-
     def import_events(self, total_pages=0):
         # api call to get metadata
-        metadata = self.api.call('/events/search/',
+        self.logger.debug('Fetching initial metadata in separate call for \
+                reasons unknown, but time will tell')
+        metadata = self.consumer.api.call('/events/search/',
                 q=self.query,l=self.location,
-                page_size=self.page_size)
+                page_size='1')
         self.total_items = int(metadata['total_items'])
         page_count = int(metadata['page_count'])
 
