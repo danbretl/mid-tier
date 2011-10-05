@@ -9,7 +9,11 @@ class SimpleApiConsumer(object):
     def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
         # instantiate api
         self.api = API(api_key)
+
         self.venue_ids = set()
+        self.images_by_event_id = {}
+        self.images_by_venue_id = {}
+        self.venues_by_venue_id = {}
 
         # a green pile for images w/ fairly high concurrency
         # (webservers are ok with it)
@@ -98,21 +102,21 @@ class SimpleApiConsumer(object):
             return dict(id=parent_id, path=filename, url=url)
 
     def consume(self, **kwargs):
-        images_by_event_id = {}
         raw_summaries = self.fetch_event_summaries(**kwargs)['event']
         self.process_event_summaries(raw_summaries)
-        images_by_event_id = dict((img['id'], img) for img in self.event_image_pile if img)
-        images_by_venue_id = dict((img['id'], img) for img in self.venue_image_pile if img)
-        venues_by_venue_id = dict((v['id'], v) for v in self.venue_detail_pile if v)
+        self.images_by_event_id.update(dict((img['id'], img) for img in self.event_image_pile if img))
+        self.images_by_venue_id.update(dict((img['id'], img) for img in self.venue_image_pile if img))
+        self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
+
         def extend_with_details(event):
-            image_local = images_by_event_id.get(event['id'])
+            image_local = self.images_by_event_id.get(event['id'])
             if image_local:
                 event['image_local'] = [image_local]
 
             venue_id = event.get('venue_id')
             if venue_id:
-                event['venue_details'] = venues_by_venue_id[venue_id]
-                venue_image_local = images_by_venue_id.get(event['venue_id'])
+                event['venue_details'] = self.venues_by_venue_id[venue_id]
+                venue_image_local = self.images_by_venue_id.get(event['venue_id'])
                 if venue_image_local:
                     event['venue_image_local'] = [venue_image_local]
             return event
