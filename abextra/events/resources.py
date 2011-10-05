@@ -11,16 +11,11 @@ from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.authentication import ApiKeyAuthentication
-from tastypie.authorization import DjangoAuthorization
-from tastypie.validation import FormValidation
 from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from tastypie.http import HttpAccepted, HttpBadRequest
+from tastypie.http import  HttpBadRequest
 from tastypie.utils import trailing_slash
-from tastypie.utils.mime import determine_format, build_content_type
-from tastypie.constants import ALL, ALL_WITH_RELATIONS
 
-from api.authentication import ConsumerApiKeyAuthentication, ConsumerAuthentication
+from api.authentication import ConsumerApiKeyAuthentication
 
 from places.resources import PlaceResource, PlaceFullResource
 from prices.resources import PriceResource
@@ -41,8 +36,8 @@ class CategoryResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
-        fields = ('title', 'color', 'button_icon', 'small_icon') + \
-            ('thumb',) # FIXME remove deprecated graphic fields
+        fields = ('title', 'color', 'button_icon', 'small_icon') +\
+                 ('thumb',) # FIXME remove deprecated graphic fields
 
     def dehydrate_button_icon(self, bundle):
         category, data = bundle.obj, bundle.data
@@ -73,8 +68,8 @@ class EventResource(ModelResource):
         detail_allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         fields = ('concrete_category', 'abstract_categories', 'occurrences',
-            'title', 'description', 'image', 'video_url', 'url'
-        )
+                  'title', 'description', 'image', 'video_url', 'url'
+            )
 
     def dehydrate_url(self, bundle):
         event, data = bundle.obj, bundle.data
@@ -83,7 +78,7 @@ class EventResource(ModelResource):
             'protocol': 'http',
             'domain': Site.objects.get_current().domain,
             'uri': reverse('event_detail', kwargs=kwargs),
-        }
+            }
 
     # TODO refactor into separate fields / hydration methods when ctree becomes thread-local
     def dehydrate(self, bundle):
@@ -111,7 +106,7 @@ class EventResource(ModelResource):
         try:
             image = event.image_chain(ctree)
             detail_thumb = get_thumbnail(image, **settings.IPHONE_THUMB_OPTIONS)
-        except:
+        except Exception:
             pass
         else:
             data.update(thumbnail_detail=detail_thumb.url)
@@ -120,8 +115,8 @@ class EventResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        joined_qs = super(EventResource, self).get_object_list(request) \
-            .select_related('concrete_category')
+        joined_qs = super(EventResource, self).get_object_list(request)\
+        .select_related('concrete_category')
         return joined_qs
 
 
@@ -157,8 +152,8 @@ class OccurrenceResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        return super(OccurrenceResource, self).get_object_list(request) \
-            .select_related('place__point__city')
+        return super(OccurrenceResource, self).get_object_list(request)\
+        .select_related('place__point__city')
 
     def build_filters(self, filters=None):
         """Allows flexible lookup by either PK or URI"""
@@ -177,6 +172,7 @@ class OccurrenceResource(ModelResource):
                 orm_filters.update(event__exact=kwargs.get('pk'))
 
         return orm_filters
+
 
 class OccurrenceFullResource(OccurrenceResource):
     place = fields.ToOneField(PlaceFullResource, 'place', full=True)
@@ -207,14 +203,14 @@ class EventSummaryResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        return super(EventSummaryResource, self).get_object_list(request) \
-            .select_related('event', 'concrete_category', 'concrete_parent_category')
+        return super(EventSummaryResource, self).get_object_list(request)\
+        .select_related('event', 'concrete_category', 'concrete_parent_category')
 
     def build_filters(self, filters=None):
-        if filters is None:
-            filters = dict()
+        filters = filters or dict()
         orm_filters = super(EventSummaryResource, self).build_filters(filters)
 
+        # work with filter values that are Category resource uri(s)
         filter_uri = orm_filters.get('concrete_parent_category__exact')
         if filter_uri:
             try:
@@ -224,13 +220,60 @@ class EventSummaryResource(ModelResource):
             else:
                 orm_filters.update(concrete_parent_category__exact=kwargs['pk'])
 
+        # FIXME these really need to be rethought and come from precomputed columns
+        # FIXME inefficient joins for true occurrence-based results
+        # TODO refactor to use regular tastypie field filtering
+        # new and inefficient occurrence-wise price filter
+        price_min, price_max = map(filters.get, ('price_min', 'price_max'))
+        if price_min:
+            price_min = int(price_min)
+            orm_filters.update(event__occurrences__prices__quantity__gte=price_min)
+        if price_max:
+            price_max = int(price_max)
+            orm_filters.update(event__occurrences__prices__quantity__lte=price_max)
+
+        # new and inefficient occurrence-wise time filter
+        time_range = map(filters.get, ('tstart_earliest', 'tstart_latest'))
+        if all(time_range):
+            mktime = lambda t: datetime.datetime.strptime(t, '%H%M').time()
+            tstart_earliest, tstart_latest = map(mktime, time_range)
+            orm_filters.update(event__occurrences__start_time__gte=tstart_earliest)
+            orm_filters.update(event__occurrences__start_time__lte=tstart_latest)
+
+        # new and inefficient occurrence-wise date filter
+        date_range = map(filters.get, ('dtstart_earliest', 'dtstart_latest'))
+        if all(date_range):
+            mkdate = lambda d: datetime.datetime.strptime(d, '%Y-%m-%d').date()
+            dtstart_earliest, dtstart_latest = map(mkdate, date_range)
+            orm_filters.update(event__occurrences__start_date__gte=dtstart_earliest)
+            orm_filters.update(event__occurrences__start_date__lte=dtstart_latest)
+
         return orm_filters
 
+    def obj_get_list(self, request=None, **kwargs):
+        """overridden just to pass the `request` as an arg to build_filters"""
+        filters = request.GET.copy() if hasattr(request, 'GET') else dict()
+
+        # Update with the provided kwargs.
+        filters.update(kwargs)
+        applicable_filters = self.build_filters(filters=filters)
+
+        qs = self.get_object_list(request).filter(**applicable_filters)
+        q_filter = filters.get('q', None)
+        if q_filter:
+            qs = qs.ft_search(q_filter)
+
+        try:
+            print qs.query
+            return qs
+        except ValueError:
+            raise NotFound("Invalid resource lookup data provided (mismatched type).")
+
+    # FIXME deprecated should be removed after 0.1
     def override_urls(self):
         return [
             url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
         ]
-
     def get_search(self, request, **kwargs):
         self.method_check(request, allowed=['get'])
         self.is_authenticated(request)
@@ -260,52 +303,28 @@ class EventSummaryResource(ModelResource):
 # = Event Recommendations =
 # =========================
 class EventRecommendationResource(EventSummaryResource):
-
     def build_filters(self, request, filters=None):
         if filters is None:
             filters = dict()
         orm_filters = super(EventRecommendationResource, self).build_filters(filters)
 
-        # passthrough of concrete_parent_category to summary
+        # pass-through of concrete_parent_category to summary
         cpc_filter = orm_filters.pop('concrete_parent_category__exact', None)
         if cpc_filter:
             orm_filters.update(summary__concrete_parent_category=cpc_filter)
 
-        events_qs = Event.active.filter(**orm_filters)
+        # TODO really ghetto removal of inherited occurrence-wise filters
+        event_filters = tuple((k, v) for k, v in orm_filters.iteritems() if k.startswith('event__'))
+        for k, v in event_filters:
+            del orm_filters[k]
+            orm_filters[k.split('__', 1)[1]] = v
 
-        # new and inefficient occurrence-wise price filter
-        price_min, price_max = map(filters.get, ('price_min', 'price_max'))
-        if price_min:
-            price_min = int(price_min)
-            events_qs = events_qs.filter(occurrences__prices__quantity__gte=price_min)
-        if price_max:
-            price_max = int(price_max)
-            events_qs = events_qs.filter(occurrences__prices__quantity__lte=price_max)
+        # declare Events queryset through active manager, with future filtering, orm_filters and action filters
+        orm_filters.update(Event.objects._future_filter)
+        events_qs = Event.active.filter(**orm_filters).filter_user_actions(request.user, 'GX')
+        # print events_qs.query
 
-        # new and inefficient occurrence-wise time filter
-        time_range = map(filters.get, ('tstart_earliest', 'tstart_latest'))
-        if all(time_range):
-            mktime = lambda t: datetime.datetime.strptime(t, '%H%M').time()
-            tstart_earliest, tstart_latest = map(mktime, time_range)
-            events_qs = events_qs.filter(
-                occurrences__start_time__gte=tstart_earliest,
-                occurrences__start_time__lte=tstart_latest
-                )
-
-        # new and inefficient occurrence-wise date filter
-        date_range = map(filters.get, ('dtstart_earliest', 'dtstart_latest'))
-        if all(date_range):
-            mkdate = lambda d: datetime.datetime.strptime(d, '%Y-%m-%d').date()
-            dtstart_earliest, dtstart_latest = map(mkdate, date_range)
-            events_qs = events_qs.filter(
-                occurrences__start_date__gte=dtstart_earliest,
-                occurrences__start_date__lte=dtstart_latest
-            )
-        else:
-            events_qs = events_qs.future()
-
-        events_qs = events_qs.filter_user_actions(request.user, 'GX')
-
+        # FIXME deprecated
         # should be deprecated as soon as proper filtering is in place
         view = filters.get('view')
         if view:
@@ -313,7 +332,7 @@ class EventRecommendationResource(EventSummaryResource):
                 events_qs = events_qs.order_by('-popularity_score')[:100]
             elif view == 'free':
                 ids = EventSummary.objects.filter(price_quantity_max=0).values_list('event',
-                                                                     flat=True)
+                                                                                    flat=True)
                 events_qs = events_qs.filter(id__in=ids)[:100]
             else:
                 msg = "Invalid value for get parameter 'view'"
@@ -325,19 +344,18 @@ class EventRecommendationResource(EventSummaryResource):
         recommended_events = ml.recommend_events(request.user, events_qs)
 
         # FIXME ugly plug :: see above
-        recommended_events = all(hasattr(e, 'pk') for e in recommended_events) \
-                and [e.pk for e in recommended_events] or recommended_events
+        recommended_events = all(hasattr(e, 'pk') for e in recommended_events)\
+                             and [e.pk for e in recommended_events] or recommended_events
 
         # preprocess ignores
         EventAction.objects.ignore_non_actioned_events(request.user, recommended_events)
 
         # orm filters are simple, when it comes down to it
         orm_filters = dict(event__in=recommended_events)
-
         return orm_filters
 
     def obj_get_list(self, request=None, **kwargs):
-        """overriden just to pass the `request` as an arg to `build_filters`"""
+        """overridden just to pass the `request` as an arg to build_filters"""
         filters = request.GET.copy() if hasattr(request, 'GET') else dict()
 
         # Update with the provided kwargs.
@@ -346,5 +364,5 @@ class EventRecommendationResource(EventSummaryResource):
 
         try:
             return self.get_object_list(request).filter(**applicable_filters)
-        except ValueError, e:
+        except ValueError:
             raise NotFound("Invalid resource lookup data provided (mismatched type).")

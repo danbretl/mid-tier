@@ -4,6 +4,7 @@ from collections import defaultdict
 from binascii import hexlify
 
 from django.db import models, connection
+from django.db.models import Min, Max, Count
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from core.fields import VectorField
@@ -89,13 +90,17 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
+    @property
+    def _future_filter(self):
+        return dict(occurrences__start_datetime__gte=datetime.datetime.now())
+
     def future(self):
-        instant = datetime.date.today()
-        return self.distinct().filter(occurrences__start_date__gte=instant)
+        """filter starting today after this instant, unless all day"""
+        return self.filter(**self._future_filter)
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
-        exclusions = user.event_actions.filter(event__in=self, action__in=actions) \
+        exclusions = user.event_actions.filter(action__in=actions) \
             .values_list('event_id', flat=True)
         return self.exclude(id__in=exclusions)
 
@@ -105,10 +110,10 @@ class EventMixin(object):
 
     def ft_search(self, terms):
         keywords = '|'.join(terms.split())
-        return self.select_related().extra(
-            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}', search_vector, \
+        return self.extra(
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\", \
                 to_tsquery('pg_catalog.english', %s))"},
-            where=("search_vector @@ to_tsquery('pg_catalog.english', %s)",),
+            where=("\"events_event\".\"search_vector\" @@ to_tsquery('pg_catalog.english', %s)",),
             params=(keywords,),
             select_params=(keywords,),
             order_by=('-rank',)
@@ -216,31 +221,20 @@ class Event(models.Model):
     @property
     def date_range(self):
         """Min and max of event dates and distinct count"""
-        # FIXME refactor into SQL aggregation
-        dates = self.occurrences.values_list('start_date', flat=True) \
-            .distinct()
-        return min(dates), max(dates), len(dates)
+        return self.occurrences\
+                .aggregate(min=Min('start_date'), max=Max('start_date'), count=Count('pk'))
 
     @property
     def time_range(self):
         """Min and max of event times and distinct count"""
-        # FIXME refactor into SQL aggregation
-        # FIXME naive in assumption of at least one start_time
-        times = self.occurrences.values_list('start_time', flat=True) \
-            .filter(start_time__isnull=False).distinct()
-        return min(times), max(times), len(times)
+        return self.occurrences\
+                .aggregate(min=Min('start_time'), max=Max('start_time'), count=Count('pk'))
 
     @property
     def price_range(self):
         """Min and max of event prices"""
-        # FIXME refactor into SQL aggregation
-        # FIXME circular import is bothersome
-        # FIXME naive in regards to units
-        from prices.models import Price
-        prices = Price.objects.filter(occurrence__in=self.occurrences.all()) \
-            .values_list('quantity', flat=True).distinct()
-        if prices:
-            return min(prices), max(prices), len(prices)
+        return self.occurrences\
+                .aggregate(min=Min('prices__quantity'), max=Max('prices__quantity'), count=Count('prices'))
 
     @property
     def place(self):
@@ -254,7 +248,25 @@ class Event(models.Model):
     def __unicode__(self):
         return self.title
 
-class EventSummaryManager(models.Manager):
+class EventSummaryMixin(object):
+    def ft_search(self, terms):
+        keywords = '|'.join(terms.split())
+        return self.select_related('event').extra(
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\", \
+                to_tsquery('pg_catalog.english', %s))"},
+            where=("\"events_event\".\"search_vector\" @@ to_tsquery('pg_catalog.english', %s)",),
+            params=(keywords,),
+            select_params=(keywords,),
+            order_by=('-rank',)
+        )
+
+class EventSummaryQuerySet(models.query.QuerySet, EventSummaryMixin):
+    pass
+
+class EventSummaryManager(models.Manager, EventSummaryMixin):
+    def get_query_set(self):
+        return EventSummaryQuerySet(self.model)
+
     def for_event(self, event, ctree, commit=True):
         """
         Arguments:
@@ -277,18 +289,18 @@ class EventSummaryManager(models.Manager):
         summary.concrete_parent_category_id = ctree \
             .surface_parent(ctree.get(id=event.concrete_category_id)).id
 
+        min_max_count = ('min', 'max', 'count')
         summary.start_date_earliest, summary.start_date_latest, \
-            summary.start_date_distinct_count = event.date_range
+            summary.start_date_distinct_count = map(event.date_range.get, min_max_count)
 
         summary.start_time_earliest, summary.start_time_latest, \
-            summary.start_time_distinct_count = event.time_range
+            summary.start_time_distinct_count = map(event.time_range.get, min_max_count)
+
+        summary.price_quantity_min, summary.price_quantity_max, _ = \
+                map(event.price_range.get, min_max_count)
 
         summary.place_title, summary.place_address, \
             summary.place_distinct_count = event.place
-
-        price_range = event.price_range
-        if price_range:
-            summary.price_quantity_min, summary.price_quantity_max, _ = price_range
 
         if commit:
             summary.save()
@@ -317,7 +329,10 @@ class EventSummary(models.Model):
 
 class OccurrenceMixin(object):
     def future(self):
-        return self.filter(start_date__gte=datetime.date.today())
+        """filter starting today after this instant, unless all day"""
+        now = datetime.datetime.now()
+        start_datetime_q = models.Q(start_datetime__gte=now)
+        return self.filter(start_datetime_q)
 
 class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
     pass
@@ -333,6 +348,7 @@ class Occurrence(models.Model):
     one_off_place = models.CharField(max_length=200, blank=True)
     start_date = models.DateField()
     start_time = models.TimeField(blank=True, null=True)
+    start_datetime = models.DateTimeField()
     end_date = models.DateField(blank=True, null=True)
     end_time = models.TimeField(blank=True, null=True)
     is_all_day = models.BooleanField(default=False)
@@ -341,6 +357,11 @@ class Occurrence(models.Model):
 
     class Meta:
         verbose_name_plural = _('occurrences')
+
+    def save(self, *args, **kwargs):
+        self.start_datetime = datetime.datetime\
+                .combine(self.start_date, self.start_time or datetime.time())
+        super(Occurrence, self).save(*args, **kwargs)
 
     @property
     def is_past(self): pass

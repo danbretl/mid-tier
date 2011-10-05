@@ -62,6 +62,7 @@ class EventActionAggregate(models.Model):
 # FIXME indexes on `action aggregate`{user_id, category_id}
 # FIXME eager event / category related fields, see .defer
 # FIXME refactor for a bulk update  http://docs.djangoproject.com/en/1.2/topics/db/queries/#updating-multiple-objects-at-once
+# FIXME race condition | https://docs.djangoproject.com/en/dev/ref/models/instances/#updating-attributes-based-on-existing-fields
 def update_aggregate_on_event_action_save(sender, instance, **kwargs):
     """
     Increases the aggregate count for a particular user's event action.
