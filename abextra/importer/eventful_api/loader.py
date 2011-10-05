@@ -9,6 +9,8 @@ class SimpleApiConsumer(object):
     def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
         # instantiate api
         self.api = API(api_key)
+        self.total_items = None
+        self.page_count = None
 
         self.venue_ids = set()
         self.images_by_event_id = {}
@@ -35,7 +37,7 @@ class SimpleApiConsumer(object):
 
     def fetch_event_summaries(self, **kwargs):
         resp = self.api.call('/events/search', **kwargs)
-        return resp['events']
+        return resp
 
     def process_event_summaries(self, summaries):
         for summary in summaries:
@@ -102,8 +104,12 @@ class SimpleApiConsumer(object):
             return dict(id=parent_id, path=filename, url=url)
 
     def consume(self, **kwargs):
-        raw_summaries = self.fetch_event_summaries(**kwargs)['event']
+        response = self.fetch_event_summaries(**kwargs)
+        raw_summaries = response['events']['event']
+        self.total_items = int(response['total_items'])
+        self.page_count = int(response['page_count'])
         self.process_event_summaries(raw_summaries)
+
         self.images_by_event_id.update(dict((img['id'], img) for img in self.event_image_pile if img))
         self.images_by_venue_id.update(dict((img['id'], img) for img in self.venue_image_pile if img))
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
@@ -121,6 +127,5 @@ class SimpleApiConsumer(object):
                     event['venue_image_local'] = [venue_image_local]
             return event
         events = itertools.imap(extend_with_details, self.event_detail_pile)
-        # import ipdb; ipdb.set_trace()
         return events
 

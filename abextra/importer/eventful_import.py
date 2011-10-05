@@ -13,41 +13,37 @@ class EventfulImporter(object):
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
         self.events = []
-        self.page_size = page_size 
+        self.page_size = page_size
         self.query = query
         self.location = location
-        self.total_items = 0
-        self.current_page = current_page 
+        self.current_page = current_page
 
     def import_events(self, total_pages=0):
-        # api call to get metadata
-        self.logger.debug('Fetching initial metadata in separate call for \
-                reasons unknown, but time will tell')
-        metadata = self.consumer.api.call('/events/search/',
-                q=self.query,l=self.location,
-                page_size='1')
-        self.total_items = int(metadata['total_items'])
-        page_count = int(metadata['page_count'])
 
-        # set last page in range to be fetched
-        if not total_pages:
-            last_page = page_count + 1
-        else:
-            last_page = self.current_page + total_pages
-            if last_page > page_count + 1:
-                last_page = page_count + 1
+        last_page = self.page_size
+        fetched_meta = False
 
-        self.logger.info('Found %d current events in %s' %
-                (self.total_items, self.location))
-        self.logger.info('Fetching %d pages (%d events per page) ...' %
-                (last_page - self.current_page, self.page_size))
-        self.logger.info('Starting from page %d/%d' %
-                (self.current_page, page_count))
+        self.logger.info('Beginning import of eventful events...') 
 
-        for ix_page in range(self.current_page, last_page):
-            self.current_page = ix_page
+        while self.current_page < last_page:
             events = self.consumer.consume(location=self.location, date='Today',
                 page_size=self.page_size, page_number=self.current_page)
+
+            if not fetched_meta:
+                if not total_pages:
+                    last_page = self.consumer.page_count + 1
+                else:
+                    last_page = self.current_page + total_pages
+                    if last_page > self.consumer.page_count + 1:
+                        last_page = self.consumer.page_count + 1
+                self.logger.info('Found %d current events in %s' %
+                        (self.consumer.total_items, self.location))
+                self.logger.info('Fetching %d pages (%d events per page) ...' %
+                        (last_page - self.current_page, self.page_size))
+                self.logger.info('Starting from page %d/%d' %
+                        (self.current_page, self.consumer.page_count))
+                fetched_meta = True
+
             for event in events:
                 # try:
                 self.process_event(event)
@@ -61,7 +57,9 @@ class EventfulImporter(object):
                     # self.logger.warn("Encountered %s exception while parsing" %
                             # type(exception))
             self.logger.info('Fetched %d/%d events so far' %
-                    (self.count, self.total_items))
+                    (self.count, self.consumer.total_items))
+
+            self.current_page += 1
 
     # FIXME: implement JSON dump events & settings
     def json_dump():
