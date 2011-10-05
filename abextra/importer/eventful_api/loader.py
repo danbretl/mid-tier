@@ -103,9 +103,7 @@ class SimpleApiConsumer(object):
         self.process_event_summaries(raw_summaries)
         images_by_event_id = dict((img['id'], img) for img in self.event_image_pile if img)
         images_by_venue_id = dict((img['id'], img) for img in self.venue_image_pile if img)
-        # import ipdb; ipdb.set_trace()
         venues_by_venue_id = dict((v['id'], v) for v in self.venue_detail_pile if v)
-        import ipdb; ipdb.set_trace()
         def extend_with_details(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
