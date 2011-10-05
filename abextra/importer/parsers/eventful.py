@@ -88,9 +88,11 @@ class EventfulPlaceParser(PlaceParser):
         if point:
             form_data['point'] = point.id
 
-        form_data['title'] = data.get('title')
-        form_data['phone'] = data.get('phone') or ''
-        form_data['url'] = data.get('url')
+        venue_details = data.get('venue_details')
+        if venue_details:
+            form_data['title'] = venue_details.get('name')
+            form_data['phone'] = data.get('phone') or ''
+            form_data['url'] = venue_details.get('url')
 
         venue_images = data.get('venue_image_local')
         if venue_images:
