@@ -8,7 +8,7 @@ from eventlet import pools
 from eventlet.green import urllib, urllib2
 
 httplib2 = eventlet.import_patched('httplib2')
-import md5
+from hashlib import md5
 import simplejson
 
 class APIError(Exception):
@@ -50,8 +50,11 @@ class API:
     def login(self, user, password):
         "Login to the Eventful API as USER with PASSWORD."
         nonce = self.call('/users/login')['nonce']
-        response = md5.new(nonce + ':'
-                           + md5.new(password).hexdigest()).hexdigest()
+        response = md5('%(nonce)s:%(pass_digest)s' % {
+                'nonce': nonce,
+                'pass_digest': md5(password).hexdigest()
+            }
+        ).hexdigest()
         login = self.call('/users/login', user=user, nonce=nonce,
                           response=response)
         self.user_key = login['user_key']
