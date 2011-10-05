@@ -76,10 +76,10 @@ class EventfulParserTest(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventfulEventParser()
-        self.importer = EventfulImporter(page_size=40)
+        self.importer = EventfulImporter(page_size=100)
 
     def test_parse(self):
-        events = self.importer.import_events(total_pages=10) 
+        events = self.importer.import_events(total_pages=2) 
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
