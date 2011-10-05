@@ -22,7 +22,7 @@ class SimpleApiConsumer(object):
         self.venue_image_pile = eventlet.GreenPile(15)
         # a green pile for venue details w/ lower concurrency
         # (appservers are not too ok with it)
-        self.venue_detail_pile= eventlet.GreenPile(10)
+        self.venue_detail_pile = eventlet.GreenPile(10)
 
         # prepare image download directory
         if not os.path.exists(img_dir):
@@ -49,9 +49,8 @@ class SimpleApiConsumer(object):
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
         if images:
-            self.venue_image_pile.spawn(self.fetch_image, images, venue_id)
+            self.venue_image_pile.spawn(self.fetch_venue_image, images, venue_id)
         return venue_detail
-        # return 'test'
 
     def fetch_event_details(self, event_id):
         event_detail = self.api.call('/events/get', id=event_id)
@@ -60,10 +59,27 @@ class SimpleApiConsumer(object):
             self.event_image_pile.spawn(self.fetch_image, images, event_id)
         return event_detail
 
-
     def fetch_image(self, images_dict, parent_id):
         img_dict = images_dict.get('image')
-        # import ipdb; ipdb.set_trace()
+        if isinstance (img_dict, (tuple, list)):
+            url = img_dict[0]['small']['url'].replace('small', 'original')
+        else:
+            url = img_dict['small']['url'].replace('small', 'original')
+        request = urllib2.Request(url)
+        try:
+            img = urllib2.urlopen(request)
+        except (urllib2.URLError, urllib2.HTTPError), e:
+            # FIXME: use logger to print these error messages
+            print "Internets Error:", url
+        else:
+            suffix = '.'+url.split('.')[-1]
+            filename = os.path.join(self.img_dir, parent_id+suffix)
+            with open(filename, 'w') as f:
+                f.write(img.read())
+            return dict(id=parent_id, path=filename, url=url)
+
+    def fetch_venue_image(self, images_dict, parent_id):
+        img_dict = images_dict.get('image')
         if isinstance (img_dict, (tuple, list)):
             url = img_dict[0]['small']['url'].replace('small', 'original')
         else:
@@ -89,6 +105,7 @@ class SimpleApiConsumer(object):
         images_by_venue_id = dict((img['id'], img) for img in self.venue_image_pile if img)
         # import ipdb; ipdb.set_trace()
         venues_by_venue_id = dict((v['id'], v) for v in self.venue_detail_pile if v)
+        import ipdb; ipdb.set_trace()
         def extend_with_details(event):
             image_local = images_by_event_id.get(event['id'])
             if image_local:
