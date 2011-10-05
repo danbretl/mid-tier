@@ -18,6 +18,9 @@ class EventForm(forms.ModelForm):
 class OccurrenceForm(forms.ModelForm):
     class Meta:
         model = Occurrence
+        # start_datetime is a composite field of start_date and start_time
+        # FIXME perhaps, it should be a db trigger instead of overridden save()
+        exclude = ('start_datetime',)
 
 # ===============
 # = Admin Forms =
