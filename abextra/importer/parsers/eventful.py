@@ -2,7 +2,8 @@ import re
 import os
 import datetime
 import HTMLParser
-from dateutil import parser as date_parser
+import dateutil.parser
+import dateutil.rrule
 from django.conf import settings
 from itertools import chain
 from importer.parsers.base import BaseParser
@@ -12,7 +13,6 @@ from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from events.models import Source, EventSummary
 from events.utils import CachedCategoryTree
-from importer.parsers.rrule_converter import RRuleConverter
 from importer.parsers.event import ExternalCategoryParser
 from importer.parsers.event import EventParser, OccurrenceParser
 
@@ -129,9 +129,9 @@ class EventfulOccurrenceParser(OccurrenceParser):
         form_data['start_date'] = data.get('start_date')
         form_data['end_date'] = data.get('end_date')
         try:
-            t_i = date_parser.parse(data.get('start_time'))
+            t_i = dateutil.parser.parse(data.get('start_time'))
             if data.get('stop_time'):
-                t_f = date_parser.parse(data.get('stop_time'))
+                t_f = dateutil.parser.parse(data.get('stop_time'))
             else:
                 t_f = t_i
         except:
@@ -160,7 +160,6 @@ class EventfulOccurrenceParser(OccurrenceParser):
 class EventfulEventParser(EventParser):
     occurrence_parser = EventfulOccurrenceParser()
     external_category_parser = EventfulCategoryParser()
-    rr_converter = RRuleConverter()
     img_dict_key='image_local'
 
     def parse_form_data(self, data, form_data):
@@ -218,9 +217,11 @@ class EventfulEventParser(EventParser):
                 rrule = rrules.get('rrule')
                 if rrule:
                     try:
-                        results = self.rr_converter.convert(rrule)
-                    except:
-                        self.logger.warn('Error trying to parse rrule %s' % rrule)
+                        rrule_cleaned = rrule.replace('BYDAY','BYWEEKDAY')
+                        results = dateutil.rrule.rrulestr(rrule_cleaned, forceset=True)
+                    except ValueError:
+                        self.logger.warn('Error trying to parse rrule %s' %
+                                rrule_cleaned)
                     else:
                         if isinstance(results, (list, tuple)):
                             dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
