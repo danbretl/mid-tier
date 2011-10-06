@@ -5,12 +5,12 @@ from PIL import Image
 from StringIO import StringIO
 from django.conf import settings
 from eventlet.green import urllib, urllib2
-from eventful_api import API
+from eventful_api import API, MockAPI
 
 class SimpleApiConsumer(object):
     def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
         # instantiate api
-        self.api = API(api_key)
+        self.api = MockAPI(api_key, make_dumps=True)
         self.total_items = None
         self.page_count = None
 
