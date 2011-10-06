@@ -216,12 +216,12 @@ class EventfulEventParser(EventParser):
             if rrules:
                 rrule_field = rrules.get('rrule')
                 if rrule_field:
-                    rrules = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
-                    for rrule in rrules:
-                        rrule_cleaned = rrule.replace('BYDAY','BYWEEKDAY')
-                        results = dateutil.rrule.rrulestr(rrule_cleaned)
-                        dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
-                        for date in dates:
+                    # convert field to a list
+                    rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
+                    for rrule_string in rrule_strings:
+                        rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
+                        rrule = dateutil.rrule.rrulestr(rrule_cleaned)
+                        for date in rrule[:settings.MAX_RECURRENCE]:
                             occurrence_form_data = data.copy()
                             occurrence_form_data['event'] = event.id
                             if not isinstance(date, datetime.datetime):
