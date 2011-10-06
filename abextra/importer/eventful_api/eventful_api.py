@@ -15,7 +15,7 @@ import simplejson
 class APIError(Exception):
     pass
 
-class API:
+class API(object):
     def __init__(self, app_key, server='api.eventful.com', make_dumps=False):
         self.app_key = app_key
         self.server = server
@@ -29,7 +29,7 @@ class API:
             except OSError:
                 pass
 
-    def call(self, method, **args):
+    def _build_url(self, method, **args):
         "Call the Eventful API's METHOD with ARGS."
         # Build up the request
         args['app_key'] = self.app_key
@@ -37,7 +37,11 @@ class API:
             args['user'] = self.user
             args['user_key'] = self.user_key
         args = urllib.urlencode(args)
-        url = "http://%s/json/%s?%s" % (self.server, method, args)
+        return "http://%s/json/%s?%s" % (self.server, method, args)
+
+    def call(self, method, **args):
+        # Build the url
+        url = self._build_url(method, **args)
 
         # Make the request
         with self.httpool.item() as http:
@@ -74,3 +78,17 @@ class API:
         self.user_key = login['user_key']
         self.user = user
         return user
+
+class MockAPI(API):
+    def call(self, method, **args):
+        # Build the url
+        url = self._build_url(method, **args)
+
+        filename = md5(url).hexdigest() + '.json'
+        full_path = os.path.join(self.dump_dir, filename)
+        if not os.path.isfile(full_path):
+            raise APIError('Could not locate necessary mock response')
+
+        with open(full_path, 'r') as f:
+            json = simplejson.load(f)
+        return json
