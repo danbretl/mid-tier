@@ -208,9 +208,13 @@ class EventfulEventParser(EventParser):
                     if not isinstance (rdate, (tuple, list)):
                         rdate = [rdate]
                     for date in rdate:
-                        occurrence_form_data = data.copy()
+                        date_time = dateutil.parser.parse(date)
+                        occurrence_form_data = data
                         occurrence_form_data['event'] = event.id
-                        occurrence_form_data['start_time'] = date
+                        occurrence_form_data['start_date'] = \
+                            date_time.date().isoformat()
+                        occurrence_form_data['start_time'] = \
+                            date_time.time().isoformat()
                         self.occurrence_parser.parse(occurrence_form_data)
 
             if rrules:
@@ -221,12 +225,13 @@ class EventfulEventParser(EventParser):
                     for rrule_string in rrule_strings:
                         rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
                         rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-                        for date in rrule[:settings.MAX_RECURRENCE]:
-                            occurrence_form_data = data.copy()
+                        for date_time in rrule[:settings.MAX_RECURRENCE]:
+                            occurrence_form_data = data
                             occurrence_form_data['event'] = event.id
-                            if not isinstance(date, datetime.datetime):
-                                self.logger.warn('This is not a datetime.') 
-                            occurrence_form_data['start_time'] = date.strftime('%x %X')
+                            occurrence_form_data['start_date'] = \
+                                date_time.date().isoformat()
+                            occurrence_form_data['start_time'] = \
+                                date_time.time().isoformat()
                             self.occurrence_parser.parse(occurrence_form_data)
                             # print 'Total occurrences for %s: %d' % (event.id,
                                     # event.occurrences.count())

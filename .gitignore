@@ -10,7 +10,7 @@ TAGS
 requirements_local.txt
 .idea/
 debug.log
-
+eventful_dumps/
 category_graphs/
 
 # media folder :: mostly should be ignored, except for some 'static' resources
