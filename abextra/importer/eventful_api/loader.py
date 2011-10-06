@@ -7,10 +7,13 @@ from django.conf import settings
 from eventlet.green import urllib, urllib2
 from eventful_api import API, MockAPI
 
-class SimpleApiConsumer(object):
-    def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key='D9knBLC95spxXSqr'):
+class EventfulApiConsumer(object):
+    def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
         # instantiate api
-        self.api = MockAPI(api_key, make_dumps=True)
+        if mock_api:
+            self.api = MockAPI(api_key, make_dumps=make_dumps)
+        else:
+            self.api = API(api_key, make_dumps=make_dumps)
         self.total_items = None
         self.page_count = None
 

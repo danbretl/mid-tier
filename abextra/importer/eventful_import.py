@@ -2,13 +2,13 @@ import logging
 import itertools
 from django.conf import settings
 from importer.parsers.eventful import EventfulEventParser
-from importer.eventful_api.loader import SimpleApiConsumer
+from importer.eventful_api.loader import EventfulApiConsumer
 import events.models
 
 class EventfulImporter(object):
 
-    def __init__(self, current_page=1, page_size=100, query='', location='NYC'):
-        self.consumer = SimpleApiConsumer(api_key=settings.EVENTFUL_API_KEY)
+    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False):
+        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY, mock_api=mock_api)
         self.parser = EventfulEventParser()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
