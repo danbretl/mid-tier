@@ -214,19 +214,13 @@ class EventfulEventParser(EventParser):
                         self.occurrence_parser.parse(occurrence_form_data)
 
             if rrules:
-                rrule = rrules.get('rrule')
-                if rrule:
-                    try:
+                rrule_field = rrules.get('rrule')
+                if rrule_field:
+                    rrules = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
+                    for rrule in rrules:
                         rrule_cleaned = rrule.replace('BYDAY','BYWEEKDAY')
-                        results = dateutil.rrule.rrulestr(rrule_cleaned, forceset=True)
-                    except ValueError:
-                        self.logger.warn('Error trying to parse rrule %s' %
-                                rrule_cleaned)
-                    else:
-                        if isinstance(results, (list, tuple)):
-                            dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
-                        else:
-                            dates = results[:settings.MAX_RECURRENCE]
+                        results = dateutil.rrule.rrulestr(rrule_cleaned)
+                        dates = chain(*(r[:settings.MAX_RECURRENCE] for r in results))
                         for date in dates:
                             occurrence_form_data = data.copy()
                             occurrence_form_data['event'] = event.id
