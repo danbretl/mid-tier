@@ -42,15 +42,7 @@ class EventfulPriceParser(PriceParser):
     def parse_form_data(self, data, form_data):
         form_data['occurrence'] = data.get('occurrence')
         form_data['units'] = 'dollar'
-        if data.get('free'):
-            if int(data.get('free')):
-                form_data['quantity'] = '0.00'
-        else:
-            quantities = parse_prices(data.get('price'))
-            try:
-                form_data['quantity'] = quantities[0]
-            except:
-                self.logger.warn('Error parsing price <%s>' % data.get('price'))
+        form_data['quantity'] = data.get('quantity') 
         return form_data
 
 
@@ -155,7 +147,18 @@ class EventfulOccurrenceParser(OccurrenceParser):
         price = data.get('price')
         if price:
             data['occurrence'] = occurrence.id
-            self.price_parser.parse(data)
+            if data.get('free'):
+                if int(data.get('free')):
+                    data['quantity'] = '0.00'
+                    self.price_parser.parse(data)
+                    return
+            quantities = parse_prices(price)
+            if not quantities:
+                self.logger.warn('Error parsing price <%s>' % data.get('price'))
+            else:
+                for quantity in quantities:
+                    data['quantity'] = quantity
+                    self.price_parser.parse(data)
 
 class EventfulEventParser(EventParser):
     occurrence_parser = EventfulOccurrenceParser()
@@ -225,15 +228,22 @@ class EventfulEventParser(EventParser):
                     for rrule_string in rrule_strings:
                         rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
                         rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-                        for date_time in rrule[:settings.MAX_RECURRENCE]:
-                            occurrence_form_data = data
-                            occurrence_form_data['event'] = event.id
-                            occurrence_form_data['start_date'] = \
-                                date_time.date().isoformat()
-                            occurrence_form_data['start_time'] = \
-                                date_time.time().isoformat()
-                            self.occurrence_parser.parse(occurrence_form_data)
-                            # print 'Total occurrences for %s: %d' % (event.id,
+                        try:
+                            first_occ = rrule[0]
+                        except:
+                            self.logger.warn ('No current occurrences found from recurrence rule %s' % rrule_string)
+                        else:
+                            last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.RECURRENCE_CAP)
+                            rrules_clipped = rrule.between(first_occ, last_occ)
+                            for date_time in rrules_clipped:
+                                occurrence_form_data = data
+                                occurrence_form_data['event'] = event.id
+                                occurrence_form_data['start_date'] = \
+                                    date_time.date().isoformat()
+                                occurrence_form_data['start_time'] = \
+                                    date_time.time().isoformat()
+                                self.occurrence_parser.parse(occurrence_form_data)
+                                # print 'Total occurrences for %s: %d' % (event.id,
                                     # event.occurrences.count())
 
         # sanity check  FIXME ugly
