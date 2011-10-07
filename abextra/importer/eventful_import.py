@@ -39,14 +39,14 @@ class EventfulImporter(object):
                         last_page = self.consumer.page_count + 1
                 self.logger.info('Found %d current events in %s' %
                         (self.consumer.total_items, self.location))
-                self.logger.info('About to fetch %d pages (%d events per page) ...' %
+                self.logger.info('Fetched %d pages (%d events per page) ...' %
                         (last_page - self.current_page, self.page_size))
                 self.logger.info('Starting from page %d/%d' %
                         (self.current_page, self.consumer.page_count))
                 fetched_meta = True
 
             if self.interactive:
-                self.logger.info('Fetch next page? \n (Y/n)')
+                self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
                 if not cmd_str:
                     fetch_next = True
