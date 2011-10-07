@@ -7,7 +7,7 @@ import events.models
 
 class EventfulImporter(object):
 
-    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False):
+    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False, interactive=False):
         self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY, mock_api=mock_api)
         self.parser = EventfulEventParser()
         self.logger = logging.getLogger('importer.eventful_import')
@@ -17,6 +17,7 @@ class EventfulImporter(object):
         self.query = query
         self.location = location
         self.current_page = current_page
+        self.interactive = interactive
 
     def import_events(self, total_pages=0):
 
@@ -38,26 +39,37 @@ class EventfulImporter(object):
                         last_page = self.consumer.page_count + 1
                 self.logger.info('Found %d current events in %s' %
                         (self.consumer.total_items, self.location))
-                self.logger.info('Fetching %d pages (%d events per page) ...' %
+                self.logger.info('About to fetch %d pages (%d events per page) ...' %
                         (last_page - self.current_page, self.page_size))
                 self.logger.info('Starting from page %d/%d' %
                         (self.current_page, self.consumer.page_count))
                 fetched_meta = True
 
-            for event in events:
-                # try:
-                self.process_event(event)
-                event_obj = self.parser.parse(event)
-                    # THIS IS VERY UGLY
-                # FIXME
-                # HANDLE THA DAMN EXCEPTIONS
-                # except Exception as e:
-                    # import ipdb; ipdb.set_trace()
-                    # raise e
-                    # self.logger.warn("Encountered %s exception while parsing" %
-                            # type(exception))
-            self.logger.info('Fetched %d/%d events so far' %
-                    (self.count, self.consumer.total_items))
+            if self.interactive:
+                self.logger.info('Fetch next page? \n (Y/n)')
+                cmd_str = raw_input()
+                if not cmd_str:
+                    fetch_next = True
+                else:
+                    fetch_next = True if 'y' in cmd_str.lower() else False
+            else:
+                fetch_next = True
+
+            if fetch_next:
+                for event in events:
+                    # try:
+                    self.process_event(event)
+                    event_obj = self.parser.parse(event)
+                        # THIS IS VERY UGLY
+                    # FIXME
+                    # HANDLE THA DAMN EXCEPTIONS
+                    # except Exception as e:
+                        # import ipdb; ipdb.set_trace()
+                        # raise e
+                        # self.logger.warn("Encountered %s exception while parsing" %
+                                # type(exception))
+                self.logger.info('Fetched %d/%d events so far' %
+                        (self.count, self.consumer.total_items))
 
             self.current_page += 1
 
