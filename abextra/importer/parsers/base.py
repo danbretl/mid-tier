@@ -4,6 +4,7 @@ from itertools import chain
 from collections import namedtuple
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.forms import ValidationError
 
 class BaseParser(object):
     logger = logging.getLogger('importer.parser')
@@ -22,6 +23,8 @@ class BaseParser(object):
         key = self.cache_key(form_data)
         # try to get from cache
         created, instance = False, self.cache.get(key)
+        if instance:
+            self.logger.debug('MATCHED from cache %s' % str(key))
 
         # if cache miss, create or get from db
         if not instance:
@@ -29,14 +32,30 @@ class BaseParser(object):
             file_data = self.parse_file_data(data, {})
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
-                created, instance = True, form.save(commit=True)
+                # now that the form has been cleaned and the data in it has
+                # been marshalled, we can ask the db if it has a match
+                sig_fields = self.fields or form.fields.keys()
+                attrs = dict((f, getattr(form.instance, f)) for f in sig_fields)
+                try:
+                    created, instance = False, self.model.objects.get(**attrs)
+                    self.logger.debug('MATCHED FROM DB' + str(attrs.keys()))
+                except self.model.DoesNotExist:
+                    created, instance = False, None
+
+                # if we didn't find a db match, let's try to save the form
+                if not instance:
+                    created, instance = True, form.save(commit=True)
             else:
                 # could be invalid, because already exists in db
-                flat_errors = chain.from_iterable(form.errors.itervalues())
-                if any('already exists' in e.lower() for e in flat_errors):
+                try:
+                    form.instance.validate_unique()
+                # indeed, it happened due to uniqueness constraints
+                except ValidationError:
                     sig_fields = self.fields or form.fields.keys()
                     attrs = dict((f, getattr(form.instance, f)) for f in sig_fields)
                     created, instance = False, self.model.objects.get(**attrs)
+                    self.logger.debug('MATCHED FROM DB' + str(attrs.keys()))
+
                 # form is invalid due to bad data, create nothing
                 else:
                     self.logger.error(form.errors)
@@ -55,6 +74,7 @@ class BaseParser(object):
     def cache_key(self, form_data):
         sig_fields = self.fields or form_data.keys()
         tup = tuple(form_data.get(f) for f in sorted(sig_fields))
+        self.logger.debug('field tuple %s' % str(tup))
         return hash(tup)
 
     def parse_form_data(self, obj_dict, form_data):
