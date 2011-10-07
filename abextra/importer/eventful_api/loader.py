@@ -8,7 +8,7 @@ from eventlet.green import urllib, urllib2
 from eventful_api import API, MockAPI
 
 class EventfulApiConsumer(object):
-    def __init__(self, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH), api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
+    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
         # instantiate api
         if mock_api:
             self.api = MockAPI(api_key, make_dumps=make_dumps)
@@ -35,11 +35,6 @@ class EventfulApiConsumer(object):
         # (appservers are not too ok with it)
         self.venue_detail_pile = eventlet.GreenPile(10)
 
-        # prepare image download directory
-        if not os.path.exists(img_dir):
-            os.makedirs(img_dir)
-        self.img_dir = img_dir
-
     def fetch_event_summaries(self, **kwargs):
         resp = self.api.call('/events/search', **kwargs)
         return resp
@@ -63,42 +58,15 @@ class EventfulApiConsumer(object):
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
         if images:
-            self.venue_image_pile.spawn(self.fetch_image, images, venue_id)
+            self.venue_image_pile.spawn(self.api.fetch_image, images, venue_id)
         return venue_detail
 
     def fetch_event_details(self, event_id):
         event_detail = self.api.call('/events/get', id=event_id)
         images = event_detail.get('images')
         if images:
-            self.event_image_pile.spawn(self.fetch_image, images, event_id)
+            self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
-
-    def fetch_image(self, images_dict, parent_id):
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
-        else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        request = urllib2.Request(url)
-        try:
-            img = urllib2.urlopen(request)
-        except (urllib2.URLError, urllib2.HTTPError), e:
-            # FIXME: use logger to print these error messages
-            print "Internets Error:", url
-        else:
-            img_dat = img.read()
-            im = Image.open(StringIO(img_dat))
-            width, height = im.size
-            # FIXME: migrate image dimension checking logic to form so that it
-            # can be reused
-            if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
-                suffix = '.'+url.split('.')[-1]
-                filename = os.path.join(self.img_dir, parent_id+suffix)
-                with open(filename, 'w') as f:
-                    f.write(img_dat)
-                return dict(id=parent_id, path=filename, url=url)
-            else:
-                print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
 
     def consume(self, **kwargs):
         response = self.fetch_event_summaries(**kwargs)

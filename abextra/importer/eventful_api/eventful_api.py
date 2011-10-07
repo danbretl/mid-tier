@@ -7,6 +7,8 @@ import eventlet
 from eventlet import pools
 from eventlet.green import urllib, urllib2
 from django.conf import settings
+from PIL import Image
+from StringIO import StringIO
 import os
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
@@ -16,18 +18,25 @@ class APIError(Exception):
     pass
 
 class API(object):
-    def __init__(self, app_key, server='api.eventful.com', make_dumps=False):
+    def __init__(self, app_key, server='api.eventful.com', make_dumps=False, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
         self.dump_dir = getattr(settings, 'EVENTFUL_API_DUMP_DIR', None) or 'eventful_dumps'
+
         if make_dumps:
             try:
                 os.mkdir(self.dump_dir)
             except OSError:
                 pass
+
+        # prepare image download directory
+        if not os.path.exists(img_dir):
+            os.makedirs(img_dir)
+        self.img_dir = img_dir
+
 
     def _build_url(self, method, **args):
         "Call the Eventful API's METHOD with ARGS."
@@ -79,7 +88,49 @@ class API(object):
         self.user = user
         return user
 
+    def fetch_image(self, images_dict, parent_id):
+        img_dict = images_dict.get('image')
+        if isinstance (img_dict, (tuple, list)):
+            url = img_dict[0]['small']['url'].replace('small', 'original')
+        else:
+            url = img_dict['small']['url'].replace('small', 'original')
+        request = urllib2.Request(url)
+        try:
+            img = urllib2.urlopen(request)
+        except (urllib2.URLError, urllib2.HTTPError), e:
+            # FIXME: use logger to print these error messages
+            print "Internets Error:", url
+        else:
+            img_dat = img.read()
+            im = Image.open(StringIO(img_dat))
+            width, height = im.size
+            # FIXME: migrate image dimension checking logic to form so that it
+            # can be reused
+            with open(filename, 'w') as f:
+                f.write(img_dat)
+            if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
+                suffix = '.'+url.split('.')[-1]
+                filename = os.path.join(self.img_dir, parent_id+suffix)
+                return dict(id=parent_id, path=filename, url=url)
+            else:
+                print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
+
 class MockAPI(API):
+
+    def __init__(self, *args, **kwargs):
+        super(MockAPI, self).__init__(*args, **kwargs)
+
+    def fetch_image(self, images_dict, parent_id):
+        img_dict = images_dict.get('image')
+        if isinstance (img_dict, (tuple, list)):
+            url = img_dict[0]['small']['url'].replace('small', 'original')
+        else:
+            url = img_dict['small']['url'].replace('small', 'original')
+        suffix = '.'+url.split('.')[-1]
+        filename = os.path.join(self.img_dir, parent_id+suffix)
+        if not os.path.exists(filename):
+            print "Expected image %s not found" % filename
+        
     def call(self, method, **args):
         # Build the url
         url = self._build_url(method, **args)
