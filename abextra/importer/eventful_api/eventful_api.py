@@ -106,11 +106,11 @@ class API(object):
             width, height = im.size
             # FIXME: migrate image dimension checking logic to form so that it
             # can be reused
+            suffix = '.'+url.split('.')[-1]
+            filename = os.path.join(self.img_dir, parent_id+suffix)
             with open(filename, 'w') as f:
                 f.write(img_dat)
             if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
-                suffix = '.'+url.split('.')[-1]
-                filename = os.path.join(self.img_dir, parent_id+suffix)
                 return dict(id=parent_id, path=filename, url=url)
             else:
                 print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
