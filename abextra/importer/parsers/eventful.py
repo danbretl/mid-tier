@@ -6,35 +6,18 @@ import dateutil.parser
 import dateutil.rrule
 from django.conf import settings
 from itertools import chain
-from importer.parsers.base import BaseParser
-from importer.parsers.locations import PlaceParser, PointParser, CityParser
-from importer.parsers.price import PriceParser
+import core.parsers
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from events.models import Source, EventSummary
 from events.utils import CachedCategoryTree
+from importer.parsers.base import BaseParser
+
+# FIXME these should not be inhereted from directly
 from importer.parsers.event import ExternalCategoryParser
 from importer.parsers.event import EventParser, OccurrenceParser
-
-_quantity_re = re.compile(r'(\d+(?:\.\d{2})?)|free')
-
-# FIXME: this kind of regex logic should not be in a parser;
-# refactor to a form later so it's not muddying up the parsers
-
-class SoldOutException(Exception):
-    """Usually raised by price parser generators."""
-    pass
-
-def parse_prices(price_string):
-        price_string = price_string.lower()
-        prices = _quantity_re.findall(price_string)
-        if not prices:
-            if 'sold out' in price_string:
-                raise SoldOutException()
-            else:
-                return None
-        return tuple(price if price else '0.00' for price in prices)
-
+from importer.parsers.locations import PlaceParser, PointParser, CityParser
+from importer.parsers.price import PriceParser
 
 
 class EventfulPriceParser(PriceParser):
@@ -44,7 +27,6 @@ class EventfulPriceParser(PriceParser):
         form_data['units'] = 'dollar'
         form_data['quantity'] = data.get('quantity') 
         return form_data
-
 
 class EventfulCityParser(CityParser):
 
@@ -91,7 +73,6 @@ class EventfulPlaceParser(PlaceParser):
             form_data['venue_image_local'] = venue_images
         return form_data
 
-
 class EventfulCategoryParser(ExternalCategoryParser):
     model_form = ExternalCategoryImportForm
     html_parser = HTMLParser.HTMLParser()
@@ -111,32 +92,18 @@ class EventfulOccurrenceParser(OccurrenceParser):
     place_parser = EventfulPlaceParser()
     price_parser = EventfulPriceParser()
 
-    def reformat_time(time):
-        # reformat time into in HH:MM[:ss[.uuuuuu]] format.
-        pass
-
+    def __init__(self, *args, **kwargs):
+        super(EventfulOccurrenceParser, self).__init__(*args, **kwargs)
+        self.quantity_parser = core.parsers.PriceParser()
 
     def parse_form_data(self, data, form_data):
         form_data['event'] = data.get('event')
+        form_data['start_time'] = data.get('start_time')
         form_data['start_date'] = data.get('start_date')
-        form_data['end_date'] = data.get('end_date')
-        try:
-            t_i = dateutil.parser.parse(data.get('start_time'))
-            if data.get('stop_time'):
-                t_f = dateutil.parser.parse(data.get('stop_time'))
-            else:
-                t_f = t_i
-        except:
-            self.logger.warn("Error parsing occurrence for eventful event <%s>" % data.get('title'))
-        else:
-            form_data['start_date'] = t_i.strftime("%Y-%m-%d")
-            form_data['end_date'] = t_f.strftime("%Y-%m-%d")
-            form_data['start_time'] = t_i.strftime("%H:%M:%S")
-            form_data['end_time'] = t_f.strftime("%H:%M:%S")
 
-
-            created, place = self.place_parser.parse(data)
-            form_data['place'] = place.id if place else None
+        # parse place
+        created, place = self.place_parser.parse(data)
+        form_data['place'] = place.id if place else None
 
         return form_data
 
@@ -144,21 +111,21 @@ class EventfulOccurrenceParser(OccurrenceParser):
         occurrence = instance
 
         # prices
-        price = data.get('price')
-        if price:
-            data['occurrence'] = occurrence.id
-            if data.get('free'):
-                if int(data.get('free')):
-                    data['quantity'] = '0.00'
-                    self.price_parser.parse(data)
-                    return
-            quantities = parse_prices(price)
-            if not quantities:
-                self.logger.warn('Error parsing price <%s>' % data.get('price'))
-            else:
-                for quantity in quantities:
-                    data['quantity'] = quantity
-                    self.price_parser.parse(data)
+        raw_free = data.get('free')
+        raw_price = data.get('price')
+        # strange int check cause '1' or '0' comes back as a string
+        if raw_free and int(raw_free):
+            prices = [0.00]
+        elif raw_price:
+            prices = self.quantity_parser.parse(raw_price)
+        else:
+            prices = []
+            self.logger.warn('"Free" nor "Price" fields could not be found.')
+        for price in prices:
+            price_data = {}
+            price_data['occurrence'] = occurrence.id
+            price_data['quantity'] = str(price)
+            self.price_parser.parse(price_data)
 
 class EventfulEventParser(EventParser):
     occurrence_parser = EventfulOccurrenceParser()
@@ -200,39 +167,49 @@ class EventfulEventParser(EventParser):
         return form_data
 
     def post_parse(self, data, instance):
+        self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
         event = instance
         # occurrences
-        recurrence_dict = data.get('recurrence')
-        if recurrence_dict:
-            rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
-            if rdates:
-                rdate = rdates.get('rdate')
-                if rdate:
-                    if not isinstance (rdate, (tuple, list)):
-                        rdate = [rdate]
-                    for date in rdate:
-                        date_time = dateutil.parser.parse(date)
-                        occurrence_form_data = data
-                        occurrence_form_data['event'] = event.id
-                        occurrence_form_data['start_date'] = \
-                            date_time.date().isoformat()
-                        occurrence_form_data['start_time'] = \
-                            date_time.time().isoformat()
-                        self.occurrence_parser.parse(occurrence_form_data)
+        # Use strptime to parse date strictly so there are no
+        # issues with ambiguously picking up the current date
+        # from dateutil.parse
+        start_date_str = data.get('start_date')
+        start_time_str = data.get('start_time')
+        # Eventful often returns a null date string and time string which has
+        # both date and time, so let's try parsing that into first_occ
+        try:
+            first_occ = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            self.logger.warn('Could not strictly parse from date time pair <%s,%s>' %
+                    (start_date_str, start_time_str))
+        else:
+            recurrence_dict = data.get('recurrence')
 
-            if rrules:
-                rrule_field = rrules.get('rrule')
-                if rrule_field:
-                    # convert field to a list
-                    rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
-                    for rrule_string in rrule_strings:
-                        rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
-                        rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-                        try:
-                            first_occ = rrule[0]
-                        except:
-                            self.logger.warn ('No current occurrences found from recurrence rule %s' % rrule_string)
-                        else:
+            if recurrence_dict:
+                rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
+                if rdates:
+                    rdate = rdates.get('rdate')
+                    if rdate:
+                        if not isinstance (rdate, (tuple, list)):
+                            rdate = [rdate]
+                        for date in rdate:
+                            date_time = dateutil.parser.parse(date)
+                            occurrence_form_data = data
+                            occurrence_form_data['event'] = event.id
+                            occurrence_form_data['start_date'] = \
+                                date_time.date().isoformat()
+                            occurrence_form_data['start_time'] = \
+                                date_time.time().isoformat()
+                            self.occurrence_parser.parse(occurrence_form_data)
+
+                if rrules:
+                    rrule_field = rrules.get('rrule')
+                    if rrule_field:
+                        # convert field to a list
+                        rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
+                        for rrule_string in rrule_strings:
+                            rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
+                            rrule = dateutil.rrule.rrulestr(rrule_cleaned)
                             last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.RECURRENCE_CAP)
                             rrules_clipped = rrule.between(first_occ, last_occ)
                             for date_time in rrules_clipped:
@@ -242,6 +219,7 @@ class EventfulEventParser(EventParser):
                                     date_time.date().isoformat()
                                 occurrence_form_data['start_time'] = \
                                     date_time.time().isoformat()
+                                # self.logger.debug('Found datetime <%s> for this occurrence' % str(date_time))
                                 self.occurrence_parser.parse(occurrence_form_data)
                                 # print 'Total occurrences for %s: %d' % (event.id,
                                     # event.occurrences.count())

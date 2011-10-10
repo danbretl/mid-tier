@@ -261,3 +261,6 @@ IPHONE_THUMB_OPTIONS = {
     # 'reflection_amount': 0.2,
     # 'reflection_opacity': 0.8
 }
+
+## Eventful
+EVENTFUL_RRULE_MAX = dict(days=30)
