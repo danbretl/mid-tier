@@ -178,11 +178,16 @@ class EventfulEventParser(EventParser):
         # Eventful often returns a null date string and time string which has
         # both date and time, so let's try parsing that into first_occ
         try:
-            first_occ = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
+            first_occ_start_datetime = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
         except ValueError:
-            self.logger.warn('Could not strictly parse from date time pair <%s,%s>' %
-                    (start_date_str, start_time_str))
-        else:
+            first_occ_start_datetime = None
+            try:
+                first_occ_start_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d')
+            except ValueError:
+                first_occ_start_date = None
+                self.logger.warn('Could not strictly parse from date time pair <%s,%s>' %
+                        (start_date_str, start_time_str))
+        if first_occ_start_datetime or first_occ_start_date:
             recurrence_dict = data.get('recurrence')
 
             if recurrence_dict:
