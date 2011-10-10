@@ -170,7 +170,6 @@ class EventfulEventParser(EventParser):
         self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
         event = instance
         # occurrences
-<<<<<<< HEAD
         # Use strptime to parse date strictly so there are no
         # issues with ambiguously picking up the current date
         # from dateutil.parse
