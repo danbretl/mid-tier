@@ -89,31 +89,35 @@ class API(object):
         return user
 
     def fetch_image(self, images_dict, parent_id):
+        replace_from = ['small', 'medium']
         img_dict = images_dict.get('image')
         if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
+            url = img_dict[0]['url']
         else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        request = urllib2.Request(url)
-        try:
-            img = urllib2.urlopen(request)
-        except (urllib2.URLError, urllib2.HTTPError), e:
-            # FIXME: use logger to print these error messages
-            print "Internets Error:", url
-        else:
-            img_dat = img.read()
-            im = Image.open(StringIO(img_dat))
-            width, height = im.size
-            # FIXME: migrate image dimension checking logic to form so that it
-            # can be reused
-            suffix = '.'+url.split('.')[-1]
-            filename = os.path.join(self.img_dir, parent_id+suffix)
-            with open(filename, 'w') as f:
-                f.write(img_dat)
-            if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
-                return dict(id=parent_id, path=filename, url=url)
+            url = img_dict['url']
+        if url:
+            for replacement in replace_from:
+                url = url.replace(replacement,'original')
+            request = urllib2.Request(url)
+            try:
+                img = urllib2.urlopen(request)
+            except (urllib2.URLError, urllib2.HTTPError), e:
+                # FIXME: use logger to print these error messages
+                print "Internets Error:", url
             else:
-                print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
+                img_dat = img.read()
+                im = Image.open(StringIO(img_dat))
+                width, height = im.size
+                # FIXME: migrate image dimension checking logic to form so that it
+                # can be reused
+                suffix = '.'+url.split('.')[-1]
+                filename = os.path.join(self.img_dir, parent_id+suffix)
+                with open(filename, 'w') as f:
+                    f.write(img_dat)
+                if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
+                    return dict(id=parent_id, path=filename, url=url)
+                else:
+                    print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
 
 class MockAPI(API):
 

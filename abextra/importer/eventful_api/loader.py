@@ -10,10 +10,8 @@ from eventful_api import API, MockAPI
 class EventfulApiConsumer(object):
     def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
         # instantiate api
-        if mock_api:
-            self.api = MockAPI(api_key, make_dumps=make_dumps)
-        else:
-            self.api = API(api_key, make_dumps=make_dumps)
+        api_class = MockAPI if mock_api else API
+        self.api = api_class(api_key, make_dumps=make_dumps)
         self.total_items = None
         self.page_count = None
 

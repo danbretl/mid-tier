@@ -7,8 +7,8 @@ import events.models
 
 class EventfulImporter(object):
 
-    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False, interactive=False):
-        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY, mock_api=mock_api)
+    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False, interactive=False, make_dumps=False):
+        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY, mock_api=mock_api, make_dumps=make_dumps)
         self.parser = EventfulEventParser()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
