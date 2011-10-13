@@ -8,10 +8,12 @@ from eventlet.green import urllib, urllib2
 from eventful_api import API, MockAPI
 
 class EventfulApiConsumer(object):
-    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
+    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=True,
+            make_dumps=False, dump_sub_dir='default'):
         # instantiate api
         api_class = MockAPI if mock_api else API
-        self.api = api_class(api_key, make_dumps=make_dumps)
+        self.api = api_class(api_key, make_dumps=make_dumps,
+                dump_sub_dir=dump_sub_dir)
         self.total_items = None
         self.page_count = None
 

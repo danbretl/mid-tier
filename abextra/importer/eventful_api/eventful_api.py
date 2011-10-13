@@ -18,13 +18,15 @@ class APIError(Exception):
     pass
 
 class API(object):
-    def __init__(self, app_key, server='api.eventful.com', make_dumps=False, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
+    def __init__(self, app_key, server='api.eventful.com', make_dumps=False,
+            dump_sub_dir='default', img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
-        self.dump_dir = getattr(settings, 'EVENTFUL_API_DUMP_DIR', None) or 'eventful_dumps'
+        parent_dump_dir = getattr(settings, 'EVENTFUL_API_DUMP_DIR', None) or 'eventful_dumps'
+        self.dump_dir = os.path.join(parent_dump_dir, dump_sub_dir)
 
         if make_dumps:
             try:

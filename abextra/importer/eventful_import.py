@@ -7,8 +7,11 @@ import events.models
 
 class EventfulImporter(object):
 
-    def __init__(self, current_page=1, page_size=100, query='', location='NYC', mock_api=False, interactive=False, make_dumps=False):
-        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY, mock_api=mock_api, make_dumps=make_dumps)
+    def __init__(self, current_page=1, page_size=100, total_pages=0, query='', location='NYC', mock_api=False, interactive=False, make_dumps=False):
+        dump_sub_dir = 'p%d-c%d' % (total_pages, page_size)
+        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY,
+                mock_api=mock_api, make_dumps=make_dumps,
+                dump_sub_dir=dump_sub_dir)
         self.parser = EventfulEventParser()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
@@ -18,8 +21,9 @@ class EventfulImporter(object):
         self.location = location
         self.current_page = current_page
         self.interactive = interactive
+        self.total_pages = total_pages
 
-    def import_events(self, total_pages=0):
+    def import_events(self):
 
         last_page = self.page_size + 1
         fetched_meta = False
@@ -30,11 +34,15 @@ class EventfulImporter(object):
             events = self.consumer.consume(location=self.location, date='Today',
                 page_size=self.page_size, page_number=self.current_page)
 
+            # Check at the beginning of the import to set last page to
+            # fetch, because that controls how many times the page fetching/parsing
+            # logic will loop.
+
             if not fetched_meta:
-                if not total_pages:
+                if not self.total_pages:
                     last_page = self.consumer.page_count + 1
                 else:
-                    last_page = self.current_page + total_pages
+                    last_page = self.current_page + self.total_pages
                     if last_page > self.consumer.page_count + 1:
                         last_page = self.consumer.page_count + 1
                 self.logger.info('Found %d current events in %s' %
@@ -45,6 +53,9 @@ class EventfulImporter(object):
                         (self.current_page, self.consumer.page_count))
                 fetched_meta = True
 
+            # Is interactive mode set? If so, then ask whether to import the
+            # current page. This happens after the page is fetched.
+
             if self.interactive:
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
@@ -54,6 +65,10 @@ class EventfulImporter(object):
                     fetch_next = True if 'y' in cmd_str.lower() else False
             else:
                 fetch_next = True
+
+            # If the page has been fetched, then go through each event and
+            # parse occurrences from that event. Using process_event,
+            # preprocess the event and then attempt to parse it.
 
             if fetch_next:
                 for event in events:
@@ -83,12 +98,6 @@ class EventfulImporter(object):
 
     def process_event(self, e):
         # preprocess event response
-        # convert to native objects
-        # FIXME: use django forms to import
-        # e = events.models.Event(xid=e['id'],
-                # description=e['description'], url=e['url'],
-                # created=e['created'], title=e['title'])
-        # self.logger.info('Processing event %s' % e['title'])
         self.count += 1
         return e
         # pass

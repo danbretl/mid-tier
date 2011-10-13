@@ -36,7 +36,6 @@ class Command(BaseCommand):
             dest='make_dumps',
             default=False,
             help='Use mock API class'),
-
         make_option('--interactive',
             action='store_true',
             dest='interactive',
@@ -54,7 +53,8 @@ class Command(BaseCommand):
         mock_api = True if options.get('mock_api') else False
         importer = EventfulImporter(page_size=page_size,
                 current_page=page_offset, mock_api=mock_api,
-                interactive=interactive,make_dumps=make_dumps)
-        events = importer.import_events(total_pages=total_pages)
+                interactive=interactive,make_dumps=make_dumps, total_pages=total_pages)
+        events = importer.import_events()
         for e in Event.objects.filter(summary=None):
             e.save()
+        return events
