@@ -1,6 +1,6 @@
 from django.test import TestCase
 from importer.consumer import ScrapeFeedConsumer
-from importer.eventful_api.loader import SimpleApiConsumer
+from importer.eventful_api.loader import EventfulApiConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
 from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
 from importer.parsers.price import PriceParser
@@ -80,6 +80,23 @@ class EventfulParserTest(TestCase):
 
     def test_parse(self):
         events = self.importer.import_events(total_pages=2) 
+        # for event in events:
+            # try:
+                # event_obj = self.parser.parse(event)
+            # except ValueError as parse_err:
+                # self.logger.warn("Encountered exception while parsing:")
+                # self.logger.warn(parse_err.args)
+
+class EventfulParserTestDumpP10C100(TestCase):
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+
+    def setUp(self):
+        # self.consumer = SimpleApiConsumer()
+        # self.parser = EventfulEventParser()
+        self.importer = EventfulImporter(page_size=100,current_page=8,mock_api=True)
+
+    def test_parse(self):
+        events = self.importer.import_events(total_pages=1)
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
