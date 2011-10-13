@@ -25,38 +25,40 @@ class EventfulImporter(object):
 
     def import_events(self):
 
-        last_page = self.page_size + 1
+        stop_page = self.page_size + 1
         fetched_meta = False
 
         self.logger.info('Beginning import of eventful events...') 
 
-        while self.current_page < last_page:
+        while self.current_page < stop_page:
             events = self.consumer.consume(location=self.location, date='Today',
                 page_size=self.page_size, page_number=self.current_page)
 
-            # Check at the beginning of the import to set last page to
-            # fetch, because that controls how many times the page fetching/parsing
+            # Check at the beginning of the import to set stop page for  
+            # fetching, because that controls how many times the page fetching/parsing
             # logic will loop.
 
             if not fetched_meta:
                 if not self.total_pages:
-                    last_page = self.consumer.page_count + 1
+                    stop_page = self.consumer.page_count + 1
                 else:
-                    last_page = self.current_page + self.total_pages
-                    if last_page > self.consumer.page_count + 1:
-                        last_page = self.consumer.page_count + 1
+                    stop_page = self.current_page + self.total_pages
+                    if stop_page > self.consumer.page_count + 1:
+                        stop_page = self.consumer.page_count + 1
                 self.logger.info('Found %d current events in %s' %
                         (self.consumer.total_items, self.location))
                 self.logger.info('Fetched %d pages (%d events per page) ...' %
-                        (last_page - self.current_page, self.page_size))
-                self.logger.info('Starting from page %d/%d' %
-                        (self.current_page, self.consumer.page_count))
+                        (stop_page - self.current_page, self.page_size))
+                self.logger.info('Starting from page %d/%d (%d available)' %
+                        (self.current_page, stop_page - 1, self.consumer.page_count))
                 fetched_meta = True
 
             # Is interactive mode set? If so, then ask whether to import the
             # current page. This happens after the page is fetched.
 
             if self.interactive:
+                self.logger.info('Currently on page %d/%d (%d available)' %
+                        (self.current_page, stop_page - 1, self.consumer.page_count))
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
                 if not cmd_str:

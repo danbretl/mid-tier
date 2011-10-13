@@ -90,19 +90,26 @@ class API(object):
         self.user = user
         return user
 
-    def fetch_image(self, images_dict, parent_id):
+    # FIXME: this should go in a utils module
+
+    def original_image_url_from_image_field(self, image_field):
         replace_from = ['small', 'medium']
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['url']
+        if isinstance (image_field, (tuple, list)):
+            url = image_field[0]['url']
         else:
-            url = img_dict['url']
+            url = image_field['url']
         if url:
             for replacement in replace_from:
                 url = url.replace(replacement,'original')
-            request = urllib2.Request(url)
+                return url
+
+
+    def fetch_image(self, images_dict, parent_id):
+        image_field = images_dict.get('image')
+        url = self.original_image_url_from_image_field(image_field)
+        if url:
             try:
-                img = urllib2.urlopen(request)
+                img = urllib2.urlopen(url)
             except (urllib2.URLError, urllib2.HTTPError), e:
                 # FIXME: use logger to print these error messages
                 print "Internets Error:", url
@@ -127,16 +134,14 @@ class MockAPI(API):
         super(MockAPI, self).__init__(*args, **kwargs)
 
     def fetch_image(self, images_dict, parent_id):
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
-        else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        suffix = '.'+url.split('.')[-1]
-        filename = os.path.join(self.img_dir, parent_id+suffix)
-        if not os.path.exists(filename):
-            print "Expected image %s not found" % filename
-        
+        image_field = images_dict.get('image')
+        url = self.original_image_url_from_image_field(image_field)
+        if url:
+            suffix = '.'+url.split('.')[-1]
+            filename = os.path.join(self.img_dir, parent_id+suffix)
+            if not os.path.exists(filename):
+                print "Expected image %s not found" % filename
+
     def call(self, method, **args):
         # Build the url
         url = self._build_url(method, **args)

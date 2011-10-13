@@ -76,10 +76,10 @@ class EventfulParserTest(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventfulEventParser()
-        self.importer = EventfulImporter(page_size=100)
+        self.importer = EventfulImporter(page_size=100, total_pages=2)
 
     def test_parse(self):
-        events = self.importer.import_events(total_pages=2) 
+        events = self.importer.import_events()
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
@@ -93,10 +93,11 @@ class EventfulParserTestDumpP10C100(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventfulEventParser()
-        self.importer = EventfulImporter(page_size=100,current_page=8,mock_api=True)
+        self.importer = EventfulImporter(page_size=100, current_page=8,
+                total_pages=10, mock_api=True)
 
     def test_parse(self):
-        events = self.importer.import_events(total_pages=1)
+        events = self.importer.import_events()
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
