@@ -18,7 +18,7 @@ from importer.parsers.event import ExternalCategoryParser
 from importer.parsers.event import EventParser, OccurrenceParser
 from importer.parsers.locations import PlaceParser, PointParser, CityParser
 from importer.parsers.price import PriceParser
-
+from importer.parsers.utils import *
 
 class EventfulPriceParser(PriceParser):
 
@@ -182,106 +182,16 @@ class EventfulEventParser(EventParser):
 
         self.occurrence_parser.parse(occurrence_form_data)
 
-    def expand_rrules(self, first_occ, rrule_strings):
-        rrules = set()
-        for rrule_string in rrule_strings:
-            rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
-            rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-            last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.RECURRENCE_CAP)
-            rrules_clipped = rrule.between(first_occ, last_occ)
-            rrules.union(rrules_clipped)
-        return rrules
-
-    def parse_datetime_or_date_or_time(self, datetime_str):
-        parsed_datetime, parsed_date, parsed_time = None, None, None
-        if datetime_str:
-            try:
-                parsed_datetime = datetime.datetime.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')
-            except ValueError:
-                # Couldn't parse date and time, try just date
-                try:
-                    parsed_date = datetime.datetime.strptime(datetime_str, '%Y-%m-%d')
-                except ValueError:
-                    # Couldn't parse date+time or date, try just time
-                    try:
-                        parsed_time = datetime.datetime.strptime(datetime_str, '%H:%M:%S')
-                    except ValueError:
-                        self.logger.info('Unable to parse datetime string <%s>' %
-                                datetime_str)
-        return (parsed_datetime, parsed_date, parsed_time)
 
     def post_parse(self, data, instance):
         self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
         event = instance
-        # Use strptime to parse date strictly so there are no
-        # issues with ambiguously picking up the current date
-        # from dateutil.parse
-        # start_date_str = data.get('start_date')
-        start_time_field = data.get('start_time')
-        stop_time_field = data.get('stop_time')
-        # Eventful often returns a null date string and time string which has
-        # both date and time, so let's try parsing that into first_occ
-
-        (start_date_and_time, start_date_only, start_time_only) = self.parse_datetime_or_date_or_time(start_time_field)
-        (end_date_and_time, end_date_only, end_time_only) = self.parse_datetime_or_date_or_time(stop_time_field)
-
-        # if start_date_and_time:
-
-
-        # Only bother adding occurrence if it has starting date or date+time
-        # If occurrence has end date then calculate duration and apply to each
-        # recurrence
-        # FIXME: check if it's all day, and handle that for recurrence cases
-
-        if start_date_and_time or start_date_only:
-            first_occ = start_date_and_time or start_date_only
-            if start_date_and_time and (end_date_and_time or end_time_only):
-                end_time = end_date_and_time or end_time_only
-                start_time = start_date_and_time or start_time_only
-                duration = end_time - start_time
-            else:
-                duration = None
-
-            recurrence_dict = data.get('recurrence')
-            if recurrence_dict:
-                rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
-                # make initial set of date_times from start_time
-                date_times = set([first_occ])
-
-                # add rdates to set of recurrences
-
-                if rdates:
-                    rdate_field = rdates.get('rdate')
-                    if rdate_field:
-                        rdate_field = [rdate_field] if not isinstance(rdate_field, (tuple, list)) else rdate_field
-                        if len(rdate_field) > 1:
-                            try:
-                                first_occ = dateutil.parser.parse(rdate_field[0])
-                            except:
-                                self.logger.warn('%Error parsing date from rdate string <%s>')
-                        for rdate in rdate_field:
-                            try:
-                                # dateutil sometimes parses on malformed rdate
-                                # strings from eventful
-                                date_times.add(dateutil.parser.parse(rdate))
-                            except ValueError:
-                                self.logger.warn('Unable to parse date from rdate field: <%s>' % rdate)
-
-                # add rrules to set of recurrences
-
-                if rrules:
-                    rrule_field = rrules.get('rrule')
-                    if rrule_field:
-                        # convert field to a list
-                        rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
-                        rrules = self.expand_rrules(first_occ, rrule_strings)
-                        date_times.union(rrules)
-
-                # clip set to take out times in the past, then parse
-                current_date_times = filter(lambda x: x < datetime.datetime.now(), date_times)
-
-                for date_time in current_date_times:
-                    self.parse_occurrence(data, event, date_time, duration)
+        (start_datetime, duration) = parse_start_datetime_and_duration(data)
+        recurrence_dict = data.get('recurrence')
+        if recurrence_dict:
+            (first_recurrence, current_date_times) = expand_recurrence_dict(recurrence_dict, start_datetime)
+            for date_time in current_date_times:
+                self.parse_occurrence(data, event, date_time, duration)
 
         # sanity check  FIXME ugly
         occurrence_count = event.occurrences.count()

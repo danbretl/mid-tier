@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.conf import settings
 from importer.consumer import ScrapeFeedConsumer
 from importer.eventful_api.loader import EventfulApiConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
@@ -87,17 +88,26 @@ class EventfulParserTest(TestCase):
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
 
-class EventfulParserTestDumpP10C100(TestCase):
+class EventfulParserMockAPIAndDumpTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventfulEventParser()
-        self.importer = EventfulImporter(page_size=100, current_page=8,
-                total_pages=10, mock_api=True)
+        self.importer = EventfulImporter(page_size=10, current_page=1,
+                total_pages=3, mock_api=False, make_dumps=True)
 
     def test_parse(self):
-        events = self.importer.import_events()
+        (created_events, existing_events) = self.importer.import_events()
+        assert(created_events)
+        for e in created_events:
+            if e.id:
+                e.delete()
+        self.importer = EventfulImporter(page_size=10, current_page=1,
+                total_pages=3, mock_api=True, make_dumps=False)
+        (created_mock_events, existing_events) = self.importer.import_events()
+        assert(created_mock_events)
+
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
@@ -105,4 +115,16 @@ class EventfulParserTestDumpP10C100(TestCase):
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
 
+class EventfulParserDateParsingTest(TestCase):
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+
+    def setup(self):
+        self.consumer = EventfulApiConsumer(mock_api=True,
+                dump_sub_dir='p10-c100')
+
+    def test_single_rdate_and_rrules(self):
+        event_id = 'E0-001-037594896-6@2011101110'
+        event_data = self.consumer.fetch_event_details(event_id)
+        # stub for now
+        assert event_data
 

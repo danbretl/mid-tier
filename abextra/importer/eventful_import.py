@@ -25,6 +25,9 @@ class EventfulImporter(object):
 
     def import_events(self):
 
+        created_event_objs = []
+        existing_event_objs = []
+
         stop_page = self.page_size + 1
         fetched_meta = False
 
@@ -76,7 +79,11 @@ class EventfulImporter(object):
                 for event in events:
                     # try:
                     self.process_event(event)
-                    event_obj = self.parser.parse(event)
+                    created, event_obj = self.parser.parse(event)
+                    if created:
+                        created_event_objs.append(event_obj)
+                    elif not created and event_obj:
+                        existing_event_objs.append(event_obj)
                         # THIS IS VERY UGLY
                     # FIXME
                     # HANDLE THA DAMN EXCEPTIONS
@@ -89,6 +96,7 @@ class EventfulImporter(object):
                         (self.count, self.consumer.total_items))
 
             self.current_page += 1
+        return (created_event_objs, existing_event_objs)
 
     # FIXME: implement JSON dump events & settings
     def json_dump():
