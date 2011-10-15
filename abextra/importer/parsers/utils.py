@@ -34,7 +34,7 @@ def parse_datetime_or_date_or_time(datetime_str):
                             datetime_str)
     return (parsed_datetime, parsed_date, parsed_time)
 
-def expand_recurrence_dict(recurrence_dict, first_occ):
+def expand_recurrence_dict(recurrence_dict, first_occ, clip_before=datetime.datetime.now()):
     rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
     # make initial set of date_times from start_time
     date_times = set([first_occ])
@@ -45,7 +45,7 @@ def expand_recurrence_dict(recurrence_dict, first_occ):
         rdate_field = rdates.get('rdate')
         if rdate_field:
             rdate_field = [rdate_field] if not isinstance(rdate_field, (tuple, list)) else rdate_field
-            if len(rdate_field) > 1:
+            if len(rdate_field) > 0:
                 try:
                     first_occ = dateutil.parser.parse(rdate_field[0])
                 except:
@@ -69,7 +69,7 @@ def expand_recurrence_dict(recurrence_dict, first_occ):
             date_times.union(rrules)
 
     # clip set to take out times in the past, then parse
-    current_date_times = filter(lambda x: x < datetime.datetime.now(), date_times)
+    current_date_times = filter(lambda x: x > clip_before, date_times)
 
     # we want to return the first occurrence for verification purposes --
     # this could make it easier to validate correct behavior parsing rdates
