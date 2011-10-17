@@ -5,22 +5,21 @@ import HTMLParser
 import dateutil.parser
 import dateutil.rrule
 from django.conf import settings
-from itertools import chain
 import core.parsers
+
+from importer.parsers.base import BaseParser
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
+from places.forms import PlaceImportForm, PointImportForm, CityImportForm
+from prices.forms import PriceImportForm
 from events.models import Source, EventSummary
 from events.utils import CachedCategoryTree
-from importer.parsers.base import BaseParser
 
-# FIXME these should not be inhereted from directly
-from importer.parsers.event import ExternalCategoryParser
-from importer.parsers.event import EventParser, OccurrenceParser
-from importer.parsers.locations import PlaceParser, PointParser, CityParser
-from importer.parsers.price import PriceParser
 from importer.parsers.utils import *
 
-class EventfulPriceParser(PriceParser):
+class EventfulPriceParser(BaseParser):
+    model_form = PriceImportForm
+    fields = ['occurrence', 'quantity']
 
     def parse_form_data(self, data, form_data):
         form_data['occurrence'] = data.get('occurrence')
@@ -28,7 +27,9 @@ class EventfulPriceParser(PriceParser):
         form_data['quantity'] = data.get('quantity') 
         return form_data
 
-class EventfulCityParser(CityParser):
+class EventfulCityParser(BaseParser):
+    model_form = CityImportForm
+    fields = ['city', 'state']
 
     def parse_form_data(self, data, form_data):
         form_data['city'] = data.get('city')
@@ -36,7 +37,9 @@ class EventfulCityParser(CityParser):
         #TODO: Try and get this from geocoding information.
         return form_data
 
-class EventfulPointParser(PointParser):
+class EventfulPointParser(BaseParser):
+    model_form = PointImportForm
+    fields = ['latitude', 'longitude', 'address']
     city_parser = EventfulCityParser()
 
     def parse_form_data(self, data, form_data):
@@ -53,9 +56,11 @@ class EventfulPointParser(PointParser):
             form_data['city'] = city.id
         return form_data
 
-class EventfulPlaceParser(PlaceParser):
+class EventfulPlaceParser(BaseParser):
+    model_form = PlaceImportForm
     point_parser = EventfulPointParser()
     img_dict_key='venue_image_local'
+    fields = ['title', 'point']
 
     def parse_form_data(self, data, form_data):
         created, point = self.point_parser.parse(data)
@@ -73,7 +78,7 @@ class EventfulPlaceParser(PlaceParser):
             form_data['venue_image_local'] = venue_images
         return form_data
 
-class EventfulCategoryParser(ExternalCategoryParser):
+class EventfulCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
     html_parser = HTMLParser.HTMLParser()
     fields = ['source', 'xid']
@@ -86,7 +91,7 @@ class EventfulCategoryParser(ExternalCategoryParser):
             form_data['name'] = self.html_parser.unescape(name)
         return form_data
 
-class EventfulOccurrenceParser(OccurrenceParser):
+class EventfulOccurrenceParser(BaseParser):
     model_form = OccurrenceImportForm
     fields = ['event', 'start_date', 'place', 'start_time']
     place_parser = EventfulPlaceParser()
@@ -127,7 +132,9 @@ class EventfulOccurrenceParser(OccurrenceParser):
             price_data['quantity'] = str(price)
             self.price_parser.parse(price_data)
 
-class EventfulEventParser(EventParser):
+class EventfulEventParser(BaseParser):
+    model_form = EventImportForm
+    fields = ['xid',]
     occurrence_parser = EventfulOccurrenceParser()
     external_category_parser = EventfulCategoryParser()
     img_dict_key='image_local'
