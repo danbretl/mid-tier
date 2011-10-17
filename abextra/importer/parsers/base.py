@@ -81,7 +81,6 @@ class BaseParser(object):
         raise NotImplementedError()
 
     def parse_file_data(self, data, file_data):
-        
         images = data.get(self.img_dict_key)
         if images:
             image = images[0]

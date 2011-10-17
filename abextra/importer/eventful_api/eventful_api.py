@@ -39,7 +39,6 @@ class API(object):
             os.makedirs(img_dir)
         self.img_dir = img_dir
 
-
     def _build_url(self, method, **args):
         "Call the Eventful API's METHOD with ARGS."
         # Build up the request
@@ -102,7 +101,6 @@ class API(object):
             for replacement in replace_from:
                 url = url.replace(replacement,'original')
                 return url
-
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')

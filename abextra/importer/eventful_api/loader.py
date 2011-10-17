@@ -91,6 +91,7 @@ class EventfulApiConsumer(object):
                 if venue_image_local:
                     event['venue_image_local'] = [venue_image_local]
             return event
+
         events = itertools.imap(extend_with_details, self.event_detail_pile)
         return events
 

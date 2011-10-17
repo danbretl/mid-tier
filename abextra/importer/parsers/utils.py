@@ -11,7 +11,7 @@ def expand_rrules(first_occ, rrule_strings):
     for rrule_string in rrule_strings:
         rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
         rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-        last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.RECURRENCE_CAP)
+        last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.EVENTFUL_RRULE_MAX)
         rrules_clipped = rrule.between(first_occ, last_occ)
         rrules.union(rrules_clipped)
     return rrules

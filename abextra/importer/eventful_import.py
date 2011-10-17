@@ -24,15 +24,9 @@ class EventfulImporter(object):
         self.total_pages = total_pages
 
     def import_events(self):
-
-        created_event_objs = []
-        existing_event_objs = []
-
-        stop_page = self.page_size + 1
-        fetched_meta = False
-
         self.logger.info('Beginning import of eventful events...') 
 
+        fetched_meta, stop_page = False, self.current_page + 1
         while self.current_page < stop_page:
             events = self.consumer.consume(location=self.location, date='Today',
                 page_size=self.page_size, page_number=self.current_page)
@@ -67,7 +61,7 @@ class EventfulImporter(object):
                 if not cmd_str:
                     fetch_next = True
                 else:
-                    fetch_next = True if 'y' in cmd_str.lower() else False
+                    fetch_next = True if cmd_str.lower().startswith('y') else False
             else:
                 fetch_next = True
 
@@ -76,38 +70,18 @@ class EventfulImporter(object):
             # preprocess the event and then attempt to parse it.
 
             if fetch_next:
+                # process all events on the page, putting them into separate
+                # buckets of created and existing objects
+                results = []
                 for event in events:
-                    # try:
-                    self.process_event(event)
+                    # increase event counter
+                    self.count += 1
                     created, event_obj = self.parser.parse(event)
-                    if created:
-                        created_event_objs.append(event_obj)
-                    elif not created and event_obj:
-                        existing_event_objs.append(event_obj)
-                        # THIS IS VERY UGLY
-                    # FIXME
-                    # HANDLE THA DAMN EXCEPTIONS
-                    # except Exception as e:
-                        # import ipdb; ipdb.set_trace()
-                        # raise e
-                        # self.logger.warn("Encountered %s exception while parsing" %
-                                # type(exception))
+                    results.append((created, event_obj.id))
+
                 self.logger.info('Fetched %d/%d events so far' %
                         (self.count, self.consumer.total_items))
 
+            # increase the page counter
             self.current_page += 1
-        return (created_event_objs, existing_event_objs)
-
-    # FIXME: implement JSON dump events & settings
-    def json_dump():
-        pass
-
-    # FIXME: implement JSON load events & settings
-    def json_load():
-        pass
-
-    def process_event(self, e):
-        # preprocess event response
-        self.count += 1
-        return e
-        # pass
+        return results
