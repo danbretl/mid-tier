@@ -1,10 +1,12 @@
 from django.test import TestCase
+from django.conf import settings
 from importer.consumer import ScrapeFeedConsumer
-from importer.eventful_api.loader import SimpleApiConsumer
+from importer.eventful_api.loader import EventfulApiConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
 from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
 from importer.parsers.price import PriceParser
 from importer.parsers.eventful import EventfulEventParser
+from importer.parsers.utils import *
 from importer.eventful_import import EventfulImporter
 
 # class ExternalCategoryParserTest(TestCase):
@@ -76,10 +78,10 @@ class EventfulParserTest(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventfulEventParser()
-        self.importer = EventfulImporter(page_size=100)
+        self.importer = EventfulImporter(page_size=100, total_pages=2)
 
     def test_parse(self):
-        events = self.importer.import_events(total_pages=2) 
+        events = self.importer.import_events()
         # for event in events:
             # try:
                 # event_obj = self.parser.parse(event)
@@ -87,4 +89,79 @@ class EventfulParserTest(TestCase):
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
 
+class EventfulParserMockAPIAndDumpTest(TestCase):
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+
+    def setUp(self):
+        # self.consumer = SimpleApiConsumer()
+        # self.parser = EventfulEventParser()
+        self.importer = EventfulImporter(page_size=10, current_page=1,
+                total_pages=3, mock_api=False, make_dumps=True)
+
+    def test_parse(self):
+        (created_events, existing_events) = self.importer.import_events()
+        assert(created_events)
+        for e in created_events:
+            if e.id:
+                e.delete()
+        self.importer = EventfulImporter(page_size=10, current_page=1,
+                total_pages=3, mock_api=True, make_dumps=False)
+        (created_mock_events, existing_events) = self.importer.import_events()
+        assert(created_mock_events)
+
+        # for event in events:
+            # try:
+                # event_obj = self.parser.parse(event)
+            # except ValueError as parse_err:
+                # self.logger.warn("Encountered exception while parsing:")
+                # self.logger.warn(parse_err.args)
+
+class EventfulParserDateParsingTest(TestCase):
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+
+    def test_single_rdate_and_rrules(self):
+        consumer = EventfulApiConsumer(mock_api=True, dump_sub_dir='p10-c100')
+
+        # 43e64022c8ff8aff4ad920e565bd62c5.json
+
+        event_id = 'E0-001-037594896-6@2011101110'
+        event_data = consumer.fetch_event_details(event_id)
+        recurrences = event_data.get('recurrence')
+
+        # ipdb> event_data['start_time']
+        # '2011-10-11 10:00:00'
+        # ipdb> event_data['stop_time']
+        # '2011-10-11 16:30:00'
+        # event_data['recurrence'] looks like this
+        # {'rrules': {'rrule': 'FREQ=DAILY;UNTIL=20111028'}, 'exrules': None, 'rdates': {'rdate': '2011-04-30 10:00:00'}, 'description': 'on various days', 'exdates': None}
+
+        (start_datetime, duration) = parse_start_datetime_and_duration(event_data)
+        (first_datetime, current_date_times) = expand_recurrence_dict(recurrences,
+                start_datetime)
+
+        # ipdb> first_occ
+        # datetime.datetime(2011, 4, 30, 10, 0)
+        # ipdb> start_datetime
+        # datetime.datetime(2011, 10, 11, 10, 0)
+
+        self.assertTrue(first_datetime < start_datetime)
+
+        # so we can have a first occurrence before the starting datetime
+
+        self.assertEqual(duration, datetime.timedelta(hours=6,minutes=30))
+
+        # and our durations are getting calculated correctly
+
+        self.assertFalse(current_date_times)
+
+        # and the date times have all been clipped (because they're all in the
+        # past as of 2011-10-14
+
+        # now, let's test that it's getting all the recurrences originally
+        # before being clipped
+
+        (first_occ, current_date_times) = expand_recurrence_dict(recurrences,
+                start_datetime, clip_before=first_datetime)
+
+        self.assertTrue(current_date_times)
 

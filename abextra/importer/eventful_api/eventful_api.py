@@ -18,13 +18,15 @@ class APIError(Exception):
     pass
 
 class API(object):
-    def __init__(self, app_key, server='api.eventful.com', make_dumps=False, img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
+    def __init__(self, app_key, server='api.eventful.com', make_dumps=False,
+            dump_sub_dir='default', img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
-        self.dump_dir = getattr(settings, 'EVENTFUL_API_DUMP_DIR', None) or 'eventful_dumps'
+        parent_dump_dir = getattr(settings, 'EVENTFUL_API_DUMP_DIR', None) or 'eventful_dumps'
+        self.dump_dir = os.path.join(parent_dump_dir, dump_sub_dir)
 
         if make_dumps:
             try:
@@ -88,32 +90,43 @@ class API(object):
         self.user = user
         return user
 
+    # FIXME: this should go in a utils module
+
+    def original_image_url_from_image_field(self, image_field):
+        replace_from = ['small', 'medium']
+        if isinstance (image_field, (tuple, list)):
+            url = image_field[0]['url']
+        else:
+            url = image_field['url']
+        if url:
+            for replacement in replace_from:
+                url = url.replace(replacement,'original')
+                return url
+
+
     def fetch_image(self, images_dict, parent_id):
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
-        else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        request = urllib2.Request(url)
-        try:
-            img = urllib2.urlopen(request)
-        except (urllib2.URLError, urllib2.HTTPError), e:
-            # FIXME: use logger to print these error messages
-            print "Internets Error:", url
-        else:
-            img_dat = img.read()
-            im = Image.open(StringIO(img_dat))
-            width, height = im.size
-            # FIXME: migrate image dimension checking logic to form so that it
-            # can be reused
-            suffix = '.'+url.split('.')[-1]
-            filename = os.path.join(self.img_dir, parent_id+suffix)
-            with open(filename, 'w') as f:
-                f.write(img_dat)
-            if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
-                return dict(id=parent_id, path=filename, url=url)
+        image_field = images_dict.get('image')
+        url = self.original_image_url_from_image_field(image_field)
+        if url:
+            try:
+                img = urllib2.urlopen(url)
+            except (urllib2.URLError, urllib2.HTTPError), e:
+                # FIXME: use logger to print these error messages
+                print "Internets Error:", url
             else:
-                print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
+                img_dat = img.read()
+                im = Image.open(StringIO(img_dat))
+                width, height = im.size
+                # FIXME: migrate image dimension checking logic to form so that it
+                # can be reused
+                suffix = '.'+url.split('.')[-1]
+                filename = os.path.join(self.img_dir, parent_id+suffix)
+                with open(filename, 'w') as f:
+                    f.write(img_dat)
+                if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
+                    return dict(id=parent_id, path=filename, url=url)
+                else:
+                    print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
 
 class MockAPI(API):
 
@@ -121,16 +134,14 @@ class MockAPI(API):
         super(MockAPI, self).__init__(*args, **kwargs)
 
     def fetch_image(self, images_dict, parent_id):
-        img_dict = images_dict.get('image')
-        if isinstance (img_dict, (tuple, list)):
-            url = img_dict[0]['small']['url'].replace('small', 'original')
-        else:
-            url = img_dict['small']['url'].replace('small', 'original')
-        suffix = '.'+url.split('.')[-1]
-        filename = os.path.join(self.img_dir, parent_id+suffix)
-        if not os.path.exists(filename):
-            print "Expected image %s not found" % filename
-        
+        image_field = images_dict.get('image')
+        url = self.original_image_url_from_image_field(image_field)
+        if url:
+            suffix = '.'+url.split('.')[-1]
+            filename = os.path.join(self.img_dir, parent_id+suffix)
+            if not os.path.exists(filename):
+                print "Expected image %s not found" % filename
+
     def call(self, method, **args):
         # Build the url
         url = self._build_url(method, **args)

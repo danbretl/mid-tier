@@ -8,12 +8,12 @@ from eventlet.green import urllib, urllib2
 from eventful_api import API, MockAPI
 
 class EventfulApiConsumer(object):
-    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=True, make_dumps=False):
+    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=False,
+            make_dumps=False, dump_sub_dir='default'):
         # instantiate api
-        if mock_api:
-            self.api = MockAPI(api_key, make_dumps=make_dumps)
-        else:
-            self.api = API(api_key, make_dumps=make_dumps)
+        api_class = MockAPI if mock_api else API
+        self.api = api_class(api_key, make_dumps=make_dumps,
+                dump_sub_dir=dump_sub_dir)
         self.total_items = None
         self.page_count = None
 
@@ -54,17 +54,17 @@ class EventfulApiConsumer(object):
             self.venue_detail_pile.spawn(self.fetch_venue_details, summary['venue_id'])
             self.venue_ids.add(summary['venue_id'])
 
-    def fetch_venue_details(self, venue_id):
+    def fetch_venue_details(self, venue_id, fetch_images=True):
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
-        if images:
+        if images and fetch_images:
             self.venue_image_pile.spawn(self.api.fetch_image, images, venue_id)
         return venue_detail
 
-    def fetch_event_details(self, event_id):
+    def fetch_event_details(self, event_id, fetch_images=True):
         event_detail = self.api.call('/events/get', id=event_id)
         images = event_detail.get('images')
-        if images:
+        if images and fetch_images:
             self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
 

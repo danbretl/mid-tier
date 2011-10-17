@@ -18,7 +18,7 @@ from importer.parsers.event import ExternalCategoryParser
 from importer.parsers.event import EventParser, OccurrenceParser
 from importer.parsers.locations import PlaceParser, PointParser, CityParser
 from importer.parsers.price import PriceParser
-
+from importer.parsers.utils import *
 
 class EventfulPriceParser(PriceParser):
 
@@ -166,69 +166,32 @@ class EventfulEventParser(EventParser):
 
         return form_data
 
+    def parse_occurrence(self, data, event, start_datetime, duration):
+        occurrence_form_data = data
+        occurrence_form_data['event'] = event.id
+        occurrence_form_data['start_date'] = \
+            start_datetime.date().isoformat()
+        occurrence_form_data['start_time'] = \
+            start_datetime.time().isoformat()
+        if duration:
+            end_datetime = start_datetime + duration
+            occurrence_form_data['end_date'] = \
+                end_datetime.date().isoformat()
+            occurrence_form_data['end_time'] = \
+                end_datetime.time().isoformat()
+
+        self.occurrence_parser.parse(occurrence_form_data)
+
+
     def post_parse(self, data, instance):
         self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
         event = instance
-        # occurrences
-        # Use strptime to parse date strictly so there are no
-        # issues with ambiguously picking up the current date
-        # from dateutil.parse
-        start_date_str = data.get('start_date')
-        start_time_str = data.get('start_time')
-        # Eventful often returns a null date string and time string which has
-        # both date and time, so let's try parsing that into first_occ
-        try:
-            first_occ_start_datetime = datetime.datetime.strptime(start_time_str, '%Y-%m-%d %H:%M:%S')
-        except ValueError:
-            first_occ_start_datetime = None
-            try:
-                first_occ_start_date = datetime.datetime.strptime(start_time_str, '%Y-%m-%d')
-            except ValueError:
-                first_occ_start_date = None
-                self.logger.warn('Could not strictly parse from date time pair <%s,%s>' %
-                        (start_date_str, start_time_str))
-        if first_occ_start_datetime or first_occ_start_date:
-            recurrence_dict = data.get('recurrence')
-
-            if recurrence_dict:
-                rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
-                if rdates:
-                    rdate = rdates.get('rdate')
-                    if rdate:
-                        if not isinstance (rdate, (tuple, list)):
-                            rdate = [rdate]
-                        for date in rdate:
-                            date_time = dateutil.parser.parse(date)
-                            occurrence_form_data = data
-                            occurrence_form_data['event'] = event.id
-                            occurrence_form_data['start_date'] = \
-                                date_time.date().isoformat()
-                            occurrence_form_data['start_time'] = \
-                                date_time.time().isoformat()
-                            self.occurrence_parser.parse(occurrence_form_data)
-
-                if rrules:
-                    rrule_field = rrules.get('rrule')
-                    if rrule_field:
-                        # convert field to a list
-                        rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
-                        for rrule_string in rrule_strings:
-                            rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
-                            rrule = dateutil.rrule.rrulestr(rrule_cleaned)
-                            last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.RECURRENCE_CAP)
-                            rrules_clipped = rrule.between(first_occ, last_occ)
-                            for date_time in rrules_clipped:
-                                occurrence_form_data = data
-                                occurrence_form_data['event'] = event.id
-                                occurrence_form_data['start_date'] = \
-                                    date_time.date().isoformat()
-                                occurrence_form_data['start_time'] = \
-                                    date_time.time().isoformat()
-                                # self.logger.debug('Found datetime <%s> for this occurrence' % str(date_time))
-                                self.occurrence_parser.parse(occurrence_form_data)
-                                # print 'Total occurrences for %s: %d' % (event.id,
-                                    # event.occurrences.count())
-
+        (start_datetime, duration) = parse_start_datetime_and_duration(data)
+        recurrence_dict = data.get('recurrence')
+        if recurrence_dict:
+            (first_recurrence, current_date_times) = expand_recurrence_dict(recurrence_dict, start_datetime)
+            for date_time in current_date_times:
+                self.parse_occurrence(data, event, date_time, duration)
         # sanity check  FIXME ugly
         occurrence_count = event.occurrences.count()
         if not occurrence_count:
