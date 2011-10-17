@@ -52,18 +52,14 @@ class EventfulImporter(object):
 
             # Is interactive mode set? If so, then ask whether to import the
             # current page. This happens after the page is fetched.
-
+            fetch_next = True
             if self.interactive:
                 self.logger.info('Currently on page %d/%d (%d available)' %
                         (self.current_page, stop_page - 1, self.consumer.page_count))
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
-                if not cmd_str:
-                    fetch_next = True
-                else:
+                if cmd_str:
                     fetch_next = True if cmd_str.lower().startswith('y') else False
-            else:
-                fetch_next = True
 
             # If the page has been fetched, then go through each event and
             # parse occurrences from that event. Using process_event,
@@ -81,6 +77,8 @@ class EventfulImporter(object):
 
                 self.logger.info('Fetched %d/%d events so far' %
                         (self.count, self.consumer.total_items))
+            else:
+                self.logger.info('Did not import events from this page')
 
             # increase the page counter
             self.current_page += 1
