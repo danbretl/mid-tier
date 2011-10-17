@@ -1,5 +1,4 @@
 from django.core.management.base import BaseCommand, CommandError
-from importer.parsers.event import EventParser
 from importer.eventful_import import EventfulImporter 
 from optparse import make_option
 from events.models import Event

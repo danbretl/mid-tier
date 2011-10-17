@@ -38,6 +38,7 @@ def expand_recurrence_dict(recurrence_dict, first_occ, clip_before=datetime.date
     rdates, rrules = map(recurrence_dict.get, ('rdates', 'rrules'))
     # make initial set of date_times from start_time
     date_times = set([first_occ])
+    last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.EVENTFUL_RRULE_MAX)
 
     # add rdates to set of recurrences
 
@@ -69,7 +70,7 @@ def expand_recurrence_dict(recurrence_dict, first_occ, clip_before=datetime.date
             date_times.union(rrules)
 
     # clip set to take out times in the past, then parse
-    current_date_times = filter(lambda x: x > clip_before, date_times)
+    current_date_times = filter(lambda x: x > clip_before and x < last_occ, date_times)
 
     # we want to return the first occurrence for verification purposes --
     # this could make it easier to validate correct behavior parsing rdates
