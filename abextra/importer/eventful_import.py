@@ -59,7 +59,7 @@ class EventfulImporter(object):
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
                 if cmd_str:
-                    fetch_next = True if cmd_str.lower().startswith('y') else False
+                    fetch_next = cmd_str.lower().startswith('y')
 
             # If the page has been fetched, then go through each event and
             # parse occurrences from that event. Using process_event,

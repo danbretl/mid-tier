@@ -16,15 +16,15 @@ httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
 import simplejson
 
-IMG_SIZE_RE = re.compile('small|medium')
-IMG_EXT_RE = re.compile('/(?P<name>\d+-\d+).(?P<ext>jpg|jpeg|tif|tiff|png|gif)$')
+IMG_SIZE_RE = re.compile('(?<=/images/)\w+(?=/)', re.I)
+IMG_EXT_RE = re.compile('/(?P<name>\d+-\d+).(?P<ext>jpg|jpeg|tif|tiff|png|gif)$', re.I)
 
 class APIError(Exception):
     pass
 
 class API(object):
     def __init__(self, app_key, server='api.eventful.com', make_dumps=False,
-            dump_sub_dir='default', img_dir=os.path.join('/tmp', settings.SCRAPE_IMAGES_PATH)):
+            dump_sub_dir='default', img_dir=os.path.join('/tmp/kwiqet', settings.SCRAPE_IMAGES_PATH)):
         self.logger = logging.getLogger('importer.eventful_api')
         self.app_key = app_key
         self.server = server
@@ -109,7 +109,7 @@ class API(object):
         matches = IMG_EXT_RE.search(url)
         if matches:
             # take first matched pattern, which is file extension
-            ext = '.'+matches.groupdict()['ext']
+            ext = '.' + matches.groupdict()['ext']
             filename = os.path.join(self.img_dir, parent_id + ext)
             return filename
 
@@ -120,7 +120,7 @@ class API(object):
             try:
                 img = urllib2.urlopen(url)
             except (urllib2.URLError, urllib2.HTTPError), e:
-                self.logger.info("Internets Error: %s" % url)
+                self.logger.error("Internets Error: %s" % url)
             else:
                 img_dat = img.read()
                 im = Image.open(StringIO(img_dat))
@@ -129,7 +129,7 @@ class API(object):
                 # can be reused
                 filename = self.image_filename_from_url(url, parent_id)
                 if not filename:
-                    self.logger.info('Unable to parse image extension from <%s>' % url)
+                    self.logger.warn('Unable to parse image extension from <%s>' % url)
                 else:
                     with open(filename, 'w') as f:
                         f.write(img_dat)
@@ -152,7 +152,7 @@ class MockAPI(API):
                 self.logger.info('Unable to parse image extension from <%s>' % url)
             else:
                 if not os.path.exists(filename):
-                    self.logger.info("Expected image %s not found" % filename)
+                    self.logger.warn("Expected image %s not found" % filename)
 
     def call(self, method, **args):
         # Build the url
