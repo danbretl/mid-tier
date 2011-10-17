@@ -5,6 +5,7 @@
 
 import re
 import eventlet
+import logging
 from eventlet import pools
 from eventlet.green import urllib, urllib2
 from django.conf import settings
@@ -15,15 +16,16 @@ httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
 import simplejson
 
-img_size_re = re.compile('small|medium')
-img_ext_re = re.compile('^.*(jpg|jpeg|tif|tiff|png|gif)$')
+IMG_SIZE_RE = re.compile('small|medium')
+IMG_EXT_RE = re.compile('/(?P<name>\d+-\d+).(?P<ext>jpg|jpeg|tif|tiff|png|gif)$')
 
 class APIError(Exception):
     pass
 
 class API(object):
     def __init__(self, app_key, server='api.eventful.com', make_dumps=False,
-            dump_sub_dir='default', img_dir=os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH)):
+            dump_sub_dir='default', img_dir=os.path.join('/tmp', settings.SCRAPE_IMAGES_PATH)):
+        self.logger = logging.getLogger('importer.eventful_api')
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
@@ -96,23 +98,20 @@ class API(object):
     # FIXME: this should go in a utils module
 
     def original_image_url_from_image_field(self, image_field):
-        img_url_re = re.compile('small|medium')
         if isinstance (image_field, (tuple, list)):
             url = image_field[0]['url']
         else:
             url = image_field['url']
         if url:
-            return img_url_re.sub('original', url)
+            return IMG_SIZE_RE.sub('original', url)
 
     def image_filename_from_url(self, url, parent_id):
-        matches = img_ext_re.match(url)
+        matches = IMG_EXT_RE.search(url)
         if matches:
             # take first matched pattern, which is file extension
-            ext = '.'+matches.groups()[0]
+            ext = '.'+matches.groupdict()['ext']
             filename = os.path.join(self.img_dir, parent_id + ext)
             return filename
-        else:
-            print 'Unable to parse image extension from <%s>' % url
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
@@ -121,8 +120,7 @@ class API(object):
             try:
                 img = urllib2.urlopen(url)
             except (urllib2.URLError, urllib2.HTTPError), e:
-                # FIXME: use logger to print these error messages
-                print "Internets Error:", url
+                self.logger.info("Internets Error: %s" % url)
             else:
                 img_dat = img.read()
                 im = Image.open(StringIO(img_dat))
@@ -130,12 +128,15 @@ class API(object):
                 # FIXME: migrate image dimension checking logic to form so that it
                 # can be reused
                 filename = self.image_filename_from_url(url, parent_id)
-                with open(filename, 'w') as f:
-                    f.write(img_dat)
-                if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
-                    return dict(id=parent_id, path=filename, url=url)
+                if not filename:
+                    self.logger.info('Unable to parse image extension from <%s>' % url)
                 else:
-                    print 'Image %s did not meet minimum image dimensions; discarding' % parent_id
+                    with open(filename, 'w') as f:
+                        f.write(img_dat)
+                    if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
+                        return dict(id=parent_id, path=filename, url=url)
+                    else:
+                        self.logger.info('Image %s did not meet minimum image dimensions; discarding' % parent_id)
 
 class MockAPI(API):
 
@@ -147,8 +148,11 @@ class MockAPI(API):
         url = self.original_image_url_from_image_field(image_field)
         if url:
             filename = self.image_filename_from_url(url, parent_id) 
-            if not os.path.exists(filename):
-                print "Expected image %s not found" % filename
+            if not filename:
+                self.logger.info('Unable to parse image extension from <%s>' % url)
+            else:
+                if not os.path.exists(filename):
+                    self.logger.info("Expected image %s not found" % filename)
 
     def call(self, method, **args):
         # Build the url
