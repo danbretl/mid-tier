@@ -64,4 +64,4 @@ class Command(BaseCommand):
         except Exception, e:
             raise CommandError(e)
         else:
-            self.stdout.write('Successfully imported eventful API results')
+            self.stdout.write('Successfully imported eventful API results\n')

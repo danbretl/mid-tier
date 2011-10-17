@@ -3,6 +3,7 @@
     I added http pooling for work with eventlet concurrency. booya
 """
 
+import re
 import eventlet
 from eventlet import pools
 from eventlet.green import urllib, urllib2
@@ -13,6 +14,9 @@ import os
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
 import simplejson
+
+img_size_re = re.compile('small|medium')
+img_ext_re = re.compile('^.*(jpg|jpeg|tif|tiff|png|gif)$')
 
 class APIError(Exception):
     pass
@@ -92,15 +96,23 @@ class API(object):
     # FIXME: this should go in a utils module
 
     def original_image_url_from_image_field(self, image_field):
-        replace_from = ['small', 'medium']
+        img_url_re = re.compile('small|medium')
         if isinstance (image_field, (tuple, list)):
             url = image_field[0]['url']
         else:
             url = image_field['url']
         if url:
-            for replacement in replace_from:
-                url = url.replace(replacement,'original')
-                return url
+            return img_url_re.sub('original', url)
+
+    def image_filename_from_url(self, url, parent_id):
+        matches = img_ext_re.match(url)
+        if matches:
+            # take first matched pattern, which is file extension
+            ext = '.'+matches.groups()[0]
+            filename = os.path.join(self.img_dir, parent_id + ext)
+            return filename
+        else:
+            print 'Unable to parse image extension from <%s>' % url
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
@@ -117,8 +129,7 @@ class API(object):
                 width, height = im.size
                 # FIXME: migrate image dimension checking logic to form so that it
                 # can be reused
-                suffix = '.'+url.split('.')[-1]
-                filename = os.path.join(self.img_dir, parent_id+suffix)
+                filename = self.image_filename_from_url(url, parent_id)
                 with open(filename, 'w') as f:
                     f.write(img_dat)
                 if width >= settings.IMAGE_MIN_DIMS['width'] and height >= settings.IMAGE_MIN_DIMS['height']:
@@ -135,8 +146,7 @@ class MockAPI(API):
         image_field = images_dict.get('image')
         url = self.original_image_url_from_image_field(image_field)
         if url:
-            suffix = '.'+url.split('.')[-1]
-            filename = os.path.join(self.img_dir, parent_id+suffix)
+            filename = self.image_filename_from_url(url, parent_id) 
             if not os.path.exists(filename):
                 print "Expected image %s not found" % filename
 
