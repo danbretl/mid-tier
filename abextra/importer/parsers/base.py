@@ -1,7 +1,5 @@
 import os
 import logging
-from itertools import chain
-from collections import namedtuple
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import ValidationError
@@ -9,16 +7,32 @@ from django.forms import ValidationError
 class BaseParser(object):
     logger = logging.getLogger('importer.parser')
     model_form = None
+    o2m_default_field = None
     fields = []
-    img_dict_key = 'image_local' 
+    img_dict_key = 'image_local'
 
     def __init__(self):
         self.model = self.model_form._meta.model
-        self.KeyTuple = namedtuple('KeyTuple', self.fields)
         self.cache = {}
 
-    def parse(self, data):
-        form_data = self.parse_form_data(data, {})
+        # reflect and process on m2o slaves
+        self._slave_adapters = {}
+        slave_adapters = getattr(self, 'slave_adapters', None)
+        if slave_adapters:
+            for form_field, adapter_cls in slave_adapters.items():
+                self._slave_adapters[form_field] = adapter_cls()
+
+        # reflect and process on o2m slaves
+        self._slave_adapters_o2m = {}
+        slave_adapters_o2m = getattr(self, 'slave_adapters_o2m', None)
+        if slave_adapters_o2m:
+            for producer, adapter_cls in slave_adapters_o2m.items():
+                producer_callable = getattr(self, producer, None)
+                if producer_callable:
+                    self._slave_adapters_o2m[producer_callable] = adapter_cls()
+
+    def parse(self, raw_data):
+        form_data = self._parse_form_data(raw_data, {})
         # create cache key
         key = self.cache_key(form_data)
         # try to get from cache
@@ -29,7 +43,7 @@ class BaseParser(object):
         # if cache miss, create or get from db
         if not instance:
             # try to create and validate form
-            file_data = self.parse_file_data(data, {})
+            file_data = self.parse_file_data(raw_data, {})
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
                 # now that the form has been cleaned and the data in it has
@@ -63,7 +77,7 @@ class BaseParser(object):
 
         # if we have an instance, do a post parse
         if instance:
-            self.post_parse(data, instance)
+            self._post_parse(raw_data, instance)
             # if this is a fresh instance, cache it
             if created:
                 self.cache[key] = instance
@@ -77,11 +91,30 @@ class BaseParser(object):
         self.logger.debug('field tuple %s' % str(tup))
         return hash(tup)
 
-    def parse_form_data(self, obj_dict, form_data):
-        raise NotImplementedError()
+    def _parse_form_data(self, raw_data, form_data):
+        form_data = self._adapt_slaves(raw_data, form_data)
+        form_data = self._adapt_dictpaths(raw_data, form_data)
+        form_data = self.parse_form_data(raw_data, form_data)
+        return form_data
 
-    def parse_file_data(self, data, file_data):
-        images = data.get(self.img_dict_key)
+    def _adapt_slaves(self, raw_data, form_data):
+        for form_field, adapter in self._slave_adapters.items():
+            created, obj = adapter.parse(raw_data)
+            # a little presumptuous :: always django models by 'id'
+            form_data[form_field] = obj.id if obj else None
+        return form_data
+
+    def _adapt_dictpaths(self, raw_data, form_data):
+        """processes standardized jpaths"""
+        return form_data
+
+    # FIXME rename into adapter_hook
+    def parse_form_data(self, raw_data, form_data):
+        """hook for overrides"""
+        return form_data
+
+    def parse_file_data(self, raw_data, file_data):
+        images = raw_data.get(self.img_dict_key)
         if images:
             image = images[0]
             path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
@@ -90,5 +123,16 @@ class BaseParser(object):
                 file_data['image'] = SimpleUploadedFile(filename, f.read())
         return file_data
 
-    def post_parse(self, obj_dict, instance):
+    def _post_parse(self, raw_data, instance):
+        # process o2m slaves
+        for producer_func, adapter in self._slave_adapters_o2m.items():
+            raw_results = producer_func(raw_data)
+            for raw_result in raw_results:
+                raw_result[self.o2m_default_field] = instance.id
+                adapter.parse(raw_result)
+        # call the override hook
+        self.post_parse(raw_data, instance)
+
+    def post_parse(self, raw_data, instance):
+        """hook for overrides"""
         pass

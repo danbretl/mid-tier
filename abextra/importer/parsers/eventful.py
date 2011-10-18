@@ -1,10 +1,3 @@
-import re
-import os
-import datetime
-import HTMLParser
-import dateutil.parser
-import dateutil.rrule
-from django.conf import settings
 import core.parsers
 
 from importer.parsers.base import BaseParser
@@ -12,10 +5,10 @@ from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 from prices.forms import PriceImportForm
-from events.models import Source, EventSummary
-from events.utils import CachedCategoryTree
 
 from importer.parsers.utils import *
+
+SOURCE_NAME = 'eventful'
 
 class EventfulPriceParser(BaseParser):
     model_form = PriceImportForm
@@ -24,7 +17,7 @@ class EventfulPriceParser(BaseParser):
     def parse_form_data(self, data, form_data):
         form_data['occurrence'] = data.get('occurrence')
         form_data['units'] = 'dollar'
-        form_data['quantity'] = data.get('quantity') 
+        form_data['quantity'] = data.get('quantity')
         return form_data
 
 class EventfulCityParser(BaseParser):
@@ -34,57 +27,55 @@ class EventfulCityParser(BaseParser):
     def parse_form_data(self, data, form_data):
         form_data['city'] = data.get('city')
         form_data['state'] = data.get('region')
-        #TODO: Try and get this from geocoding information.
         return form_data
 
 class EventfulPointParser(BaseParser):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
-    city_parser = EventfulCityParser()
+    slave_adapters = {'city': EventfulCityParser}
 
     def parse_form_data(self, data, form_data):
         # Also possible, get an address from lat long?
         # Keeping the address compulsory for now for sanity.
-        form_data['address'] = data.get('address') or ''
+        form_data['address'] = data.get('address')
         form_data['latitude'] = data.get('latitude')
         form_data['longitude'] = data.get('longitude')
-        # FIXME: deal with form_data not having zip code
-        form_data['zip'] = data.get('postal_code') or '10000'
-        form_data['country'] = 'US'
-        created, city = self.city_parser.parse(data)
-        if city:
-            form_data['city'] = city.id
+        zipcode = data.get('postal_code')
+#        if not zipcode:
+#            from pygeocoder import Geocoder
+#            results = Geocoder.geocode(' '.join('lati'))
+        form_data['zip'] = zipcode
+        form_data['country'] = data.get('country_abbr2')
         return form_data
 
 class EventfulPlaceParser(BaseParser):
     model_form = PlaceImportForm
-    point_parser = EventfulPointParser()
-    img_dict_key='venue_image_local'
+    slave_adapters = {'point': EventfulPointParser}
     fields = ['title', 'point']
+    img_dict_key = 'venue_image_local'
 
     def parse_form_data(self, data, form_data):
-        created, point = self.point_parser.parse(data)
-        if point:
-            form_data['point'] = point.id
-
         venue_details = data.get('venue_details')
         if venue_details:
             form_data['title'] = venue_details.get('name')
-            form_data['phone'] = data.get('phone') or ''
+            form_data['phone'] = data.get('phone')
             form_data['url'] = venue_details.get('url')
 
         venue_images = data.get('venue_image_local')
         if venue_images:
-            form_data['venue_image_local'] = venue_images
+            form_data[self.img_dict_key] = venue_images
         return form_data
 
 class EventfulCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
-    html_parser = HTMLParser.HTMLParser()
     fields = ['source', 'xid']
 
+    def __init__(self):
+        super(EventfulCategoryParser, self).__init__()
+        self.html_parser = HTMLParser.HTMLParser()
+
     def parse_form_data(self, data, form_data):
-        form_data['source'] = 'eventful'
+        form_data['source'] = SOURCE_NAME
         form_data['xid'] = data.get('id')
         name = data.get('name')
         if name:
@@ -94,27 +85,21 @@ class EventfulCategoryParser(BaseParser):
 class EventfulOccurrenceParser(BaseParser):
     model_form = OccurrenceImportForm
     fields = ['event', 'start_date', 'place', 'start_time']
-    place_parser = EventfulPlaceParser()
-    price_parser = EventfulPriceParser()
+    slave_adapters = {'place': EventfulPlaceParser}
+    slave_adapters_o2m = {'o2m_prices': EventfulPriceParser}
+    o2m_default_field = 'occurrence'
 
-    def __init__(self, *args, **kwargs):
-        super(EventfulOccurrenceParser, self).__init__(*args, **kwargs)
+    def __init__(self):
+        super(EventfulOccurrenceParser, self).__init__()
         self.quantity_parser = core.parsers.PriceParser()
 
     def parse_form_data(self, data, form_data):
         form_data['event'] = data.get('event')
         form_data['start_time'] = data.get('start_time')
         form_data['start_date'] = data.get('start_date')
-
-        # parse place
-        created, place = self.place_parser.parse(data)
-        form_data['place'] = place.id if place else None
-
         return form_data
 
-    def post_parse(self, data, instance):
-        occurrence = instance
-
+    def o2m_prices(self, data):
         # prices
         raw_free = data.get('free')
         raw_price = data.get('price')
@@ -126,21 +111,23 @@ class EventfulOccurrenceParser(BaseParser):
         else:
             prices = []
             self.logger.warn('"Free" nor "Price" fields could not be found.')
-        for price in prices:
-            price_data = {}
-            price_data['occurrence'] = occurrence.id
-            price_data['quantity'] = str(price)
-            self.price_parser.parse(price_data)
+        return map(lambda price: dict(quantity=str(price)), prices)
 
 class EventfulEventParser(BaseParser):
     model_form = EventImportForm
     fields = ['xid',]
-    occurrence_parser = EventfulOccurrenceParser()
-    external_category_parser = EventfulCategoryParser()
-    img_dict_key='image_local'
+    img_dict_key = 'image_local'
+    slave_adapters_o2m = {
+        'o2m_occurrences': EventfulOccurrenceParser
+    }
+    o2m_default_field = 'event'
+
+    def __init__(self):
+        super(EventfulEventParser, self).__init__()
+        self.external_category_parser = EventfulCategoryParser()
 
     def parse_form_data(self, data, form_data):
-        form_data['source'] = 'eventful'
+        form_data['source'] = SOURCE_NAME
         form_data['xid'] = data.get('id')
         form_data['title'] = data.get('title')
         form_data['description'] = data.get('description')
@@ -162,20 +149,16 @@ class EventfulEventParser(BaseParser):
                         external_category_ids.append(external_category.id)
 
         form_data['external_categories'] = external_category_ids
-        # FIXME: incorporate eventlet image fetcher before crawler
-        # parses but after search results and individual events are
-        # crawled
 
+        # process image attachments
         image = data.get('image')
-
         if image:
             form_data['image_url'] = image['url']
 
         return form_data
 
-    def parse_occurrence(self, data, event, start_datetime, duration):
+    def parse_occurrence(self, data, start_datetime, duration):
         occurrence_form_data = data
-        occurrence_form_data['event'] = event.id
         occurrence_form_data['start_date'] = \
             start_datetime.date().isoformat()
         occurrence_form_data['start_time'] = \
@@ -186,24 +169,23 @@ class EventfulEventParser(BaseParser):
                 end_datetime.date().isoformat()
             occurrence_form_data['end_time'] = \
                 end_datetime.time().isoformat()
+        return occurrence_form_data
 
-        self.occurrence_parser.parse(occurrence_form_data)
-
-
-    def post_parse(self, data, instance):
+    def o2m_occurrences(self, data):
         self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
-        event = instance
         (start_datetime, duration) = parse_start_datetime_and_duration(data)
         recurrence_dict = data.get('recurrence')
+        occurrence_form_dicts = []
         if recurrence_dict:
             (first_recurrence, current_date_times) = expand_recurrence_dict(recurrence_dict, start_datetime)
             for date_time in current_date_times:
-                self.parse_occurrence(data, event, date_time, duration)
+                occurrence_form_dicts.append(self.parse_occurrence(data, date_time, duration))
+        return occurrence_form_dicts
+
+    def post_parse(self, data, instance):
+        event = instance
         # sanity check  FIXME ugly
         occurrence_count = event.occurrences.count()
         if not occurrence_count:
             self.logger.warn('Dropping Event: no parsable occurrences')
             event.delete()
-            return
-
-

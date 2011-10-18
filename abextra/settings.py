@@ -164,8 +164,6 @@ INSTALLED_APPS = (
     'gravatar',                     # django gravatar   | voice dep
     'djangovoice',                  # feedback and issue tracking
 
-    'django_nose',                  # django unit testing via nose
-
     'accounts',                     # ABEX user profile extensions
     'alphasignup',                  # ABEX simple web front for Alpha signup
     'api',                          # ABEX API models, resources and utils
@@ -179,10 +177,6 @@ INSTALLED_APPS = (
     'prices',                       # ABEX prices
     'pundit',                       # ABEX categorization of events
 )
-
-# use nose to run tests
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # ===========
 # = Logging =
