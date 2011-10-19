@@ -1,3 +1,5 @@
+from itertools import ifilterfalse
+
 class Bunch(dict):
     """When prototyping (or even finalizing) data structures such as trees,
     it can be useful to have a flexible class that will allow you to specify 
