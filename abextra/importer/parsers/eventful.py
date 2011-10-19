@@ -14,45 +14,30 @@ SOURCE_NAME = 'eventful'
 class EventfulPriceParser(BaseParser):
     model_form = PriceImportForm
     fields = ['occurrence', 'quantity']
-
-    def parse_form_data(self, data, form_data):
-        form_data['occurrence'] = data.get('occurrence')
-        form_data['units'] = 'dollar'
-        form_data['quantity'] = data.get('quantity')
-        return form_data
+    form_data_map = {'occurrence': 'occurrence',
+            'quantity': 'quantity'
+    }
 
 class EventfulCityParser(BaseParser):
     model_form = CityImportForm
     fields = ['city', 'state']
-
-    def parse_form_data(self, data, form_data):
-        form_data['city'] = data.get('city')
-        form_data['state'] = data.get('region')
-        return form_data
+    form_data_map = {'city': 'city',
+            'state': 'region'
+    }
 
 class EventfulPointParser(BaseParser):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
     slave_adapters = {'city': EventfulCityParser}
+    form_data_map = {'address': 'address',
+            'latitude': 'latitude',
+            'longitude': 'longitude',
+            'zip': 'postal_code',
+            'country': 'country_abbr2'}
 
     def parse_form_data(self, data, form_data):
-        # Also possible, get an address from lat long?
-        # Keeping the address compulsory for now for sanity.
-        form_data['address'] = data.get('address')
-        form_data['latitude'] = data.get('latitude')
-        form_data['longitude'] = data.get('longitude')
-        zipcode = data.get('postal_code')
-#        if not zipcode:
-#            from pygeocoder import Geocoder
-#            results = Geocoder.reverse_geocode(
-#                *map(float, map(form_data.get, ('latitude', 'longitude')))
-#            )
-#            zipcode = results[0].postal_code
-#            print "\n\n\n zipcode: %s\n\n\n" % zipcode
-        form_data['zip'] = zipcode
-        form_data['country'] = data.get('country_abbr2')
-        return form_data
-
+        form_data = form_data.get('postal_code') or '10000'
+    
 class EventfulPlaceParser(BaseParser):
     model_form = PlaceImportForm
     slave_adapters = {'point': EventfulPointParser}
@@ -67,14 +52,14 @@ class EventfulPlaceParser(BaseParser):
 class EventfulCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
     fields = ['source', 'xid']
-
+    form_data_map = {'xid': 'id'}
+ 
     def __init__(self):
         super(EventfulCategoryParser, self).__init__()
         self.html_parser = HTMLParser.HTMLParser()
 
     def parse_form_data(self, data, form_data):
         form_data['source'] = SOURCE_NAME
-        form_data['xid'] = data.get('id')
         name = data.get('name')
         if name:
             form_data['name'] = self.html_parser.unescape(name)
@@ -104,6 +89,13 @@ class EventfulEventParser(BaseParser):
     fields = ['xid',]
     img_dict_key = 'image_local'
     slave_adapters_o2m = {'o2m_occurrences': EventfulOccurrenceParser}
+    form_data_map = {
+            'xid': 'id',
+            'title': 'title',
+            'description': 'description',
+            'url': 'url',
+            'image_url': 'image/url'
+    }
     o2m_default_field = 'event'
 
     def __init__(self):
@@ -112,10 +104,6 @@ class EventfulEventParser(BaseParser):
 
     def parse_form_data(self, data, form_data):
         form_data['source'] = SOURCE_NAME
-        form_data['xid'] = data.get('id')
-        form_data['title'] = data.get('title')
-        form_data['description'] = data.get('description')
-        form_data['url'] = data.get('url')
         external_category_ids = []
         categories = data.get('categories')
         if categories:
@@ -132,11 +120,6 @@ class EventfulEventParser(BaseParser):
                         external_category_ids.append(external_category.id)
 
         form_data['external_categories'] = external_category_ids
-
-        # process image attachments
-        image = data.get('image')
-        if image:
-            form_data['image_url'] = image['url']
 
         return form_data
 

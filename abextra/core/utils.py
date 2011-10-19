@@ -45,7 +45,7 @@ def dict_path_get(d, path):
         partials = path.split('/', 1)
         if len(partials) > 1:
             key, path_remainder = partials
-            return get(d[key], path_remainder) if d.has_key(key) else None
+            return dict_path_get(d[key], path_remainder) if d.has_key(key) else None
         else:
             return d.get(path)
     else:
