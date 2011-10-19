@@ -89,7 +89,7 @@ class EventfulApiConsumer(object):
                 event['venue_details'] = self.venues_by_venue_id[venue_id]
                 venue_image_local = self.images_by_venue_id.get(event['venue_id'])
                 if venue_image_local:
-                    event['venue_image_local'] = [venue_image_local]
+                    event['venue_images_local'] = [venue_image_local]
             return event
 
         events = itertools.imap(extend_with_details, self.event_detail_pile)
