@@ -10,7 +10,7 @@ class BaseParser(object):
     model_form = None
     o2m_default_field = None
     fields = []
-    img_dict_key = 'image_local'
+    form_data_map, file_data_map = {}, {}
 
     def __init__(self):
         self.model = self.model_form._meta.model
@@ -44,7 +44,7 @@ class BaseParser(object):
         # if cache miss, create or get from db
         if not instance:
             # try to create and validate form
-            file_data = self.parse_file_data(raw_data, {})
+            file_data = self._adapt_file_data(raw_data, {})
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
                 # now that the form has been cleaned and the data in it has
@@ -94,7 +94,7 @@ class BaseParser(object):
 
     def _parse_form_data(self, raw_data, form_data):
         form_data = self._adapt_slaves(raw_data, form_data)
-        form_data = self._adapt_dictpaths(raw_data, form_data)
+        form_data = self._adapt_form_data_mappings(raw_data, form_data)
         form_data = self.parse_form_data(raw_data, form_data)
         return form_data
 
@@ -105,12 +105,10 @@ class BaseParser(object):
             form_data[form_field] = obj.id if obj else None
         return form_data
 
-    def _adapt_dictpaths(self, raw_data, form_data):
-        """processes standardized jpaths"""
-        if hasattr(self, 'dictpaths'):
-            for dest_field, source_path in self.dictpaths.items():
-                selected_data = core.utils.dict_path_get(raw_data, source_path)
-                form_data[dest_field] = selected_data
+    def _adapt_form_data_mappings(self, raw_data, form_data):
+        """processes python dict paths"""
+        for field, source_path in self.form_data_map.items():
+            form_data[field] = core.utils.dict_path_get(raw_data, source_path)
         return form_data
 
     # FIXME rename into adapter_hook
@@ -118,14 +116,23 @@ class BaseParser(object):
         """hook for overrides"""
         return form_data
 
-    def parse_file_data(self, raw_data, file_data):
-        images = raw_data.get(self.img_dict_key)
-        if images:
-            image = images[0]
-            path = os.path.join(settings.SCRAPE_FEED_PATH, settings.SCRAPE_IMAGES_PATH, image['path'])
-            with open(path, 'rb') as f:
-                filename = os.path.split(f.name)[1]
-                file_data['image'] = SimpleUploadedFile(filename, f.read())
+    def _adapt_file_data(self, raw_data, file_data):
+        for field, source_path in self.file_data_map.items():
+            images = core.utils.dict_path_get(raw_data, source_path)
+            if images:
+                image = images[0]
+                path = os.path.join(
+                    settings.SCRAPE_FEED_PATH,
+                    settings.SCRAPE_IMAGES_PATH,
+                    image['path']
+                )
+                with open(path, 'rb') as f:
+                    filename = os.path.split(f.name)[1]
+                    file_data[field] = SimpleUploadedFile(filename, f.read())
+        return self.adapt_file_data(raw_data, file_data)
+
+    def adapt_file_data(self, raw_data, file_data):
+        """hook for overrides"""
         return file_data
 
     def _post_parse(self, raw_data, instance):

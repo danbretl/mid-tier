@@ -44,7 +44,11 @@ class EventfulPointParser(BaseParser):
         zipcode = data.get('postal_code')
 #        if not zipcode:
 #            from pygeocoder import Geocoder
-#            results = Geocoder.geocode(' '.join('lati'))
+#            results = Geocoder.reverse_geocode(
+#                *map(float, map(form_data.get, ('latitude', 'longitude')))
+#            )
+#            zipcode = results[0].postal_code
+#            print "\n\n\n zipcode: %s\n\n\n" % zipcode
         form_data['zip'] = zipcode
         form_data['country'] = data.get('country_abbr2')
         return form_data
@@ -53,19 +57,12 @@ class EventfulPlaceParser(BaseParser):
     model_form = PlaceImportForm
     slave_adapters = {'point': EventfulPointParser}
     fields = ['title', 'point']
-    img_dict_key = 'venue_image_local'
-
-    def parse_form_data(self, data, form_data):
-        venue_details = data.get('venue_details')
-        if venue_details:
-            form_data['title'] = venue_details.get('name')
-            form_data['phone'] = data.get('phone')
-            form_data['url'] = venue_details.get('url')
-
-        venue_images = data.get('venue_image_local')
-        if venue_images:
-            form_data[self.img_dict_key] = venue_images
-        return form_data
+    form_data_map = {
+        'phone': 'phone',
+        'title': 'venue_details/name',
+        'url': 'venue_details/url',
+    }
+    file_data_map = {'image': 'venue_images_local'}
 
 class EventfulCategoryParser(BaseParser):
     model_form = ExternalCategoryImportForm
@@ -88,20 +85,16 @@ class EventfulOccurrenceParser(BaseParser):
     fields = ['event', 'start_date', 'place', 'start_time']
     slave_adapters = {'place': EventfulPlaceParser}
     slave_adapters_o2m = {'o2m_prices': EventfulPriceParser}
-    dictpaths = {'event':'event',
-            'start_time':'start_time',
-            'start_date':'start_date'}
+    form_data_map = {
+        'event': 'event',
+        'start_time': 'start_time',
+        'start_date': 'start_date'
+    }
     o2m_default_field = 'occurrence'
 
     def __init__(self):
         super(EventfulOccurrenceParser, self).__init__()
         self.quantity_parser = core.parsers.PriceParser()
-
-    # def parse_form_data(self, data, form_data):
-        # form_data['event'] = data.get('event')
-        # form_data['start_time'] = data.get('start_time')
-        # form_data['start_date'] = data.get('start_date')
-        # return form_data
 
     def o2m_prices(self, data):
         return utils.expand_prices(data, self.quantity_parser)
@@ -110,9 +103,7 @@ class EventfulEventParser(BaseParser):
     model_form = EventImportForm
     fields = ['xid',]
     img_dict_key = 'image_local'
-    slave_adapters_o2m = {
-        'o2m_occurrences': EventfulOccurrenceParser
-    }
+    slave_adapters_o2m = {'o2m_occurrences': EventfulOccurrenceParser}
     o2m_default_field = 'event'
 
     def __init__(self):
@@ -125,7 +116,6 @@ class EventfulEventParser(BaseParser):
         form_data['title'] = data.get('title')
         form_data['description'] = data.get('description')
         form_data['url'] = data.get('url')
-        # form_data['popularity_score'] = data.get('popularity_score')
         external_category_ids = []
         categories = data.get('categories')
         if categories:
