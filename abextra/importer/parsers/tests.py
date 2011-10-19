@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.conf import settings
+from events.models import Event
 from importer.consumer import ScrapeFeedConsumer
 from importer.eventful_api.loader import EventfulApiConsumer
 from importer.parsers.locations import CityParser, PointParser, PlaceParser
@@ -61,16 +62,16 @@ from importer.eventful_import import EventfulImporter
 #         for occurrence in self.consumer.occurrences:
 #             self.parser.parse(occurrence)
 
-class EventParserTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+# class EventParserTest(TestCase):
+    # fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
-    def setUp(self):
-        self.consumer = ScrapeFeedConsumer()
-        self.parser = EventParser()
+    # def setUp(self):
+        # self.consumer = ScrapeFeedConsumer()
+        # self.parser = EventParser()
 
-    def test_parse(self):
-        for event in self.consumer.events():
-            self.parser.parse(event)
+    # def test_parse(self):
+        # for event in self.consumer.events():
+            # self.parser.parse(event)
 
 class EventfulParserTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
@@ -99,15 +100,32 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
                 total_pages=3, mock_api=False, make_dumps=True)
 
     def test_parse(self):
-        (created_events, existing_events) = self.importer.import_events()
+        imported_events = self.importer.import_events()
+        created_events = []
+        existing_events = []
+        for was_created, event_id in imported_events:
+            if was_created and event_id:
+                created_events.append(event_id)
+            else:
+                existing_events.append(event_id)
         assert(created_events)
-        for e in created_events:
-            if e.id:
-                e.delete()
+
+        for e_id in created_events:
+                e_obj = Event.objects.filter(id=e_id)
+                if e_obj:
+                    e_obj.delete()
+
         self.importer = EventfulImporter(page_size=10, current_page=1,
                 total_pages=3, mock_api=True, make_dumps=False)
-        (created_mock_events, existing_events) = self.importer.import_events()
-        assert(created_mock_events)
+        imported_events = self.importer.import_events()
+        created_events = []
+        existing_events = []
+        for was_created, event_id in imported_events:
+            if was_created and event_id:
+                created_events.append(event_id)
+            else:
+                existing_events.append(event_id)
+        assert(created_events)
 
         # for event in events:
             # try:

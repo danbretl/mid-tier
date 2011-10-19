@@ -1,4 +1,5 @@
 import core.parsers
+import HTMLParser
 
 from importer.parsers.base import BaseParser
 from importer.forms import ExternalCategoryImportForm
@@ -6,7 +7,7 @@ from events.forms import OccurrenceImportForm, EventImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 from prices.forms import PriceImportForm
 
-from importer.parsers.utils import *
+import importer.parsers.utils as utils 
 
 SOURCE_NAME = 'eventful'
 
@@ -157,30 +158,8 @@ class EventfulEventParser(BaseParser):
 
         return form_data
 
-    def parse_occurrence(self, data, start_datetime, duration):
-        occurrence_form_data = data
-        occurrence_form_data['start_date'] = \
-            start_datetime.date().isoformat()
-        occurrence_form_data['start_time'] = \
-            start_datetime.time().isoformat()
-        if duration:
-            end_datetime = start_datetime + duration
-            occurrence_form_data['end_date'] = \
-                end_datetime.date().isoformat()
-            occurrence_form_data['end_time'] = \
-                end_datetime.time().isoformat()
-        return occurrence_form_data
-
     def o2m_occurrences(self, data):
-        self.logger.debug('<%s, %s>' % (data.get('start_date'), data.get('start_time')))
-        (start_datetime, duration) = parse_start_datetime_and_duration(data)
-        recurrence_dict = data.get('recurrence')
-        occurrence_form_dicts = []
-        if recurrence_dict:
-            (first_recurrence, current_date_times) = expand_recurrence_dict(recurrence_dict, start_datetime)
-            for date_time in current_date_times:
-                occurrence_form_dicts.append(self.parse_occurrence(data, date_time, duration))
-        return occurrence_form_dicts
+        return utils.expand_occurrences(data)
 
     def post_parse(self, data, instance):
         event = instance

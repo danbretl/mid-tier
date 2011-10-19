@@ -118,3 +118,28 @@ def parse_start_datetime_and_duration(data):
 
     return (start_datetime, duration)
 
+def prepare_occurrence(data, start_datetime, duration):
+    occurrence_form_data = data
+    occurrence_form_data['start_date'] = \
+        start_datetime.date().isoformat()
+    occurrence_form_data['start_time'] = \
+        start_datetime.time().isoformat()
+    if duration:
+        end_datetime = start_datetime + duration
+        occurrence_form_data['end_date'] = \
+            end_datetime.date().isoformat()
+        occurrence_form_data['end_time'] = \
+            end_datetime.time().isoformat()
+    return occurrence_form_data
+
+def expand_occurrences(data):
+    (start_datetime, duration) = parse_start_datetime_and_duration(data)
+    recurrence_dict = data.get('recurrence')
+    occurrence_form_dicts = []
+    if recurrence_dict:
+        (first_recurrence, current_date_times) = expand_recurrence_dict(recurrence_dict, start_datetime)
+        for date_time in current_date_times:
+            occurrence_form_dicts.append(prepare_occurrence(data, date_time, duration))
+    return occurrence_form_dicts
+
+
