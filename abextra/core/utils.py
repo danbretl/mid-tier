@@ -32,8 +32,8 @@ def unique_everseen(iterable, key=None):
                 seen_add(k)
                 yield element
 
-def dict_path_get(d, path):
-    """recursive dictionary getter.
+def dict_path_get(d, path, default=None):
+    """Recursive dictionary getter.
     dict: D = {'a': {'b': {'c': value}}}
     path: "/a/b/c"
     >>> dict_path_get(D, path) --> value
@@ -47,6 +47,6 @@ def dict_path_get(d, path):
             key, path_remainder = partials
             return dict_path_get(d[key], path_remainder) if d.has_key(key) else None
         else:
-            return d.get(path)
+            return d.get(path, default)
     else:
         raise ValueError('requires a path')
