@@ -31,3 +31,22 @@ def unique_everseen(iterable, key=None):
             if k not in seen:
                 seen_add(k)
                 yield element
+
+def dict_path_get(d, path):
+    """recursive dictionary getter.
+    dict: D = {'a': {'b': {'c': value}}}
+    path: "/a/b/c"
+    >>> dict_path_get(D, path) --> value
+    """
+    if not isinstance(d, dict):
+        raise ValueError('requires a dictionary')
+    if path:
+        path = path.strip('/')
+        partials = path.split('/', 1)
+        if len(partials) > 1:
+            key, path_remainder = partials
+            return get(d[key], path_remainder) if d.has_key(key) else None
+        else:
+            return d.get(path)
+    else:
+        raise ValueError('requires a path')
