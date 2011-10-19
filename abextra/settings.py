@@ -245,6 +245,10 @@ LOGGING = {
         'api.test' : {
             'handlers': ['console'],
             'level': 'DEBUG',
+        },
+        'importer.utils': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
         }
     }
 }

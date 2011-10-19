@@ -3,6 +3,7 @@ import logging
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import ValidationError
+import core.utils
 
 class BaseParser(object):
     logger = logging.getLogger('importer.parser')
@@ -106,6 +107,10 @@ class BaseParser(object):
 
     def _adapt_dictpaths(self, raw_data, form_data):
         """processes standardized jpaths"""
+        if hasattr(self, 'dictpaths'):
+            for dest_field, source_path in self.dictpaths.items():
+                selected_data = core.utils.dict_path_get(raw_data, source_path)
+                form_data[dest_field] = selected_data
         return form_data
 
     # FIXME rename into adapter_hook

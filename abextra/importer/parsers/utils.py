@@ -4,7 +4,10 @@ import datetime
 import HTMLParser
 import dateutil.parser
 import dateutil.rrule
+import logging
 from django.conf import settings
+
+UTILS_LOGGER = logging.getLogger('importer.utils')
 
 def expand_rrules(first_occ, rrule_strings):
     rrules = set()
@@ -30,7 +33,7 @@ def parse_datetime_or_date_or_time(datetime_str):
                 try:
                     parsed_time = datetime.datetime.strptime(datetime_str, '%H:%M:%S')
                 except ValueError:
-                    print('Unable to parse datetime string <%s>' %
+                    UTILS_LOGGER.info('Unable to parse datetime string <%s>' %
                             datetime_str)
     return (parsed_datetime, parsed_date, parsed_time)
 
@@ -141,5 +144,18 @@ def expand_occurrences(data):
         for date_time in current_date_times:
             occurrence_form_dicts.append(prepare_occurrence(data, date_time, duration))
     return occurrence_form_dicts
+
+def expand_prices(data, quantity_parser):
+    raw_free = data.get('free')
+    raw_price = data.get('price')
+    # strange int check cause '1' or '0' comes back as a string
+    if raw_free and int(raw_free):
+        prices = [0.00]
+    elif raw_price:
+        prices = quantity_parser.parse(raw_price)
+    else:
+        prices = []
+        UTILS_LOGGER.warn('"Free" nor "Price" fields could not be found.')
+    return map(lambda price: dict(quantity=str(price)), prices)
 
 

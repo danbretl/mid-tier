@@ -88,32 +88,24 @@ class EventfulOccurrenceParser(BaseParser):
     fields = ['event', 'start_date', 'place', 'start_time']
     slave_adapters = {'place': EventfulPlaceParser}
     slave_adapters_o2m = {'o2m_prices': EventfulPriceParser}
+    dictpaths = {'event':'event',
+            'start_time':'start_time',
+            'start_date':'start_date'}
     o2m_default_field = 'occurrence'
 
     def __init__(self):
         super(EventfulOccurrenceParser, self).__init__()
         self.quantity_parser = core.parsers.PriceParser()
 
-    def parse_form_data(self, data, form_data):
-        form_data['event'] = data.get('event')
-        form_data['start_time'] = data.get('start_time')
-        form_data['start_date'] = data.get('start_date')
-        return form_data
+    # def parse_form_data(self, data, form_data):
+        # form_data['event'] = data.get('event')
+        # form_data['start_time'] = data.get('start_time')
+        # form_data['start_date'] = data.get('start_date')
+        # return form_data
 
     def o2m_prices(self, data):
-        # prices
-        raw_free = data.get('free')
-        raw_price = data.get('price')
-        # strange int check cause '1' or '0' comes back as a string
-        if raw_free and int(raw_free):
-            prices = [0.00]
-        elif raw_price:
-            prices = self.quantity_parser.parse(raw_price)
-        else:
-            prices = []
-            self.logger.warn('"Free" nor "Price" fields could not be found.')
-        return map(lambda price: dict(quantity=str(price)), prices)
-
+        return utils.expand_prices(data, self.quantity_parser)
+        
 class EventfulEventParser(BaseParser):
     model_form = EventImportForm
     fields = ['xid',]
