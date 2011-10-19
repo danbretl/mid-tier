@@ -3,6 +3,7 @@ from django.contrib.localflavor.us import forms as us_forms
 from django.template.defaultfilters import slugify
 from places.models import Place, Point, City
 from core.fields import USPhoneNumberFieldSoftFail
+from pygeocoder import Geocoder
 
 # ==============
 # = Base Forms =
@@ -34,7 +35,23 @@ class PlaceImportForm(PlaceForm):
         return slugify(title)[:50]
 
 class PointImportForm(PointForm):
-    zip = us_forms.USZipCodeField()
+    zip = us_forms.USZipCodeField(required=False)
+
+    def clean_zip(self):
+        zipcode = self.cleaned_data.get('zip')
+        lat_lng = map(self.cleaned_data.get, ('latitude', 'longitude'))
+
+            # attempt to reverse geocode the zipcode
+        if not zipcode and all(lat_lng):
+            results = Geocoder.reverse_geocode(*lat_lng)
+            zipcode = results[0].postal_code
+
+        # if no zipcode still, fail this thing
+        if not zipcode:
+            raise forms.ValidationError('zipcode was not provided, nor geocoded')
+        
+        return zipcode
+
 
 class CityImportForm(CityForm):
     slug = forms.SlugField(required=False)

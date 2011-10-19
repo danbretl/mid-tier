@@ -29,15 +29,14 @@ class EventfulPointParser(BaseParser):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
     slave_adapters = {'city': EventfulCityParser}
-    form_data_map = {'address': 'address',
-            'latitude': 'latitude',
-            'longitude': 'longitude',
-            'zip': 'postal_code',
-            'country': 'country_abbr2'}
+    form_data_map = {
+        'address': 'address',
+        'latitude': 'latitude',
+        'longitude': 'longitude',
+        'zip': 'postal_code',
+        'country': 'country_abbr2'
+    }
 
-    def parse_form_data(self, data, form_data):
-        form_data = form_data.get('postal_code') or '10000'
-    
 class EventfulPlaceParser(BaseParser):
     model_form = PlaceImportForm
     slave_adapters = {'point': EventfulPointParser}
