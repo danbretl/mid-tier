@@ -76,16 +76,16 @@ class EventfulApiConsumer(object):
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
 
         def extend_with_details(event):
-            event_images_local = self.images_by_event_id.get(event['id'])
-            if image_local:
-                event['event_images_local'] = [event_images_local]
+            event_images = self.images_by_event_id.get(event['id'])
+            if event_images:
+                event['event_images_local'] = [event_images]
 
             venue_id = event.get('venue_id')
             if venue_id:
                 event['venue_details'] = self.venues_by_venue_id[venue_id]
-                venue_image_local = self.images_by_venue_id.get(event['venue_id'])
-                if venue_image_local:
-                    event['venue_images_local'] = [venue_image_local]
+                venue_images = self.images_by_venue_id.get(event['venue_id'])
+                if venue_images:
+                    event['venue_images_local'] = [venue_images]
             return event
 
         events = itertools.imap(extend_with_details, self.event_detail_pile)

@@ -1,16 +1,9 @@
-"""
-    Yeah... Kinda stolen... Not very precious code to begin with...
-    I added http pooling for work with eventlet concurrency. booya
-"""
-
 import re
 import eventlet
 import logging
 from eventlet import pools
 from eventlet.green import urllib, urllib2
 from django.conf import settings
-from PIL import Image
-from StringIO import StringIO
 import os
 from core import conf
 
@@ -105,17 +98,13 @@ class API(object):
         if url:
             return IMG_SIZE_RE.sub('original', url)
 
-    def _image_filename_from_url(self, url, parent_id):
+    def _image_filepath_from_url(self, url, parent_id):
         matches = IMG_EXT_RE.search(url)
-        if matches:
-            # take first matched pattern, which is file extension
-            ext = '.' + matches.groupdict()['ext']
-            filename = os.path.join(self.img_dir, parent_id + ext)
-            return filename
-
-    def _download_image(self, url):
-
-
+        if not matches:
+            raise ValueError('No <filename.extension> could be found in url %s:' % url)
+        ext = matches.groupdict()['ext']
+        filename = '.'.join((parent_id, ext))
+        return os.path.join(self.img_dir, filename)
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
@@ -124,16 +113,15 @@ class API(object):
             try:
                 img = urllib2.urlopen(url)
             except (urllib2.URLError, urllib2.HTTPError), e:
-                self.logger.error("Internets Error: %s" % url)
+                self.logger.exception(e)
             else:
-                filename = self._image_filename_from_url(url, parent_id)
-                if not filename:
-                    self.logger.warn('Unable to parse image extension from <%s>' % url)
+                filepath = self._image_filepath_from_url(url, parent_id)
+                if not filepath:
+                    self.logger.error('Unable to produce filepath from url: %s', url)
                 else:
-                    with open(filename, 'wb') as f:
-                        f.write(img_dat)
-                        return dict(id=parent_id, path=f.name, url=url)
-                    else:
+                    with open(filepath, 'wb') as f:
+                        f.write(img)
+                        return dict(id=parent_id, filepath=f.name, url=url)
 
 
 class MockAPI(API):
@@ -144,12 +132,15 @@ class MockAPI(API):
         image_field = images_dict.get('image')
         url = self._original_image_url_from_image_field(image_field)
         if url:
-            filename = self._image_filename_from_url(url, parent_id)
-            if not filename:
-                self.logger.info('Unable to parse image extension from <%s>' % url)
+            try:
+                filepath = self._image_filepath_from_url(url, parent_id)
+            except ValueError, e:
+                self.logger.exception(e)
             else:
-                if not os.path.exists(filename):
-                    self.logger.warn("Expected image %s not found" % filename)
+                if not os.path.exists(filepath):
+                    self.logger.error("Expected image not found at path: %s", filepath)
+                return dict(id=parent_id, filepath=filepath, url=url)
+
 
     def call(self, method, **args):
         # Build the url

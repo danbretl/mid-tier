@@ -18,14 +18,14 @@ class BaseAdapter(object):
         self.model = self.model_form._meta.model
         self.cache = {}
 
-        # reflect and process on m2o slaves
+        # reflect upon and process m2o slaves
         self._slave_adapters = {}
         slave_adapters = getattr(self, 'slave_adapters', None)
         if slave_adapters:
             for form_field, adapter_cls in slave_adapters.items():
                 self._slave_adapters[form_field] = adapter_cls()
 
-        # reflect and process on o2m slaves
+        # reflect upon and process o2m slaves
         self._slave_adapters_o2m = {}
         slave_adapters_o2m = getattr(self, 'slave_adapters_o2m', None)
         if slave_adapters_o2m:
@@ -133,7 +133,7 @@ class BaseAdapter(object):
             images = core.utils.dict_path_get(raw_data, source_path)
             if images:
                 image = images[0]
-                file_path = image['path']
+                file_path = image['filepath']
                 if os.path.exists(file_path):
                     if self._is_valid_image(file_path):
                         with open(file_path, 'rb') as f:
