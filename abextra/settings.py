@@ -253,8 +253,6 @@ LOGGING = {
     }
 }
 
-IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
-
 # ===============
 # = Keyed Cache =
 # ===============
@@ -270,5 +268,14 @@ IPHONE_THUMB_OPTIONS = {
     # 'reflection_opacity': 0.8
 }
 
+## Import
+IMPORT_ROOT_DIR = '/tmp'
+IMPORT_DIRS = {}
+IMPORT_IMAGE_DIRS = {}
+IMPORT_IMAGE_DIR_DEFAULT = 'images'
+IMPORT_IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
+
 ## Eventful
+EVENTFUL_CLIENT_DUMP_DIR = 'eventful_client_dumps'
 EVENTFUL_RRULE_MAX = dict(days=30)
+IMPORT_DIRS['eventful'] = 'eventful'

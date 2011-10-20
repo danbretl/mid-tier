@@ -51,17 +51,17 @@ class Command(BaseCommand):
         make_dumps = options.get('make_dumps')
         mock_api = options.get('mock_api')
 
-        try:
-            importer = EventfulImporter(page_size=page_size,
-                    current_page=page_offset, mock_api=mock_api,
-                    interactive=interactive,make_dumps=make_dumps, total_pages=total_pages)
-            results = importer.import_events()
+#        try:
+        importer = EventfulImporter(page_size=page_size,
+                                    current_page=page_offset, mock_api=mock_api,
+                                    interactive=interactive,make_dumps=make_dumps, total_pages=total_pages)
+        results = importer.import_events()
 
-            # FIXME should prolly happen automagically elsewhere
-            for e in Event.objects.filter(id__in=[event_id for created, event_id in results]):
-                e.save()
+        # FIXME should prolly happen automagically elsewhere
+        for e in Event.objects.filter(id__in=[event_id for created, event_id in results]):
+            e.save()
 
-        except Exception, e:
-            raise CommandError(e)
-        else:
-            self.stdout.write('Successfully imported eventful API results\n')
+#        except Exception, e:
+#            raise CommandError(e)
+#        else:
+        self.stdout.write('Successfully imported eventful API results\n')

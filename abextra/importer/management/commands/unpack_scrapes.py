@@ -8,7 +8,7 @@ import tempfile
 import os
 from django.conf import settings
 import shutil
-from importer.parsers.event import EventParser
+from importer.parsers.event import EventAdapter
 from importer.consumer import ScrapeFeedConsumer
 
 class Command(LabelCommand):
@@ -25,7 +25,7 @@ class Command(LabelCommand):
         settings.SCRAPE_IMAGES_PATH = os.path.join(temp_dir,
                                                    'SCRAPE_IMAGES_PATH')
         consumer = ScrapeFeedConsumer()
-        parser = EventParser()
+        parser = EventAdapter()
         for event in consumer.events():
             parser.parse(event)
         #delete temporary directory

@@ -2,18 +2,18 @@ from django.test import TestCase
 from django.conf import settings
 from events.models import Event
 from importer.consumer import ScrapeFeedConsumer
-from importer.eventful_api.loader import EventfulApiConsumer
-from importer.parsers.locations import CityParser, PointParser, PlaceParser
-from importer.parsers.event import OccurrenceParser, EventParser, ExternalCategoryParser
-from importer.parsers.price import PriceParser
-from importer.parsers.eventful import EventfulEventParser
+from importer.eventful_api.consumer import EventfulApiConsumer
+from importer.parsers.locations import CityAdapter, PointAdapter, PlaceAdapter
+from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCategoryAdapter
+from importer.parsers.price import PriceAdapter
+from importer.parsers.eventful import EventAdapter
 from importer.parsers.utils import *
 from importer.eventful_import import EventfulImporter
 
 # class ExternalCategoryParserTest(TestCase):
 #     fixtures = ['sources'] # ,'external_categories']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = ExternalCategoryParser()
+#     parser = ExternalCategoryAdapter()
 #
 #     def test_parse(self):
 #         for category in self.consumer.categories:
@@ -21,7 +21,7 @@ from importer.eventful_import import EventfulImporter
 #
 # class CityParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = CityParser()
+#     parser = CityAdapter()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -29,7 +29,7 @@ from importer.eventful_import import EventfulImporter
 #
 # class PointParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PointParser()
+#     parser = PointAdapter()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -37,7 +37,7 @@ from importer.eventful_import import EventfulImporter
 #
 # class PlaceParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PlaceParser()
+#     parser = PlaceAdapter()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -46,7 +46,7 @@ from importer.eventful_import import EventfulImporter
 # class PriceParserTest(TestCase):
 #     fixtures = ['events']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PriceParser()
+#     parser = PriceAdapter()
 #
 #     def test_parse(self):
 #         for price in self.consumer.prices:
@@ -56,7 +56,7 @@ from importer.eventful_import import EventfulImporter
 # class OccurrenceParserTest(TestCase):
 #     fixtures = ['events']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = OccurrenceParser()
+#     parser = OccurrenceAdapter()
 #
 #     def test_parse(self):
 #         for occurrence in self.consumer.occurrences:
@@ -67,7 +67,7 @@ from importer.eventful_import import EventfulImporter
 
     # def setUp(self):
         # self.consumer = ScrapeFeedConsumer()
-        # self.parser = EventParser()
+        # self.parser = EventAdapter()
 
     # def test_parse(self):
         # for event in self.consumer.events():
@@ -78,7 +78,7 @@ class EventfulParserTest(TestCase):
 
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
-        # self.parser = EventfulEventParser()
+        # self.parser = EventAdapter()
         self.importer = EventfulImporter(page_size=100, total_pages=2)
 
     def test_parse(self):
@@ -95,7 +95,7 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
 
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
-        # self.parser = EventfulEventParser()
+        # self.parser = EventAdapter()
         self.importer = EventfulImporter(page_size=10, current_page=1,
                 total_pages=3, mock_api=False, make_dumps=True)
 

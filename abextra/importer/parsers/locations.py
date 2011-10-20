@@ -1,22 +1,22 @@
-from importer.parsers.base import BaseParser
+from importer.parsers.base import BaseAdapter
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 
-class CityParser(BaseParser):
+class CityAdapter(BaseAdapter):
     model_form = CityImportForm
     fields = ['city', 'state']
 
-    def parse_form_data(self, data, form_data):
+    def adapt_form_data(self, data, form_data):
         form_data['city'] = data.get('city')
         form_data['state'] = data.get('state')
         #TODO: Try and get this from geocoding information.
         return form_data
 
-class PointParser(BaseParser):
+class PointAdapter(BaseAdapter):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
-    city_parser = CityParser()
+    city_parser = CityAdapter()
 
-    def parse_form_data(self, data, form_data):
+    def adapt_form_data(self, data, form_data):
         # Also possible, get an address from lat long?
         # Keeping the address compulsory for now for sanity.
         form_data['address'] = data.get('address')
@@ -30,12 +30,12 @@ class PointParser(BaseParser):
             form_data['city'] = city.id
         return form_data
 
-class PlaceParser(BaseParser):
+class PlaceAdapter(BaseAdapter):
     model_form = PlaceImportForm
     fields = ['title', 'point']
-    point_parser = PointParser()
+    point_parser = PointAdapter()
 
-    def parse_form_data(self, data, form_data):
+    def adapt_form_data(self, data, form_data):
         created, point = self.point_parser.parse(data)
         if point:
             form_data['point'] = point.id

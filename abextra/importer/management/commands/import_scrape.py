@@ -1,5 +1,5 @@
 from django.core.management.base import NoArgsCommand
-from importer.parsers.event import EventParser
+from importer.parsers.event import EventAdapter
 from importer.consumer import ScrapeFeedConsumer
 
 class Command(NoArgsCommand):
@@ -7,6 +7,6 @@ class Command(NoArgsCommand):
 
     def handle_noargs(self, **options):
         consumer = ScrapeFeedConsumer()
-        parser = EventParser()
+        parser = EventAdapter()
         for event in consumer.events():
             parser.parse(event)

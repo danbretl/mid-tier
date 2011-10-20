@@ -1,16 +1,18 @@
+from PIL import Image
+from django.conf import settings
 import os
 import logging
-from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import ValidationError
 import core.utils
 
-class BaseParser(object):
+class BaseAdapter(object):
     logger = logging.getLogger('importer.parser')
     model_form = None
     o2m_default_field = None
     fields = []
     form_data_map, file_data_map = {}, {}
+    source_name = None
 
     def __init__(self):
         self.model = self.model_form._meta.model
@@ -33,9 +35,9 @@ class BaseParser(object):
                     self._slave_adapters_o2m[producer_callable] = adapter_cls()
 
     def parse(self, raw_data):
-        form_data = self._parse_form_data(raw_data, {})
+        form_data = self._adapt_form_data(raw_data, {})
         # create cache key
-        key = self.cache_key(form_data)
+        key = self._cache_key(form_data)
         # try to get from cache
         created, instance = False, self.cache.get(key)
         if instance:
@@ -78,7 +80,7 @@ class BaseParser(object):
 
         # if we have an instance, do a post parse
         if instance:
-            self._post_parse(raw_data, instance)
+            self._post_adapt(raw_data, instance)
             # if this is a fresh instance, cache it
             if created:
                 self.cache[key] = instance
@@ -86,16 +88,18 @@ class BaseParser(object):
         self.logger.debug((created, instance))
         return created, instance
 
-    def cache_key(self, form_data):
+    def _cache_key(self, form_data):
         sig_fields = self.fields or form_data.keys()
         tup = tuple(form_data.get(f) for f in sorted(sig_fields))
         self.logger.debug('field tuple %s' % str(tup))
         return hash(tup)
 
-    def _parse_form_data(self, raw_data, form_data):
+    def _adapt_form_data(self, raw_data, form_data):
+        # set the source
+        form_data['source'] = self.source_name
         form_data = self._adapt_slaves(raw_data, form_data)
         form_data = self._adapt_form_data_mappings(raw_data, form_data)
-        form_data = self.parse_form_data(raw_data, form_data)
+        form_data = self.adapt_form_data(raw_data, form_data)
         return form_data
 
     def _adapt_slaves(self, raw_data, form_data):
@@ -112,41 +116,47 @@ class BaseParser(object):
         return form_data
 
     # FIXME rename into adapter_hook
-    def parse_form_data(self, raw_data, form_data):
+    def adapt_form_data(self, raw_data, form_data):
         """hook for overrides"""
         return form_data
+
+    # FIXME should live form-level
+    def _is_valid_image(self, file_path):
+        """checks the minimum dimensions of an import image"""
+        image = Image.open(file_path)
+        width, height = image.size
+        min_dims = settings.IMPORT_IMAGE_MIN_DIMS
+        return width >= min_dims['width'] and height >= min_dims['height']
 
     def _adapt_file_data(self, raw_data, file_data):
         for field, source_path in self.file_data_map.items():
             images = core.utils.dict_path_get(raw_data, source_path)
             if images:
                 image = images[0]
-                # path = os.path.join(
-                    # settings.SCRAPE_FEED_PATH,
-                    # settings.SCRAPE_IMAGES_PATH,
-                    # image['path']
-                # )
-                path = image['path']
-                with open(path, 'rb') as f:
-                    filename = os.path.split(f.name)[1]
-                    file_data[field] = SimpleUploadedFile(filename, f.read())
-                # import ipdb;ipdb.set_trace()
+                file_path = image['path']
+                if os.path.exists(file_path):
+                    if self._is_valid_image(file_path):
+                        with open(file_path, 'rb') as f:
+                            file_name = os.path.basename(f.name)
+                            file_data[field] = SimpleUploadedFile(file_name, f.read())
+                    else:
+                        self.logger.info('Image %s did not meet minimum image dimensions; discarding' % file_path)
         return self.adapt_file_data(raw_data, file_data)
 
     def adapt_file_data(self, raw_data, file_data):
         """hook for overrides"""
         return file_data
 
-    def _post_parse(self, raw_data, instance):
+    def _post_adapt(self, raw_data, instance):
         # process o2m slaves
         for producer_func, adapter in self._slave_adapters_o2m.items():
             raw_results = producer_func(raw_data)
             for raw_result in raw_results:
                 raw_result[self.o2m_default_field] = instance.id
                 adapter.parse(raw_result)
-        # call the override hook
-        self.post_parse(raw_data, instance)
+            # call the override hook
+        self.post_adapt(raw_data, instance)
 
-    def post_parse(self, raw_data, instance):
+    def post_adapt(self, raw_data, instance):
         """hook for overrides"""
         pass

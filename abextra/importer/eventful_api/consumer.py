@@ -1,19 +1,15 @@
-import os
 import eventlet
 import itertools
-from PIL import Image
-from StringIO import StringIO
 from django.conf import settings
-from eventlet.green import urllib, urllib2
-from eventful_api import API, MockAPI
+from importer.eventful_api.client import API, MockAPI
 
 class EventfulApiConsumer(object):
-    def __init__(self,  api_key=settings.EVENTFUL_API_KEY, mock_api=False,
-            make_dumps=False, dump_sub_dir='default'):
+    def __init__(self, api_key=settings.EVENTFUL_API_KEY, mock_api=False,
+                 make_dumps=False, dump_sub_dir='default'):
         # instantiate api
         api_class = MockAPI if mock_api else API
         self.api = api_class(api_key, make_dumps=make_dumps,
-                dump_sub_dir=dump_sub_dir)
+                             dump_sub_dir=dump_sub_dir)
         self.total_items = None
         self.page_count = None
 
@@ -80,9 +76,9 @@ class EventfulApiConsumer(object):
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
 
         def extend_with_details(event):
-            image_local = self.images_by_event_id.get(event['id'])
+            event_images_local = self.images_by_event_id.get(event['id'])
             if image_local:
-                event['images_local'] = [image_local]
+                event['event_images_local'] = [event_images_local]
 
             venue_id = event.get('venue_id')
             if venue_id:
