@@ -1,13 +1,11 @@
 import core.parsers
 import HTMLParser
-
 from importer.parsers.base import BaseAdapter
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 from prices.forms import PriceImportForm
-
-import importer.parsers.utils as utils
+import importer.api.eventful.utils as utils
 
 class EventfulBaseAdapter(BaseAdapter):
     source_name = 'eventful'

@@ -6,7 +6,7 @@ from importer.eventful.consumer import EventfulApiConsumer
 from importer.parsers.locations import CityAdapter, PointAdapter, PlaceAdapter
 from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCategoryAdapter
 from importer.parsers.price import PriceAdapter
-from importer.parsers.eventful import EventAdapter
+from importer.parsers.adapters import EventAdapter
 from importer.parsers.utils import *
 from importer.eventful_import import EventfulImporter
 
