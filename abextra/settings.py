@@ -269,7 +269,7 @@ IPHONE_THUMB_OPTIONS = {
 }
 
 ## Import
-IMPORT_ROOT_DIR = '/tmp'
+IMPORT_ROOT_DIR = '/tmp/kwiqet_import'
 IMPORT_DIRS = {}
 IMPORT_IMAGE_DIRS = {}
 IMPORT_IMAGE_DIR_DEFAULT = 'images'
