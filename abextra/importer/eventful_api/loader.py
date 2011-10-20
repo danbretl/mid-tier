@@ -82,7 +82,7 @@ class EventfulApiConsumer(object):
         def extend_with_details(event):
             image_local = self.images_by_event_id.get(event['id'])
             if image_local:
-                event['image_local'] = [image_local]
+                event['images_local'] = [image_local]
 
             venue_id = event.get('venue_id')
             if venue_id:

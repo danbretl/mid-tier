@@ -121,14 +121,16 @@ class BaseParser(object):
             images = core.utils.dict_path_get(raw_data, source_path)
             if images:
                 image = images[0]
-                path = os.path.join(
-                    settings.SCRAPE_FEED_PATH,
-                    settings.SCRAPE_IMAGES_PATH,
-                    image['path']
-                )
+                # path = os.path.join(
+                    # settings.SCRAPE_FEED_PATH,
+                    # settings.SCRAPE_IMAGES_PATH,
+                    # image['path']
+                # )
+                path = image['path']
                 with open(path, 'rb') as f:
                     filename = os.path.split(f.name)[1]
                     file_data[field] = SimpleUploadedFile(filename, f.read())
+                # import ipdb;ipdb.set_trace()
         return self.adapt_file_data(raw_data, file_data)
 
     def adapt_file_data(self, raw_data, file_data):

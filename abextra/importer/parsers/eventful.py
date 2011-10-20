@@ -18,6 +18,10 @@ class EventfulPriceParser(BaseParser):
             'quantity': 'quantity'
     }
 
+    def parse_form_data(self, data, form_data):
+        form_data['units'] = 'dollars'
+        return form_data
+
 class EventfulCityParser(BaseParser):
     model_form = CityImportForm
     fields = ['city', 'state']
@@ -95,6 +99,7 @@ class EventfulEventParser(BaseParser):
             'url': 'url',
             'image_url': 'image/url'
     }
+    file_data_map = {'image': 'images_local'}
     o2m_default_field = 'event'
 
     def __init__(self):
@@ -131,4 +136,5 @@ class EventfulEventParser(BaseParser):
         occurrence_count = event.occurrences.count()
         if not occurrence_count:
             self.logger.warn('Dropping Event: no parsable occurrences')
+            # import ipdb; ipdb.set_trace()
             event.delete()

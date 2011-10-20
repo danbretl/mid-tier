@@ -13,10 +13,10 @@ def expand_rrules(first_occ, rrule_strings):
     rrules = set()
     for rrule_string in rrule_strings:
         rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
-        rrule = dateutil.rrule.rrulestr(rrule_cleaned)
+        rrule = dateutil.rrule.rrulestr(rrule_cleaned,dtstart=first_occ)
         last_occ = first_occ + dateutil.relativedelta.relativedelta(**settings.EVENTFUL_RRULE_MAX)
         rrules_clipped = rrule.between(first_occ, last_occ)
-        rrules.union(rrules_clipped)
+        rrules = rrules.union(rrules_clipped)
     return rrules
 
 def parse_datetime_or_date_or_time(datetime_str):
@@ -49,11 +49,6 @@ def expand_recurrence_dict(recurrence_dict, first_occ, clip_before=datetime.date
         rdate_field = rdates.get('rdate')
         if rdate_field:
             rdate_field = [rdate_field] if not isinstance(rdate_field, (tuple, list)) else rdate_field
-            if len(rdate_field) > 0:
-                try:
-                    first_occ = dateutil.parser.parse(rdate_field[0])
-                except:
-                    print('%Error parsing date from rdate string <%s>')
             for rdate in rdate_field:
                 try:
                     # dateutil sometimes parses on malformed rdate
@@ -70,7 +65,7 @@ def expand_recurrence_dict(recurrence_dict, first_occ, clip_before=datetime.date
             # convert field to a list
             rrule_strings = rrule_field if isinstance(rrule_field, (list, tuple)) else [rrule_field]
             rrules = expand_rrules(first_occ, rrule_strings)
-            date_times.union(rrules)
+            date_times = date_times.union(rrules)
 
     # clip set to take out times in the past, then parse
     current_date_times = filter(lambda x: x > clip_before and x < last_occ, date_times)
