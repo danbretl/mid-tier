@@ -28,7 +28,7 @@ class API(object):
         if make_dumps and not dump_sub_dir:
             raise ValueError('dump_sub_dir is required when making dumps ;)')
 
-        self.dump_dir = os.path.join(settings.EVENTFUL_CLIENT_DUMP_DIR, dump_sub_dir)
+        self.dump_dir = os.path.join(settings.EVENTFUL_API_DUMP_DIR, dump_sub_dir)
         if make_dumps:
             if not os.path.exists(self.dump_dir):
                 os.makedirs(self.dump_dir)
@@ -110,17 +110,14 @@ class API(object):
         url = self._original_image_url_from_image_field(image_field)
         if url:
             try:
-                img = urllib2.urlopen(url)
-            except (urllib2.URLError, urllib2.HTTPError), e:
-                self.logger.exception(e)
-            else:
                 filepath = self._image_filepath_from_url(url, parent_id)
                 if not filepath:
                     self.logger.error('Unable to produce filepath from url: %s', url)
                 else:
-                    with open(filepath, 'wb') as f:
-                        f.write(img.read())
-                        return dict(id=parent_id, filepath=f.name, url=url)
+                    output_filepath, headers = urllib.urlretrieve(url, filepath)
+                    return dict(id=parent_id, filepath=output_filepath, url=url)
+            except Exception as e:
+                self.logger.exception(e)
 
 
 class MockAPI(API):
