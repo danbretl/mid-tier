@@ -8,7 +8,7 @@ from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCate
 from importer.parsers.price import PriceAdapter
 from importer.parsers.adapters import EventAdapter
 from importer.parsers.utils import *
-from importer.eventful_import import EventfulImporter
+from importer.eventful_import import EventfulPaginator
 
 # class ExternalCategoryParserTest(TestCase):
 #     fixtures = ['sources'] # ,'external_categories']
@@ -79,7 +79,7 @@ class EventfulParserTest(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventAdapter()
-        self.importer = EventfulImporter(page_size=100, total_pages=2)
+        self.importer = EventfulPaginator(page_size=100, total_pages=2)
 
     def test_parse(self):
         events = self.importer.import_events()
@@ -96,7 +96,7 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
         # self.parser = EventAdapter()
-        self.importer = EventfulImporter(page_size=10, current_page=1,
+        self.importer = EventfulPaginator(page_size=10, current_page=1,
                 total_pages=3, mock_api=False, make_dumps=True)
 
     def test_parse(self):
@@ -115,7 +115,7 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
                 if e_obj:
                     e_obj.delete()
 
-        self.importer = EventfulImporter(page_size=10, current_page=1,
+        self.importer = EventfulPaginator(page_size=10, current_page=1,
                 total_pages=3, mock_api=True, make_dumps=False)
         imported_events = self.importer.import_events()
         created_events = []

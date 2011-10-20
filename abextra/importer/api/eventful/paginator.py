@@ -3,7 +3,7 @@ from django.conf import settings
 from importer.api.eventful.adapters import EventAdapter
 from importer.api.eventful.consumer import EventfulApiConsumer
 
-class EventfulImporter(object):
+class EventfulPaginator(object):
     def __init__(self, current_page=1, page_size=100, total_pages=0, query='', location='NYC', mock_api=False,
                  interactive=False, make_dumps=False):
         dump_sub_dir = 'p%d-c%d' % (total_pages, page_size)

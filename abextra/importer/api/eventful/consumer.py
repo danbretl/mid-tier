@@ -90,4 +90,3 @@ class EventfulApiConsumer(object):
 
         events = itertools.imap(extend_with_details, self.event_detail_pile)
         return events
-
