@@ -119,7 +119,7 @@ class API(object):
                     self.logger.error('Unable to produce filepath from url: %s', url)
                 else:
                     with open(filepath, 'wb') as f:
-                        f.write(img)
+                        f.write(img.read())
                         return dict(id=parent_id, filepath=f.name, url=url)
 
 
