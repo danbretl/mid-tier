@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 
-def import_image_dir(source_name):
+def get_import_image_dir(source_name):
     """return the full path to raw imported images"""
     return os.path.join(
         settings.IMPORT_ROOT_DIR,

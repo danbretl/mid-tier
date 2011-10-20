@@ -5,8 +5,7 @@ from eventlet import pools
 from eventlet.green import urllib, urllib2
 from django.conf import settings
 import os
-from core import conf
-
+from importer.conf import get_import_image_dir
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
 import simplejson
@@ -35,7 +34,7 @@ class API(object):
                 os.makedirs(self.dump_dir)
 
         # prepare image download directory
-        self.img_dir = conf.import_image_dir('eventful')
+        self.img_dir = get_import_image_dir('eventful')
         if not os.path.exists(self.img_dir):
             os.makedirs(self.img_dir)
 
