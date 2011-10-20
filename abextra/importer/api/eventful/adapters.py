@@ -1,6 +1,6 @@
 import core.parsers
 import HTMLParser
-from importer.parsers.base import BaseAdapter
+from importer.adaptors import BaseAdapter
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
