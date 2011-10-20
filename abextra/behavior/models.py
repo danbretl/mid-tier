@@ -34,13 +34,13 @@ class EventAction(models.Model):
     def __unicode__(self): return unicode(self.id or '?')
 
 class EventActionAggregate(models.Model):
-    """Helps store/retreive precomputed user_category_action aggregates."""
+    """Helps store/retrieve precomputed user_category_action aggregates."""
     user = models.ForeignKey(User)
     category = models.ForeignKey(Category)
-    g = models.IntegerField(default=0, null=False)
-    v = models.IntegerField(default=0, null=False)
-    i = models.IntegerField(default=0, null=False)
-    x = models.IntegerField(default=0, null=False)
+    g = models.IntegerField(default=0)
+    v = models.IntegerField(default=0)
+    i = models.IntegerField(default=0)
+    x = models.IntegerField(default=0)
 
     class Meta:
         unique_together = (('user', 'category'),)
@@ -94,12 +94,12 @@ def update_aggregate_on_event_action_save(sender, instance, **kwargs):
     for aggregate in aggregates:
         event_categories.remove(aggregate.category)
         if old_event_action:
-            aggregate.update_action_count(old_event_action.action, delta=-1, commit=False)
+            aggregate.update_action_count(old_event_action.action, delta=-1)
         aggregate.update_action_count(event_action.action, commit=True)
 
     # process new aggregates (remaining in event categories)
     for category in event_categories:
-        aggregate = EventActionAggregate(
+        EventActionAggregate(
             user=event_action.user,
             category=category
         ).update_action_count(event_action.action, commit=True)
