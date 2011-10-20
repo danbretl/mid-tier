@@ -205,7 +205,11 @@ LOGGING = {
         'null': {
             'level': 'DEBUG',
             'class': 'django.utils.log.NullHandler',
-        }
+        },
+        'file':{
+            'level' : 'DEBUG',
+            'class' : 'logging.FileHandler',
+            'filename': 'debug.log'}
     },
     'loggers': {
         # 'django': {
@@ -222,8 +226,16 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
+        'importer.eventful_import': {
+            'handlers': ['console','file'],
+            'level': 'DEBUG',
+        },
+        'importer.eventful': {
+            'handlers': ['console','file'],
+            'level': 'DEBUG',
+        },
         'importer.parser': {
-            'handlers': ['console'],
+            'handlers': ['console','file'],
             'level': 'DEBUG',
         },
         'consumer.scrape': {
@@ -231,6 +243,10 @@ LOGGING = {
             'level': 'DEBUG',
         },
         'api.test' : {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+        'importer.utils': {
             'handlers': ['console'],
             'level': 'DEBUG',
         }
@@ -251,3 +267,15 @@ IPHONE_THUMB_OPTIONS = {
     # 'reflection_amount': 0.2,
     # 'reflection_opacity': 0.8
 }
+
+## Import
+IMPORT_ROOT_DIR = '/tmp'
+IMPORT_DIRS = {}
+IMPORT_IMAGE_DIRS = {}
+IMPORT_IMAGE_DIR_DEFAULT = 'images'
+IMPORT_IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
+
+## Eventful
+EVENTFUL_CLIENT_DUMP_DIR = 'eventful_client_dumps'
+EVENTFUL_RRULE_MAX = dict(days=30)
+IMPORT_DIRS['eventful'] = 'eventful'

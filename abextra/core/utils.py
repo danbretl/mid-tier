@@ -1,3 +1,5 @@
+from itertools import ifilterfalse
+
 class Bunch(dict):
     """When prototyping (or even finalizing) data structures such as trees,
     it can be useful to have a flexible class that will allow you to specify 
@@ -31,3 +33,24 @@ def unique_everseen(iterable, key=None):
             if k not in seen:
                 seen_add(k)
                 yield element
+
+def dict_path_get(d, path, default=None):
+    """Recursive dictionary getter.
+    dict: D = {'a': {'b': {'c': value}}}
+    path: "/a/b/c"
+    >>> dict_path_get(D, path) --> value
+    """
+    # parameter checks
+    if not isinstance(d, dict):
+        raise ValueError('requires a dictionary')
+    if not path:
+        raise ValueError('requires a path')
+
+    partials = path.strip('/').split('/', 1)
+    # base case
+    if len(partials) == 1:
+        return d.get(path, default)
+    # recursive case
+    key, path_remainder = partials
+    nested_dict = d.get(key)
+    return dict_path_get(nested_dict, path_remainder, default) if isinstance(nested_dict, dict) else default

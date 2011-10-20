@@ -1,22 +1,32 @@
 [
     {
-        "pk": 1, 
-        "model": "events.source", 
+        "pk": 1,
+        "model": "events.source",
         "fields": {
-            "default_abstract_categories": [], 
-            "domain": "www.villagevoice.com", 
-            "default_concrete_category": 138, 
+            "default_abstract_categories": [],
+            "domain": "www.villagevoice.com",
+            "default_concrete_category": 138,
             "name": "villagevoice"
         }
-    }, 
+    },
     {
-        "pk": 2, 
-        "model": "events.source", 
+        "pk": 3,
+        "model": "events.source",
         "fields": {
-            "default_abstract_categories": [], 
-            "domain": "www.fandango.com", 
-            "default_concrete_category": 29, 
+            "default_abstract_categories": [],
+            "domain": "www.fandango.com",
+            "default_concrete_category": 29,
             "name": "fandango"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "events.source",
+        "fields": {
+            "default_abstract_categories": [],
+            "domain": "www.eventful.com",
+            "default_concrete_category": 138,
+            "name": "eventful"
         }
     }
 ]
