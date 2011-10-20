@@ -4,6 +4,9 @@ from django.conf import settings
 from importer.api.eventful.client import API, MockAPI
 
 class EventfulApiConsumer(object):
+    """Eventful API consumer is the driver of the Eventful API.
+    Uses eventlets to achieve non-blocking (async) API requests.
+    """
     def __init__(self, api_key=settings.EVENTFUL_API_KEY, mock_api=False,
                  make_dumps=False, dump_sub_dir='default'):
         # instantiate api
