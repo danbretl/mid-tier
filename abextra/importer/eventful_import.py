@@ -2,7 +2,7 @@ import logging
 import itertools
 from django.conf import settings
 from importer.parsers.eventful import EventAdapter
-from importer.eventful_api.consumer import EventfulApiConsumer
+from importer.eventful.consumer import EventfulApiConsumer
 import events.models
 
 class EventfulImporter(object):

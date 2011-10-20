@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.conf import settings
 from events.models import Event
 from importer.consumer import ScrapeFeedConsumer
-from importer.eventful_api.consumer import EventfulApiConsumer
+from importer.eventful.consumer import EventfulApiConsumer
 from importer.parsers.locations import CityAdapter, PointAdapter, PlaceAdapter
 from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCategoryAdapter
 from importer.parsers.price import PriceAdapter

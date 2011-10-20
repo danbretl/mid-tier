@@ -230,7 +230,7 @@ LOGGING = {
             'handlers': ['console','file'],
             'level': 'DEBUG',
         },
-        'importer.eventful_api': {
+        'importer.eventful': {
             'handlers': ['console','file'],
             'level': 'DEBUG',
         },

@@ -20,7 +20,7 @@ class APIError(Exception):
 
 class API(object):
     def __init__(self, app_key, server='api.eventful.com', make_dumps=False, dump_sub_dir=None):
-        self.logger = logging.getLogger('importer.eventful_api')
+        self.logger = logging.getLogger('importer.eventful')
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()

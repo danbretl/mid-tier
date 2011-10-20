@@ -1,7 +1,7 @@
 import eventlet
 import itertools
 from django.conf import settings
-from importer.eventful_api.client import API, MockAPI
+from importer.eventful.client import API, MockAPI
 
 class EventfulApiConsumer(object):
     def __init__(self, api_key=settings.EVENTFUL_API_KEY, mock_api=False,
