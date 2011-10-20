@@ -6,9 +6,9 @@ from importer.eventful.consumer import EventfulApiConsumer
 from importer.parsers.locations import CityAdapter, PointAdapter, PlaceAdapter
 from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCategoryAdapter
 from importer.parsers.price import PriceAdapter
-from importer.parsers.adapters import EventAdapter
+from importer.api.eventful.adaptors import EventAdapter
 from importer.parsers.utils import *
-from importer.eventful_import import EventfulPaginator
+from importer.api.eventful.paginator import EventfulPaginator
 
 # class ExternalCategoryParserTest(TestCase):
 #     fixtures = ['sources'] # ,'external_categories']
@@ -21,7 +21,7 @@ from importer.eventful_import import EventfulPaginator
 #
 # class CityParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = CityAdapter()
+#     parser = CityAdaptor()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -29,7 +29,7 @@ from importer.eventful_import import EventfulPaginator
 #
 # class PointParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PointAdapter()
+#     parser = PointAdaptor()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -37,7 +37,7 @@ from importer.eventful_import import EventfulPaginator
 #
 # class PlaceParserTest(TestCase):
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PlaceAdapter()
+#     parser = PlaceAdaptor()
 #
 #     def test_parse(self):
 #         for location in self.consumer.locations:
@@ -46,7 +46,7 @@ from importer.eventful_import import EventfulPaginator
 # class PriceParserTest(TestCase):
 #     fixtures = ['events']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = PriceAdapter()
+#     parser = PriceAdaptor()
 #
 #     def test_parse(self):
 #         for price in self.consumer.prices:
@@ -56,7 +56,7 @@ from importer.eventful_import import EventfulPaginator
 # class OccurrenceParserTest(TestCase):
 #     fixtures = ['events']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = OccurrenceAdapter()
+#     parser = OccurrenceAdaptor()
 #
 #     def test_parse(self):
 #         for occurrence in self.consumer.occurrences:
@@ -67,7 +67,7 @@ from importer.eventful_import import EventfulPaginator
 
     # def setUp(self):
         # self.consumer = ScrapeFeedConsumer()
-        # self.parser = EventAdapter()
+        # self.parser = EventAdaptor()
 
     # def test_parse(self):
         # for event in self.consumer.events():
@@ -78,7 +78,7 @@ class EventfulParserTest(TestCase):
 
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
-        # self.parser = EventAdapter()
+        # self.parser = EventAdaptor()
         self.importer = EventfulPaginator(page_size=100, total_pages=2)
 
     def test_parse(self):
@@ -95,7 +95,7 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
 
     def setUp(self):
         # self.consumer = SimpleApiConsumer()
-        # self.parser = EventAdapter()
+        # self.parser = EventAdaptor()
         self.importer = EventfulPaginator(page_size=10, current_page=1,
                 total_pages=3, mock_api=False, make_dumps=True)
 

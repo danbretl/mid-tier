@@ -6,7 +6,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.forms import ValidationError
 import core.utils
 
-class BaseAdapter(object):
+class BaseAdaptor(object):
     logger = logging.getLogger('importer.parser')
     model_form = None
     o2m_default_field = None
@@ -19,20 +19,20 @@ class BaseAdapter(object):
         self.cache = {}
 
         # reflect upon and process m2o slaves
-        self._slave_adapters = {}
-        slave_adapters = getattr(self, 'slave_adapters', None)
-        if slave_adapters:
-            for form_field, adapter_cls in slave_adapters.items():
-                self._slave_adapters[form_field] = adapter_cls()
+        self._slave_adaptors = {}
+        slave_adaptors = getattr(self, 'slave_adaptors', None)
+        if slave_adaptors:
+            for form_field, adaptor_cls in slave_adaptors.items():
+                self._slave_adaptors[form_field] = adaptor_cls()
 
         # reflect upon and process o2m slaves
-        self._slave_adapters_o2m = {}
-        slave_adapters_o2m = getattr(self, 'slave_adapters_o2m', None)
-        if slave_adapters_o2m:
-            for producer, adapter_cls in slave_adapters_o2m.items():
+        self._slave_adaptors_o2m = {}
+        slave_adaptors_o2m = getattr(self, 'slave_adaptors_o2m', None)
+        if slave_adaptors_o2m:
+            for producer, adaptor_cls in slave_adaptors_o2m.items():
                 producer_callable = getattr(self, producer, None)
                 if producer_callable:
-                    self._slave_adapters_o2m[producer_callable] = adapter_cls()
+                    self._slave_adaptors_o2m[producer_callable] = adaptor_cls()
 
     def parse(self, raw_data):
         form_data = self._adapt_form_data(raw_data, {})
@@ -103,8 +103,8 @@ class BaseAdapter(object):
         return form_data
 
     def _adapt_slaves(self, raw_data, form_data):
-        for form_field, adapter in self._slave_adapters.items():
-            created, obj = adapter.parse(raw_data)
+        for form_field, adaptor in self._slave_adaptors.items():
+            created, obj = adaptor.parse(raw_data)
             # a little presumptuous :: always django models by 'id'
             form_data[form_field] = obj.id if obj else None
         return form_data
@@ -115,7 +115,7 @@ class BaseAdapter(object):
             form_data[field] = core.utils.dict_path_get(raw_data, source_path)
         return form_data
 
-    # FIXME rename into adapter_hook
+    # FIXME rename into adaptor_hook
     def adapt_form_data(self, raw_data, form_data):
         """hook for overrides"""
         return form_data
@@ -149,11 +149,11 @@ class BaseAdapter(object):
 
     def _post_adapt(self, raw_data, instance):
         # process o2m slaves
-        for producer_func, adapter in self._slave_adapters_o2m.items():
+        for producer_func, adaptor in self._slave_adaptors_o2m.items():
             raw_results = producer_func(raw_data)
             for raw_result in raw_results:
                 raw_result[self.o2m_default_field] = instance.id
-                adapter.parse(raw_result)
+                adaptor.parse(raw_result)
             # call the override hook
         self.post_adapt(raw_data, instance)
 

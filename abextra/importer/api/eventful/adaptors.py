@@ -1,17 +1,17 @@
 import core.parsers
 import HTMLParser
-from importer.adaptors import BaseAdapter
+from importer.adaptors import BaseAdaptor
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
 from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 from prices.forms import PriceImportForm
 import importer.api.eventful.utils as utils
 
-class EventfulBaseAdapter(BaseAdapter):
+class EventfulBaseAdaptor(BaseAdaptor):
     source_name = 'eventful'
 
 
-class PriceAdapter(EventfulBaseAdapter):
+class PriceAdaptor(EventfulBaseAdaptor):
     model_form = PriceImportForm
     fields = ['occurrence', 'quantity']
     form_data_map = {'occurrence': 'occurrence',
@@ -23,16 +23,16 @@ class PriceAdapter(EventfulBaseAdapter):
         return form_data
 
 
-class CityAdapter(EventfulBaseAdapter):
+class CityAdaptor(EventfulBaseAdaptor):
     model_form = CityImportForm
     fields = ['city', 'state']
     form_data_map = {'city': 'city', 'state': 'region'}
 
 
-class PointAdapter(EventfulBaseAdapter):
+class PointAdaptor(EventfulBaseAdaptor):
     model_form = PointImportForm
     fields = ['latitude', 'longitude', 'address']
-    slave_adapters = {'city': CityAdapter}
+    slave_adaptors = {'city': CityAdaptor}
     form_data_map = {
         'address': 'address',
         'latitude': 'latitude',
@@ -42,9 +42,9 @@ class PointAdapter(EventfulBaseAdapter):
     }
 
 
-class PlaceAdapter(EventfulBaseAdapter):
+class PlaceAdaptor(EventfulBaseAdaptor):
     model_form = PlaceImportForm
-    slave_adapters = {'point': PointAdapter}
+    slave_adaptors = {'point': PointAdaptor}
     fields = ['title', 'point']
     form_data_map = {
         'phone': 'phone',
@@ -54,13 +54,13 @@ class PlaceAdapter(EventfulBaseAdapter):
     file_data_map = {'image': 'venue_images_local'}
 
 
-class CategoryAdapter(EventfulBaseAdapter):
+class CategoryAdaptor(EventfulBaseAdaptor):
     model_form = ExternalCategoryImportForm
     fields = ['source', 'xid']
     form_data_map = {'xid': 'id'}
 
     def __init__(self):
-        super(CategoryAdapter, self).__init__()
+        super(CategoryAdaptor, self).__init__()
         self.html_parser = HTMLParser.HTMLParser()
 
     def adapt_form_data(self, data, form_data):
@@ -70,11 +70,11 @@ class CategoryAdapter(EventfulBaseAdapter):
         return form_data
 
 
-class OccurrenceAdapter(EventfulBaseAdapter):
+class OccurrenceAdaptor(EventfulBaseAdaptor):
     model_form = OccurrenceImportForm
     fields = ['event', 'start_date', 'place', 'start_time']
-    slave_adapters = {'place': PlaceAdapter}
-    slave_adapters_o2m = {'o2m_prices': PriceAdapter}
+    slave_adaptors = {'place': PlaceAdaptor}
+    slave_adaptors_o2m = {'o2m_prices': PriceAdaptor}
     form_data_map = {
         'event': 'event',
         'start_time': 'start_time',
@@ -83,18 +83,18 @@ class OccurrenceAdapter(EventfulBaseAdapter):
     o2m_default_field = 'occurrence'
 
     def __init__(self):
-        super(OccurrenceAdapter, self).__init__()
+        super(OccurrenceAdaptor, self).__init__()
         self.quantity_parser = core.parsers.PriceParser()
 
     def o2m_prices(self, data):
         return utils.expand_prices(data, self.quantity_parser)
 
 
-class EventAdapter(EventfulBaseAdapter):
+class EventAdaptor(EventfulBaseAdaptor):
     model_form = EventImportForm
     fields = ['xid', ]
     img_dict_key = 'image_local'
-    slave_adapters_o2m = {'o2m_occurrences': OccurrenceAdapter}
+    slave_adaptors_o2m = {'o2m_occurrences': OccurrenceAdaptor}
     form_data_map = {
         'xid': 'id',
         'title': 'title',
@@ -106,8 +106,8 @@ class EventAdapter(EventfulBaseAdapter):
     o2m_default_field = 'event'
 
     def __init__(self):
-        super(EventAdapter, self).__init__()
-        self.external_category_adapter = CategoryAdapter()
+        super(EventAdaptor, self).__init__()
+        self.external_category_adaptor = CategoryAdaptor()
 
     def adapt_form_data(self, data, form_data):
         external_category_ids = []
@@ -121,7 +121,7 @@ class EventAdapter(EventfulBaseAdapter):
                     categories = category_wrapper
 
                 for category_data in categories:
-                    created, external_category = self.external_category_adapter.parse(category_data)
+                    created, external_category = self.external_category_adaptor.parse(category_data)
                     if external_category:
                         external_category_ids.append(external_category.id)
 

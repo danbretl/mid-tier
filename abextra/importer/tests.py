@@ -19,11 +19,11 @@ a) Test the consumer:
     
 
 b) Test the parsers
-    1) Test the BaseAdapter
+    1) Test the BaseAdaptor
     2) Test Locations parsers:
-        A) Test the CityAdapter
-        B) Test the PointAdapter
-        C) Test the PlaceAdapter
+        A) Test the CityAdaptor
+        B) Test the PointAdaptor
+        C) Test the PlaceAdaptor
 
 -------------------------------------------------
 Building a simple test_scrape.feed

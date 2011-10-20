@@ -1,6 +1,6 @@
 import logging
 from django.conf import settings
-from importer.api.eventful.adapters import EventAdapter
+from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
 
 class EventfulPaginator(object):
@@ -10,7 +10,7 @@ class EventfulPaginator(object):
         self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY,
                                             mock_api=mock_api, make_dumps=make_dumps,
                                             dump_sub_dir=dump_sub_dir)
-        self.parser = EventAdapter()
+        self.parser = EventAdaptor()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
         self.events = []
