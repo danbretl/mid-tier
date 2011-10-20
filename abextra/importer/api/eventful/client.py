@@ -90,12 +90,8 @@ class API(object):
     # FIXME: this should go in a utils module
 
     def _original_image_url_from_image_field(self, image_field):
-        if isinstance(image_field, (tuple, list)):
-            url = image_field[0]['url']
-        else:
-            url = image_field['url']
-        if url:
-            return IMG_SIZE_RE.sub('original', url)
+        url = image_field[0]['url'] if isinstance(image_field, (tuple, list)) else image_field['url']
+        return IMG_SIZE_RE.sub('original', url)
 
     def _image_filepath_from_url(self, url, parent_id):
         matches = IMG_EXT_RE.search(url)
@@ -107,17 +103,22 @@ class API(object):
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
-        url = self._original_image_url_from_image_field(image_field)
-        if url:
+        try:
+            url = self._original_image_url_from_image_field(image_field)
+        except (KeyError, TypeError) as e:
+            self.logger.exception(e)
+        else:
             try:
                 filepath = self._image_filepath_from_url(url, parent_id)
-                if not filepath:
-                    self.logger.error('Unable to produce filepath from url: %s', url)
-                else:
-                    output_filepath, headers = urllib.urlretrieve(url, filepath)
-                    return dict(id=parent_id, filepath=output_filepath, url=url)
-            except Exception as e:
+            except ValueError, e:
                 self.logger.exception(e)
+            else:
+                try:
+                    output_filepath, headers = urllib.urlretrieve(url, filepath)
+                except Exception, e:
+                    self.logger.exception(e)
+                else:
+                    return dict(id=parent_id, filepath=output_filepath, url=url)
 
 
 class MockAPI(API):
@@ -126,8 +127,11 @@ class MockAPI(API):
 
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
-        url = self._original_image_url_from_image_field(image_field)
-        if url:
+        try:
+            url = self._original_image_url_from_image_field(image_field)
+        except (KeyError, TypeError) as e:
+            self.logger.exception(e)
+        else:
             try:
                 filepath = self._image_filepath_from_url(url, parent_id)
             except ValueError, e:
@@ -135,7 +139,8 @@ class MockAPI(API):
             else:
                 if not os.path.exists(filepath):
                     self.logger.error("Expected image not found at path: %s", filepath)
-                return dict(id=parent_id, filepath=filepath, url=url)
+                else:
+                    return dict(id=parent_id, filepath=filepath, url=url)
 
 
     def call(self, method, **args):
