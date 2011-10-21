@@ -1,25 +1,25 @@
 import logging
 from django.conf import settings
+from importer.api.eventful.utils import current_event_horizon
 from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
 
 class EventfulPaginator(object):
-    def __init__(self, current_page=1, page_size=100, total_pages=0, query='', location='NYC', mock_api=False,
-                 interactive=False, make_dumps=False):
-        dump_sub_dir = 'p%d-c%d' % (total_pages, page_size)
+    def __init__(self, **kwargs):
+        self.total_pages = kwargs.get('total_pages')
         self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY,
-                                            mock_api=mock_api, make_dumps=make_dumps,
-                                            dump_sub_dir=dump_sub_dir)
+                                            mock_api=kwargs.get('mock_api', False),
+                                            make_dumps=kwargs.get('make_dumps', False))
         self.parser = EventAdaptor()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
         self.events = []
-        self.page_size = page_size
-        self.query = query
-        self.location = location
-        self.current_page = current_page
-        self.interactive = interactive
-        self.total_pages = total_pages
+        self.page_size = kwargs.get('page_size') or settings.EVENTFUL_IMPORT_PARAMETERS['page_size']
+        self.query = kwargs.get('query') or settings.EVENTFUL_IMPORT_PARAMETERS['query']
+        self.location = kwargs.get('location') or settings.EVENTFUL_IMPORT_PARAMETERS['location']
+        self.current_page = kwargs.get('current_page') or 1
+        self.interactive = kwargs.get('interactive') or False
+        self.date_range = kwargs.get('date_range') or settings.IMPORT_EVENT_HORIZONS['eventful']
 
     def import_events(self):
         self.logger.info('Beginning import of eventful events...')
@@ -27,7 +27,7 @@ class EventfulPaginator(object):
         results = []
         fetched_meta, stop_page = False, self.current_page + 1
         while self.current_page < stop_page:
-            events = self.consumer.consume(location=self.location, date='Today',
+            events = self.consumer.consume(location=self.location, date=self.date_range, query=self.query,
                                            page_size=self.page_size, page_number=self.current_page)
 
             # Check at the beginning of the import to set stop page for  
