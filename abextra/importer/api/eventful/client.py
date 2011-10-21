@@ -25,13 +25,13 @@ class API(object):
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
-        if make_dumps and not dump_sub_dir:
-            raise ValueError('dump_sub_dir is required when making dumps ;)')
-
-        self.dump_dir = os.path.join(settings.EVENTFUL_API_DUMP_DIR, dump_sub_dir)
         if make_dumps:
-            if not os.path.exists(self.dump_dir):
-                os.makedirs(self.dump_dir)
+            if dump_sub_dir:
+                self.dump_dir = os.path.join(settings.EVENTFUL_CLIENT_DUMP_DIR, dump_sub_dir)
+                if not os.path.exists(self.dump_dir):
+                    os.makedirs(self.dump_dir)
+            else:
+                raise ValueError('dump_sub_dir is required when making dumps ;)')
 
         # prepare image download directory
         self.img_dir = get_import_image_dir('eventful')
@@ -122,9 +122,6 @@ class API(object):
 
 
 class MockAPI(API):
-    def __init__(self, *args, **kwargs):
-        super(MockAPI, self).__init__(*args, **kwargs)
-
     def fetch_image(self, images_dict, parent_id):
         image_field = images_dict.get('image')
         try:

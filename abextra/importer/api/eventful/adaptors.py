@@ -1,3 +1,4 @@
+import datetime
 import core.parsers
 import HTMLParser
 from importer.adaptors import BaseAdaptor
@@ -78,7 +79,9 @@ class OccurrenceAdaptor(EventfulBaseAdaptor):
     form_data_map = {
         'event': 'event',
         'start_time': 'start_time',
-        'start_date': 'start_date'
+        'start_date': 'start_date',
+        'end_date': 'end_date',
+        'end_time': 'end_time',
     }
     o2m_default_field = 'occurrence'
 
@@ -128,8 +131,16 @@ class EventAdaptor(EventfulBaseAdaptor):
         form_data['external_categories'] = external_category_ids
         return form_data
 
-    def o2m_occurrences(self, data):
-        return utils.expand_occurrences(data)
+    def o2m_occurrences(self, raw_data):
+        start_datetimes, duration = (datetime.datetime.now() + datetime.timedelta(days=h) for h in range(5)), datetime.timedelta(hours=2)
+        for start_datetime in start_datetimes:
+            raw_data['start_date'] = start_datetime.date()
+            raw_data['start_time'] = start_datetime.time()
+            if duration:
+                end_datetime = start_datetime + duration
+                raw_data['end_date'] = end_datetime.date()
+                raw_data['end_time'] = end_datetime.time()
+            yield raw_data
 
     def post_adapt(self, data, instance):
         event = instance

@@ -1,11 +1,13 @@
 """Django settings for abextra project."""
 import os
+import dateutil
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Pavel Katsev', 'pkatsev@abextratech.com'),
+    ('Rabi Alam', 'ralam@abextratech.com'),
 )
 MANAGERS = ADMINS
 
@@ -20,7 +22,7 @@ DATABASES = {
     },
 }
 
-# FIXME this router breakes tests during fixture loading, don't really need it right now
+# FIXME this router breaks tests during fixture loading, don't really need it right now
 # FIXME hence, this ugly face hack
 # if all(map(lambda cmd: not cmd in sys.argv, ('migrate', 'schemamigration', 'datamigration'))):
 #     # custom db routers
@@ -260,7 +262,7 @@ CACHE_PREFIX = str(SITE_ID)
 CACHE_TIMEOUT = 60              # 1 minute
 
 # ==============================
-# = eventure specific settings =
+# = Kwiqet specific settings =
 # ==============================
 IPHONE_THUMB_OPTIONS = {
     'geometry_string': '640x360',
@@ -268,14 +270,19 @@ IPHONE_THUMB_OPTIONS = {
     # 'reflection_opacity': 0.8
 }
 
-## Import
+# ==========
+# = Import =
+# ==========
 IMPORT_ROOT_DIR = '/tmp/kwiqet_import'
 IMPORT_DIRS = {}
 IMPORT_IMAGE_DIRS = {}
 IMPORT_IMAGE_DIR_DEFAULT = 'images'
 IMPORT_IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
+IMPORT_EVENT_HORIZONS = {}
 
-## Eventful
+# ============
+# = Eventful =
+# ============
 EVENTFUL_CLIENT_DUMP_DIR = 'eventful_client_dumps'
-EVENTFUL_RRULE_MAX = dict(days=30)
 IMPORT_DIRS['eventful'] = 'eventful'
+IMPORT_EVENT_HORIZONS['eventful'] = dateutil.relativedelta.relativedelta(months=1)

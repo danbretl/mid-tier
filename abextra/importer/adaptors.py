@@ -154,7 +154,7 @@ class BaseAdaptor(object):
             for raw_result in raw_results:
                 raw_result[self.o2m_default_field] = instance.id
                 adaptor.parse(raw_result)
-            # call the override hook
+        # call the override hook
         self.post_adapt(raw_data, instance)
 
     def post_adapt(self, raw_data, instance):
