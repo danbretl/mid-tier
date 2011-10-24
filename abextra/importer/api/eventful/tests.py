@@ -1,19 +1,19 @@
 from django.test import TestCase
 from django.conf import settings
 from events.models import Event
-from importer.consumer import ScrapeFeedConsumer
-from importer.eventful.consumer import EventfulApiConsumer
-from importer.parsers.locations import CityAdapter, PointAdapter, PlaceAdapter
-from importer.parsers.event import OccurrenceAdapter, EventAdapter, ExternalCategoryAdapter
-from importer.parsers.price import PriceAdapter
-from importer.api.eventful.adaptors import EventAdapter
-from importer.parsers.utils import *
+# from importer.consumer import ScrapeFeedConsumer
+from importer.api.eventful.consumer import EventfulApiConsumer
+from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
+from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
+from importer.api.eventful.adaptors import PriceAdaptor, EventAdaptor
+from importer.parsers.utils import expand_prices
+from core.parsers import PriceParser
 from importer.api.eventful.paginator import EventfulPaginator
 
 # class ExternalCategoryParserTest(TestCase):
 #     fixtures = ['sources'] # ,'external_categories']
 #     # consumer = ScrapeFeedConsumer()
-#     parser = ExternalCategoryAdapter()
+#     parser = ExternalCategoryAdaptor()
 #
 #     def test_parse(self):
 #         for category in self.consumer.categories:
@@ -133,6 +133,45 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
             # except ValueError as parse_err:
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
+
+class EventfulParserPriceParsingTest(TestCase):
+    def setUp(self):
+        self.quantity_parser = PriceParser()
+
+    def test_multiple_prices_with_two_decimals_in_prose(self):
+        price_data = {'free': None,
+            'price': '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_single_price_with_two_decimals(self):
+        price_data = {'free': None, 'price': '   RSVP 11.24 <br><br>\n'}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_single_price_with_commas_two_decimals_and_no_units(self):
+        price_data = {"price": "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n",
+            "free": None}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_single_price_with_units_in_USD(self):
+        price_data = {"price": "5 - 5 USD ", "free": None}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_single_price_with_units_in_dollar_sign(self):
+        price_data = {"price": "$35","free": "0"}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_single_price_with_decimals_and_units_in_dollar_sign(self):
+        price_data = {"price": "$10.00","free": None}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_multiple_prices_with_some_units_and_some_decimals(self):
+        price_data =  {"price": "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n","free": None}
+        assert(expand_prices(price_data, self.quantity_parser))
+
+    def test_free_in_price_field_and_not_in_free_field(self):
+        price_data = {"price": "FREE","free": None}
+        assert(expand_prices(price_data, self.quantity_parser))
+
 
 class EventfulParserDateParsingTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
