@@ -1,6 +1,6 @@
 """Django settings for abextra project."""
 import os
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -285,9 +285,9 @@ IMPORT_EVENT_HORIZONS = {}
 # ============
 EVENTFUL_CLIENT_DUMP_DIR = 'eventful_client_dumps'
 IMPORT_DIRS['eventful'] = 'eventful'
-IMPORT_EVENT_HORIZONS['eventful'] = relativedelta.relativedelta(months=1)
+IMPORT_EVENT_HORIZONS['eventful'] = relativedelta(months=1)
 EVENTFUL_IMPORT_PARAMETERS = {
-        'page_size': 10,
-        'location': 'NYC',
-        'query': ''
-        }
+    'page_size': 10,
+    'location': 'NYC',
+    'query': ''
+}
