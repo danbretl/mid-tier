@@ -4,6 +4,7 @@ import dateutil.rrule
 import dateutil.relativedelta
 import logging
 from django.conf import settings
+from core.parsers import price_parser
 
 _LOGGER = logging.getLogger('importer.api.eventful.utils')
 
@@ -118,14 +119,14 @@ def expand_occurrences(raw_data):
     return occurrence_form_dicts
 
 
-def expand_prices(data, quantity_parser):
+def expand_prices(data):
     raw_free = data.get('free')
     raw_price = data.get('price')
     # strange int check cause '1' or '0' comes back as a string
     if raw_free and int(raw_free):
         prices = [0.00]
     elif raw_price:
-        prices = quantity_parser.parse(raw_price)
+        prices = price_parser.parse(raw_price)
     else:
         prices = []
         _LOGGER.warn('"Free" nor "Price" fields could not be found.')

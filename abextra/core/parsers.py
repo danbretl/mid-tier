@@ -6,8 +6,8 @@ class price_parser():
     Numerics are of loose format.  Ex. 1, 2.2, 3.33, 4,444, 5,555,555.55
     """
     _PRICE_PATTERN = re.compile(
-        r'(?P<lctx>[\$])?(?P<number>\d+(,\d+)*(\.\d{1,2})?)(?P<rctx>\s*dollar)?'
-    )
+        r'(?P<lctx>[\$])?(?P<number>\d+(,\d+)*(\.\d{1,2})?)(?P<rctx>\s*(dollar|usd))?',
+        re.I)
 
     @staticmethod
     def parse(raw_value):
