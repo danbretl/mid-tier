@@ -18,20 +18,17 @@ class APIError(Exception):
 
 
 class API(object):
-    def __init__(self, app_key, server='api.eventful.com', make_dumps=False, dump_sub_dir=None):
+    def __init__(self, app_key, server='api.eventful.com', make_dumps=False):
         self.logger = logging.getLogger('importer.eventful')
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
-        if make_dumps:
-            if dump_sub_dir:
-                self.dump_dir = os.path.join(settings.EVENTFUL_CLIENT_DUMP_DIR, dump_sub_dir)
-                if not os.path.exists(self.dump_dir):
-                    os.makedirs(self.dump_dir)
-            else:
-                raise ValueError('dump_sub_dir is required when making dumps ;)')
+        self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR,
+            settings.IMPORT_DIRS['eventful'], settings.EVENTFUL_CLIENT_DUMP_DIR)
+        if make_dumps and not os.path.exists(self.dump_dir):
+            os.makedirs(self.dump_dir)
 
         # prepare image download directory
         self.img_dir = get_import_image_dir('eventful')

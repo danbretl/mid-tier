@@ -8,11 +8,10 @@ class EventfulApiConsumer(object):
     Uses eventlets to achieve non-blocking (async) API requests.
     """
     def __init__(self, api_key=settings.EVENTFUL_API_KEY, mock_api=False,
-                 make_dumps=False, dump_sub_dir='default'):
+                 make_dumps=False):
         # instantiate api
         api_class = MockAPI if mock_api else API
-        self.api = api_class(api_key, make_dumps=make_dumps,
-                             dump_sub_dir=dump_sub_dir)
+        self.api = api_class(api_key, make_dumps=make_dumps)
         self.total_items = None
         self.page_count = None
 
