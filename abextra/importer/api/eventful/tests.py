@@ -7,7 +7,7 @@ from importer.api.eventful.consumer import EventfulApiConsumer
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor, EventAdaptor
-from importer.api.eventful.utils import expand_prices, parse_start_datetime_and_duration, expand_recurrence_dict
+from importer.api.eventful.utils import expand_prices
 from importer.api.eventful.paginator import EventfulPaginator
 
 # class ExternalCategoryParserTest(TestCase):
@@ -135,22 +135,21 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
                 # self.logger.warn(parse_err.args)
 
 class EventfulParserPriceParsingTest(TestCase):
-    # Drop prices without units for now - do not want false positives
-    # But, still many strings with prices & no units; need to figure out disambiguation to recover these
+    # Parsing prices with units -- may get false positives, for now
 
     def test_multiple_prices_with_two_decimals_in_prose(self):
         price_data = {'free': None,
             'price': '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'}
-        self.assertEqual(expand_prices(price_data), [])
+        self.assertEqual(expand_prices(price_data), [{'quantity': '52.24'}, {'quantity': '77.87'}, {'quantity': '99.0'}, {'quantity': '125.0'}, {'quantity': '199.0'}, {'quantity': '250.0'}])
 
     def test_single_price_with_two_decimals(self):
         price_data = {'free': None, 'price': '   RSVP 11.24 <br><br>\n'}
-        self.assertEqual(expand_prices(price_data), [])
+        self.assertEqual(expand_prices(price_data), [{'quantity': '11.24'}])
 
     def test_single_price_with_commas_two_decimals_and_no_units(self):
         price_data = {"price": "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n",
             "free": None}
-        self.assertEqual(expand_prices(price_data), [])
+        self.assertEqual(expand_prices(price_data), [{'quantity': '2195.0'}, {'quantity': '2395.0'}])
 
     def test_single_price_with_units_in_USD(self):
         price_data = {"price": "5 - 5 USD ", "free": None}
@@ -166,7 +165,9 @@ class EventfulParserPriceParsingTest(TestCase):
 
     def test_multiple_prices_with_some_units_and_some_decimals(self):
         price_data =  {"price": "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n","free": None}
-        self.assertEqual(expand_prices(price_data), [{'quantity': '300.0'}])
+        self.assertEqual(expand_prices(price_data), [{'quantity': '195.0'}, {'quantity': '300.0'}])
+
+    # If 'free' field is not set, do not try to guess (for now)
 
     def test_free_in_price_field_and_not_in_free_field(self):
         price_data = {"price": "FREE","free": None}
