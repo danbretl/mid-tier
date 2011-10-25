@@ -7,7 +7,7 @@ from importer.api.eventful.consumer import EventfulApiConsumer
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor, EventAdaptor
-from importer.api.eventful.utils import expand_prices
+from importer.api.eventful.utils import expand_prices, temporal_parser
 from importer.api.eventful.paginator import EventfulPaginator
 
 # class ExternalCategoryParserTest(TestCase):
@@ -134,6 +134,7 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
 
+
 class EventfulParserPriceParsingTest(TestCase):
     # Parsing prices with units -- may get false positives, for now
 
@@ -175,29 +176,70 @@ class EventfulParserPriceParsingTest(TestCase):
 
 
 class EventfulParserDateParsingTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+    # FIXME: Parsing occurrences without getting first instance for now; this is not
+    # really correct though
 
-    def test_single_rdate_and_rrules(self):
-        consumer = EventfulApiConsumer(mock_api=True)
+    # fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
-        # 43e64022c8ff8aff4ad920e565bd62c5.json
+    def test_single_occurrence_with_start_datetime(self):
+        occurrence_data = {"start_time": "2011-10-13 18:00:00"}
+        start_time = temporal_parser.parse_datetime(occurrence_data['start_time'])
+        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 18, 0))
+        occurrence_set = temporal_parser.recurrence_set(occurrence_data)
+        self.assertEqual(occurrence_set, set())
 
-        event_id = 'E0-001-037594896-6@2011101110'
-        event_data = consumer.fetch_event_details(event_id)
-        recurrences = event_data.get('recurrence')
+    def test_single_occurrence_with_start_and_end_datetime(self):
+        occurrence_data = {"start_time": "2011-10-13 19:00:00","stop_time": "2011-10-13 21:00:00"}
+        start_time = temporal_parser.parse_datetime(occurrence_data['start_time'])
+        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 19, 0))
+        stop_time = temporal_parser.parse_datetime(occurrence_data['stop_time'])
+        self.assertEqual(stop_time, datetime.datetime(2011, 10, 13, 21, 0))
 
-        # ipdb> event_data['start_time']
-        # '2011-10-11 10:00:00'
-        # ipdb> event_data['stop_time']
-        # '2011-10-11 16:30:00'
-        # event_data['recurrence'] looks like this
-        # {'rrules': {'rrule': 'FREQ=DAILY;UNTIL=20111028'}, 'exrules': None, 'rdates': {'rdate': '2011-04-30 10:00:00'}, 'description': 'on various days', 'exdates': None}
+    def test_multiple_occurrences_with_start_datetime(self):
+        occurrence_data = { "recurrence": { "rrules": {"rrule": "FREQ=DAILY;BYHOUR=13;BYMINUTE=00;UNTIL=20120109T235959"},
+                    "exrules": None, "rdates": None, "description": "daily until January 9, 2012",
+                    "exdates": None }, "start_time": "2011-10-13 13:00:00"}
+        start_time = temporal_parser.parse_datetime(occurrence_data['start_time'])
+        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 13, 0))
+        expected_recurrence_set = set([datetime.datetime(2011, 10, 13, 13, 0), datetime.datetime(2011, 10, 14, 13, 0), datetime.datetime(2011, 10, 15, 13, 0),
+                             datetime.datetime(2011, 10, 16, 13, 0), datetime.datetime(2011, 10, 17, 13, 0), datetime.datetime(2011, 10, 18, 13, 0),
+                             datetime.datetime(2011, 10, 19, 13, 0), datetime.datetime(2011, 10, 20, 13, 0), datetime.datetime(2011, 10, 21, 13, 0),
+                             datetime.datetime(2011, 10, 22, 13, 0), datetime.datetime(2011, 10, 23, 13, 0), datetime.datetime(2011, 10, 24, 13, 0),
+                             datetime.datetime(2011, 10, 25, 13, 0), datetime.datetime(2011, 10, 26, 13, 0), datetime.datetime(2011, 10, 27, 13, 0),
+                             datetime.datetime(2011, 10, 28, 13, 0), datetime.datetime(2011, 10, 29, 13, 0), datetime.datetime(2011, 10, 30, 13, 0),
+                             datetime.datetime(2011, 10, 31, 13, 0), datetime.datetime(2011, 11, 1, 13, 0), datetime.datetime(2011, 11, 2, 13, 0),
+                             datetime.datetime(2011, 11, 3, 13, 0), datetime.datetime(2011, 11, 4, 13, 0), datetime.datetime(2011, 11, 5, 13, 0),
+                             datetime.datetime(2011, 11, 6, 13, 0), datetime.datetime(2011, 11, 7, 13, 0), datetime.datetime(2011, 11, 8, 13, 0),
+                             datetime.datetime(2011, 11, 9, 13, 0), datetime.datetime(2011, 11, 10, 13, 0), datetime.datetime(2011, 11, 11, 13, 0),
+                             datetime.datetime(2011, 11, 12, 13, 0), datetime.datetime(2011, 11, 13, 13, 0)])
+        recurrence_set = temporal_parser.recurrence_set(occurrence_data)
+        self.assertEqual(recurrence_set, expected_recurrence_set)
 
-        (start_datetime, duration) = parse_start_datetime_and_duration(event_data)
-        (first_datetime, current_date_times) = expand_recurrence_dict(recurrences,
-                start_datetime)
+    def test_multiple_occurrences_with_start_datetime_and_rdates_and_rrules(self):
+        occurrence_data = {"recurrence": {"rrules": {"rrule": "FREQ=DAILY;BYHOUR=08;BYMINUTE=00;UNTIL=20110901T235959"},
+                    "exrules": None,"rdates": {"rdate": [
+                            "2011-10-10 08:00:00", "2011-10-11 08:00:00", "2011-10-12 08:00:00", "2011-10-13 08:00:00",
+                            "2011-11-21 08:00:00", "2011-11-22 08:00:00", "2011-11-23 08:00:00", "2011-11-24 08:00:00"]},
+                    "description": "on various days","exdates": None}, "start_time": "2011-10-11 08:00:00"}
+        expected_recurrence_set = set([datetime.datetime(2011, 10, 10, 8, 0), datetime.datetime(2011, 10, 11, 8, 0), datetime.datetime(2011, 10, 12, 8, 0),
+                         datetime.datetime(2011, 10, 13, 8, 0), datetime.datetime(2011, 11, 21, 8, 0), datetime.datetime(2011, 11, 22, 8, 0),
+                         datetime.datetime(2011, 11, 23, 8, 0), datetime.datetime(2011, 11, 24, 8, 0)])
+        start_time = temporal_parser.parse_datetime(occurrence_data['start_time'])
+        self.assertEqual(start_time, datetime.datetime(2011, 10, 11, 8, 0))
+        recurrence_set = temporal_parser.recurrence_set(occurrence_data)
+        self.assertEqual(recurrence_set, expected_recurrence_set)
 
-        # are our durations are getting calculated correctly?
-
-        self.assertEqual(duration, datetime.timedelta(hours=6,minutes=30))
-
+    def test_multiple_occurrences_with_start_and_end_datetime_and_rdates_and_rrules(self):
+        occurrence_data = {
+        "recurrence": { "rrules": { "rrule": "FREQ=WEEKLY;INTERVAL=1;BYDAY=TU;UNTIL=20120315"},
+            "exrules": None, "rdates": None, "description": "weekly on Tuesdays until March 15, 2012",
+            "exdates": None}, "start_time": "2011-10-11 20:00:00", "stop_time": "2011-10-12 04:00:00"}
+        expected_recurrence_set = set([datetime.datetime(2011, 10, 11, 20, 0),
+             datetime.datetime(2011, 10, 18, 20, 0), datetime.datetime(2011, 10, 25, 20, 0), datetime.datetime(2011, 11, 1, 20, 0),
+             datetime.datetime(2011, 11, 8, 20, 0)])
+        start_time = temporal_parser.parse_datetime(occurrence_data['start_time'])
+        self.assertEqual(start_time, datetime.datetime(2011, 10, 11, 20, 0))
+        stop_time = temporal_parser.parse_datetime(occurrence_data['stop_time'])
+        self.assertEqual(stop_time, datetime.datetime(2011, 10, 12, 4, 0))
+        recurrence_set = temporal_parser.recurrence_set(occurrence_data)
+        self.assertEqual(recurrence_set, expected_recurrence_set)
