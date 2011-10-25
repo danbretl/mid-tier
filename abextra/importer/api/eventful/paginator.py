@@ -20,6 +20,7 @@ class EventfulPaginator(object):
         self.current_page = kwargs.get('current_page') or 1
         self.interactive = kwargs.get('interactive') or False
         self.date_range = kwargs.get('date_range') or settings.IMPORT_EVENT_HORIZONS['eventful']
+        self.sort_order = kwargs.get('sort_order') or settings.EVENTFUL_IMPORT_PARAMETERS['sort_order']
 
     def import_events(self):
         self.logger.info('Beginning import of eventful events...')
@@ -28,7 +29,8 @@ class EventfulPaginator(object):
         fetched_meta, stop_page = False, self.current_page + 1
         while self.current_page < stop_page:
             events = self.consumer.consume(location=self.location, date=self.date_range, query=self.query,
-                                           page_size=self.page_size, page_number=self.current_page)
+                                           page_size=self.page_size, page_number=self.current_page,
+                                           sort_order=self.sort_order)
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing
