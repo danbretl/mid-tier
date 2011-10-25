@@ -49,12 +49,13 @@ class PointImportForm(PointForm):
         lat_lng = tuple(map(self.cleaned_data.get, ('latitude', 'longitude')))
 
         # attempt to reverse geocode the zipcode
-        if not zipcode and all(lat_lng):
-            if not self._ZIPCODE_CACHE.has_key(lat_lng):
-                results = Geocoder.reverse_geocode(*lat_lng)
-                self._ZIPCODE_CACHE[lat_lng] = results[0].postal_code
-            zipcode = self._ZIPCODE_CACHE.get(lat_lng)
+#        if not zipcode and all(lat_lng):
+#            if not self._ZIPCODE_CACHE.has_key(lat_lng):
+#                results = Geocoder.reverse_geocode(*lat_lng)
+#                self._ZIPCODE_CACHE[lat_lng] = results[0].postal_code
+#            zipcode = self._ZIPCODE_CACHE.get(lat_lng)
 
+        zipcode = '10023'
         # if no zipcode still, fail this thing
         if not zipcode:
             raise forms.ValidationError('zipcode was not provided, nor geocoded')

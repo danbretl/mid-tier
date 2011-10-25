@@ -87,10 +87,9 @@ class OccurrenceAdaptor(EventfulBaseAdaptor):
 
     def __init__(self):
         super(OccurrenceAdaptor, self).__init__()
-        self.quantity_parser = core.parsers.PriceParser()
 
     def o2m_prices(self, data):
-        return utils.expand_prices(data, self.quantity_parser)
+        return utils.expand_prices(data)
 
 
 class EventAdaptor(EventfulBaseAdaptor):
