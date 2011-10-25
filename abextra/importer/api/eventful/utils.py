@@ -4,118 +4,103 @@ import dateutil.rrule
 import dateutil.relativedelta
 import logging
 from django.conf import settings
+from core.parsers import datetime_parser
 
 _LOGGER = logging.getLogger('importer.api.eventful.utils')
 
-def expand_rrules(rrule_strings, first_occurrence, lower_bound, upper_bound):
-    occurrences = set()
-    for rrule_string in rrule_strings:
-        rrule_cleaned = rrule_string.replace('BYDAY', 'BYWEEKDAY')
-        rrule = dateutil.rrule.rrulestr(rrule_cleaned, dtstart=first_occurrence)
-        rrules_bound = rrule.between(lower_bound, upper_bound)
-        occurrences = occurrences.union(rrules_bound)
-    return occurrences
+class temporal_parser():
+    _FORMATS = ('%Y-%m-%d %H:%M:%S', '%Y%m%dT%H%M%S', '%Y-%m-%d%H:%M:%S')
 
-# FIXME dead code unless Eventful API to return dates in different format
-def parse_temporal(datetime_str):
-    """Eventful often returns a null date string and time string which has
-    both date and time, so let's try parsing that into first_occurrence.
-    """
-    parse_dt = lambda f: datetime.datetime.strptime(datetime_str, f)
-    parsed_temporal = None
-    try:
-        parsed_temporal = parse_dt('%Y-%m-%d %H:%M:%S')
-    except ValueError:
-        try:
-            parsed_temporal = parse_dt('%Y%m%dT%H%M%S')
-        except ValueError:
-            # Couldn't parse date and time, try just date
-            try:
-                parsed_temporal = parse_dt('%Y-%m-%d').date()
-            except ValueError:
-                # Couldn't parse date+time nor date, try just time
-                try:
-                    parsed_temporal = parse_dt('%H:%M:%S').time()
-                except ValueError:
-                    _LOGGER.debug('Unable to parse datetime nor date nor time from: %s' % datetime_str)
-    return parsed_temporal
+    @classmethod
+    def parse_datetime(cls, dt_string):
+        return datetime_parser.parse(dt_string, cls._FORMATS)
 
+    @classmethod
+    def _get_dates(cls, dates_raw):
+        dates_raw = dates_raw if isinstance(dates_raw, list) else [dates_raw]
+        return set(cls.parse_datetime(date_raw) for date_raw in dates_raw)
 
-def expand_recurrence_dict(recurrence_dict, start_datetime, lower_bound=datetime.datetime.now()):
-    start_datetimes = set()
-    first_occurrence = start_datetime
+    @staticmethod
+    def _get_rules(rules_raw, dtstart):
+        rules_raw = rules_raw if isinstance(rules_raw, list) else [rules_raw]
+        rules = set()
+        for rule_raw in rules_raw:
+            rule_raw = rule_raw.replace('BYDAY', 'BYWEEKDAY')
+            rule = dateutil.rrule.rrulestr(rule_raw, dtstart=dtstart,
+                                           cache=True, compatible=True)
+            rules.add(rule)
+        return rules
 
-    # some events are returned by the api with start_datetimes in the past because
-    # because their durations are erroneously wayyy to long
-    if start_datetime > lower_bound:
-        start_datetimes.add(start_datetime)
+    @classmethod
+    def _get_recurrence(cls, event_raw, start_time):
+        rdates, rrules, exdates, exrules = set(), set(), set(), set()
+        recurrence_raw = event_raw.get('recurrence')
+        if recurrence_raw:
+            # dtstart | original first instance or start_time
+            dtstart = start_time
+            instances_raw = recurrence_raw.get('instances')
+            if instances_raw:
+                instance_raw = instances_raw.get('instance')
+                if instance_raw:
+                    instance_raw = instance_raw if isinstance(instance_raw, list) else [instance_raw]
+                    # rely on sorted order from API
+                    first_instance_raw = instance_raw[0]
+                    dtstart = cls.parse_datetime(first_instance_raw['start_time'])
+                    # rdates, rrules
+            rdates_raw, rrules_raw = map(recurrence_raw.get, ('rdates', 'rrules'))
+            if rdates_raw:
+                rdate_raw = rdates_raw.get('rdate')
+                if rdate_raw:
+                    rdates.update(cls._get_dates(rdate_raw))
+            if rrules_raw:
+                rrule_raw = rrules_raw.get('rrule')
+                if rrule_raw:
+                    rrules.update(cls._get_rules(rrule_raw, dtstart))
+                    # exdates, exrules (exceptions)
+            exdates_raw, exrules_raw = map(recurrence_raw.get, ('exdates', 'exrules'))
+            if exdates_raw:
+                exdate_raw = rdates_raw.get('exdate')
+                if exdate_raw:
+                    exdates.update(cls._get_dates(exdate_raw))
+            if exrules_raw:
+                exrule_raw = exrules_raw.get('rrule')
+                if exrule_raw:
+                    exrules.update(cls._get_rules(exrule_raw, dtstart))
+        return rdates, rrules, exdates, exrules
 
-    # determine the upper bound | import horizon from the start date
-    upper_bound = start_datetime + settings.IMPORT_EVENT_HORIZONS['eventful']
+    @classmethod
+    def recurrence_set(cls, event_raw, horizon=settings.IMPORT_EVENT_HORIZONS['eventful']):
+        recurrences = set()
+        start_time = cls.parse_datetime(event_raw['start_time'])
+        rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw, start_time)
+        dtstop = start_time + horizon
+        recurrences.update(rdates)
+        for rrule in rrules:
+            recurrences.update(rrule.between(start_time, dtstop, inc=True))
+        recurrences.difference_update(exdates)
+        for exrule in exrules:
+            recurrences.difference_update(exrule.between(start_time, dtstop, inc=True))
+        return recurrences
 
-    # add rdates to recurrence set
-    rdates_field = recurrence_dict.get('rdates')
-    if rdates_field:
-        rdates_raw = rdates_field.get('rdate')
-        if rdates_raw:
-            # coerce into a list
-            rdates_raw = rdates_raw if isinstance(rdates_raw, list) else [rdates_raw]
-            # parse temporals
-            rtemporals = (parse_temporal(rdate_raw) for rdate_raw in rdates_raw)
-            # pick datetimes
-            rdatetimes = sorted(rtemporal for rtemporal in rtemporals if isinstance(rtemporal, datetime.datetime))
-            
-            for rdatetime in rdatetimes:
-                rtemporal = parse_temporal(rdate)
-                if isinstance(rtemporal, datetime.datetime) and rtemporal > lower_bound:
-                    if rtemporal > lower_bound:
-                        start_datetimes.add(rtemporal)
-
-    # add rrules to recurrence set
-    if rrules:
-        rrule_raw = rrules.get('rrule')
-        if rrule_raw:
-            # convert field to a list
-            rrule_strings = rrule_raw if isinstance(rrule_raw, list) else [rrule_raw]
-            rrules = expand_rrules(rrule_strings, start_datetime)
-            start_datetimes = start_datetimes.union(rrules)
-
-    # clip set to take out times in the past, then parse
-    current_date_times = filter(lambda x: x > lower_bound and x < upper_bound, start_datetimes)
-
-    # we want to return the first occurrence for verification purposes --
-    # this could make it easier to validate correct behavior parsing rdates
-    # in a unit test
-
-    return start_date, current_date_times
-
-
-def parse_start_datetime_and_duration(raw_data):
-    start_time_raw, stop_time_raw = map(raw_data.get, ('start_time', 'stop_time'))
-
-    start_temporal = parse_temporal(start_time_raw)
-    stop_temporal = parse_temporal(stop_time_raw)
-
-    start_datetime, duration = None, None
-    if isinstance(start_temporal, datetime.datetime):
-        start_datetime = start_temporal
-        if isinstance(stop_temporal, datetime.datetime):
-            duration = start_datetime - start_temporal
-
-    return start_datetime, duration
-
-
-def expand_occurrences(raw_data):
-    # always expect to parse a start datetime, but not necessarily duration
-    start_datetime, duration = parse_start_datetime_and_duration(raw_data)
-    if not start_datetime:
-        raise ValueError('Could not parse start datetime')
-    recurrence_dict = raw_data.get('recurrence')
-    if recurrence_dict:
-        first_occurrence, current_date_times = expand_recurrence_dict(recurrence_dict, start_datetime)
-        for date_time in current_date_times:
-            occurrence_form_dicts.append(prepare_occurrence(raw_data, date_time, duration))
-    return occurrence_form_dicts
+    @classmethod
+    def start_duration_allday(cls, event_raw):
+        """Return event temporals."""
+        start_time_raw, stop_time_raw, all_day_raw = map(event_raw.get,
+            ('start_time', 'stop_time', 'all_day')
+        )
+        # coalesce datatypes
+        start_datetime = cls.parse_datetime(start_time_raw)
+        stop_datetime = cls.parse_datetime(stop_time_raw) if stop_time_raw else None
+        all_day = int(all_day_raw)
+        # initialize outputs
+        duration = stop_datetime - start_datetime if stop_datetime else None
+        is_all_day = None
+        # 0 => not all day, use time; 1 => all day, ignore time; 2 => unknown
+        if all_day == 0:
+            is_all_day = False
+        elif all_day == 1:
+            is_all_day = True
+        return start_datetime, duration, is_all_day
 
 
 def expand_prices(data, quantity_parser):
@@ -131,6 +116,7 @@ def expand_prices(data, quantity_parser):
         _LOGGER.warn('"Free" nor "Price" fields could not be found.')
     return map(lambda price: dict(quantity=str(price)), prices)
 
+
 def current_event_horizon():
     """
     Calculates date range string for eventful query based on current date and
@@ -138,6 +124,6 @@ def current_event_horizon():
     """
     current_date = datetime.datetime.now().date()
     end_date = datetime.datetime.now().date() + settings.IMPORT_EVENT_HORIZONS['eventful']
-    date_range_string = '%s00-%s00' % (current_date.isoformat().replace('-',''),
-            end_date.isoformat().replace('-',''))
+    date_range_string = '%s00-%s00' % (current_date.isoformat().replace('-', ''),
+                                       end_date.isoformat().replace('-', ''))
     return date_range_string 

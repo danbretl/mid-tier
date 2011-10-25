@@ -363,14 +363,6 @@ class Occurrence(models.Model):
                 .combine(self.start_date, self.start_time or datetime.time())
         super(Occurrence, self).save(*args, **kwargs)
 
-    @property
-    def is_past(self): pass
-
-    @property
-    def is_future(self): pass
-
-    @property
-    def is_now(self): pass
 
 # ==========
 # = Source =

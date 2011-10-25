@@ -1,3 +1,4 @@
+import datetime
 import re
 
 class price_parser():
@@ -18,3 +19,19 @@ class price_parser():
                 numeric = float(grouping[1].replace(',', ''))
                 parsed_prices.append(numeric)
         return parsed_prices
+
+class datetime_parser():
+    """Opportunistic datetime parser."""
+    @staticmethod
+    def parse(dt_string, formats):
+        dt = None
+        for format in formats:
+            try:
+                dt = datetime.datetime.strptime(dt_string, format)
+            except ValueError:
+                pass
+            else:
+                break
+        if not dt:
+            raise ValueError('Unparseable date format: %s' % dt_string)
+        return dt
