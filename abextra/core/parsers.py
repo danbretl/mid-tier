@@ -7,16 +7,24 @@ class price_parser():
     Numerics are of loose format.  Ex. 1, 2.2, 3.33, 4,444, 5,555,555.55
     """
     _PRICE_PATTERN = re.compile(
-        r'(?P<lctx>[\$])?(?P<number>\d+(,\d+)*(\.\d{1,2})?)(?P<rctx>\s*(dollar|usd))?',
+        r'(?P<lctx>[\$]|(coupon|redeem))?(?P<lws>\s+)?(?P<number>\d+(,\d+)*(\.\d{1,2})?)(?P<rws>\s+)?(?P<rctx>([\$]|dollar|usd|hours|am|pm))?',
         re.I)
 
     @staticmethod
-    def parse(raw_value):
+    def parse(raw_value, non_contextualized=False):
         parsed_prices = list()
-        groupings = price_parser._PRICE_PATTERN.findall(raw_value)
+        groupings = price_parser._PRICE_PATTERN.findall(raw_value.lower())
         for grouping in groupings:
-            if grouping[0] or grouping[4]:
-                numeric = float(grouping[1].replace(',', ''))
+            do_parse_grouping = False
+            if grouping[0] or grouping[7]:
+                do_parse_grouping = ('$' in grouping[0] or '$' in grouping[7] or 'dollars' in
+                        grouping[7] or 'usd' in grouping[7])
+            elif grouping[5]:
+                do_parse_grouping = not ('coupon' in grouping[0] or 'redeem' in grouping[0]
+                    or 'hours' in grouping[7] or 'am' in grouping[7] or
+                            'pm' in grouping[7])
+            if do_parse_grouping:
+                numeric = float(grouping[3].replace(',', ''))
                 parsed_prices.append(numeric)
         return parsed_prices
 

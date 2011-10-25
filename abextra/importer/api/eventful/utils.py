@@ -103,17 +103,22 @@ class temporal_parser():
             is_all_day = True
         return start_datetime, duration, is_all_day
 
-
 def expand_prices(data):
     raw_free = data.get('free')
     raw_price = data.get('price')
+    prices = []
     # strange int check cause '1' or '0' comes back as a string
     if raw_free and int(raw_free):
         prices = [0.00]
     elif raw_price:
-        prices = price_parser.parse(raw_price)
+        parsed_prices = price_parser.parse(raw_price)
+        # discard duplicates and instances of 0.00 if not set to free
+        if parsed_prices:
+            prices = set(parsed_prices)
+            prices.discard(0)
+        else:
+            _LOGGER.warn('Unable to parse prices from %s' % raw_price)
     else:
-        prices = []
         _LOGGER.warn('"Free" nor "Price" fields could not be found.')
     return map(lambda price: dict(quantity=str(price)), prices)
 
