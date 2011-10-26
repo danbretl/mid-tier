@@ -1,34 +1,37 @@
 import logging
+import datetime
 from django.conf import settings
 from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
 
 class EventfulPaginator(object):
-    def __init__(self, **kwargs):
-        self.total_pages = kwargs.get('total_pages')
-        self.consumer = EventfulApiConsumer(mock_api=kwargs.get('mock_api', False),
-                                            make_dumps=kwargs.get('make_dumps', False))
+    def __init__(self, interactive=False, total_pages=None, page_number=1,
+                 consumer_kwargs=None, query_kwargs=settings.EVENTFUL_IMPORT_PARAMETERS):
+        # internal initializations
+        self.consumer = EventfulApiConsumer(**(consumer_kwargs or {}))
         self.parser = EventAdaptor()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0
         self.events = []
-        self.page_size = kwargs.get('page_size') or settings.EVENTFUL_IMPORT_PARAMETERS['page_size']
-        self.query = kwargs.get('query') or settings.EVENTFUL_IMPORT_PARAMETERS['query']
-        self.location = kwargs.get('location') or settings.EVENTFUL_IMPORT_PARAMETERS['location']
-        self.current_page = kwargs.get('current_page') or 1
-        self.interactive = kwargs.get('interactive') or False
-        self.date_range = self.consumer.api.daterange_query_param_by_delta()
-        self.sort_order = kwargs.get('sort_order') or settings.EVENTFUL_IMPORT_PARAMETERS['sort_order']
+        self.interactive = interactive
+        self.total_pages = total_pages
+        self.page_number = page_number
+        self.query_kwargs = query_kwargs
+
+    def _prepare_query_kwargs(self):
+        self.query_kwargs['page_number'] = self.page_number
+        if not self.query_kwargs.get('date_range'):
+            self.query_kwargs['date_range'] = self.consumer.api.daterange_query_param_by_delta(
+                datetime.datetime.now(), settings.IMPORT_EVENT_HORIZONS['eventful'])
+        return self.query_kwargs
 
     def import_events(self):
         self.logger.info('Beginning import of eventful events...')
 
         results = []
-        fetched_meta, stop_page = False, self.current_page + 1
-        while self.current_page < stop_page:
-            events = self.consumer.consume(location=self.location, date=self.date_range, query=self.query,
-                                           page_size=self.page_size, page_number=self.current_page,
-                                           sort_order=self.sort_order)
+        fetched_meta, stop_page = False, self.page_number + 1
+        while self.page_number < stop_page:
+            events = self.consumer.consume(**self._prepare_query_kwargs())
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing
@@ -38,15 +41,15 @@ class EventfulPaginator(object):
                 if not self.total_pages:
                     stop_page = self.consumer.page_count + 1
                 else:
-                    stop_page = self.current_page + self.total_pages
+                    stop_page = self.page_number + self.total_pages
                     if stop_page > self.consumer.page_count + 1:
                         stop_page = self.consumer.page_count + 1
                 self.logger.info('Found %d current events in %s' %
-                                 (self.consumer.total_items, self.location))
+                                 (self.consumer.total_items, self.query_kwargs['location']))
                 self.logger.info('Fetched %d pages (%d events per page) ...' %
-                                 (stop_page - self.current_page, self.page_size))
+                                 (stop_page - self.page_number, self.query_kwargs['page_size']))
                 self.logger.info('Starting from page %d/%d (%d available)' %
-                                 (self.current_page, stop_page - 1, self.consumer.page_count))
+                                 (self.page_number, stop_page - 1, self.consumer.page_count))
                 fetched_meta = True
 
             # Is interactive mode set? If so, then ask whether to import the
@@ -54,7 +57,7 @@ class EventfulPaginator(object):
             fetch_next = True
             if self.interactive:
                 self.logger.info('Currently on page %d/%d (%d available)' %
-                                 (self.current_page, stop_page - 1, self.consumer.page_count))
+                                 (self.page_number, stop_page - 1, self.consumer.page_count))
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
                 if cmd_str:
@@ -79,5 +82,5 @@ class EventfulPaginator(object):
                 self.logger.info('Did not import events from this page')
 
             # increase the page counter
-            self.current_page += 1
+            self.page_number += 1
         return results

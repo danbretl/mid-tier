@@ -288,6 +288,6 @@ IMPORT_EVENT_HORIZONS['eventful'] = relativedelta(months=1)
 EVENTFUL_IMPORT_PARAMETERS = {
     'page_size': 10,
     'location': 'NYC',
-    'sort_order': 'popularity',
+#    'sort_order': 'popularity',
     'query': ''
 }
