@@ -7,8 +7,7 @@ class EventfulApiConsumer(object):
     """Eventful API consumer is the driver of the Eventful API.
     Uses eventlets to achieve non-blocking (async) API requests.
     """
-    def __init__(self, mock_api=False,
-                 make_dumps=False):
+    def __init__(self, mock_api=False, make_dumps=False):
         # instantiate api
         api_class = MockAPI if mock_api else API
         self.api = api_class(make_dumps=make_dumps)

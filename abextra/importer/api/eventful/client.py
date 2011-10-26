@@ -3,10 +3,11 @@ import eventlet
 import logging
 import datetime
 from eventlet import pools
-from eventlet.green import urllib, urllib2
+from eventlet.green import urllib
 from django.conf import settings
 import os
 from importer.conf import get_import_image_dir
+
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
 import simplejson
@@ -27,7 +28,7 @@ class API(object):
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
         self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR,
-            settings.IMPORT_DIRS['eventful'], settings.EVENTFUL_CLIENT_DUMP_DIR)
+                                     settings.IMPORT_DIRS['eventful'], settings.EVENTFUL_CLIENT_DUMP_DIR)
         if make_dumps and not os.path.exists(self.dump_dir):
             os.makedirs(self.dump_dir)
 
@@ -36,17 +37,20 @@ class API(object):
         if not os.path.exists(self.img_dir):
             os.makedirs(self.img_dir)
 
-    def daterange_query_param(self, start_datetime, stop_datetime):
-        return '%s00-%s00' % (start_datetime.isoformat().replace('-', ''),
-                stop_datetime.isoformat().replace('-', ''))
+    @staticmethod
+    def daterange_query_param(start_datetime, stop_datetime):
+        if not all(isinstance(dt, (datetime.datetime, datetime.date)) for dt in (start_datetime, stop_datetime)):
+            raise ValueError('Inputs must be either datetimes or dates')
+        format_dt = lambda dt: dt.strftime('%Y%m%d00')
+        return '-'.join(map(format_dt, (start_datetime, stop_datetime)))
 
-    def daterange_query_param_by_delta(self, start_datetime=datetime.datetime.now().date(),
-            timedelta=settings.IMPORT_EVENT_HORIZONS['eventful']):
+    @classmethod
+    def daterange_query_param_by_delta(cls, start_datetime, timedelta):
         """
         Calculates date range string for eventful query based on current date and
         event horizon specified in settings.
         """
-        return self.daterange_query_param(start_datetime, start_datetime + timedelta)
+        return cls.daterange_query_param(start_datetime, start_datetime + timedelta)
 
     def _build_url(self, method, **args):
         """Call the Eventful API's METHOD with ARGS."""
