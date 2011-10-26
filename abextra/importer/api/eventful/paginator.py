@@ -17,7 +17,7 @@ class EventfulPaginator(object):
         self.location = kwargs.get('location') or settings.EVENTFUL_IMPORT_PARAMETERS['location']
         self.current_page = kwargs.get('current_page') or 1
         self.interactive = kwargs.get('interactive') or False
-        self.date_range = self.consumer.api._format_event_horizon_date_range_string()
+        self.date_range = self.consumer.api.daterange_query_param_by_delta()
         self.sort_order = kwargs.get('sort_order') or settings.EVENTFUL_IMPORT_PARAMETERS['sort_order']
 
     def import_events(self):

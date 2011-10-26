@@ -36,16 +36,17 @@ class API(object):
         if not os.path.exists(self.img_dir):
             os.makedirs(self.img_dir)
 
-    def _format_event_horizon_date_range_string(self):
+    def daterange_query_param(self, start_datetime, stop_datetime):
+        return '%s00-%s00' % (start_datetime.isoformat().replace('-', ''),
+                stop_datetime.isoformat().replace('-', ''))
+
+    def daterange_query_param_by_delta(self, start_datetime=datetime.datetime.now().date(),
+            timedelta=settings.IMPORT_EVENT_HORIZONS['eventful']):
         """
         Calculates date range string for eventful query based on current date and
         event horizon specified in settings.
         """
-        current_date = datetime.datetime.now().date()
-        end_date = datetime.datetime.now().date() + settings.IMPORT_EVENT_HORIZONS['eventful']
-        date_range_string = '%s00-%s00' % (current_date.isoformat().replace('-', ''),
-                                           end_date.isoformat().replace('-', ''))
-        return date_range_string 
+        return self.daterange_query_param(start_datetime, start_datetime + timedelta)
 
     def _build_url(self, method, **args):
         """Call the Eventful API's METHOD with ARGS."""
