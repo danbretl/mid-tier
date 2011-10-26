@@ -50,6 +50,8 @@ class EventfulPaginator(object):
                                  (stop_page - self.page_number, self.query_kwargs['page_size']))
                 self.logger.info('Starting from page %d/%d (%d available)' %
                                  (self.page_number, stop_page - 1, self.consumer.page_count))
+                self.logger.info('Estimated maximum of %d calls needed to fetch current import batch' %
+                                 (2 * (stop_page - self.page_number) * self.query_kwargs['page_size'] + (stop_page - self.page_number) + 1))
                 fetched_meta = True
 
             # Is interactive mode set? If so, then ask whether to import the

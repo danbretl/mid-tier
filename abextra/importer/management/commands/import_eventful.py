@@ -53,10 +53,10 @@ class Command(BaseCommand):
     def handle(self, **options):
         #        try:
         filtered_dict = lambda src_dict, keys: dict((key, src_dict[key]) for key in
-                filter(lambda k: src_dict.has_key(k) and not src_dict.get(k) == None, keys))
+                filter(lambda k: src_dict.has_key(k) and not (src_dict.get(k) == None), keys))
         consumer_kwargs = filtered_dict(options, ('make_dumps', 'mock_api'))
         query_kwargs = filtered_dict(settings.EVENTFUL_IMPORT_PARAMETERS, ('page_size', 'location', 'query', 'sort_order'))
-        query_kwargs.update(filtered_dict(options,'page_size'))
+        query_kwargs.update(filtered_dict(options,('page_size')))
         paginator_kwargs = filtered_dict(options, ('total_pages', 'page_number', 'interactive'))
         importer = EventfulPaginator(consumer_kwargs=consumer_kwargs, query_kwargs=query_kwargs, **paginator_kwargs)
         results = importer.import_events()
