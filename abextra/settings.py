@@ -283,7 +283,6 @@ IMPORT_EVENT_HORIZONS = {}
 # ============
 # = Eventful =
 # ============
-EVENTFUL_CLIENT_DUMP_DIR = 'eventful_client_dumps'
 IMPORT_DIRS['eventful'] = 'eventful'
 IMPORT_EVENT_HORIZONS['eventful'] = relativedelta(months=1)
 EVENTFUL_IMPORT_PARAMETERS = {

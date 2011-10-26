@@ -27,7 +27,7 @@ class API(object):
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
         self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR,
-            settings.IMPORT_DIRS['eventful'], settings.EVENTFUL_CLIENT_DUMP_DIR)
+            settings.IMPORT_DIRS['eventful'], 'dumps')
         if make_dumps and not os.path.exists(self.dump_dir):
             os.makedirs(self.dump_dir)
 
