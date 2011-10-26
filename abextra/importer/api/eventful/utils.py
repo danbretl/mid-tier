@@ -30,21 +30,16 @@ class temporal_parser():
             yield dateutil.rrule.rrulestr(rule_raw, dtstart=dtstart, cache=True, compatible=True)
 
     @classmethod
-    def _get_recurrence(cls, event_raw, start_time):
+    def _get_recurrence(cls, event_raw):
         rdates, rrules, exdates, exrules = set(), set(), set(), set()
         recurrence_raw = event_raw.get('recurrence')
         if recurrence_raw:
-            # dtstart | original first instance or start_time
-            dtstart = start_time
-            instances_raw = recurrence_raw.get('instances')
-            if instances_raw:
-                instance_raw = instances_raw.get('instance')
-                if instance_raw:
-                    instance_raw = instance_raw if isinstance(instance_raw, list) else [instance_raw]
-                    # rely on sorted order from API
-                    first_instance_raw = instance_raw[0]
-                    dtstart = cls._parse_datetime(first_instance_raw['start_time'])
-                    # rdates, rrules
+            # dtstart | original first instance
+            instances_raw = recurrence_raw['instances']['instance']
+            instances_raw = instances_raw if isinstance(instances_raw, list) else [instances_raw]
+            first_instance_raw = instances_raw[0]       # assume presorted order
+            dtstart = cls._parse_datetime(first_instance_raw['start_time'])
+            # rdates, rrules
             rdates_raw, rrules_raw = map(recurrence_raw.get, ('rdates', 'rrules'))
             if rdates_raw:
                 rdate_raw = rdates_raw.get('rdate')
@@ -70,7 +65,7 @@ class temporal_parser():
     def _recurrence_set(cls, event_raw, horizon=settings.IMPORT_EVENT_HORIZONS['eventful']):
         recurrences = set()
         start_time = cls._parse_datetime(event_raw['start_time'])
-        rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw, start_time)
+        rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw)
         dtstop = start_time + horizon
         recurrences.update(rdates)
         for rrule in rrules:
