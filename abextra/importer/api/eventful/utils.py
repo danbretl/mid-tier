@@ -13,24 +13,21 @@ class temporal_parser():
     _FORMATS = ('%Y-%m-%d %H:%M:%S', '%Y%m%dT%H%M%S', '%Y-%m-%d%H:%M:%S')
 
     @classmethod
-    def parse_datetime(cls, dt_string):
+    def _parse_datetime(cls, dt_string):
         return datetime_parser.parse(dt_string, cls._FORMATS)
 
     @classmethod
-    def _get_dates(cls, dates_raw):
+    def _rdates(cls, dates_raw):
         dates_raw = dates_raw if isinstance(dates_raw, list) else [dates_raw]
-        return set(cls.parse_datetime(date_raw) for date_raw in dates_raw)
+        for date_raw in dates_raw:
+            yield cls._parse_datetime(date_raw)
 
     @staticmethod
-    def _get_rules(rules_raw, dtstart):
+    def _rrules(rules_raw, dtstart):
         rules_raw = rules_raw if isinstance(rules_raw, list) else [rules_raw]
-        rules = set()
         for rule_raw in rules_raw:
             rule_raw = rule_raw.replace('BYDAY', 'BYWEEKDAY')
-            rule = dateutil.rrule.rrulestr(rule_raw, dtstart=dtstart,
-                                           cache=True, compatible=True)
-            rules.add(rule)
-        return rules
+            yield dateutil.rrule.rrulestr(rule_raw, dtstart=dtstart, cache=True, compatible=True)
 
     @classmethod
     def _get_recurrence(cls, event_raw, start_time):
@@ -46,33 +43,33 @@ class temporal_parser():
                     instance_raw = instance_raw if isinstance(instance_raw, list) else [instance_raw]
                     # rely on sorted order from API
                     first_instance_raw = instance_raw[0]
-                    dtstart = cls.parse_datetime(first_instance_raw['start_time'])
+                    dtstart = cls._parse_datetime(first_instance_raw['start_time'])
                     # rdates, rrules
             rdates_raw, rrules_raw = map(recurrence_raw.get, ('rdates', 'rrules'))
             if rdates_raw:
                 rdate_raw = rdates_raw.get('rdate')
                 if rdate_raw:
-                    rdates.update(cls._get_dates(rdate_raw))
+                    rdates.update(cls._rdates(rdate_raw))
             if rrules_raw:
                 rrule_raw = rrules_raw.get('rrule')
                 if rrule_raw:
-                    rrules.update(cls._get_rules(rrule_raw, dtstart))
+                    rrules.update(cls._rrules(rrule_raw, dtstart))
                     # exdates, exrules (exceptions)
             exdates_raw, exrules_raw = map(recurrence_raw.get, ('exdates', 'exrules'))
             if exdates_raw:
                 exdate_raw = rdates_raw.get('exdate')
                 if exdate_raw:
-                    exdates.update(cls._get_dates(exdate_raw))
+                    exdates.update(cls._rdates(exdate_raw))
             if exrules_raw:
                 exrule_raw = exrules_raw.get('rrule')
                 if exrule_raw:
-                    exrules.update(cls._get_rules(exrule_raw, dtstart))
+                    exrules.update(cls._rrules(exrule_raw, dtstart))
         return rdates, rrules, exdates, exrules
 
     @classmethod
-    def recurrence_set(cls, event_raw, horizon=settings.IMPORT_EVENT_HORIZONS['eventful']):
+    def _recurrence_set(cls, event_raw, horizon=settings.IMPORT_EVENT_HORIZONS['eventful']):
         recurrences = set()
-        start_time = cls.parse_datetime(event_raw['start_time'])
+        start_time = cls._parse_datetime(event_raw['start_time'])
         rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw, start_time)
         dtstop = start_time + horizon
         recurrences.update(rdates)
@@ -84,14 +81,14 @@ class temporal_parser():
         return recurrences
 
     @classmethod
-    def start_duration_allday(cls, event_raw):
+    def _start_duration_allday(cls, event_raw):
         """Return event temporals."""
         start_time_raw, stop_time_raw, all_day_raw = map(event_raw.get,
             ('start_time', 'stop_time', 'all_day')
         )
         # coalesce datatypes
-        start_datetime = cls.parse_datetime(start_time_raw)
-        stop_datetime = cls.parse_datetime(stop_time_raw) if stop_time_raw else None
+        start_datetime = cls._parse_datetime(start_time_raw)
+        stop_datetime = cls._parse_datetime(stop_time_raw) if stop_time_raw else None
         all_day = int(all_day_raw)
         # initialize outputs
         duration = stop_datetime - start_datetime if stop_datetime else None
@@ -102,6 +99,15 @@ class temporal_parser():
         elif all_day == 1:
             is_all_day = True
         return start_datetime, duration, is_all_day
+
+    @classmethod
+    def occurrences(cls, event_raw):
+        occurrences = set()
+        start_datetime, duration, is_all_day = cls._start_duration_allday(event_raw)
+        occurrences.add(start_datetime)
+        occurrences.update(cls._recurrence_set(event_raw))
+        return sorted(occurrences), duration, is_all_day
+
 
 def expand_prices(data):
     raw_free = data.get('free')

@@ -1,5 +1,4 @@
 import datetime
-import core.parsers
 import HTMLParser
 from importer.adaptors import BaseAdaptor
 from importer.forms import ExternalCategoryImportForm
@@ -131,7 +130,7 @@ class EventAdaptor(EventfulBaseAdaptor):
         return form_data
 
     def o2m_occurrences(self, raw_data):
-        start_datetimes, duration = (datetime.datetime.now() + datetime.timedelta(days=h) for h in range(5)), datetime.timedelta(hours=2)
+        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
         for start_datetime in start_datetimes:
             raw_data['start_date'] = start_datetime.date()
             raw_data['start_time'] = start_datetime.time()
