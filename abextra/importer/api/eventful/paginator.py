@@ -1,6 +1,5 @@
 import logging
 from django.conf import settings
-from importer.api.eventful.utils import current_event_horizon
 from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
 
@@ -18,7 +17,7 @@ class EventfulPaginator(object):
         self.location = kwargs.get('location') or settings.EVENTFUL_IMPORT_PARAMETERS['location']
         self.current_page = kwargs.get('current_page') or 1
         self.interactive = kwargs.get('interactive') or False
-        self.date_range = kwargs.get('date_range') or settings.IMPORT_EVENT_HORIZONS['eventful']
+        self.date_range = self.consumer.api._format_event_horizon_date_range_string()
         self.sort_order = kwargs.get('sort_order') or settings.EVENTFUL_IMPORT_PARAMETERS['sort_order']
 
     def import_events(self):

@@ -129,13 +129,4 @@ def expand_prices(data):
     return map(lambda price: dict(quantity=str(price)), sorted(list(prices)))
 
 
-def current_event_horizon():
-    """
-    Calculates date range string for eventful query based on current date and
-    event horizon specified in settings.
-    """
-    current_date = datetime.datetime.now().date()
-    end_date = datetime.datetime.now().date() + settings.IMPORT_EVENT_HORIZONS['eventful']
-    date_range_string = '%s00-%s00' % (current_date.isoformat().replace('-', ''),
-                                       end_date.isoformat().replace('-', ''))
-    return date_range_string 
+
