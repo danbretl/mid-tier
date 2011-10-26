@@ -52,11 +52,11 @@ class temporal_parser():
                     # exdates, exrules (exceptions)
             exdates_raw, exrules_raw = map(recurrence_raw.get, ('exdates', 'exrules'))
             if exdates_raw:
-                exdate_raw = rdates_raw.get('exdate')
+                exdate_raw = exdates_raw.get('exdate')
                 if exdate_raw:
                     exdates.update(cls._rdates(exdate_raw))
             if exrules_raw:
-                exrule_raw = exrules_raw.get('rrule')
+                exrule_raw = exrules_raw.get('exrule')
                 if exrule_raw:
                     exrules.update(cls._rrules(exrule_raw, dtstart))
         return rdates, rrules, exdates, exrules
