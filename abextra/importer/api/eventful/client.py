@@ -18,7 +18,7 @@ class APIError(Exception):
 
 
 class API(object):
-    def __init__(self, app_key, server='api.eventful.com', make_dumps=False):
+    def __init__(self, app_key=settings.EVENTFUL_API_KEY, server='api.eventful.com', make_dumps=False):
         self.logger = logging.getLogger('importer.eventful')
         self.app_key = app_key
         self.server = server

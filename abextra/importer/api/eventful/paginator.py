@@ -7,8 +7,7 @@ from importer.api.eventful.consumer import EventfulApiConsumer
 class EventfulPaginator(object):
     def __init__(self, **kwargs):
         self.total_pages = kwargs.get('total_pages')
-        self.consumer = EventfulApiConsumer(api_key=settings.EVENTFUL_API_KEY,
-                                            mock_api=kwargs.get('mock_api', False),
+        self.consumer = EventfulApiConsumer(mock_api=kwargs.get('mock_api', False),
                                             make_dumps=kwargs.get('make_dumps', False))
         self.parser = EventAdaptor()
         self.logger = logging.getLogger('importer.eventful_import')
