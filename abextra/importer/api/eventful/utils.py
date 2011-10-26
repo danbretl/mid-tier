@@ -67,7 +67,8 @@ class temporal_parser():
         start_time = cls._parse_datetime(event_raw['start_time'])
         rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw)
         dtstop = start_time + horizon
-        recurrences.update(rdates)
+        rdates_clipped = (rdate for rdate in rdates if rdate >= start_time and rdate <= dtstop)
+        recurrences.update(rdates_clipped)
         for rrule in rrules:
             recurrences.update(rrule.between(start_time, dtstop, inc=True))
         recurrences.difference_update(exdates)
