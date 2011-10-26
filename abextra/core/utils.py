@@ -54,3 +54,6 @@ def dict_path_get(d, path, default=None):
     key, path_remainder = partials
     nested_dict = d.get(key)
     return dict_path_get(nested_dict, path_remainder, default) if isinstance(nested_dict, dict) else default
+
+def dict_from_values(D):
+    return dict((k, v) for k, v in D.iteritems() if v is not None)
