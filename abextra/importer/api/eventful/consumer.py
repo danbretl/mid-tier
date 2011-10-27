@@ -1,7 +1,7 @@
 import eventlet
 import itertools
 import datetime
-from django.conf import settings
+from importer.api.eventful import conf 
 from importer.api.eventful.client import API, MockAPI
 
 class EventfulApiConsumer(object):
@@ -9,10 +9,10 @@ class EventfulApiConsumer(object):
     Uses eventlets to achieve non-blocking (async) API requests.
     """
 
-    def __init__(self, mock_api=False, make_dumps=False):
+    def __init__(self, mock_api=False, client_kwargs=None):
         # instantiate api
         api_class = MockAPI if mock_api else API
-        self.api = api_class(make_dumps=make_dumps)
+        self.api = api_class(**(client_kwargs or {}))
         self.total_items = None
         self.page_count = None
         self.event_horizon = None
@@ -75,7 +75,7 @@ class EventfulApiConsumer(object):
 
         if not self.event_horizon:
             current_datetime = datetime.datetime.now()
-            self.event_horizon = current_datetime, current_datetime + settings.IMPORT_EVENT_HORIZONS['eventful']
+            self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
 
         if not query_kwargs.get('date'):
             horizon_start, horizon_stop = self.event_horizon

@@ -1,14 +1,14 @@
 import logging
 import datetime
-from django.conf import settings
+from importer.api.eventful import conf 
 from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
 
 class EventfulPaginator(object):
     def __init__(self, interactive=False, total_pages=None, page_number=1,
-                 consumer_kwargs=None, query_kwargs=settings.EVENTFUL_IMPORT_PARAMETERS):
+                 consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
         # internal initializations
-        self.consumer = EventfulApiConsumer(**(consumer_kwargs or {}))
+        self.consumer = EventfulApiConsumer(client_kwargs=client_kwargs, **(consumer_kwargs or {}))
         self.parser = EventAdaptor()
         self.logger = logging.getLogger('importer.eventful_import')
         self.count = 0

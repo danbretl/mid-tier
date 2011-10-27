@@ -6,7 +6,7 @@ from eventlet import pools
 from eventlet.green import urllib
 from django.conf import settings
 import os
-from importer.conf import get_import_image_dir
+from importer.api.eventful import conf 
 
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
@@ -20,7 +20,7 @@ class APIError(Exception):
 
 
 class API(object):
-    def __init__(self, app_key=settings.EVENTFUL_API_KEY, server='api.eventful.com', make_dumps=False):
+    def __init__(self, app_key=conf.API_KEY, server='api.eventful.com', make_dumps=False):
         self.logger = logging.getLogger('importer.eventful')
         self.app_key = app_key
         self.server = server
@@ -28,12 +28,12 @@ class API(object):
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
         self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR,
-            settings.IMPORT_DIRS['eventful'], 'dumps')
+            conf.IMPORT_DIR, 'dumps')
         if make_dumps and not os.path.exists(self.dump_dir):
             os.makedirs(self.dump_dir)
 
         # prepare image download directory
-        self.img_dir = get_import_image_dir('eventful')
+        self.img_dir = conf.IMPORT_IMAGE_DIR
         if not os.path.exists(self.img_dir):
             os.makedirs(self.img_dir)
 

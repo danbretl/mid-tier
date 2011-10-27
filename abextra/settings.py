@@ -1,6 +1,5 @@
 """Django settings for abextra project."""
 import os
-from dateutil.relativedelta import relativedelta
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -274,20 +273,6 @@ IPHONE_THUMB_OPTIONS = {
 # = Import =
 # ==========
 IMPORT_ROOT_DIR = '/tmp/kwiqet_import'
-IMPORT_DIRS = {}
-IMPORT_IMAGE_DIRS = {}
 IMPORT_IMAGE_DIR_DEFAULT = 'images'
 IMPORT_IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
-IMPORT_EVENT_HORIZONS = {}
 
-# ============
-# = Eventful =
-# ============
-IMPORT_DIRS['eventful'] = 'eventful'
-IMPORT_EVENT_HORIZONS['eventful'] = relativedelta(months=1)
-EVENTFUL_IMPORT_PARAMETERS = {
-    'page_size': 50,
-    'location': 'NYC',
-#    'sort_order': 'popularity',
-    'query': ''
-}
