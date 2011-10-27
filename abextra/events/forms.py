@@ -3,6 +3,7 @@ from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from django.contrib.auth.models import User
+from core.fields import HtmlSanitizedCharField
 from events.models import Event, Occurrence, Category, Source
 from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
@@ -78,6 +79,7 @@ class SourceAdminForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class EventImportForm(EventForm):
+    description = HtmlSanitizedCharField(required=False)
     # FIXME needs to be lazy loaded - otherwise, shit happens at import time
     # UPDATE: ugly fix
     @property

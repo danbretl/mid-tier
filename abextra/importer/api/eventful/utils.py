@@ -1,16 +1,14 @@
-import datetime
 import dateutil.parser
 import dateutil.rrule
 import dateutil.relativedelta
 import logging
-from django.conf import settings
 from core.parsers import datetime_parser
 from core.parsers import price_parser
 
 _LOGGER = logging.getLogger('importer.api.eventful.utils')
 
 class temporal_parser():
-    _FORMATS = ('%Y-%m-%d %H:%M:%S', '%Y%m%dT%H%M%S', '%Y-%m-%d%H:%M:%S')
+    _FORMATS = ('%Y-%m-%d %H:%M:%S', '%Y%m%dT%H%M%S', '%Y-%m-%d%H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%Y%m%dT%H:%M:%S')
 
     @classmethod
     def _parse_datetime(cls, dt_string):
@@ -62,20 +60,19 @@ class temporal_parser():
         return rdates, rrules, exdates, exrules
 
     @classmethod
-    def _recurrence_set(cls, event_raw, horizon=settings.IMPORT_EVENT_HORIZONS['eventful']):
+    def _recurrence_set(cls, event_raw):
         recurrences = set()
         start_time = cls._parse_datetime(event_raw['start_time'])
         kwiqet_meta = event_raw['__kwiqet_meta']
-        horizon_start = kwiqet_meta['horizon_start']
         horizon_stop = kwiqet_meta['horizon_stop']
         rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw)
-        rdates_clipped = (rdate for rdate in rdates if rdate >= horizon_start and rdate <= horizon_stop)
+        rdates_clipped = (rdate for rdate in rdates if rdate >= start_time and rdate <= horizon_stop)
         recurrences.update(rdates_clipped)
         for rrule in rrules:
-            recurrences.update(rrule.between(horizon_start, horizon_stop, inc=True))
+            recurrences.update(rrule.between(start_time, horizon_stop, inc=True))
         recurrences.difference_update(exdates)
         for exrule in exrules:
-            recurrences.difference_update(exrule.between(horizon_start, horizon_stop, inc=True))
+            recurrences.difference_update(exrule.between(start_time, horizon_stop, inc=True))
         return recurrences
 
     @classmethod
@@ -87,7 +84,7 @@ class temporal_parser():
         # coalesce datatypes
         start_datetime = cls._parse_datetime(start_time_raw)
         stop_datetime = cls._parse_datetime(stop_time_raw) if stop_time_raw else None
-        all_day = int(all_day_raw)
+        all_day = int(all_day_raw) if all_day_raw else 2
         # initialize outputs
         duration = stop_datetime - start_datetime if stop_datetime else None
         is_all_day = None
