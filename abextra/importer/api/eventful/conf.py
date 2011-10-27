@@ -13,7 +13,7 @@ IMPORT_EVENT_HORIZON = relativedelta(months=1)
 IMPORT_PARAMETERS = {
     'page_size': 50,
     'location': 'NYC',
-#    'sort_order': 'popularity',
+    'sort_order': 'popularity',
     'query': ''
 }
 

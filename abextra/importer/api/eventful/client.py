@@ -6,7 +6,7 @@ from eventlet import pools
 from eventlet.green import urllib
 from django.conf import settings
 import os
-from importer.api.eventful import conf 
+from importer.api.eventful import conf
 
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
@@ -27,8 +27,7 @@ class API(object):
         self.httpool = pools.Pool()
         self.httpool.create = httplib2.Http
         self.make_dumps = make_dumps
-        self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR,
-            conf.IMPORT_DIR, 'dumps')
+        self.dump_dir = os.path.join(settings.IMPORT_ROOT_DIR, conf.IMPORT_DIR, 'dumps')
         if make_dumps and not os.path.exists(self.dump_dir):
             os.makedirs(self.dump_dir)
 
