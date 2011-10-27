@@ -1,5 +1,5 @@
 import logging
-import datetime
+import math
 from importer.api.eventful import conf 
 from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.consumer import EventfulApiConsumer
@@ -24,32 +24,52 @@ class EventfulPaginator(object):
         self.logger.info('Beginning import of eventful events...')
 
         results = []
-        fetched_meta, stop_page = False, self.page_number + 1
-        while self.page_number < stop_page:
+
+        # save starting page and page size
+        start_page, page_size = self.page_number, self.query_kwargs['page_size']
+
+        # want to make metadata fetching call with page_size=1 and page_number=1
+        self.query_kwargs['page_number'], self.query_kwargs['page_size'] = 1, 1
+        events_meta = self.consumer.consume(self.query_kwargs)
+
+        # then return to originals
+        self.page_number, self.query_kwargs['page_size'] = start_page, page_size
+
+        # if no amount of pages to fetch is given, default to all
+        pages_available = int(math.ceil(float(self.consumer.page_count)/page_size))
+        if not self.total_pages:
+            self.total_pages = pages_available
+
+        # estimated maximum number of calls: 2 per event (worst case scenario
+        # needing to make call for event and venue details each time), 1 per
+        # page, and 1 for metadata
+
+        estimated_calls = 2 * self.total_pages * page_size + self.total_pages + 1 
+
+        self.logger.info('Found %d current events in %s',
+                self.consumer.total_items, self.query_kwargs['location'])
+        self.logger.info('Fetching %d pages (%d events per page) ...',
+                self.total_pages, page_size)
+        self.logger.info('Starting from page %d/%d (%d available)',
+                self.page_number, self.total_pages, pages_available)
+        self.logger.info('Estimated maximum of %d calls needed to fetch current batch',
+                estimated_calls) 
+        if estimated_calls > conf.API_CALL_LIMIT/2:
+            continue_fetch = False
+            self.logger.warn("Estimated API calls exceeds limit(%d)/2, continue? (y/N)", conf.API_CALL_LIMIT)
+            cmd_str = raw_input()
+            if cmd_str:
+                continue_fetch = cmd_str.lower().startswith('y')
+            if not continue_fetch:
+                return results
+
+        while self.page_number <= start_page + self.total_pages:
             self.query_kwargs['page_number'] = self.page_number
             events = self.consumer.consume(self.query_kwargs)
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing
             # logic will loop.
-
-            if not fetched_meta:
-                if not self.total_pages:
-                    stop_page = self.consumer.page_count + 1
-                else:
-                    stop_page = self.page_number + self.total_pages
-                    if stop_page > self.consumer.page_count + 1:
-                        stop_page = self.consumer.page_count + 1
-                self.logger.info('Found %d current events in %s' %
-                                 (self.consumer.total_items, self.query_kwargs['location']))
-                self.logger.info('Fetched %d pages (%d events per page) ...' %
-                                 (stop_page - self.page_number, self.query_kwargs['page_size']))
-                self.logger.info('Starting from page %d/%d (%d available)' %
-                                 (self.page_number, stop_page - 1, self.consumer.page_count))
-                self.logger.info('Estimated maximum of %d calls needed to fetch current import batch' %
-                                 (2 * (stop_page - self.page_number) * self.query_kwargs['page_size'] + (stop_page - self.page_number) + 1))
-                fetched_meta = True
-
             # Is interactive mode set? If so, then ask whether to import the
             # current page. This happens after the page is fetched.
             fetch_next = True
