@@ -121,7 +121,7 @@ def expand_prices(data):
             _LOGGER.warn('Unable to parse prices from %s' % raw_price)
     else:
         _LOGGER.warn('"Free" nor "Price" fields could not be found.')
-    return map(lambda price: dict(quantity=str(price)), sorted(list(prices)))
+    return (dict(quantity=price) for price in sorted(prices))
 
 
 
