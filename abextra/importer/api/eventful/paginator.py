@@ -17,12 +17,17 @@ class EventfulPaginator(object):
         self.total_pages = total_pages
         self.page_number = page_number
         self.query_kwargs = query_kwargs
+        self.event_horizon = None
 
     def _prepare_query_kwargs(self):
+        current_datetime = datetime.datetime.now()
         self.query_kwargs['page_number'] = self.page_number
-        if not self.query_kwargs.get('date_range'):
-            self.query_kwargs['date_range'] = self.consumer.api.daterange_query_param_by_delta(
-                datetime.datetime.now(), settings.IMPORT_EVENT_HORIZONS['eventful'])
+        if not self.event_horizon:
+            self.event_horizon = dict(horizon_start=current_datetime,
+                    horizon_stop=current_datetime + settings.IMPORT_EVENT_HORIZONS['eventful'])
+        if not self.query_kwargs.get('date'):
+            self.query_kwargs['date'] = self.consumer.api.daterange_query_param_by_delta(
+                current_datetime, settings.IMPORT_EVENT_HORIZONS['eventful'])
         return self.query_kwargs
 
     def import_events(self):
@@ -75,6 +80,8 @@ class EventfulPaginator(object):
                 for event in events:
                     # increase event counter
                     self.count += 1
+                    event.setdefault('__kwiqet_meta', {})
+                    event['__kwiqet_meta'].update(self.event_horizon)
                     created, event_obj = self.parser.parse(event)
                     results.append((created, event_obj.id))
 
