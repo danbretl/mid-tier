@@ -1,445 +1,5 @@
 [
     {
-        "pk": 174,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 3,
-            "xid": "Psychological Thriller",
-            "name": "Psychological Thriller",
-            "abstract_categories": [],
-            "concrete_category": null
-        }
-    },
-    {
-        "pk": 1290,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "festivals_parades",
-            "name": "Festivals",
-            "abstract_categories": [],
-            "concrete_category": 114
-        }
-    },
-    {
-        "pk": 1289,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "movies_film",
-            "name": "Film",
-            "abstract_categories": [],
-            "concrete_category": 136
-        }
-    },
-    {
-        "pk": 1287,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "schools_alumni",
-            "name": "University & Alumni",
-            "abstract_categories": [],
-            "concrete_category": 200
-        }
-    },
-    {
-        "pk": 1285,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "sports",
-            "name": "Sports",
-            "abstract_categories": [],
-            "concrete_category": 1
-        }
-    },
-    {
-        "pk": 1284,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "religion_spirituality",
-            "name": "Religion & Spirituality",
-            "abstract_categories": [],
-            "concrete_category": 177
-        }
-    },
-    {
-        "pk": 1283,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "books",
-            "name": "Literary & Books",
-            "abstract_categories": [],
-            "concrete_category": 200
-        }
-    },
-    {
-        "pk": 1282,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "politics_activism",
-            "name": "Politics & Activism",
-            "abstract_categories": [],
-            "concrete_category": 194
-        }
-    },
-    {
-        "pk": 1286,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "attractions",
-            "name": "Museums & Attractions",
-            "abstract_categories": [],
-            "concrete_category": 121
-        }
-    },
-    {
-        "pk": 1281,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "conference",
-            "name": "Conferences & Tradeshows",
-            "abstract_categories": [],
-            "concrete_category": 11
-        }
-    },
-    {
-        "pk": 1291,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "fundraisers",
-            "name": "Fundraising & Charity",
-            "abstract_categories": [],
-            "concrete_category": 14
-        }
-    },
-    {
-        "pk": 1279,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "performing_arts",
-            "name": "Performing Arts",
-            "abstract_categories": [],
-            "concrete_category": 139
-        }
-    },
-    {
-        "pk": 1277,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "music",
-            "name": "Concerts & Tour Dates",
-            "abstract_categories": [],
-            "concrete_category": 30
-        }
-    },
-    {
-        "pk": 1278,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "singles_social",
-            "name": "Nightlife & Singles",
-            "abstract_categories": [],
-            "concrete_category": 16
-        }
-    },
-    {
-        "pk": 1280,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "sales",
-            "name": "Sales & Retail",
-            "abstract_categories": [],
-            "concrete_category": 149
-        }
-    },
-    {
-        "pk": 1276,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "food",
-            "name": "Food & Wine",
-            "abstract_categories": [],
-            "concrete_category": 38
-        }
-    },
-    {
-        "pk": 1275,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "business",
-            "name": "Business & Networking",
-            "abstract_categories": [],
-            "concrete_category": 192
-        }
-    },
-    {
-        "pk": 1274,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "support",
-            "name": "Health & Wellness",
-            "abstract_categories": [],
-            "concrete_category": 181
-        }
-    },
-    {
-        "pk": 1273,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "clubs_associations",
-            "name": "Organizations & Meetups",
-            "abstract_categories": [],
-            "concrete_category": 17
-        }
-    },
-    {
-        "pk": 1272,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "learning_education",
-            "name": "Education",
-            "abstract_categories": [],
-            "concrete_category": 200
-        }
-    },
-    {
-        "pk": 1268,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "art",
-            "name": "Art Galleries & Exhibits",
-            "abstract_categories": [],
-            "concrete_category": 139
-        }
-    },
-    {
-        "pk": 1270,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "outdoors_recreation",
-            "name": "Outdoors & Recreation",
-            "abstract_categories": [],
-            "concrete_category": 1
-        }
-    },
-    {
-        "pk": 1269,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "community",
-            "name": "Neighborhood",
-            "abstract_categories": [],
-            "concrete_category": 138
-        }
-    },
-    {
-        "pk": 1288,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "family_fun_kids",
-            "name": "Kids & Family",
-            "abstract_categories": [],
-            "concrete_category": 138
-        }
-    },
-    {
-        "pk": 1271,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 5,
-            "xid": "other",
-            "name": "Other & Miscellaneous",
-            "abstract_categories": [],
-            "concrete_category": 138
-        }
-    },
-    {
-        "pk": 127,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1482844",
-            "name": "Performance Art",
-            "abstract_categories": [],
-            "concrete_category": 28
-        }
-    },
-    {
-        "pk": 128,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1145585",
-            "name": "Performing Arts",
-            "abstract_categories": [],
-            "concrete_category": 28
-        }
-    },
-    {
-        "pk": 129,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134039",
-            "name": "Pets",
-            "abstract_categories": [],
-            "concrete_category": 143
-        }
-    },
-    {
-        "pk": 130,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "309994",
-            "name": "Photography",
-            "abstract_categories": [],
-            "concrete_category": 127
-        }
-    },
-    {
-        "pk": 131,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134044",
-            "name": "Planetariums",
-            "abstract_categories": [],
-            "concrete_category": 121
-        }
-    },
-    {
-        "pk": 132,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134045",
-            "name": "Poetry",
-            "abstract_categories": [],
-            "concrete_category": 27
-        }
-    },
-    {
-        "pk": 133,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134046",
-            "name": "Poker Nights",
-            "abstract_categories": [],
-            "concrete_category": 16
-        }
-    },
-    {
-        "pk": 134,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134051",
-            "name": "Politics",
-            "abstract_categories": [],
-            "concrete_category": 140
-        }
-    },
-    {
-        "pk": 135,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134052",
-            "name": "Pop Culture",
-            "abstract_categories": [],
-            "concrete_category": 139
-        }
-    },
-    {
-        "pk": 136,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134057",
-            "name": "Promotional Events",
-            "abstract_categories": [],
-            "concrete_category": 9
-        }
-    },
-    {
-        "pk": 137,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134058",
-            "name": "Public Interest",
-            "abstract_categories": [],
-            "concrete_category": 140
-        }
-    },
-    {
-        "pk": 138,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134059",
-            "name": "Public Service",
-            "abstract_categories": [],
-            "concrete_category": 141
-        }
-    },
-    {
-        "pk": 139,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "471323",
-            "name": "Recreation",
-            "abstract_categories": [],
-            "concrete_category": 4
-        }
-    },
-    {
-        "pk": 140,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1134060",
-            "name": "Religion & Spirituality",
-            "abstract_categories": [],
-            "concrete_category": 177
-        }
-    },
-    {
-        "pk": 141,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "1138308",
-            "name": "Santa Sightings",
-            "abstract_categories": [],
-            "concrete_category": 154
-        }
-    },
-    {
         "pk": 142,
         "model": "importer.externalcategory",
         "fields": {
@@ -459,6 +19,28 @@
             "name": "See & Be Seen",
             "abstract_categories": [],
             "concrete_category": 116
+        }
+    },
+    {
+        "pk": 175,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "cycling",
+            "name": "Cycling",
+            "abstract_categories": [],
+            "concrete_category": null
+        }
+    },
+    {
+        "pk": 1292,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "technology",
+            "name": "Technology",
+            "abstract_categories": [],
+            "concrete_category": 188
         }
     },
     {
@@ -789,17 +371,6 @@
             "name": "Art - Announcements",
             "abstract_categories": [],
             "concrete_category": 127
-        }
-    },
-    {
-        "pk": 5,
-        "model": "importer.externalcategory",
-        "fields": {
-            "source": 1,
-            "xid": "538260",
-            "name": "Art - Galleries",
-            "abstract_categories": [],
-            "concrete_category": 171
         }
     },
     {
@@ -1603,6 +1174,457 @@
             "name": "High Country",
             "abstract_categories": [],
             "concrete_category": 197
+        }
+    },
+    {
+        "pk": 174,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 3,
+            "xid": "Psychological Thriller",
+            "name": "Psychological Thriller",
+            "abstract_categories": [],
+            "concrete_category": null
+        }
+    },
+    {
+        "pk": 1290,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "festivals_parades",
+            "name": "Festivals",
+            "abstract_categories": [],
+            "concrete_category": 114
+        }
+    },
+    {
+        "pk": 1287,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "schools_alumni",
+            "name": "University & Alumni",
+            "abstract_categories": [],
+            "concrete_category": 200
+        }
+    },
+    {
+        "pk": 1285,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "sports",
+            "name": "Sports",
+            "abstract_categories": [],
+            "concrete_category": 1
+        }
+    },
+    {
+        "pk": 1284,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "religion_spirituality",
+            "name": "Religion & Spirituality",
+            "abstract_categories": [],
+            "concrete_category": 177
+        }
+    },
+    {
+        "pk": 1283,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "books",
+            "name": "Literary & Books",
+            "abstract_categories": [],
+            "concrete_category": 200
+        }
+    },
+    {
+        "pk": 1282,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "politics_activism",
+            "name": "Politics & Activism",
+            "abstract_categories": [],
+            "concrete_category": 194
+        }
+    },
+    {
+        "pk": 1286,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "attractions",
+            "name": "Museums & Attractions",
+            "abstract_categories": [],
+            "concrete_category": 121
+        }
+    },
+    {
+        "pk": 1281,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "conference",
+            "name": "Conferences & Tradeshows",
+            "abstract_categories": [],
+            "concrete_category": 11
+        }
+    },
+    {
+        "pk": 1291,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "fundraisers",
+            "name": "Fundraising & Charity",
+            "abstract_categories": [],
+            "concrete_category": 14
+        }
+    },
+    {
+        "pk": 1279,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "performing_arts",
+            "name": "Performing Arts",
+            "abstract_categories": [],
+            "concrete_category": 139
+        }
+    },
+    {
+        "pk": 1277,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "music",
+            "name": "Concerts & Tour Dates",
+            "abstract_categories": [],
+            "concrete_category": 30
+        }
+    },
+    {
+        "pk": 1278,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "singles_social",
+            "name": "Nightlife & Singles",
+            "abstract_categories": [],
+            "concrete_category": 16
+        }
+    },
+    {
+        "pk": 1280,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "sales",
+            "name": "Sales & Retail",
+            "abstract_categories": [],
+            "concrete_category": 149
+        }
+    },
+    {
+        "pk": 1276,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "food",
+            "name": "Food & Wine",
+            "abstract_categories": [],
+            "concrete_category": 38
+        }
+    },
+    {
+        "pk": 1275,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "business",
+            "name": "Business & Networking",
+            "abstract_categories": [],
+            "concrete_category": 192
+        }
+    },
+    {
+        "pk": 1274,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "support",
+            "name": "Health & Wellness",
+            "abstract_categories": [],
+            "concrete_category": 181
+        }
+    },
+    {
+        "pk": 1273,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "clubs_associations",
+            "name": "Organizations & Meetups",
+            "abstract_categories": [],
+            "concrete_category": 17
+        }
+    },
+    {
+        "pk": 1272,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "learning_education",
+            "name": "Education",
+            "abstract_categories": [],
+            "concrete_category": 200
+        }
+    },
+    {
+        "pk": 1270,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "outdoors_recreation",
+            "name": "Outdoors & Recreation",
+            "abstract_categories": [],
+            "concrete_category": 1
+        }
+    },
+    {
+        "pk": 1269,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "community",
+            "name": "Neighborhood",
+            "abstract_categories": [],
+            "concrete_category": 138
+        }
+    },
+    {
+        "pk": 1288,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "family_fun_kids",
+            "name": "Kids & Family",
+            "abstract_categories": [],
+            "concrete_category": 138
+        }
+    },
+    {
+        "pk": 1271,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "other",
+            "name": "Other & Miscellaneous",
+            "abstract_categories": [],
+            "concrete_category": 138
+        }
+    },
+    {
+        "pk": 127,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1482844",
+            "name": "Performance Art",
+            "abstract_categories": [],
+            "concrete_category": 28
+        }
+    },
+    {
+        "pk": 128,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1145585",
+            "name": "Performing Arts",
+            "abstract_categories": [],
+            "concrete_category": 28
+        }
+    },
+    {
+        "pk": 129,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134039",
+            "name": "Pets",
+            "abstract_categories": [],
+            "concrete_category": 143
+        }
+    },
+    {
+        "pk": 130,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "309994",
+            "name": "Photography",
+            "abstract_categories": [],
+            "concrete_category": 127
+        }
+    },
+    {
+        "pk": 131,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134044",
+            "name": "Planetariums",
+            "abstract_categories": [],
+            "concrete_category": 121
+        }
+    },
+    {
+        "pk": 132,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134045",
+            "name": "Poetry",
+            "abstract_categories": [],
+            "concrete_category": 27
+        }
+    },
+    {
+        "pk": 133,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134046",
+            "name": "Poker Nights",
+            "abstract_categories": [],
+            "concrete_category": 16
+        }
+    },
+    {
+        "pk": 134,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134051",
+            "name": "Politics",
+            "abstract_categories": [],
+            "concrete_category": 140
+        }
+    },
+    {
+        "pk": 135,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134052",
+            "name": "Pop Culture",
+            "abstract_categories": [],
+            "concrete_category": 139
+        }
+    },
+    {
+        "pk": 136,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134057",
+            "name": "Promotional Events",
+            "abstract_categories": [],
+            "concrete_category": 9
+        }
+    },
+    {
+        "pk": 137,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134058",
+            "name": "Public Interest",
+            "abstract_categories": [],
+            "concrete_category": 140
+        }
+    },
+    {
+        "pk": 138,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134059",
+            "name": "Public Service",
+            "abstract_categories": [],
+            "concrete_category": 141
+        }
+    },
+    {
+        "pk": 139,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "471323",
+            "name": "Recreation",
+            "abstract_categories": [],
+            "concrete_category": 4
+        }
+    },
+    {
+        "pk": 140,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1134060",
+            "name": "Religion & Spirituality",
+            "abstract_categories": [],
+            "concrete_category": 177
+        }
+    },
+    {
+        "pk": 141,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "1138308",
+            "name": "Santa Sightings",
+            "abstract_categories": [],
+            "concrete_category": 154
+        }
+    },
+    {
+        "pk": 1289,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "movies_film",
+            "name": "Film",
+            "abstract_categories": [],
+            "concrete_category": 29
+        }
+    },
+    {
+        "pk": 1268,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "art",
+            "name": "Art Galleries & Exhibits",
+            "abstract_categories": [],
+            "concrete_category": 127
+        }
+    },
+    {
+        "pk": 5,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 1,
+            "xid": "538260",
+            "name": "Art - Galleries",
+            "abstract_categories": [],
+            "concrete_category": 171
         }
     },
     {
