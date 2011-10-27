@@ -19,16 +19,6 @@ class EventfulPaginator(object):
         self.query_kwargs = query_kwargs
         self.event_horizon = None
 
-    def _prepare_query_kwargs(self):
-        current_datetime = datetime.datetime.now()
-        self.query_kwargs['page_number'] = self.page_number
-        if not self.event_horizon:
-            self.event_horizon = dict(horizon_start=current_datetime,
-                    horizon_stop=current_datetime + settings.IMPORT_EVENT_HORIZONS['eventful'])
-        if not self.query_kwargs.get('date'):
-            self.query_kwargs['date'] = self.consumer.api.daterange_query_param_by_delta(
-                current_datetime, settings.IMPORT_EVENT_HORIZONS['eventful'])
-        return self.query_kwargs
 
     def import_events(self):
         self.logger.info('Beginning import of eventful events...')
@@ -36,7 +26,8 @@ class EventfulPaginator(object):
         results = []
         fetched_meta, stop_page = False, self.page_number + 1
         while self.page_number < stop_page:
-            events = self.consumer.consume(**self._prepare_query_kwargs())
+            self.query_kwargs['page_number'] = self.page_number
+            events = self.consumer.consume(self.query_kwargs)
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing
@@ -80,8 +71,6 @@ class EventfulPaginator(object):
                 for event in events:
                     # increase event counter
                     self.count += 1
-                    event.setdefault('__kwiqet_meta', {})
-                    event['__kwiqet_meta'].update(self.event_horizon)
                     created, event_obj = self.parser.parse(event)
                     results.append((created, event_obj.id))
 

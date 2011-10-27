@@ -1,5 +1,6 @@
 import eventlet
 import itertools
+import datetime
 from django.conf import settings
 from importer.api.eventful.client import API, MockAPI
 
@@ -7,12 +8,14 @@ class EventfulApiConsumer(object):
     """Eventful API consumer is the driver of the Eventful API.
     Uses eventlets to achieve non-blocking (async) API requests.
     """
+
     def __init__(self, mock_api=False, make_dumps=False):
         # instantiate api
         api_class = MockAPI if mock_api else API
         self.api = api_class(make_dumps=make_dumps)
         self.total_items = None
         self.page_count = None
+        self.event_horizon = None
 
         self.venue_ids = set()
         self.images_by_event_id = {}
@@ -32,8 +35,8 @@ class EventfulApiConsumer(object):
         # (appservers are not too ok with it)
         self.venue_detail_pile = eventlet.GreenPile(10)
 
-    def fetch_event_summaries(self, **kwargs):
-        resp = self.api.call('/events/search', **kwargs)
+    def fetch_event_summaries(self, query_kwargs):
+        resp = self.api.call('/events/search', **query_kwargs)
         return resp
 
     def process_event_summaries(self, summaries):
@@ -66,8 +69,20 @@ class EventfulApiConsumer(object):
             self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
 
-    def consume(self, **kwargs):
-        response = self.fetch_event_summaries(**kwargs)
+    def consume(self, query_kwargs):
+
+        # Prepare event horizon
+
+        if not self.event_horizon:
+            current_datetime = datetime.datetime.now()
+            self.event_horizon = current_datetime, current_datetime + settings.IMPORT_EVENT_HORIZONS['eventful']
+
+        if not query_kwargs.get('date'):
+            horizon_start, horizon_stop = self.event_horizon
+            query_kwargs['date'] = self.api.daterange_query_param(
+                horizon_start, horizon_stop)
+ 
+        response = self.fetch_event_summaries(query_kwargs)
         raw_summaries = response['events']['event']
         self.total_items = int(response['total_items'])
         self.page_count = int(response['page_count'])
@@ -78,16 +93,18 @@ class EventfulApiConsumer(object):
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
 
         def extend_with_details(event):
+            event.setdefault('__kwiqet',{})
             event_images = self.images_by_event_id.get(event['id'])
             if event_images:
-                event['event_images_local'] = [event_images]
-
+                event['__kwiqet']['event_images'] = [event_images]
             venue_id = event.get('venue_id')
             if venue_id:
-                event['venue_details'] = self.venues_by_venue_id[venue_id]
+                event['__kwiqet']['venue_details'] = self.venues_by_venue_id[venue_id]
                 venue_images = self.images_by_venue_id.get(event['venue_id'])
                 if venue_images:
-                    event['venue_images_local'] = [venue_images]
+                    event['__kwiqet']['venue_images'] = [venue_images]
+            if self.event_horizon:
+                event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon 
             return event
 
         events = itertools.imap(extend_with_details, self.event_detail_pile)

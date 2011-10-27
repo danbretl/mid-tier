@@ -48,10 +48,10 @@ class PlaceAdaptor(EventfulBaseAdaptor):
     fields = ['title', 'point']
     form_data_map = {
         'phone': 'phone',
-        'title': 'venue_details/name',
-        'url': 'venue_details/url',
+        'title': '__kwiqet/venue_details/name',
+        'url': '__kwiqet/venue_details/url',
         }
-    file_data_map = {'image': 'venue_images_local'}
+    file_data_map = {'image': '__kwiqet/venue_images'}
 
 
 class CategoryAdaptor(EventfulBaseAdaptor):
@@ -103,7 +103,7 @@ class EventAdaptor(EventfulBaseAdaptor):
         'url': 'url',
         'image_url': 'image/url'
     }
-    file_data_map = {'image': 'event_images_local'}
+    file_data_map = {'image': '__kwiqet/event_images'}
     o2m_default_field = 'event'
 
     def __init__(self):

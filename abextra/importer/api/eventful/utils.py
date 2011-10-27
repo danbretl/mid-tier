@@ -63,8 +63,8 @@ class temporal_parser():
     def _recurrence_set(cls, event_raw):
         recurrences = set()
         start_time = cls._parse_datetime(event_raw['start_time'])
-        kwiqet_meta = event_raw['__kwiqet_meta']
-        horizon_stop = kwiqet_meta['horizon_stop']
+        kwiqet_data = event_raw['__kwiqet']
+        horizon_stop = kwiqet_data['horizon_stop']
         rdates, rrules, exdates, exrules = cls._get_recurrence(event_raw)
         rdates_clipped = (rdate for rdate in rdates if rdate >= start_time and rdate <= horizon_stop)
         recurrences.update(rdates_clipped)
