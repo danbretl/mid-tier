@@ -56,14 +56,18 @@ class EventfulPaginator(object):
                 estimated_calls) 
         if estimated_calls > conf.API_CALL_LIMIT/2:
             continue_fetch = False
-            self.logger.warn("Estimated API calls exceeds limit(%d)/2, continue? (y/N)", conf.API_CALL_LIMIT)
-            cmd_str = raw_input()
-            if cmd_str:
-                continue_fetch = cmd_str.lower().startswith('y')
-            if not continue_fetch:
-                return results
+            self.logger.warn("Estimated API calls exceeds limit(%d)/2", conf.API_CALL_LIMIT)
+            if not self.consumer.trust:
+                self.logger.warn("Continue to fetch? (y/N)")
+                cmd_str = raw_input()
+                if cmd_str:
+                    continue_fetch = cmd_str.lower().startswith('y')
+                if not continue_fetch:
+                    return results
 
         while self.page_number <= start_page + self.total_pages:
+            if self.consumer.api_calls >= (conf.API_CALL_LIMIT if self.consumer.trust else conf.API_CALL_LIMIT/2):
+                break
             self.query_kwargs['page_number'] = self.page_number
             events = self.consumer.consume(self.query_kwargs)
 

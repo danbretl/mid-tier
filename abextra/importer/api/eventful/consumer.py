@@ -1,6 +1,7 @@
 import eventlet
 import itertools
 import datetime
+import logging
 from importer.api.eventful import conf
 from importer.api.eventful.client import API, MockAPI
 
@@ -9,13 +10,16 @@ class EventfulApiConsumer(object):
     Uses eventlets to achieve non-blocking (async) API requests.
     """
 
-    def __init__(self, mock_api=False, client_kwargs=None):
+    def __init__(self, mock_api=False, trust=False, client_kwargs=None):
         # instantiate api
         api_class = MockAPI if mock_api else API
         self.api = api_class(**(client_kwargs or {}))
+        self.logger = logging.getLogger('importer.api.eventful.consumer')
         self.total_items = None
         self.page_count = None
         self.event_horizon = None
+        self.api_calls = 0
+        self.trust = trust
 
         self.venue_ids = set()
         self.images_by_event_id = {}
@@ -40,8 +44,13 @@ class EventfulApiConsumer(object):
         return resp
 
     def process_event_summaries(self, summaries):
+        limit = conf.API_CALL_LIMIT if self.trust else conf.API_CALL_LIMIT/2
         if isinstance(summaries, (list, tuple)):
             for summary in summaries:
+                if self.api_calls >= limit:
+                    self.logger.warn('Current number of calls %d matches or exceeds API call limit %d',
+                            self.api_calls, conf.API_CALL_LIMIT)
+                    return
                 self.process_event_summary(summary)
         else:
             self.process_event_summary(summaries)
@@ -55,6 +64,7 @@ class EventfulApiConsumer(object):
             self.venue_ids.add(summary['venue_id'])
 
     def fetch_venue_details(self, venue_id, fetch_images=True):
+        self.api_calls += 1
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
         if images and fetch_images:
@@ -62,6 +72,7 @@ class EventfulApiConsumer(object):
         return venue_detail
 
     def fetch_event_details(self, event_id, fetch_images=True):
+        self.api_calls += 1
         event_detail = self.api.call('/events/get', id=event_id,
                                      include='instances')
         images = event_detail.get('images')

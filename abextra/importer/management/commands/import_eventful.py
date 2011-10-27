@@ -31,6 +31,15 @@ class Command(BaseCommand):
                     dest='mock_api',
                     default=False,
                     help='Use mock API class'),
+        make_option('--trust',
+                    action='store_true',
+                    dest='trust',
+                    default=False,
+                    help='''If set, import as many events as possible until api limit is reached,
+                    without asking for confirmation. Else ask for confirmation
+                    if projected amount of API calls exceeds half of limit, and
+                    do not exceed half of that limit in calls'''),
+
 
         # client kwargs
         make_option('--make-dumps',
@@ -57,7 +66,7 @@ class Command(BaseCommand):
     def handle(self, **options):
         options = dict_from_values(options)
         paginator_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('total_pages', 'page_number', 'interactive')))
-        consumer_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('mock_api',))) 
+        consumer_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('mock_api','trust'))) 
         client_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('make_dumps',)))
 
         # mux up settings with overrides

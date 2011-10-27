@@ -250,6 +250,10 @@ LOGGING = {
         'importer.utils': {
             'handlers': ['console'],
             'level': 'DEBUG',
+        },
+        'importer.api.eventful.consumer': {
+            'handlers': ['console','file'],
+            'level': 'DEBUG',
         }
     }
 }
