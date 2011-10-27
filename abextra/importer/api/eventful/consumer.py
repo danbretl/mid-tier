@@ -1,7 +1,7 @@
 import eventlet
 import itertools
 import datetime
-from importer.api.eventful import conf 
+from importer.api.eventful import conf
 from importer.api.eventful.client import API, MockAPI
 
 class EventfulApiConsumer(object):
@@ -63,14 +63,13 @@ class EventfulApiConsumer(object):
 
     def fetch_event_details(self, event_id, fetch_images=True):
         event_detail = self.api.call('/events/get', id=event_id,
-                include='instances')
+                                     include='instances')
         images = event_detail.get('images')
         if images and fetch_images:
             self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
 
     def consume(self, query_kwargs):
-
         # Prepare event horizon
 
         if not self.event_horizon:
@@ -81,7 +80,7 @@ class EventfulApiConsumer(object):
             horizon_start, horizon_stop = self.event_horizon
             query_kwargs['date'] = self.api.daterange_query_param(
                 horizon_start, horizon_stop)
- 
+
         response = self.fetch_event_summaries(query_kwargs)
         raw_summaries = response['events']['event']
         self.total_items = int(response['total_items'])
@@ -93,7 +92,7 @@ class EventfulApiConsumer(object):
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
 
         def extend_with_details(event):
-            event.setdefault('__kwiqet',{})
+            event.setdefault('__kwiqet', {})
             event_images = self.images_by_event_id.get(event['id'])
             if event_images:
                 event['__kwiqet']['event_images'] = [event_images]
@@ -104,7 +103,7 @@ class EventfulApiConsumer(object):
                 if venue_images:
                     event['__kwiqet']['venue_images'] = [venue_images]
             if self.event_horizon:
-                event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon 
+                event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon
             return event
 
         events = itertools.imap(extend_with_details, self.event_detail_pile)
