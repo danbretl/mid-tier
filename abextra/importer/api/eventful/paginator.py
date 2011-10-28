@@ -25,18 +25,11 @@ class EventfulPaginator(object):
 
         results = []
 
-        # save starting page and page size
-        start_page, page_size = self.page_number, self.query_kwargs['page_size']
-
         # want to make metadata fetching call with page_size=1 and page_number=1
-        self.query_kwargs['page_number'], self.query_kwargs['page_size'] = 1, 1
-        events_meta = self.consumer.consume(self.query_kwargs, fetch_meta=True)
-
-        # then return to originals
-        self.page_number, self.query_kwargs['page_size'] = start_page, page_size
+        events_meta = self.consumer.consume_meta(self.query_kwargs)
 
         # if no amount of pages to fetch is given, default to all
-        pages_available = int(math.ceil(float(self.consumer.page_count)/page_size))
+        pages_available = int(math.ceil(float(self.consumer.page_count)/self.query_kwargs['page_size']))
         if not self.total_pages:
             self.total_pages = pages_available
 
@@ -44,12 +37,12 @@ class EventfulPaginator(object):
         # needing to make call for event and venue details each time), 1 per
         # page, and 1 for metadata
 
-        estimated_calls = 2 * self.total_pages * page_size + self.total_pages + 1 
+        estimated_calls = 2 * self.total_pages * self.query_kwargs['page_size'] + self.total_pages + 1 
 
         self.logger.info('Found %d current events in %s',
                 self.consumer.total_items, self.query_kwargs['location'])
         self.logger.info('Fetching %d pages (%d events per page) ...',
-                self.total_pages, page_size)
+                self.total_pages, self.query_kwargs['page_size'])
         self.logger.info('Starting from page %d/%d (%d available)',
                 self.page_number, self.total_pages, pages_available)
         self.logger.info('Estimated maximum of %d calls needed to fetch current batch',
@@ -65,12 +58,12 @@ class EventfulPaginator(object):
                 if not continue_fetch:
                     return results
 
-        stop_page = start_page + self.total_pages - 1 
+        stop_page = self.page_number + self.total_pages - 1 
         while self.page_number <= stop_page:
             if self.consumer.api_calls >= (conf.API_CALL_LIMIT if self.consumer.trust else conf.API_CALL_LIMIT/2):
                 break
             self.query_kwargs['page_number'] = self.page_number
-            events = self.consumer.consume(self.query_kwargs, fetch_meta=False)
+            events = self.consumer.consume(self.query_kwargs)
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing

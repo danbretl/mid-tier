@@ -46,6 +46,7 @@ class EventfulApiConsumer(object):
 
     def process_event_summaries(self, summaries):
         limit = conf.API_CALL_LIMIT if self.trust else conf.API_CALL_LIMIT/2
+        self.logger.debug('%d/%d eventful API calls made so far',self.api_calls, conf.API_CALL_LIMIT)
         if isinstance(summaries, (list, tuple)):
             for summary in summaries:
                 if self.api_calls >= limit:
@@ -81,9 +82,11 @@ class EventfulApiConsumer(object):
             self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
 
-    def consume(self, query_kwargs, fetch_meta=False):
-        # Prepare event horizon
+    def consume_meta(self, query_kwargs):
+        initial_page, initial_size = query_kwargs.get('page_number'), query_kwargs.get('page_size')
+        query_kwargs['page_number'], query_kwargs['page_size'] = 1, 1
 
+        # Prepare event horizon
         if not self.event_horizon:
             current_datetime = datetime.datetime.now()
             self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
@@ -100,30 +103,46 @@ class EventfulApiConsumer(object):
         self.total_items = int(response['total_items'])
         self.page_count = int(response['page_count'])
 
-        # If only fetching metadata, don't process summaries
+        # Only fetching metadata, so don't process summaries
 
-        if not fetch_meta:
-            self.process_event_summaries(raw_summaries)
-            self.images_by_event_id.update(dict((img['id'], img) for img in self.event_image_pile if img))
-            self.images_by_venue_id.update(dict((img['id'], img) for img in self.venue_image_pile if img))
-            self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
+        query_kwargs['page_number'], query_kwargs['page_size'] = initial_page, initial_size
 
-            def extend_with_details(event):
-                event.setdefault('__kwiqet', {})
-                event_images = self.images_by_event_id.get(event['id'])
-                if event_images:
-                    event['__kwiqet']['event_images'] = [event_images]
-                venue_id = event.get('venue_id')
-                if venue_id:
-                    event['__kwiqet']['venue_details'] = self.venues_by_venue_id[venue_id]
-                    venue_images = self.images_by_venue_id.get(event['venue_id'])
-                    if venue_images:
-                        event['__kwiqet']['venue_images'] = [venue_images]
-                if self.event_horizon:
-                    event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon
-                return event
 
-            events = itertools.imap(extend_with_details, self.event_detail_pile)
-            return events
-        else:
-            return None 
+    def consume(self, query_kwargs):
+        # Prepare event horizon
+        if not self.event_horizon:
+            current_datetime = datetime.datetime.now()
+            self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
+
+        if not query_kwargs.get('date'):
+            horizon_start, horizon_stop = self.event_horizon
+            query_kwargs['date'] = self.api.daterange_query_param(
+                horizon_start, horizon_stop)
+
+        response = self.fetch_event_summaries(query_kwargs)
+        raw_summaries = response['events']['event']
+        self.total_items = int(response['total_items'])
+        self.page_count = int(response['page_count'])
+        self.process_event_summaries(raw_summaries)
+
+        self.images_by_event_id.update(dict((img['id'], img) for img in self.event_image_pile if img))
+        self.images_by_venue_id.update(dict((img['id'], img) for img in self.venue_image_pile if img))
+        self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
+
+        def extend_with_details(event):
+            event.setdefault('__kwiqet', {})
+            event_images = self.images_by_event_id.get(event['id'])
+            if event_images:
+                event['__kwiqet']['event_images'] = [event_images]
+            venue_id = event.get('venue_id')
+            if venue_id:
+                event['__kwiqet']['venue_details'] = self.venues_by_venue_id[venue_id]
+                venue_images = self.images_by_venue_id.get(event['venue_id'])
+                if venue_images:
+                    event['__kwiqet']['venue_images'] = [venue_images]
+            if self.event_horizon:
+                event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon
+            return event
+
+        events = itertools.imap(extend_with_details, self.event_detail_pile)
+        return events
