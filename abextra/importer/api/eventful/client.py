@@ -63,7 +63,7 @@ class API(object):
 
     def call(self, method, **args):
         # Build the url
-        url = self._build_url(method, **args)
+        url = self._build_url(method, format='json', **args)
 
         # Make the request
         with self.httpool.item() as http:

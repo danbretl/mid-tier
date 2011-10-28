@@ -30,7 +30,7 @@ class EventfulPaginator(object):
 
         # want to make metadata fetching call with page_size=1 and page_number=1
         self.query_kwargs['page_number'], self.query_kwargs['page_size'] = 1, 1
-        events_meta = self.consumer.consume(self.query_kwargs)
+        events_meta = self.consumer.consume(self.query_kwargs, fetch_meta=True)
 
         # then return to originals
         self.page_number, self.query_kwargs['page_size'] = start_page, page_size
@@ -65,11 +65,12 @@ class EventfulPaginator(object):
                 if not continue_fetch:
                     return results
 
-        while self.page_number <= start_page + self.total_pages:
+        stop_page = start_page + self.total_pages - 1 
+        while self.page_number <= stop_page:
             if self.consumer.api_calls >= (conf.API_CALL_LIMIT if self.consumer.trust else conf.API_CALL_LIMIT/2):
                 break
             self.query_kwargs['page_number'] = self.page_number
-            events = self.consumer.consume(self.query_kwargs)
+            events = self.consumer.consume(self.query_kwargs, fetch_meta=False)
 
             # Check at the beginning of the import to set stop page for  
             # fetching, because that controls how many times the page fetching/parsing
@@ -79,7 +80,7 @@ class EventfulPaginator(object):
             fetch_next = True
             if self.interactive:
                 self.logger.info('Currently on page %d/%d (%d available)' %
-                                 (self.page_number, stop_page - 1, self.consumer.page_count))
+                                 (self.page_number, stop_page, self.consumer.page_count))
                 self.logger.info('Import this page into database? \n (Y/n)')
                 cmd_str = raw_input()
                 if cmd_str:

@@ -1,4 +1,5 @@
 from itertools import ifilterfalse
+from BeautifulSoup import BeautifulSoup, Comment
 
 class Bunch(dict):
     """When prototyping (or even finalizing) data structures such as trees,
@@ -57,3 +58,15 @@ def dict_path_get(d, path, default=None):
 
 def dict_from_values(D):
     return dict((k, v) for k, v in D.iteritems() if v is not None)
+
+def html_sanitize(value, valid_tags=[], valid_attrs=[]):
+    soup = BeautifulSoup(value)
+    for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
+        comment.extract()
+    for tag in soup.findAll(True):
+        if tag.name not in valid_tags:
+            tag.hidden = True
+            tag.attrs = [(attr, val) for attr, val in tag.attrs if attr in valid_attrs]
+    return soup.renderContents().decode('utf8')
+
+
