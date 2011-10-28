@@ -277,11 +277,11 @@ img.right {
 	width:960px;
 	min-height: 100%;
 	height: auto !important;
-	height: 100%;
 	margin: 0 auto -70px;
 }
 
 #wrapper {
+    padding: 0 0 70px 0;
 }
 
 /* Page */
