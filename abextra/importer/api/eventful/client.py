@@ -20,8 +20,10 @@ class APIError(Exception):
 
 
 class API(object):
+    CALL_COUNT = 0
+    logger = logging.getLogger('importer.eventful')
+
     def __init__(self, app_key=conf.API_KEY, server='api.eventful.com', make_dumps=False):
-        self.logger = logging.getLogger('importer.eventful')
         self.app_key = app_key
         self.server = server
         self.httpool = pools.Pool()
@@ -67,6 +69,8 @@ class API(object):
 
         # Make the request
         with self.httpool.item() as http:
+            self.logger.debug('%d of %d eventful API calls made so far.', self.CALL_COUNT, conf.API_CALL_LIMIT)
+            self.CALL_COUNT += 1
             response, content = http.request(url, "GET")
 
         # Handle the response

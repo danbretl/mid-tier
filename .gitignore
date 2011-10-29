@@ -9,7 +9,7 @@ biketextmate.log
 TAGS
 requirements_local.txt
 .idea/
-debug.log
+*.log
 *_dumps/
 category_graphs/
 

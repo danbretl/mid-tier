@@ -3,7 +3,7 @@ import itertools
 import datetime
 import logging
 from importer.api.eventful import conf
-from importer.api.eventful.client import API, MockAPI
+from importer.api.eventful.client import API, MockAPI, APIError
 
 class EventfulApiConsumer(object):
     """Eventful API consumer is the driver of the Eventful API.
@@ -15,11 +15,9 @@ class EventfulApiConsumer(object):
         api_class = MockAPI if mock_api else API
         self.api = api_class(**(client_kwargs or {}))
         self.logger = logging.getLogger('importer.api.eventful.consumer')
-        self.total_items = None
-        self.page_count = None
         self.event_horizon = None
-        self.api_calls = 0
         self.trust = trust
+        self.client_call_limit = conf.API_CALL_LIMIT if self.trust else conf.SAFE_API_CALL_LIMIT
 
         self.venue_ids = set()
         self.images_by_event_id = {}
@@ -39,23 +37,25 @@ class EventfulApiConsumer(object):
         # (appservers are not too ok with it)
         self.venue_detail_pile = eventlet.GreenPile(10)
 
-    def fetch_event_summaries(self, query_kwargs):
-        self.api_calls += 1
-        resp = self.api.call('/events/search', **query_kwargs)
-        return resp
+    def search_events(self, query_kwargs):
+        # prepare event horizon
+        if not self.event_horizon:
+            current_datetime = datetime.datetime.now()
+            # make instance scope to avoid recalculating the value when paginated
+            self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
+
+        if not query_kwargs.get('date'):
+            horizon_start, horizon_stop = self.event_horizon
+            query_kwargs['date'] = self.api.daterange_query_param(horizon_start, horizon_stop)
+
+        return self.api.call('/events/search', **query_kwargs)
 
     def process_event_summaries(self, summaries):
-        limit = conf.API_CALL_LIMIT if self.trust else conf.API_CALL_LIMIT/2
-        self.logger.debug('%d/%d eventful API calls made so far',self.api_calls, conf.API_CALL_LIMIT)
-        if isinstance(summaries, (list, tuple)):
-            for summary in summaries:
-                if self.api_calls >= limit:
-                    self.logger.warn('Current number of calls %d matches or exceeds API call limit %d',
-                            self.api_calls, conf.API_CALL_LIMIT)
-                    return
-                self.process_event_summary(summary)
-        else:
-            self.process_event_summary(summaries)
+        summaries = summaries if isinstance(summaries, list) else [summaries]
+        for summary in summaries:
+            if self.api.CALL_COUNT >= self.client_call_limit:
+                raise APIError('Call limit reached | %s.' % self.client_call_limit)
+            self.process_event_summary(summary)
 
     def process_event_summary(self, summary):
         # schedule a fetch of event details
@@ -66,7 +66,6 @@ class EventfulApiConsumer(object):
             self.venue_ids.add(summary['venue_id'])
 
     def fetch_venue_details(self, venue_id, fetch_images=True):
-        self.api_calls += 1
         venue_detail = self.api.call('/venues/get', id=venue_id)
         images = venue_detail.get('images')
         if images and fetch_images:
@@ -74,75 +73,43 @@ class EventfulApiConsumer(object):
         return venue_detail
 
     def fetch_event_details(self, event_id, fetch_images=True):
-        self.api_calls += 1
-        event_detail = self.api.call('/events/get', id=event_id,
-                                     include='instances')
+        event_detail = self.api.call('/events/get', id=event_id, include='instances')
         images = event_detail.get('images')
         if images and fetch_images:
             self.event_image_pile.spawn(self.api.fetch_image, images, event_id)
         return event_detail
 
     def consume_meta(self, query_kwargs):
-        initial_page, initial_size = query_kwargs.get('page_number'), query_kwargs.get('page_size')
-        query_kwargs['page_number'], query_kwargs['page_size'] = 1, 1
-
-        # Prepare event horizon
-        if not self.event_horizon:
-            current_datetime = datetime.datetime.now()
-            self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
-
-        if not query_kwargs.get('date'):
-            horizon_start, horizon_stop = self.event_horizon
-            query_kwargs['date'] = self.api.daterange_query_param(
-                horizon_start, horizon_stop)
-
-        response = self.fetch_event_summaries(query_kwargs)
-
-
-        raw_summaries = response['events']['event']
-        self.total_items = int(response['total_items'])
-        self.page_count = int(response['page_count'])
-
-        # Only fetching metadata, so don't process summaries
-
-        query_kwargs['page_number'], query_kwargs['page_size'] = initial_page, initial_size
-
+        meta_query_kwargs = dict(query_kwargs, **dict(page_number=1, page_size=1))
+        response = self.search_events(meta_query_kwargs)
+        raw_meta = dict((k, v) for k, v in response.iteritems() if not k in ('events',))
+        raw_page_count = int(raw_meta['page_count'])
+        page_size = int(query_kwargs['page_size'])
+        corrected_page_count = (raw_page_count / page_size) + (1 if raw_page_count % page_size else 0)
+        return dict(page_count=corrected_page_count, total_items=int(raw_meta['total_items']))
 
     def consume(self, query_kwargs):
-        # Prepare event horizon
-        if not self.event_horizon:
-            current_datetime = datetime.datetime.now()
-            self.event_horizon = current_datetime, current_datetime + conf.IMPORT_EVENT_HORIZON
-
-        if not query_kwargs.get('date'):
-            horizon_start, horizon_stop = self.event_horizon
-            query_kwargs['date'] = self.api.daterange_query_param(
-                horizon_start, horizon_stop)
-
-        response = self.fetch_event_summaries(query_kwargs)
+        response = self.search_events(query_kwargs)
         raw_summaries = response['events']['event']
-        self.total_items = int(response['total_items'])
-        self.page_count = int(response['page_count'])
+        if not raw_summaries:
+            return []
         self.process_event_summaries(raw_summaries)
-
         self.images_by_event_id.update(dict((img['id'], img) for img in self.event_image_pile if img))
         self.images_by_venue_id.update(dict((img['id'], img) for img in self.venue_image_pile if img))
         self.venues_by_venue_id.update(dict((v['id'], v) for v in self.venue_detail_pile if v))
+        return itertools.imap(self._extend_with_details, self.event_detail_pile)
 
-        def extend_with_details(event):
-            event.setdefault('__kwiqet', {})
-            event_images = self.images_by_event_id.get(event['id'])
-            if event_images:
-                event['__kwiqet']['event_images'] = [event_images]
-            venue_id = event.get('venue_id')
-            if venue_id:
-                event['__kwiqet']['venue_details'] = self.venues_by_venue_id[venue_id]
-                venue_images = self.images_by_venue_id.get(event['venue_id'])
-                if venue_images:
-                    event['__kwiqet']['venue_images'] = [venue_images]
-            if self.event_horizon:
-                event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon
-            return event
-
-        events = itertools.imap(extend_with_details, self.event_detail_pile)
-        return events
+    def _extend_with_details(self, event):
+        event.setdefault('__kwiqet', {})
+        event_images = self.images_by_event_id.get(event['id'])
+        if event_images:
+            event['__kwiqet']['event_images'] = [event_images]
+        venue_id = event.get('venue_id')
+        if venue_id:
+            event['__kwiqet']['venue_details'] = self.venues_by_venue_id[venue_id]
+            venue_images = self.images_by_venue_id.get(event['venue_id'])
+            if venue_images:
+                event['__kwiqet']['venue_images'] = [venue_images]
+        if self.event_horizon:
+            event['__kwiqet']['horizon_start'], event['__kwiqet']['horizon_stop'] = self.event_horizon
+        return event

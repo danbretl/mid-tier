@@ -208,9 +208,9 @@ LOGGING = {
             'class': 'django.utils.log.NullHandler',
         },
         'file':{
-            'level' : 'DEBUG',
+            'level' : 'INFO',
             'class' : 'logging.FileHandler',
-            'filename': 'debug.log'}
+            'filename': 'kwiqet.log'}
     },
     'loggers': {
         # 'django': {
@@ -227,18 +227,6 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
-        'importer.eventful_import': {
-            'handlers': ['console','file'],
-            'level': 'DEBUG',
-        },
-        'importer.eventful': {
-            'handlers': ['console','file'],
-            'level': 'DEBUG',
-        },
-        'importer.parser': {
-            'handlers': ['console','file'],
-            'level': 'DEBUG',
-        },
         'consumer.scrape': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -247,14 +235,26 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
-        'importer.utils': {
+        'importer.api.eventful.utils': {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
-        'importer.api.eventful.consumer': {
-            'handlers': ['console','file'],
+        'importer.api.eventful.paginator': {
+            'handlers': ['console', 'file'],
             'level': 'DEBUG',
-        }
+        },
+        'importer.api.eventful.consumer': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
+        'importer.api.eventful.client': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+        },
+        'importer.api.eventful.adaptor': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+        },
     }
 }
 
