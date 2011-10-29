@@ -1,5 +1,6 @@
 import datetime
 import re
+from core.utils import html_sanitize
 
 class price_parser():
     """Parses all numerics with left ctx of '$' and right ctx of 'dollar*'.
@@ -13,7 +14,8 @@ class price_parser():
     @staticmethod
     def parse(raw_value, non_contextualized=False):
         parsed_prices = list()
-        groupings = price_parser._PRICE_PATTERN.findall(raw_value.lower())
+        sanitized_value = html_sanitize(raw_value)
+        groupings = price_parser._PRICE_PATTERN.findall(sanitized_value.lower())
         for grouping in groupings:
             do_parse_grouping = False
             if grouping[0] or grouping[7]:

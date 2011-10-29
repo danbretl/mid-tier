@@ -14,9 +14,9 @@ class Command(BaseCommand):
                     dest='interactive',
                     default=False,
                     help='Import events in interactive mode'),
-        make_option('--page-number',
+        make_option('--start-page',
                     action='store',
-                    dest='page_number',
+                    dest='start_page',
                     type='int',
                     help='Page to start on'),
         make_option('--total-pages',
@@ -31,6 +31,15 @@ class Command(BaseCommand):
                     dest='mock_api',
                     default=False,
                     help='Use mock API class'),
+        make_option('--trust',
+                    action='store_true',
+                    dest='trust',
+                    default=False,
+                    help='''If set, import as many events as possible until api client_call_limit is reached,
+                    without asking for confirmation. Else ask for confirmation
+                    if projected amount of API calls exceeds half of client_call_limit, and
+                    do not exceed half of that client_call_limit in calls'''),
+
 
         # client kwargs
         make_option('--make-dumps',
@@ -56,8 +65,8 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         options = dict_from_values(options)
-        paginator_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('total_pages', 'page_number', 'interactive')))
-        consumer_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('mock_api',))) 
+        paginator_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('total_pages', 'start_page', 'interactive')))
+        consumer_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('mock_api', 'trust')))
         client_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('make_dumps',)))
 
         # mux up settings with overrides

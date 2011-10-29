@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.localflavor.us.forms import USPhoneNumberField
 from south.modelsinspector import add_introspection_rules
 from BeautifulSoup import BeautifulSoup, Comment
+from core.utils import html_sanitize
 
 class USPhoneNumberFieldSoftFail(USPhoneNumberField):
     def clean(self, value):
@@ -23,15 +24,7 @@ class HtmlSanitizedCharField(forms.CharField):
     def clean(self, value):
         """Cleans non-allowed HTML from the input."""
         value = super(HtmlSanitizedCharField, self).clean(value)
-        soup = BeautifulSoup(value)
-        for comment in soup.findAll(text=lambda text: isinstance(text, Comment)):
-            comment.extract()
-        for tag in soup.findAll(True):
-            if tag.name not in self.valid_tags:
-                tag.hidden = True
-#            tag.attrs = [(attr, val) for attr, val in tag.attrs if attr in self.valid_attrs]
-        return soup.renderContents().decode('utf8')
-
+        return html_sanitize(value, self.valid_tags, self.valid_attrs)
 
 class VectorField(models.Field):
     def __init__(self, *args, **kwargs):

@@ -47,7 +47,7 @@ class PlaceAdaptor(EventfulBaseAdaptor):
     slave_adaptors = {'point': PointAdaptor}
     fields = ['title', 'point']
     form_data_map = {
-        'phone': 'phone',
+        'description': '__kwiqet/venue_details/description',
         'title': '__kwiqet/venue_details/name',
         'url': '__kwiqet/venue_details/url',
         }
