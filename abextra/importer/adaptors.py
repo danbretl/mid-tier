@@ -7,7 +7,7 @@ from django.forms import ValidationError
 import core.utils
 
 class BaseAdaptor(object):
-    logger = logging.getLogger('importer.parser')
+    logger = logging.getLogger('importer.adaptor')
     model_form = None
     o2m_default_field = None
     fields = []
