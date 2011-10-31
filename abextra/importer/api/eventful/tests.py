@@ -1,4 +1,5 @@
 import datetime
+import simplejson
 from django.test import TestCase
 from django.conf import settings
 from events.models import Event
@@ -133,6 +134,65 @@ class EventfulParserMockAPIAndDumpTest(TestCase):
             # except ValueError as parse_err:
                 # self.logger.warn("Encountered exception while parsing:")
                 # self.logger.warn(parse_err.args)
+
+class EventfulAdaptorsTest(TestCase):
+
+    def setUp(self):
+        self.event_filename = '/tmp/kwiqet_import/eventful/dumps/b3f3583d505f72752ab6887b73a2059a.json'
+        self.event_response = simplejson.load(open(self.event_filename,'rb'))
+        self.venue_filename = '/tmp/kwiqet_import/eventful/dumps/fd2959a9ab6b43cb7eb8604398702761.json'
+        self.venue_response = simplejson.load(open(self.venue_filename,'rb'))
+        self.event_response.setdefault('__kwiqet', {})
+        self.event_response['__kwiqet']['venue_details'] = self.venue_response
+
+    def test_city_adaptor(self):
+        adaptor = CityAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+        expected_form_data = {'source': 'eventful', 'state': 'New York', 'city': 'New York'}
+        self.assertEqual(adapted_form_data, expected_form_data) 
+
+    def test_price_adaptor(self):
+        adaptor = PriceAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+
+
+    def test_point_adaptor(self):
+        city_adaptor = CityAdaptor()
+        created, city_obj = city_adaptor.parse(self.event_response)
+
+        adaptor = PointAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+        expected_form_data = {'city': 2, 'zip': '10036', 'country': 'US', 'longitude': '-73.9925', 'source': 'eventful', 'address': '349 W 46th Street between Eighth and Ninth Avenues', 'latitude': '40.7601'}
+        expected_form_data['city'] = city_obj.id
+
+        self.assertEqual(adapted_form_data, expected_form_data)
+
+    def test_place_adaptor(self):
+        point_adaptor = PointAdaptor()
+        created, point_obj = point_adaptor.parse(self.event_response)
+
+        adaptor = PlaceAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+
+        expected_form_data = {'url': 'http://eventful.com/newyork_ny/venues/swing-46-jazz-and-supper-club-/V0-001-001702960-4?utm_source=apis&utm_medium=apim&utm_campaign=apic', 'source': 'eventful', 'title': 'Swing 46 Jazz and Supper Club', 'description': None, 'point': 644}
+        expected_form_data['point'] = point_obj.id
+
+        self.assertEqual(adapted_form_data, expected_form_data)
+        pass
+
+    def test_category_adaptor(self):
+        adaptor = CategoryAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+        pass
+
+    def test_occurrence_adaptor(self):
+        adaptor = OccurrenceAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+
+    def test_event_adaptor(self):
+        adaptor = EventAdaptor()
+        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+        pass
 
 
 class EventfulParserPriceParsingTest(TestCase):
