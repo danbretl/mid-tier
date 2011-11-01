@@ -1,6 +1,7 @@
 import os
 import datetime
 from dateutil.relativedelta import relativedelta
+from dateutil import parser
 import simplejson
 from django.test import TestCase
 from events.models import Event, Occurrence
@@ -202,10 +203,31 @@ class EventfulParserDateParsingTest(TestCase):
         horizon_start, horizon_stop = response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] 
         start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(response)
 
-
+        # test that event horizon clipping is working
 
         self.assertEqual(is_all_day, False)
         self.assertTrue(horizon_start < min(start_datetimes))
         self.assertTrue(max(start_datetimes) < horizon_stop)
 
+        # now, test that distinct rrule and rdate parsing is working correctly:
+        # try parsing from a year before creation date (set start_time and
+        # horizon_start to a year prior): we should get rdates
+        # that were otherwise clipped, and which are distinct from rrule
+        # occurrences
+
+        old_start_datetime = parser.parse(response['start_time'])
+        new_start_datetime = old_start_datetime - relativedelta(years=1)
+        response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] = horizon_start - relativedelta(years=1), horizon_stop + relativedelta(years=1)
+        response['start_time'] = new_start_datetime.isoformat()
+        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(response)
+
+        # check that first recurrence instance (original start datetime for the
+        # event) is in resultant datetime set
+
+        self.assertTrue(datetime.datetime(2011, 2, 19, 21, 0) in start_datetimes)
+
+        # check that rdates are in resultant datetime set (they start at 14:30
+        # instead of 21:00 like the other rrule recurrences)
+
+        self.assertTrue(datetime.datetime(2011, 4, 10, 14, 30) in start_datetimes)
 
