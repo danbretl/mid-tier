@@ -1,0 +1,24 @@
+[
+    {
+        "pk": 9776,
+        "model": "events.event",
+        "fields": {
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-015489401-9@2011102620",
+            "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+            "video_url": "",
+            "created": "2011-11-01 12:16:57",
+            "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "",
+            "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+            "is_active": true,
+            "modified": "2011-11-01 12:16:57",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "67f06559e6",
+            "slug": "the-stan-rubin-big-band-dining-and-swing-dancing-i",
+            "categories": []
+        }
+    }
+]

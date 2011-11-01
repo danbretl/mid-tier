@@ -2,6 +2,7 @@ import os
 import datetime
 import simplejson
 from django.test import TestCase
+from events.models import Event
 from importer.api.eventful import conf
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
@@ -80,27 +81,25 @@ class CategoryAdaptorTest(TestCase):
 
 
 class OccurrenceAdaptorTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+    fixtures = ['auth', 'categories', 'sources', 'external_categories',
+                'eventful_test_event']
 
     def test_occurrence_adaptor(self):
-        event_response = TestResourceConsumer.consume()
         event_adaptor = EventAdaptor()
         adaptor = OccurrenceAdaptor()
 
-        occurrence_gen = event_adaptor.o2m_occurrences(event_response.copy())
+        event_obj = Event.objects.all()[0]
+        event_response = TestResourceConsumer.consume()
+        occurrence_gen = event_adaptor.o2m_occurrences(event_response)
         first_occ = occurrence_gen.next()
 
-        event_created, event_obj = event_adaptor.parse(event_response.copy())
         first_occ['event'] = event_obj.id
 
         created, obj = adaptor.parse(first_occ)
         # import ipdb; ipdb.set_trace()
-        self.assertEqual(obj.xid, u'E0-001-015489401-9@2011102620')
-        self.assertEqual(obj.title, u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')
-        self.assertEqual(obj.description,
-                         u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.')
-        self.assertEqual(obj.url,
-                         u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic')
+        self.assertTrue(obj.place)
+        self.assertTrue(obj.event)
+        self.assertEqual(obj.start_datetime, datetime.datetime(2011, 10, 26, 20, 30))
         for occ in occurrence_gen:
             occ['event'] = event_obj.id
             created, obj = adaptor.parse(first_occ)
