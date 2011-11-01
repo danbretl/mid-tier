@@ -41,7 +41,6 @@ class TestResourceConsumer(object):
 
 
 class CityAdaptorTest(TestCase):
-    fixtures = ['preexisting_cities']
 
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
@@ -57,16 +56,17 @@ class CityAdaptorTest(TestCase):
         self.assertFalse(created)
         self.assertFalse(obj)
 
-    # FIXME cover both cases always
     def test_adapt_existing_valid(self):
-        existing_city = City.objects.get(id=666)
+        existing_city = City(city='New York', state='NY')
+        existing_city.save()
+        created, obj = self.adaptor.parse(self.event_response)
         self.assertFalse(created)
         self.assertEqual(existing_city, obj)
 
 
 class PriceAdaptorTest(TestCase):
     #FIXME should work with any existing valid occurrence fixture
-    fixtures = ['price_test_occurrence']
+    fixtures = ['occurrences']
 
     def test_price_adaptor(self):
         event_response = TestResourceConsumer.consume_response()
