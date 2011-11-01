@@ -4,6 +4,8 @@ from dateutil.relativedelta import relativedelta
 from dateutil import parser
 import simplejson
 from django.test import TestCase
+from prices.models import Price
+from places.models import City
 from events.models import Event, Occurrence
 from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
@@ -39,11 +41,27 @@ class TestResourceConsumer(object):
             }
         return response
 
+    @classmethod
+    def consume_invalid_response(cls):
+        event_filename, venue_filename = map(lambda f: os.path.join(cls._RESOURCE_DIR, f), 'invalid_event.json invalid_venue.json'.split())
+        event_response = simplejson.load(open(event_filename, 'rb'))
+        venue_response = simplejson.load(open(venue_filename, 'rb'))
+        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
+        event_response['__kwiqet'] = {
+            'venue_details': venue_response,
+            'horizon_start': horizon_start,
+            'horizon_stop': horizon_start + conf.IMPORT_EVENT_HORIZON,
+            }
+        return event_response
+
+
+
 
 class CityAdaptorTest(TestCase):
 
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
         self.adaptor = CityAdaptor()
 
     def test_adapt_new_valid(self):
@@ -53,6 +71,7 @@ class CityAdaptorTest(TestCase):
         self.assertEqual(obj.state, 'NY')
 
     def test_adapt_new_invalid(self):
+        created, obj = self.adaptor.parse(self.invalid_response)
         self.assertFalse(created)
         self.assertFalse(obj)
 
@@ -68,17 +87,44 @@ class PriceAdaptorTest(TestCase):
     #FIXME should work with any existing valid occurrence fixture
     fixtures = ['occurrences']
 
-    def test_price_adaptor(self):
-        event_response = TestResourceConsumer.consume_response()
-        expanded_price = utils.expand_prices(event_response).next()
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = PriceAdaptor()
+
+    def test_adapt_new_valid(self):
+        expanded_price = utils.expand_prices(self.event_response).next()
         occurrence_obj = Occurrence.objects.all()[0]
         expanded_price['occurrence'] = occurrence_obj.id
 
-        adaptor = PriceAdaptor()
-        created, obj = adaptor.parse(expanded_price)
+        created, obj = self.adaptor.parse(expanded_price)
         self.assertTrue(created)
         self.assertEqual(obj.quantity, 12.00)
         self.assertEqual(obj.units, u'dollars')
+
+    def test_adapt_existing_valid(self):
+        occurrence_obj = Occurrence.objects.all()[0]
+        existing_price = Price(quantity=12.00, units='dollars', occurrence=occurrence_obj)
+        existing_price.save()
+
+        expanded_price = utils.expand_prices(self.event_response).next()
+        expanded_price['occurrence'] = occurrence_obj.id
+
+        created, obj = self.adaptor.parse(expanded_price)
+        self.assertFalse(created)
+        self.assertEqual(existing_city, obj)
+
+
+    def test_adapt_new_invalid(self):
+        expanded_price = list(utils.expand_prices(self.invalid_response)) or {}
+        self.assertFalse(expanded_price)
+
+        occurrence_obj = Occurrence.objects.all()[0]
+        expanded_price['occurrence'] = occurrence_obj.id
+
+        created, obj = self.adaptor.parse(expanded_price)
+        self.assertFalse(created)
+        self.assertFalse(obj)
 
 
 class PointAdaptorTest(TestCase):

@@ -1,0 +1,350 @@
+{
+    "address": "349 W 46th Street between Eighth and Ninth Avenues",
+    "all_day": "0",
+    "calendars": null,
+    "categories": {
+        "category": [
+            {
+                "id": "music",
+                "name": "Concerts &amp; Tour Dates"
+            },
+            {
+                "id": "singles_social",
+                "name": "Nightlife &amp; Singles"
+            }
+        ]
+    },
+    "children": null,
+    "city": "94",
+    "comments": null,
+    "country": "United States",
+    "country_abbr": "USA",
+    "country_abbr2": "US",
+    "created": "2008-09-15 12:05:24",
+    "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+    "free": "0",
+    "geocode_type": "Zip Code Based GeoCodes",
+    "going": null,
+    "groups": null,
+    "id": "E0-001-015489401-9@2011102620",
+    "images": {
+        "image": {
+            "creator": "lynnmccune",
+            "height": "48",
+            "id": "I0-001-001430213-5",
+            "medium": {
+                "height": "128",
+                "url": "http://static.eventful.com/images/medium/I0-001/001/430/213-5.jpeg",
+                "width": "128"
+            },
+            "small": {
+                "height": "48",
+                "url": "http://static.eventful.com/images/small/I0-001/001/430/213-5.jpeg",
+                "width": "48"
+            },
+            "thumb": {
+                "height": "48",
+                "url": "http://static.eventful.com/images/thumb/I0-001/001/430/213-5.jpeg",
+                "width": "48"
+            },
+            "url": "http://static.eventful.com/images/small/I0-001/001/430/213-5.jpeg",
+            "width": "48"
+        }
+    },
+    "latitude": "40.7601",
+    "links": {
+        "link": [
+            {
+                "description": "NY Times Article",
+                "id": "48060256",
+                "time": "1257296295.391284",
+                "type": "News",
+                "url": "http://www.nytimes.com/2009/10/25/nyregion/25musicewe.html?_r=1#",
+                "username": "lynnmccune"
+            },
+            {
+                "description": "Stan Rubin",
+                "id": "48060252",
+                "time": "1257296217.054994",
+                "type": "Official Site",
+                "url": "http://www.stanrubin.com",
+                "username": "lynnmccune"
+            },
+            {
+                "description": "Swing 46",
+                "id": "48060254",
+                "time": "1257296242.526534",
+                "type": "Official Site",
+                "url": "http://www.swing46.com",
+                "username": "lynnmccune"
+            }
+        ]
+    },
+    "longitude": "-73.9925",
+    "modified": "2010-12-27 12:45:21",
+    "owner": "lynnmccune",
+    "parents": null,
+    "performers": {
+        "performer": [
+            {
+                "creator": "lynnmccune",
+                "id": "P0-001-000168595-9",
+                "linker": "lynnmccune",
+                "name": "Herb Gardner",
+                "short_bio": "Piano",
+                "url": "http://eventful.com/performers/herb-gardner-/P0-001-000168595-9?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "creator": "lynnmccune",
+                "id": "P0-001-000181860-9",
+                "linker": "lynnmccune",
+                "name": "Lynn McCune",
+                "short_bio": "Swing Vocalist",
+                "url": "http://eventful.com/performers/lynn-mccune-/P0-001-000181860-9?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            }
+        ]
+    },
+    "postal_code": "ALL DAY",
+    "price": "EVERYDAY",
+    "privacy": "1",
+    "properties": null,
+    "recurrence": {
+        "description": "weekly until December 28, 2011",
+        "exdates": null,
+        "exrules": null,
+        "instances": {
+            "instance": [
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2010122920",
+                    "start_time": "2010-12-29 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011010520",
+                    "start_time": "2011-01-05 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011011220",
+                    "start_time": "2011-01-12 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011011920",
+                    "start_time": "2011-01-19 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011012620",
+                    "start_time": "2011-01-26 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011020220",
+                    "start_time": "2011-02-02 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011020920",
+                    "start_time": "2011-02-09 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011021620",
+                    "start_time": "2011-02-16 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011022320",
+                    "start_time": "2011-02-23 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011030220",
+                    "start_time": "2011-03-02 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011030920",
+                    "start_time": "2011-03-09 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011031620",
+                    "start_time": "2011-03-16 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011032320",
+                    "start_time": "2011-03-23 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011033020",
+                    "start_time": "2011-03-30 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011040620",
+                    "start_time": "2011-04-06 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011041320",
+                    "start_time": "2011-04-13 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011042020",
+                    "start_time": "2011-04-20 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011042720",
+                    "start_time": "2011-04-27 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011050420",
+                    "start_time": "2011-05-04 20:30:00",
+                    "stop_time": null
+                },
+                {
+                    "all_day": "0",
+                    "id": "E0-001-015489401-9@2011051120",
+                    "start_time": "2011-05-11 20:30:00",
+                    "stop_time": null
+                }
+            ]
+        },
+        "rdates": null,
+        "rrules": {
+            "rrule": "FREQ=WEEKLY;UNTIL=20111228T235959"
+        }
+    },
+    "region": "685",
+    "region_abbr": "44",
+    "start_time": "2011-10-26 20:30:00",
+    "stop_time": null,
+    "tags": {
+        "tag": [
+            {
+                "id": "bigband",
+                "owner": null,
+                "title": "big band"
+            },
+            {
+                "id": "concert",
+                "owner": null,
+                "title": "concert"
+            },
+            {
+                "id": "dancing",
+                "owner": null,
+                "title": "dancing"
+            },
+            {
+                "id": "dining",
+                "owner": null,
+                "title": "dining"
+            },
+            {
+                "id": "food",
+                "owner": null,
+                "title": "food"
+            },
+            {
+                "id": "jazz",
+                "owner": null,
+                "title": "Jazz"
+            },
+            {
+                "id": "lindy",
+                "owner": null,
+                "title": "lindy"
+            },
+            {
+                "id": "lynnmccune",
+                "owner": "evdb",
+                "title": "Lynn McCune"
+            },
+            {
+                "id": "music",
+                "owner": null,
+                "title": "music"
+            },
+            {
+                "id": "nyc",
+                "owner": "evdb",
+                "title": "NYC"
+            },
+            {
+                "id": "outdoors_recreation",
+                "owner": null,
+                "title": "outdoors_recreation"
+            },
+            {
+                "id": "recreation",
+                "owner": null,
+                "title": "recreation"
+            },
+            {
+                "id": "singles",
+                "owner": null,
+                "title": "singles"
+            },
+            {
+                "id": "singles_social",
+                "owner": null,
+                "title": "singles_social"
+            },
+            {
+                "id": "social",
+                "owner": null,
+                "title": "social"
+            },
+            {
+                "id": "stanrubin",
+                "owner": null,
+                "title": "Stan Rubin"
+            },
+            {
+                "id": "swing",
+                "owner": null,
+                "title": "swing"
+            }
+        ]
+    },
+    "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+    "trackbacks": null,
+    "tz_city": null,
+    "tz_country": null,
+    "tz_id": null,
+    "tz_olson_path": null,
+    "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+    "venue_display": "1",
+    "venue_id": "V0-001-001702960-4",
+    "venue_name": "Swing 46 Jazz and Supper Club",
+    "venue_type": null,
+    "withdrawn": "0",
+    "withdrawn_note": null
+}
