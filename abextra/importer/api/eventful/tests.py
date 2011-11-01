@@ -1,5 +1,6 @@
 import os
 import datetime
+from dateutil.relativedelta import relativedelta
 import simplejson
 from django.test import TestCase
 from events.models import Event, Occurrence
@@ -9,11 +10,12 @@ from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, Cate
 from importer.api.eventful.adaptors import PriceAdaptor
 from importer.api.eventful.utils import expand_prices, temporal_parser
 
+
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
 
     @classmethod
-    def consume(cls):
+    def consume_response(cls):
         event_filename, venue_filename = map(lambda f: os.path.join(cls._RESOURCE_DIR, f), 'event.json venue.json'.split())
         event_response = simplejson.load(open(event_filename, 'rb'))
         venue_response = simplejson.load(open(venue_filename, 'rb'))
@@ -25,10 +27,21 @@ class TestResourceConsumer(object):
             }
         return event_response
 
+    @classmethod
+    def consume_recurrence_response(cls):
+        filename = os.path.join(cls._RESOURCE_DIR, 'recurrence_test_event.json')
+        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
+        response = simplejson.load(open(filename, 'rb'))
+        response['__kwiqet'] = {
+            'horizon_start': horizon_start,
+            'horizon_stop': horizon_start + conf.IMPORT_EVENT_HORIZON,
+            }
+        return response
+
 
 class CityAdaptorTest(TestCase):
     def test_city_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         adaptor = CityAdaptor()
         created, obj = adaptor.parse(event_response)
         self.assertTrue(created)
@@ -39,7 +52,7 @@ class PriceAdaptorTest(TestCase):
     fixtures = ['price_test_occurrence']
 
     def test_price_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         expanded_price = utils.expand_prices(event_response).next()
         occurrence_obj = Occurrence.objects.all()[0]
         expanded_price['occurrence'] = occurrence_obj.id
@@ -53,7 +66,7 @@ class PriceAdaptorTest(TestCase):
 
 class PointAdaptorTest(TestCase):
     def test_point_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         adaptor = PointAdaptor()
         created, obj = adaptor.parse(event_response)
         self.assertTrue(created)
@@ -65,7 +78,7 @@ class PointAdaptorTest(TestCase):
 
 class PlaceAdaptorTest(TestCase):
     def test_place_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         adaptor = PlaceAdaptor()
         created, obj = adaptor.parse(event_response)
         self.assertTrue(created)
@@ -77,7 +90,7 @@ class CategoryAdaptorTest(TestCase):
     fixtures = ['categories', 'sources', 'external_categories']
 
     def test_category_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         category_data = event_response['categories']['category']
         adaptor = CategoryAdaptor()
         created, obj = adaptor.parse(category_data[0])
@@ -95,7 +108,7 @@ class OccurrenceAdaptorTest(TestCase):
         adaptor = OccurrenceAdaptor()
 
         event_obj = Event.objects.all()[0]
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         occurrence_gen = event_adaptor.o2m_occurrences(event_response)
         first_occ = occurrence_gen.next()
 
@@ -115,7 +128,7 @@ class EventAdaptorTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
     def test_event_adaptor(self):
-        event_response = TestResourceConsumer.consume()
+        event_response = TestResourceConsumer.consume_response()
         adaptor = EventAdaptor()
 
         created, obj = adaptor.parse(event_response)
@@ -127,6 +140,9 @@ class EventAdaptorTest(TestCase):
         self.assertEqual(obj.url,
                          u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic')
         self.assertEqual(obj.concrete_category.title, u'Concerts')
+
+        # check that we get multiple occurrences, check that they are being
+        # correctly capped
 
 
 class EventfulParserPriceParsingTest(TestCase):
@@ -180,109 +196,16 @@ class EventfulParserPriceParsingTest(TestCase):
 
 
 class EventfulParserDateParsingTest(TestCase):
-    # FIXME: Parsing occurrences without getting first instance for now; this is not
-    # really correct though
-
-    # fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
     def test_single_occurrence_with_start_datetime(self):
-        occurrence_data = {"start_time": "2011-10-13 18:00:00"}
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        occurrence_data.setdefault('__kwiqet', {})
-        occurrence_data['__kwiqet']['horizon_start'], occurrence_data['__kwiqet'][
-                                                      'horizon_stop'] = horizon_start, horizon_start + conf.IMPORT_EVENT_HORIZON
+        response = TestResourceConsumer.consume_recurrence_response()
+        horizon_start, horizon_stop = response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] 
+        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(response)
 
-        start_time = temporal_parser._parse_datetime(occurrence_data['start_time'])
-        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 18, 0))
-        occurrence_set = temporal_parser._recurrence_set(occurrence_data)
-        self.assertEqual(occurrence_set, set())
 
-    def test_single_occurrence_with_start_and_end_datetime(self):
-        occurrence_data = {"start_time": "2011-10-13 19:00:00", "stop_time": "2011-10-13 21:00:00"}
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        occurrence_data.setdefault('__kwiqet', {})
-        occurrence_data['__kwiqet']['horizon_start'], occurrence_data['__kwiqet'][
-                                                      'horizon_stop'] = horizon_start, horizon_start + conf.IMPORT_EVENT_HORIZON
 
-        start_time = temporal_parser._parse_datetime(occurrence_data['start_time'])
-        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 19, 0))
-        stop_time = temporal_parser._parse_datetime(occurrence_data['stop_time'])
-        self.assertEqual(stop_time, datetime.datetime(2011, 10, 13, 21, 0))
+        self.assertEqual(is_all_day, False)
+        self.assertTrue(horizon_start < min(start_datetimes))
+        self.assertTrue(max(start_datetimes) < horizon_stop)
 
-    def test_multiple_occurrences_with_start_datetime(self):
-        occurrence_data = {"recurrence": {"rrules": {"rrule": "FREQ=DAILY;BYHOUR=13;BYMINUTE=00;UNTIL=20120109T235959"},
-                                          "exrules": None, "rdates": None, "description": "daily until January 9, 2012",
-                                          "exdates": None}, "start_time": "2011-10-13 13:00:00"}
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        occurrence_data.setdefault('__kwiqet', {})
-        occurrence_data['__kwiqet']['horizon_start'], occurrence_data['__kwiqet'][
-                                                      'horizon_stop'] = horizon_start, horizon_start + conf.IMPORT_EVENT_HORIZON
 
-        start_time = temporal_parser._parse_datetime(occurrence_data['start_time'])
-        self.assertEqual(start_time, datetime.datetime(2011, 10, 13, 13, 0))
-        expected_recurrence_set = set([datetime.datetime(2011, 10, 13, 13, 0), datetime.datetime(2011, 10, 14, 13, 0),
-                                       datetime.datetime(2011, 10, 15, 13, 0),
-                                       datetime.datetime(2011, 10, 16, 13, 0), datetime.datetime(2011, 10, 17, 13, 0),
-                                       datetime.datetime(2011, 10, 18, 13, 0),
-                                       datetime.datetime(2011, 10, 19, 13, 0), datetime.datetime(2011, 10, 20, 13, 0),
-                                       datetime.datetime(2011, 10, 21, 13, 0),
-                                       datetime.datetime(2011, 10, 22, 13, 0), datetime.datetime(2011, 10, 23, 13, 0),
-                                       datetime.datetime(2011, 10, 24, 13, 0),
-                                       datetime.datetime(2011, 10, 25, 13, 0), datetime.datetime(2011, 10, 26, 13, 0),
-                                       datetime.datetime(2011, 10, 27, 13, 0),
-                                       datetime.datetime(2011, 10, 28, 13, 0), datetime.datetime(2011, 10, 29, 13, 0),
-                                       datetime.datetime(2011, 10, 30, 13, 0),
-                                       datetime.datetime(2011, 10, 31, 13, 0), datetime.datetime(2011, 11, 1, 13, 0),
-                                       datetime.datetime(2011, 11, 2, 13, 0),
-                                       datetime.datetime(2011, 11, 3, 13, 0), datetime.datetime(2011, 11, 4, 13, 0),
-                                       datetime.datetime(2011, 11, 5, 13, 0),
-                                       datetime.datetime(2011, 11, 6, 13, 0), datetime.datetime(2011, 11, 7, 13, 0),
-                                       datetime.datetime(2011, 11, 8, 13, 0),
-                                       datetime.datetime(2011, 11, 9, 13, 0), datetime.datetime(2011, 11, 10, 13, 0),
-                                       datetime.datetime(2011, 11, 11, 13, 0),
-                                       datetime.datetime(2011, 11, 12, 13, 0), datetime.datetime(2011, 11, 13, 13, 0)])
-        recurrence_set = temporal_parser._recurrence_set(occurrence_data)
-        self.assertEqual(recurrence_set, expected_recurrence_set)
-
-    def test_multiple_occurrences_with_start_datetime_and_rdates_and_rrules(self):
-        occurrence_data = {"recurrence": {"rrules": {"rrule": "FREQ=DAILY;BYHOUR=08;BYMINUTE=00;UNTIL=20110901T235959"},
-                                          "exrules": None, "rdates": {"rdate": [
-                "2011-10-10 08:00:00", "2011-10-11 08:00:00", "2011-10-12 08:00:00", "2011-10-13 08:00:00",
-                "2011-11-21 08:00:00", "2011-11-22 08:00:00", "2011-11-23 08:00:00", "2011-11-24 08:00:00"]},
-                                          "description": "on various days", "exdates": None},
-                           "start_time": "2011-10-11 08:00:00"}
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        occurrence_data.setdefault('__kwiqet', {})
-        occurrence_data['__kwiqet']['horizon_start'], occurrence_data['__kwiqet'][
-                                                      'horizon_stop'] = horizon_start, horizon_start + conf.IMPORT_EVENT_HORIZON
-
-        expected_recurrence_set = set([datetime.datetime(2011, 10, 10, 8, 0), datetime.datetime(2011, 10, 11, 8, 0),
-                                       datetime.datetime(2011, 10, 12, 8, 0),
-                                       datetime.datetime(2011, 10, 13, 8, 0), datetime.datetime(2011, 11, 21, 8, 0),
-                                       datetime.datetime(2011, 11, 22, 8, 0),
-                                       datetime.datetime(2011, 11, 23, 8, 0), datetime.datetime(2011, 11, 24, 8, 0)])
-        start_time = temporal_parser._parse_datetime(occurrence_data['start_time'])
-        self.assertEqual(start_time, datetime.datetime(2011, 10, 11, 8, 0))
-        recurrence_set = temporal_parser._recurrence_set(occurrence_data)
-        self.assertEqual(recurrence_set, expected_recurrence_set)
-
-    def test_multiple_occurrences_with_start_and_end_datetime_and_rdates_and_rrules(self):
-        occurrence_data = {
-            "recurrence": {"rrules": {"rrule": "FREQ=WEEKLY;INTERVAL=1;BYDAY=TU;UNTIL=20120315"},
-                           "exrules": None, "rdates": None, "description": "weekly on Tuesdays until March 15, 2012",
-                           "exdates": None}, "start_time": "2011-10-11 20:00:00", "stop_time": "2011-10-12 04:00:00"}
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        occurrence_data.setdefault('__kwiqet', {})
-        occurrence_data['__kwiqet']['horizon_start'], occurrence_data['__kwiqet'][
-                                                      'horizon_stop'] = horizon_start, horizon_start + conf.IMPORT_EVENT_HORIZON
-
-        expected_recurrence_set = set([datetime.datetime(2011, 10, 11, 20, 0),
-                                       datetime.datetime(2011, 10, 18, 20, 0), datetime.datetime(2011, 10, 25, 20, 0),
-                                       datetime.datetime(2011, 11, 1, 20, 0),
-                                       datetime.datetime(2011, 11, 8, 20, 0)])
-        start_time = temporal_parser._parse_datetime(occurrence_data['start_time'])
-        self.assertEqual(start_time, datetime.datetime(2011, 10, 11, 20, 0))
-        stop_time = temporal_parser._parse_datetime(occurrence_data['stop_time'])
-        self.assertEqual(stop_time, datetime.datetime(2011, 10, 12, 4, 0))
-        recurrence_set = temporal_parser._recurrence_set(occurrence_data)
-        self.assertEqual(recurrence_set, expected_recurrence_set)
