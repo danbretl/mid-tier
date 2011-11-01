@@ -1,0 +1,17 @@
+[
+    {
+        "pk": 38961,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-23 20:30:00",
+            "end_date": null,
+            "start_time": "20:30:00",
+            "start_date": "2011-11-23",
+            "place": 2480,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 9776
+        }
+    }
+]

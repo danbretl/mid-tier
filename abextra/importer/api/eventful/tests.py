@@ -2,8 +2,8 @@ import os
 import datetime
 import simplejson
 from django.test import TestCase
-from events.models import Event
-from importer.api.eventful import conf
+from events.models import Event, Occurrence
+from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
@@ -35,11 +35,20 @@ class CityAdaptorTest(TestCase):
         self.assertEqual(obj.city, 'New York')
         self.assertEqual(obj.state, 'NY')
 
-# FIXME not sure what this test does.. no assertions, self.event_response does not exist
 class PriceAdaptorTest(TestCase):
+    fixtures = ['price_test_occurrence']
+
     def test_price_adaptor(self):
+        event_response = TestResourceConsumer.consume()
+        expanded_price = utils.expand_prices(event_response).next()
+        occurrence_obj = Occurrence.objects.all()[0]
+        expanded_price['occurrence'] = occurrence_obj.id
+
         adaptor = PriceAdaptor()
-        adapted_form_data = adaptor._adapt_form_data(self.event_response, {})
+        created, obj = adaptor.parse(expanded_price)
+        self.assertTrue(created)
+        self.assertEqual(obj.quantity, 12.00)
+        self.assertEqual(obj.units, u'dollars')
 
 
 class PointAdaptorTest(TestCase):
@@ -71,9 +80,6 @@ class CategoryAdaptorTest(TestCase):
         event_response = TestResourceConsumer.consume()
         category_data = event_response['categories']['category']
         adaptor = CategoryAdaptor()
-        # for category in category_data:
-        # created, obj = adaptor.parse(category)
-        # self.assertTrue(created)
         created, obj = adaptor.parse(category_data[0])
         self.assertEqual(obj.name, u'Concerts & Tour Dates')
         self.assertEqual(obj.xid, u'music')
@@ -96,7 +102,6 @@ class OccurrenceAdaptorTest(TestCase):
         first_occ['event'] = event_obj.id
 
         created, obj = adaptor.parse(first_occ)
-        # import ipdb; ipdb.set_trace()
         self.assertTrue(obj.place)
         self.assertTrue(obj.event)
         self.assertEqual(obj.start_datetime, datetime.datetime(2011, 10, 26, 20, 30))
