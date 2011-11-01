@@ -1,7 +1,6 @@
 from django.contrib import admin
-
+from django.contrib.gis import admin as geo_admin
 from sorl.thumbnail.admin import AdminImageMixin
-
 from places.models import *
 
 
@@ -15,7 +14,7 @@ class CityAdmin(admin.ModelAdmin):
 admin.site.register(City, CityAdmin)
 
 
-class PointAdmin(admin.ModelAdmin):
+class PointAdmin(geo_admin.OSMGeoAdmin):
     list_display = ('address', 'city', 'zip', 'latitude', 'longitude')
     list_filter = ('city',)
     search_fields = ('address',)

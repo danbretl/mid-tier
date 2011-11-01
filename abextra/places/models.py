@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
+from django.contrib.gis.db import models as geo_models
 from sorl.thumbnail import ImageField
 
 class PlaceType(models.Model):
@@ -18,7 +19,7 @@ class PlaceType(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('place_type_detail', None, {'slug': self.slug})
+        return 'place_type_detail', None, {'slug': self.slug}
 
 
 # FIXME two unique constraints impose two db checks for 'exists' validation
@@ -39,17 +40,20 @@ class City(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('place_city_detail', None, {'slug': self.slug})
+        return 'place_city_detail', None, {'slug': self.slug}
 
 
-class Point(models.Model):
+class Point(geo_models.Model):
     """Point model."""
-    latitude = models.FloatField(_('latitude'), blank=True, null=True)
-    longitude = models.FloatField(_('longitude'), blank=True, null=True)
-    address = models.CharField(_('address'), max_length=200, blank=True)
-    city = models.ForeignKey(City)
-    zip = models.CharField(_('zip'), max_length=10, blank=True)
-    country = models.CharField(_('country'), blank=True, max_length=100)
+    latitude = geo_models.FloatField(_('latitude'), blank=True, null=True)
+    longitude = geo_models.FloatField(_('longitude'), blank=True, null=True)
+    geometry = geo_models.PointField(null=True, srid=4326)
+    address = geo_models.CharField(_('address'), max_length=200, blank=True)
+    city = geo_models.ForeignKey(City)
+    zip = geo_models.CharField(_('zip'), max_length=10, blank=True)
+    country = geo_models.CharField(_('country'), blank=True, max_length=100)
+
+    objects = geo_models.GeoManager()
 
     class Meta:
         verbose_name = _('point')
@@ -102,7 +106,7 @@ class Place(models.Model):
 
     @permalink
     def get_absolute_url(self):
-        return ('place_detail', None, { 'slug': self.slug } )
+        return 'place_detail', None, { 'slug': self.slug }
 
     @property
     def longitude(self):
