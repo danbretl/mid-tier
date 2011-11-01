@@ -45,9 +45,7 @@ class City(models.Model):
 
 class Point(geo_models.Model):
     """Point model."""
-    latitude = geo_models.FloatField(_('latitude'), blank=True, null=True)
-    longitude = geo_models.FloatField(_('longitude'), blank=True, null=True)
-    geometry = geo_models.PointField(null=True, srid=4326)
+    geometry = geo_models.PointField(srid=4326)
     address = geo_models.CharField(_('address'), max_length=200, blank=True)
     city = geo_models.ForeignKey(City)
     zip = geo_models.CharField(_('zip'), max_length=10, blank=True)

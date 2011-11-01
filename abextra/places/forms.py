@@ -41,6 +41,8 @@ class PlaceImportForm(PlaceForm):
 
 class PointImportForm(PointForm):
     zip = us_forms.USZipCodeField(required=False)
+    latitude = forms.FloatField(min_value=-90, max_value=90)
+    longitude = forms.FloatField(min_value=-180, max_value=180)
 
     _ZIPCODE_CACHE = {}
 
@@ -49,7 +51,7 @@ class PointImportForm(PointForm):
         lat_lng = tuple(map(self.cleaned_data.get, ('latitude', 'longitude')))
 
         # attempt to reverse geocode the zipcode
-        if not zipcode and all(lat_lng):
+        if not zipcode:
             if not self._ZIPCODE_CACHE.has_key(lat_lng):
                 results = Geocoder.reverse_geocode(*lat_lng)
                 self._ZIPCODE_CACHE[lat_lng] = results[0].postal_code
@@ -61,6 +63,10 @@ class PointImportForm(PointForm):
             raise forms.ValidationError('zipcode was not provided, nor geocoded')
 
         return zipcode
+
+    def clean(self):
+        lat, lon = map(self.cleaned_data.get, 'latitude longitude'.split())
+        
 
 
 class CityImportForm(CityForm):
