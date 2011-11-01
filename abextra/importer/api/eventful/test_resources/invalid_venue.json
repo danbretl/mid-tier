@@ -1,0 +1,243 @@
+{
+    "address": "349 W 46th Street between Eighth and Ninth Avenues",
+    "children": null,
+    "city": "New York",
+    "comments": null,
+    "country": "United States",
+    "country_abbr": "USA",
+    "country_abbr2": "US",
+    "created": "2008-09-15 12:05:23",
+    "description": null,
+    "events": {
+        "event": [
+            {
+                "description": null,
+                "id": "E0-001-041841149-3@2011103120",
+                "start_time": "2011-10-31 20:30:00",
+                "stop_time": null,
+                "title": "Kelsey Jillette",
+                "url": "http://eventful.com/newyork_ny/events/kelsey-jillette-/E0-001-041841149-3@2011103120?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011110220",
+                "start_time": "2011-11-02 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011110220?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": null,
+                "id": "E0-001-042952560-4",
+                "start_time": "2011-11-07 20:30:00",
+                "stop_time": null,
+                "title": "Kelsey Jillette",
+                "url": "http://eventful.com/newyork_ny/events/kelsey-jillette-/E0-001-042952560-4?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011110920",
+                "start_time": "2011-11-09 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011110920?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": " http://www.swing46.com",
+                "id": "E0-001-042681099-0",
+                "start_time": "2011-11-13 20:30:00",
+                "stop_time": null,
+                "title": "Swingadelic",
+                "url": "http://eventful.com/newyork_ny/events/swingadelic-/E0-001-042681099-0?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011111620",
+                "start_time": "2011-11-16 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011111620?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": " http://www.swing46.com",
+                "id": "E0-001-042681108-7",
+                "start_time": "2011-11-20 20:30:00",
+                "stop_time": null,
+                "title": "Swingadelic",
+                "url": "http://eventful.com/newyork_ny/events/swingadelic-/E0-001-042681108-7?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011112320",
+                "start_time": "2011-11-23 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011112320?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011113020",
+                "start_time": "2011-11-30 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011113020?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            },
+            {
+                "description": "The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.",
+                "id": "E0-001-015489401-9@2011120720",
+                "start_time": "2011-12-07 20:30:00",
+                "stop_time": null,
+                "title": "The Stan Rubin Big Band--Dining and Swing Dancing in NYC!",
+                "url": "http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011120720?utm_source=apis&utm_medium=apim&utm_campaign=apic"
+            }
+        ]
+    },
+    "geocode_type": "Zip Code Based GeoCodes",
+    "id": "V0-001-001702960-4",
+    "images": {
+        "image": [
+            {
+                "creator": null,
+                "height": "48",
+                "id": "I0-001-002857401-2",
+                "medium": {
+                    "height": "128",
+                    "url": "http://static.eventful.com/images/medium/I0-001/002/857/401-2.jpeg",
+                    "width": "128"
+                },
+                "small": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/small/I0-001/002/857/401-2.jpeg",
+                    "width": "48"
+                },
+                "thumb": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/thumb/I0-001/002/857/401-2.jpeg",
+                    "width": "48"
+                },
+                "url": "http://static.eventful.com/images/small/I0-001/002/857/401-2.jpeg",
+                "width": "48"
+            },
+            {
+                "creator": null,
+                "height": "48",
+                "id": "I0-001-002857403-0",
+                "medium": {
+                    "height": "128",
+                    "url": "http://static.eventful.com/images/medium/I0-001/002/857/403-0.jpeg",
+                    "width": "128"
+                },
+                "small": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/small/I0-001/002/857/403-0.jpeg",
+                    "width": "48"
+                },
+                "thumb": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/thumb/I0-001/002/857/403-0.jpeg",
+                    "width": "48"
+                },
+                "url": "http://static.eventful.com/images/small/I0-001/002/857/403-0.jpeg",
+                "width": "48"
+            },
+            {
+                "creator": null,
+                "height": "48",
+                "id": "I0-001-002857416-4",
+                "medium": {
+                    "height": "128",
+                    "url": "http://static.eventful.com/images/medium/I0-001/002/857/416-4.jpeg",
+                    "width": "128"
+                },
+                "small": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/small/I0-001/002/857/416-4.jpeg",
+                    "width": "48"
+                },
+                "thumb": {
+                    "height": "48",
+                    "url": "http://static.eventful.com/images/thumb/I0-001/002/857/416-4.jpeg",
+                    "width": "48"
+                },
+                "url": "http://static.eventful.com/images/small/I0-001/002/857/416-4.jpeg",
+                "width": "48"
+            }
+        ]
+    },
+    "latitude": "40.7601",
+    "links": {
+        "link": [
+            {
+                "description": "Venue details at reverbnation.com!",
+                "id": "31848542",
+                "time": "1286080731.36234",
+                "type": "Info",
+                "url": "http://www.reverbnation.com/venue/swing46",
+                "user_reputation": null,
+                "username": "evdb"
+            },
+            {
+                "description": "Venue details at reverbnation.com!",
+                "id": "31130429",
+                "time": "2010-06-05 23:52:24",
+                "type": "Info",
+                "url": "http://www.reverbnation.com/venue/603065",
+                "user_reputation": null,
+                "username": "evdb"
+            },
+            {
+                "description": "Venue details at Clubvibes.com!",
+                "id": "31382257",
+                "time": "1279426048.60946",
+                "type": "Info",
+                "url": "http://www.clubvibes.com/listings/listingsdetail.asp?id=46518",
+                "user_reputation": null,
+                "username": "evdb"
+            },
+            {
+                "description": "Official Website",
+                "id": "31472319",
+                "time": "1281275607.14407",
+                "type": "Official Site",
+                "url": "http://www.swing46.com",
+                "user_reputation": null,
+                "username": "evdb"
+            }
+        ]
+    },
+    "longitude": "-73.9925",
+    "metro": "New York City metro area",
+    "name": "Swing 46 Jazz and Supper Club",
+    "owner": "lynnmccune",
+    "parents": null,
+    "postal_code": "10036",
+    "properties": null,
+    "region": "New York",
+    "region_abbr": "NY",
+    "tags": {
+        "tag": [
+            {
+                "id": "njcom",
+                "owner": "evdb",
+                "title": "nj.com"
+            },
+            {
+                "id": "reverbnationcom",
+                "owner": "evdb",
+                "title": "reverbnation.com"
+            },
+            {
+                "id": "vbb",
+                "owner": "ben88",
+                "title": "vbb"
+            }
+        ]
+    },
+    "trackbacks": null,
+    "tz_olson_path": null,
+    "url": "http://eventful.com/newyork_ny/venues/swing-46-jazz-and-supper-club-/V0-001-001702960-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+    "venue_display": "1",
+    "venue_type": null,
+    "withdrawn": "0",
+    "withdrawn_note": null
+}

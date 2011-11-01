@@ -67,6 +67,8 @@ class CityImportForm(CityForm):
     slug = forms.SlugField(required=False)
 
     def clean_slug(self):
-        city = self.cleaned_data['city']
-        state = self.cleaned_data['state']
+        city = self.cleaned_data.get('city')
+        state = self.cleaned_data.get('state')
+        if not all((city, state)):
+            raise forms.ValidationError('Both city and state are required for form')
         return slugify(u'-'.join((city, state)))[:50]
