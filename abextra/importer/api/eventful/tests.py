@@ -4,8 +4,9 @@ from dateutil.relativedelta import relativedelta
 from dateutil import parser
 import simplejson
 from django.test import TestCase
+from importer.models import ExternalCategory, Source
 from prices.models import Price
-from places.models import City
+from places.models import City, Point, Place
 from events.models import Event, Occurrence
 from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
@@ -112,7 +113,7 @@ class PriceAdaptorTest(TestCase):
 
         created, obj = self.adaptor.parse(expanded_price)
         self.assertFalse(created)
-        self.assertEqual(existing_city, obj)
+        self.assertEqual(existing_price, obj)
 
 
     def test_adapt_new_invalid(self):
@@ -128,19 +129,46 @@ class PriceAdaptorTest(TestCase):
 
 
 class PointAdaptorTest(TestCase):
-    def test_point_adaptor(self):
-        event_response = TestResourceConsumer.consume_response()
-        adaptor = PointAdaptor()
-        created, obj = adaptor.parse(event_response)
+    fixtures = ['cities']
+
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = PointAdaptor()
+
+    def test_adapt_new_valid(self):
+        created, obj = self.adaptor.parse(self.event_response)
         self.assertTrue(created)
         self.assertEqual(obj.latitude, 40.7601)
         self.assertEqual(obj.longitude, -73.9925)
         self.assertEqual(obj.zip, u'10036')
         self.assertEqual(obj.address, u'349 W 46th Street between Eighth and Ninth Avenues')
 
+    def test_adapt_new_invalid(self):
+        created, obj = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created)
+        self.assertFalse(obj)
+
+    def test_adapt_existing_valid(self):
+        city_obj = City.objects.all()[0]
+        existing_point = Point(latitude=40.7601, longitude=-73.9925, zip='10036',
+                address='349 W 46th Street between Eighth and Ninth Avenues', city=city_obj)
+        existing_point.save()
+
+        created, obj = self.adaptor.parse(self.event_response)
+        self.assertFalse(created)
+        self.assertEqual(existing_point, obj)
+
 
 class PlaceAdaptorTest(TestCase):
-    def test_place_adaptor(self):
+    fixtures = ['points']
+
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = PlaceAdaptor()
+
+    def test_adapt_new_valid(self):
         event_response = TestResourceConsumer.consume_response()
         adaptor = PlaceAdaptor()
         created, obj = adaptor.parse(event_response)
@@ -148,53 +176,97 @@ class PlaceAdaptorTest(TestCase):
         self.assertEqual(obj.title, u'Swing 46 Jazz and Supper Club')
         self.assertTrue(obj.point)
 
+    def test_adapt_new_invalid(self):
+        created, obj = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created)
+        self.assertFalse(obj)
+
+    def test_adapt_existing_valid(self):
+        point_obj = Point.objects.all()[0]
+        existing_place = Place(title='Swing 46 Jazz and Supper Club', point=point_obj)
+        existing_place.save()
+
+        created, obj = self.adaptor.parse(self.event_response)
+        self.assertFalse(created)
+        self.assertEqual(existing_place, obj)
 
 class CategoryAdaptorTest(TestCase):
-    fixtures = ['categories', 'sources', 'external_categories']
+    fixtures = ['categories', 'sources']
 
-    def test_category_adaptor(self):
-        event_response = TestResourceConsumer.consume_response()
-        category_data = event_response['categories']['category']
-        adaptor = CategoryAdaptor()
-        created, obj = adaptor.parse(category_data[0])
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = CategoryAdaptor()
+
+    def test_adapt_new_valid(self):
+        category_data = self.event_response['categories']['category']
+        created, obj = self.adaptor.parse(category_data[0])
         self.assertEqual(obj.name, u'Concerts & Tour Dates')
         self.assertEqual(obj.xid, u'music')
-        self.assertEqual(obj.concrete_category.title, u'Concerts')
 
+    def test_adapt_new_invalid(self):
+        category_data = self.invalid_response['categories']['category']
+        created, obj = self.adaptor.parse(category_data[0])
+        self.assertFalse(created)
+        self.assertFalse(obj)
+
+    def test_adapt_existing_valid(self):
+        eventful_source = Source.objects.filter(name='eventful')[0]
+        existing_category = ExternalCategory(name='Concerts & Tour Dates',
+                xid='music', source=eventful_source)
+        existing_category.save()
+
+        category_data = self.event_response['categories']['category']
+        created, obj = self.adaptor.parse(category_data[0])
+        self.assertFalse(created)
+        self.assertEqual(existing_category, obj)
 
 class OccurrenceAdaptorTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories',
                 'eventful_test_event']
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = OccurrenceAdaptor()
+        self.event_adaptor = EventAdaptor()
 
-    def test_occurrence_adaptor(self):
-        event_adaptor = EventAdaptor()
-        adaptor = OccurrenceAdaptor()
+    def test_adapt_new_valid(self):
 
         event_obj = Event.objects.all()[0]
-        event_response = TestResourceConsumer.consume_response()
-        occurrence_gen = event_adaptor.o2m_occurrences(event_response)
+        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
         first_occ = occurrence_gen.next()
 
         first_occ['event'] = event_obj.id
 
-        created, obj = adaptor.parse(first_occ)
+        created, obj = self.adaptor.parse(first_occ)
         self.assertTrue(obj.place)
         self.assertTrue(obj.event)
         self.assertEqual(obj.start_datetime, datetime.datetime(2011, 10, 26, 20, 30))
         for occ in occurrence_gen:
             occ['event'] = event_obj.id
-            created, obj = adaptor.parse(first_occ)
+            created, obj = self.adaptor.parse(first_occ)
             self.assertTrue(created)
 
+    def test_adapt_new_invalid(self):
+        created, obj = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created)
+        self.assertFalse(obj)
+
+    def test_adapt_existing_valid(self):
+        pass
 
 class EventAdaptorTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
-    def test_event_adaptor(self):
-        event_response = TestResourceConsumer.consume_response()
-        adaptor = EventAdaptor()
+    def setUp(self):
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        self.adaptor = EventAdaptor()
 
-        created, obj = adaptor.parse(event_response)
+
+    def test_adapt_new_valid(self):
+
+        created, obj = self.adaptor.parse(self.event_response)
 
         self.assertEqual(obj.xid, u'E0-001-015489401-9@2011102620')
         self.assertEqual(obj.title, u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')
@@ -207,6 +279,13 @@ class EventAdaptorTest(TestCase):
         # check that we get multiple occurrences, check that they are being
         # correctly capped
 
+    def test_adapt_new_invalid(self):
+        created, obj = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created)
+        self.assertFalse(obj)
+
+    def test_adapt_existing_valid(self):
+        pass
 
 class EventfulParserPriceParsingTest(TestCase):
     # Parsing prices with units -- may get false positives, for now

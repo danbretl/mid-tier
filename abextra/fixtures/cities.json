@@ -1,0 +1,722 @@
+[
+    {
+        "pk": 44,
+        "model": "places.city",
+        "fields": {
+            "city": "Basking Ridge",
+            "state": "NJ",
+            "slug": "basking-ridge-nj"
+        }
+    },
+    {
+        "pk": 26,
+        "model": "places.city",
+        "fields": {
+            "city": "Bergenfield",
+            "state": "NJ",
+            "slug": "bergenfield-nj"
+        }
+    },
+    {
+        "pk": 78,
+        "model": "places.city",
+        "fields": {
+            "city": "Bound Brook",
+            "state": "NJ",
+            "slug": "bound-brook-nj"
+        }
+    },
+    {
+        "pk": 40,
+        "model": "places.city",
+        "fields": {
+            "city": "East Brunswick",
+            "state": "NJ",
+            "slug": "east-brunswick-nj"
+        }
+    },
+    {
+        "pk": 49,
+        "model": "places.city",
+        "fields": {
+            "city": "East Orange",
+            "state": "NJ",
+            "slug": "east-orange-nj"
+        }
+    },
+    {
+        "pk": 8,
+        "model": "places.city",
+        "fields": {
+            "city": "East Rutherford",
+            "state": "NJ",
+            "slug": "east-rutherford-nj"
+        }
+    },
+    {
+        "pk": 46,
+        "model": "places.city",
+        "fields": {
+            "city": "Edgewater",
+            "state": "NJ",
+            "slug": "edgewater-nj"
+        }
+    },
+    {
+        "pk": 39,
+        "model": "places.city",
+        "fields": {
+            "city": "Edison",
+            "state": "NJ",
+            "slug": "edison-nj"
+        }
+    },
+    {
+        "pk": 31,
+        "model": "places.city",
+        "fields": {
+            "city": "Fords",
+            "state": "NJ",
+            "slug": "fords-nj"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "places.city",
+        "fields": {
+            "city": "Garfield",
+            "state": "NJ",
+            "slug": "garfield-nj"
+        }
+    },
+    {
+        "pk": 28,
+        "model": "places.city",
+        "fields": {
+            "city": "Hackensack",
+            "state": "NJ",
+            "slug": "hackensack-nj"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "places.city",
+        "fields": {
+            "city": "Hoboken",
+            "state": "NJ",
+            "slug": "hoboken-nj"
+        }
+    },
+    {
+        "pk": 12,
+        "model": "places.city",
+        "fields": {
+            "city": "Holmdel",
+            "state": "NJ",
+            "slug": "holmdel-nj"
+        }
+    },
+    {
+        "pk": 25,
+        "model": "places.city",
+        "fields": {
+            "city": "Iselin",
+            "state": "NJ",
+            "slug": "iselin-nj"
+        }
+    },
+    {
+        "pk": 18,
+        "model": "places.city",
+        "fields": {
+            "city": "Jersey City",
+            "state": "NJ",
+            "slug": "jersey-city-nj"
+        }
+    },
+    {
+        "pk": 70,
+        "model": "places.city",
+        "fields": {
+            "city": "Keasbey",
+            "state": "NJ",
+            "slug": "keasbey-nj"
+        }
+    },
+    {
+        "pk": 14,
+        "model": "places.city",
+        "fields": {
+            "city": "Keyport",
+            "state": "NJ",
+            "slug": "keyport-nj"
+        }
+    },
+    {
+        "pk": 50,
+        "model": "places.city",
+        "fields": {
+            "city": "Lyndhurst",
+            "state": "NJ",
+            "slug": "lyndhurst-nj"
+        }
+    },
+    {
+        "pk": 76,
+        "model": "places.city",
+        "fields": {
+            "city": "Matawan",
+            "state": "NJ",
+            "slug": "matawan-nj"
+        }
+    },
+    {
+        "pk": 37,
+        "model": "places.city",
+        "fields": {
+            "city": "Metuchen",
+            "state": "NJ",
+            "slug": "metuchen-nj"
+        }
+    },
+    {
+        "pk": 23,
+        "model": "places.city",
+        "fields": {
+            "city": "Montclair",
+            "state": "NJ",
+            "slug": "montclair-nj"
+        }
+    },
+    {
+        "pk": 24,
+        "model": "places.city",
+        "fields": {
+            "city": "New Brunswick",
+            "state": "NJ",
+            "slug": "new-brunswick-nj"
+        }
+    },
+    {
+        "pk": 11,
+        "model": "places.city",
+        "fields": {
+            "city": "Newark",
+            "state": "NJ",
+            "slug": "newark-nj"
+        }
+    },
+    {
+        "pk": 59,
+        "model": "places.city",
+        "fields": {
+            "city": "Oceanport",
+            "state": "NJ",
+            "slug": "oceanport-nj"
+        }
+    },
+    {
+        "pk": 16,
+        "model": "places.city",
+        "fields": {
+            "city": "Old Bridge",
+            "state": "NJ",
+            "slug": "old-bridge-nj"
+        }
+    },
+    {
+        "pk": 21,
+        "model": "places.city",
+        "fields": {
+            "city": "Paramus",
+            "state": "NJ",
+            "slug": "paramus-nj"
+        }
+    },
+    {
+        "pk": 52,
+        "model": "places.city",
+        "fields": {
+            "city": "Parsippany",
+            "state": "NJ",
+            "slug": "parsippany-nj"
+        }
+    },
+    {
+        "pk": 27,
+        "model": "places.city",
+        "fields": {
+            "city": "Piscataway",
+            "state": "NJ",
+            "slug": "piscataway-nj"
+        }
+    },
+    {
+        "pk": 61,
+        "model": "places.city",
+        "fields": {
+            "city": "Rahway",
+            "state": "NJ",
+            "slug": "rahway-nj"
+        }
+    },
+    {
+        "pk": 57,
+        "model": "places.city",
+        "fields": {
+            "city": "Ramsey",
+            "state": "NJ",
+            "slug": "ramsey-nj"
+        }
+    },
+    {
+        "pk": 55,
+        "model": "places.city",
+        "fields": {
+            "city": "Red Bank",
+            "state": "NJ",
+            "slug": "red-bank-nj"
+        }
+    },
+    {
+        "pk": 74,
+        "model": "places.city",
+        "fields": {
+            "city": "Ridgefield Park",
+            "state": "NJ",
+            "slug": "ridgefield-park-nj"
+        }
+    },
+    {
+        "pk": 34,
+        "model": "places.city",
+        "fields": {
+            "city": "Rockaway",
+            "state": "NJ",
+            "slug": "rockaway-nj"
+        }
+    },
+    {
+        "pk": 60,
+        "model": "places.city",
+        "fields": {
+            "city": "Sayreville",
+            "state": "NJ",
+            "slug": "sayreville-nj"
+        }
+    },
+    {
+        "pk": 63,
+        "model": "places.city",
+        "fields": {
+            "city": "Scotch Plains",
+            "state": "NJ",
+            "slug": "scotch-plains-nj"
+        }
+    },
+    {
+        "pk": 66,
+        "model": "places.city",
+        "fields": {
+            "city": "Secaucus",
+            "state": "NJ",
+            "slug": "secaucus-nj"
+        }
+    },
+    {
+        "pk": 47,
+        "model": "places.city",
+        "fields": {
+            "city": "Short Hills",
+            "state": "NJ",
+            "slug": "short-hills-nj"
+        }
+    },
+    {
+        "pk": 58,
+        "model": "places.city",
+        "fields": {
+            "city": "South Hackensack",
+            "state": "NJ",
+            "slug": "south-hackensack-nj"
+        }
+    },
+    {
+        "pk": 62,
+        "model": "places.city",
+        "fields": {
+            "city": "Teaneck",
+            "state": "NJ",
+            "slug": "teaneck-nj"
+        }
+    },
+    {
+        "pk": 22,
+        "model": "places.city",
+        "fields": {
+            "city": "Union",
+            "state": "NJ",
+            "slug": "union-nj"
+        }
+    },
+    {
+        "pk": 79,
+        "model": "places.city",
+        "fields": {
+            "city": "Wayne",
+            "state": "NJ",
+            "slug": "wayne-nj"
+        }
+    },
+    {
+        "pk": 72,
+        "model": "places.city",
+        "fields": {
+            "city": "Astoria",
+            "state": "NY",
+            "slug": "astoria-ny"
+        }
+    },
+    {
+        "pk": 77,
+        "model": "places.city",
+        "fields": {
+            "city": "Bethpage",
+            "state": "NY",
+            "slug": "bethpage-ny"
+        }
+    },
+    {
+        "pk": 6,
+        "model": "places.city",
+        "fields": {
+            "city": "Bronx",
+            "state": "NY",
+            "slug": "bronx-ny"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "places.city",
+        "fields": {
+            "city": "Brooklyn",
+            "state": "NY",
+            "slug": "brooklyn-ny"
+        }
+    },
+    {
+        "pk": 38,
+        "model": "places.city",
+        "fields": {
+            "city": "Carle Place",
+            "state": "NY",
+            "slug": "carle-place-ny"
+        }
+    },
+    {
+        "pk": 64,
+        "model": "places.city",
+        "fields": {
+            "city": "Dobbs Ferry",
+            "state": "NY",
+            "slug": "dobbs-ferry-ny"
+        }
+    },
+    {
+        "pk": 53,
+        "model": "places.city",
+        "fields": {
+            "city": "Farmingdale",
+            "state": "NY",
+            "slug": "farmingdale-ny"
+        }
+    },
+    {
+        "pk": 15,
+        "model": "places.city",
+        "fields": {
+            "city": "Floral Park",
+            "state": "NY",
+            "slug": "floral-park-ny"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "places.city",
+        "fields": {
+            "city": "Flushing",
+            "state": "NY",
+            "slug": "flushing-ny"
+        }
+    },
+    {
+        "pk": 20,
+        "model": "places.city",
+        "fields": {
+            "city": "Garden City",
+            "state": "NY",
+            "slug": "garden-city-ny"
+        }
+    },
+    {
+        "pk": 69,
+        "model": "places.city",
+        "fields": {
+            "city": "Greenvale",
+            "state": "NY",
+            "slug": "greenvale-ny"
+        }
+    },
+    {
+        "pk": 67,
+        "model": "places.city",
+        "fields": {
+            "city": "Hempstead",
+            "state": "NY",
+            "slug": "hempstead-ny"
+        }
+    },
+    {
+        "pk": 54,
+        "model": "places.city",
+        "fields": {
+            "city": "Hicksville",
+            "state": "NY",
+            "slug": "hicksville-ny"
+        }
+    },
+    {
+        "pk": 7,
+        "model": "places.city",
+        "fields": {
+            "city": "Jamaica",
+            "state": "NY",
+            "slug": "jamaica-ny"
+        }
+    },
+    {
+        "pk": 19,
+        "model": "places.city",
+        "fields": {
+            "city": "Jericho",
+            "state": "NY",
+            "slug": "jericho-ny"
+        }
+    },
+    {
+        "pk": 17,
+        "model": "places.city",
+        "fields": {
+            "city": "Levittown",
+            "state": "NY",
+            "slug": "levittown-ny"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "places.city",
+        "fields": {
+            "city": "Long Island City",
+            "state": "NY",
+            "slug": "long-island-city-ny"
+        }
+    },
+    {
+        "pk": 33,
+        "model": "places.city",
+        "fields": {
+            "city": "Manhasset",
+            "state": "NY",
+            "slug": "manhasset-ny"
+        }
+    },
+    {
+        "pk": 13,
+        "model": "places.city",
+        "fields": {
+            "city": "Manhattan",
+            "state": "NY",
+            "slug": "manhattan-ny"
+        }
+    },
+    {
+        "pk": 71,
+        "model": "places.city",
+        "fields": {
+            "city": "Massapequa",
+            "state": "NY",
+            "slug": "massapequa-ny"
+        }
+    },
+    {
+        "pk": 75,
+        "model": "places.city",
+        "fields": {
+            "city": "Merrick",
+            "state": "NY",
+            "slug": "merrick-ny"
+        }
+    },
+    {
+        "pk": 45,
+        "model": "places.city",
+        "fields": {
+            "city": "Mineola",
+            "state": "NY",
+            "slug": "mineola-ny"
+        }
+    },
+    {
+        "pk": 73,
+        "model": "places.city",
+        "fields": {
+            "city": "Monsey",
+            "state": "NY",
+            "slug": "monsey-ny"
+        }
+    },
+    {
+        "pk": 32,
+        "model": "places.city",
+        "fields": {
+            "city": "New City",
+            "state": "NY",
+            "slug": "new-city-ny"
+        }
+    },
+    {
+        "pk": 42,
+        "model": "places.city",
+        "fields": {
+            "city": "New Hyde Park",
+            "state": "NY",
+            "slug": "new-hyde-park-ny"
+        }
+    },
+    {
+        "pk": 43,
+        "model": "places.city",
+        "fields": {
+            "city": "New Rochelle",
+            "state": "NY",
+            "slug": "new-rochelle-ny"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "places.city",
+        "fields": {
+            "city": "New York",
+            "state": "NY",
+            "slug": "new-york-ny"
+        }
+    },
+    {
+        "pk": 29,
+        "model": "places.city",
+        "fields": {
+            "city": "Nyack",
+            "state": "NY",
+            "slug": "nyack-ny"
+        }
+    },
+    {
+        "pk": 10,
+        "model": "places.city",
+        "fields": {
+            "city": "Old Bethpage",
+            "state": "NY",
+            "slug": "old-bethpage-ny"
+        }
+    },
+    {
+        "pk": 51,
+        "model": "places.city",
+        "fields": {
+            "city": "Oyster Bay",
+            "state": "NY",
+            "slug": "oyster-bay-ny"
+        }
+    },
+    {
+        "pk": 36,
+        "model": "places.city",
+        "fields": {
+            "city": "Pelham",
+            "state": "NY",
+            "slug": "pelham-ny"
+        }
+    },
+    {
+        "pk": 68,
+        "model": "places.city",
+        "fields": {
+            "city": "Port Washington",
+            "state": "NY",
+            "slug": "port-washington-ny"
+        }
+    },
+    {
+        "pk": 35,
+        "model": "places.city",
+        "fields": {
+            "city": "Queens Village",
+            "state": "NY",
+            "slug": "queens-village-ny"
+        }
+    },
+    {
+        "pk": 48,
+        "model": "places.city",
+        "fields": {
+            "city": "Rockville Centre",
+            "state": "NY",
+            "slug": "rockville-centre-ny"
+        }
+    },
+    {
+        "pk": 9,
+        "model": "places.city",
+        "fields": {
+            "city": "Staten Island",
+            "state": "NY",
+            "slug": "staten-island-ny"
+        }
+    },
+    {
+        "pk": 56,
+        "model": "places.city",
+        "fields": {
+            "city": "Suffern",
+            "state": "NY",
+            "slug": "suffern-ny"
+        }
+    },
+    {
+        "pk": 65,
+        "model": "places.city",
+        "fields": {
+            "city": "Syosset",
+            "state": "NY",
+            "slug": "syosset-ny"
+        }
+    },
+    {
+        "pk": 80,
+        "model": "places.city",
+        "fields": {
+            "city": "Tarrytown",
+            "state": "NY",
+            "slug": "tarrytown-ny"
+        }
+    },
+    {
+        "pk": 41,
+        "model": "places.city",
+        "fields": {
+            "city": "White Plains",
+            "state": "NY",
+            "slug": "white-plains-ny"
+        }
+    }
+]
