@@ -12,7 +12,6 @@ from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
-from importer.api.eventful.utils import expand_prices, temporal_parser
 
 
 class TestResourceConsumer(object):
@@ -56,8 +55,6 @@ class TestResourceConsumer(object):
         return event_response
 
 
-
-
 class CityAdaptorTest(TestCase):
 
     def setUp(self):
@@ -66,27 +63,26 @@ class CityAdaptorTest(TestCase):
         self.adaptor = CityAdaptor()
 
     def test_adapt_new_valid(self):
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertTrue(created)
-        self.assertEqual(obj.city, 'New York')
-        self.assertEqual(obj.state, 'NY')
+        created, city = self.adaptor.parse(self.event_response)
+        self.assertTrue(created, 'City object was not newly created')
+        self.assertIsInstance(city, City, 'City type was expected')
+        self.assertEqual(city.city, 'New York', 'Unexpected city value')
+        self.assertEqual(city.state, 'NY', 'Unexpected state value')
 
     def test_adapt_new_invalid(self):
-        created, obj = self.adaptor.parse(self.invalid_response)
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        created, city = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created, 'City object created, despite invalid data')
+        self.assertIsNone(city, 'City object returned, despite invalid data')
 
     def test_adapt_existing_valid(self):
-        existing_city = City(city='New York', state='NY')
-        existing_city.save()
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertFalse(created)
-        self.assertEqual(existing_city, obj)
+        existing_city, _ = City.objects.get_or_create(city='New York', state='NY')
+        created, city = self.adaptor.parse(self.event_response)
+        self.assertFalse(created, 'City object created, despite existing match')
+        self.assertEqual(existing_city, city, 'City object returned is not the existing match')
 
 
 class PriceAdaptorTest(TestCase):
-    #FIXME should work with any existing valid occurrence fixture
-    fixtures = ['occurrences']
+    fixtures = ('events',)
 
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
@@ -95,8 +91,8 @@ class PriceAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
         expanded_price = utils.expand_prices(self.event_response).next()
-        occurrence_obj = Occurrence.objects.all()[0]
-        expanded_price['occurrence'] = occurrence_obj.id
+        occurrence = Occurrence.objects.all()[0]
+        expanded_price['occurrence'] = occurrence.id
 
         created, obj = self.adaptor.parse(expanded_price)
         self.assertTrue(created)
@@ -200,15 +196,17 @@ class CategoryAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
         category_data = self.event_response['categories']['category']
-        created, obj = self.adaptor.parse(category_data[0])
-        self.assertEqual(obj.name, u'Concerts & Tour Dates')
-        self.assertEqual(obj.xid, u'music')
+        created, category = self.adaptor.parse(category_data[0])
+        self.assertTrue(created, 'Category was not newly created')
+        self.assertIsInstance(category, Category, 'Non Category object produced')
+        self.assertEqual(u'Concerts & Tour Dates', category.name, 'Unexpected category name')
+        self.assertEqual(u'music', category.xid, 'Unexpected category xid')
 
     def test_adapt_new_invalid(self):
         category_data = self.invalid_response['categories']['category']
-        created, obj = self.adaptor.parse(category_data[0])
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        created, category = self.adaptor.parse(category_data[0])
+        self.assertFalse(created, 'Category was created, despite invalid form')
+        self.assertIsNone(category, 'Category object returned, despite invalid form')
 
     def test_adapt_existing_valid(self):
         eventful_source = Source.objects.filter(name='eventful')[0]
@@ -316,47 +314,47 @@ class EventfulParserPriceParsingTest(TestCase):
     def test_multiple_prices_with_two_decimals_in_prose(self):
         price_data = {'free': None,
                       'price': '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'}
-        parsed_prices = list(list(expand_prices(price_data)))
+        parsed_prices = list(list(utils.expand_prices(price_data)))
         self.assertEqual(parsed_prices,
             [{'quantity': 52.24}, {'quantity': 77.87}, {'quantity': 99.0}, {'quantity': 125.0}, {'quantity': 199.0},
                     {'quantity': 250.0}])
 
     def test_single_price_with_two_decimals(self):
         price_data = {'free': None, 'price': '   RSVP 11.24 <br><br>\n'}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 11.24}])
 
     def test_single_price_with_commas_two_decimals_and_no_units(self):
         price_data = {"price": "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n",
                       "free": None}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 2195.0}, {'quantity': 2395.0}])
 
     def test_single_price_with_units_in_USD(self):
         price_data = {"price": "5 - 5 USD ", "free": None}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 5.0}])
 
     def test_single_price_with_units_in_dollar_sign(self):
         price_data = {"price": "$35", "free": "0"}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 35.0}])
 
     def test_single_price_with_decimals_and_units_in_dollar_sign(self):
         price_data = {"price": "$10.00", "free": None}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 10.0}])
 
     def test_multiple_prices_with_some_units_and_some_decimals(self):
         price_data = {"price": "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n", "free": None}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [{'quantity': 195.0}, {'quantity': 300.0}])
 
     # If 'free' field is not set, do not try to guess (for now)
 
     def test_free_in_price_field_and_not_in_free_field(self):
         price_data = {"price": "FREE", "free": None}
-        parsed_prices = list(expand_prices(price_data))
+        parsed_prices = list(utils.expand_prices(price_data))
         self.assertEqual(parsed_prices, [])
 
 

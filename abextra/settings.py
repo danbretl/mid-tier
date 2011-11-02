@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'django.contrib.gis',           # gis
 
     'fabtastic',                    # deployments
+    'fixture_magic',                # additional fixture commands
     'gunicorn',                     # gunicorn | app server
     'livesettings',                 # live settings ;)
     'sorl.thumbnail',               # thumbnails
