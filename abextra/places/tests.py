@@ -1,23 +1,24 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
+from django.contrib.gis import geos
 from django.test import TestCase
+from places.models import City
+from places.forms import PointImportForm
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.failUnlessEqual(1 + 1, 2)
+class PointImportFormTest(TestCase):
 
-__test__ = {"doctest": """
-Another way to test that 1 + 1 is equal to 2.
+    def setUp(self):
+        city, created = City.objects.get_or_create(city='Queens', state='NY')
+        self.base_data = dict(
+            city=city.id,
+            address='Broadway and 42nd St.',
+            country='US'
+        )
 
->>> 1 + 1 == 2
-True
-"""}
-
+    def test_geometry_geocode(self):
+        lat, lon = 40.758224, -73.917404
+        data = dict(self.base_data, **dict(latitude=str(lat), longitude=str(lon)))
+        form = PointImportForm(data=data)
+        self.assertTrue(form.is_valid(), 'Form invalid')
+        point = form.save()
+        self.assertTrue(point.id, 'Point not properly persisted')
+        self.assertEqual(geos.Point(lon, lat), point.geometry, 'Unexpected point geometry')
+        self.assertEqual('11103', point.zip, 'Incorrect zipcode reverse geocode')

@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.gis import geos
+from django.contrib.gis.forms import GeometryField
 from django.contrib.localflavor.us import forms as us_forms
 from django.template.defaultfilters import slugify
 from pygeocoder import Geocoder
@@ -41,32 +43,33 @@ class PlaceImportForm(PlaceForm):
 
 class PointImportForm(PointForm):
     zip = us_forms.USZipCodeField(required=False)
+    geometry = GeometryField(geom_type='POINT', srid=4326, required=False)
     latitude = forms.FloatField(min_value=-90, max_value=90)
     longitude = forms.FloatField(min_value=-180, max_value=180)
 
     _ZIPCODE_CACHE = {}
 
-    def clean_zip(self):
-        zipcode = self.cleaned_data.get('zip')
-        lat_lng = tuple(map(self.cleaned_data.get, ('latitude', 'longitude')))
-
-        # attempt to reverse geocode the zipcode
-        if not zipcode:
-            if not self._ZIPCODE_CACHE.has_key(lat_lng):
-                results = Geocoder.reverse_geocode(*lat_lng)
-                self._ZIPCODE_CACHE[lat_lng] = results[0].postal_code
-            zipcode = self._ZIPCODE_CACHE.get(lat_lng)
-
-#        zipcode = '10023'
-        # if no zipcode still, fail this thing
-        if not zipcode:
-            raise forms.ValidationError('zipcode was not provided, nor geocoded')
-
-        return zipcode
-
     def clean(self):
-        lat, lon = map(self.cleaned_data.get, 'latitude longitude'.split())
-        
+        lat, lon = map(self.cleaned_data.get, ('latitude', 'longitude'))
+
+        # point geometry
+        geometry = self.cleaned_data.get('geometry')
+        if not geometry:
+            geometry_field = self.fields['geometry']
+            pnt = geos.Point(lon, lat, srid=geometry_field.srid)
+            self.cleaned_data['geometry'] = geometry_field.clean(pnt)
+
+        # zipcode geocode
+        zipcode = self.cleaned_data.get('zip')
+        if not zipcode:
+            key = (lat, lon)
+            if not self._ZIPCODE_CACHE.has_key(key):
+                results = Geocoder.reverse_geocode(lat=lat, lng=lon)
+                self._ZIPCODE_CACHE[key] = results[0].postal_code
+            zipcode = self._ZIPCODE_CACHE.get(key)
+            self.cleaned_data['zip'] = self.fields['zip'].clean(zipcode)
+
+        return self.cleaned_data
 
 
 class CityImportForm(CityForm):

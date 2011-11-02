@@ -15,7 +15,7 @@ admin.site.register(City, CityAdmin)
 
 
 class PointAdmin(geo_admin.OSMGeoAdmin):
-    list_display = ('address', 'city', 'zip', 'latitude', 'longitude')
+    list_display = ('address', 'city', 'zip')
     list_filter = ('city',)
     search_fields = ('address',)
 admin.site.register(Point, PointAdmin)
