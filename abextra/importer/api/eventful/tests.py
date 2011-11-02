@@ -94,10 +94,11 @@ class PriceAdaptorTest(TestCase):
         occurrence = Occurrence.objects.all()[0]
         expanded_price['occurrence'] = occurrence.id
 
-        created, obj = self.adaptor.parse(expanded_price)
-        self.assertTrue(created)
-        self.assertEqual(obj.quantity, 12.00)
-        self.assertEqual(obj.units, u'dollars')
+        created, price = self.adaptor.parse(expanded_price)
+        self.assertTrue(created, 'Price object was not newly created')
+        self.assertIsInstance(price, Price, 'Unexpected type of price object')
+        self.assertEqual(12.00, price.quantity, 'Unexpected quantity value')
+        self.assertEqual(u'dollars', price.units, 'Unexpected units value')
 
     def test_adapt_existing_valid(self):
         occurrence_obj = Occurrence.objects.all()[0]
@@ -107,9 +108,9 @@ class PriceAdaptorTest(TestCase):
         expanded_price = utils.expand_prices(self.event_response).next()
         expanded_price['occurrence'] = occurrence_obj.id
 
-        created, obj = self.adaptor.parse(expanded_price)
-        self.assertFalse(created)
-        self.assertEqual(existing_price, obj)
+        created, price = self.adaptor.parse(expanded_price)
+        self.assertFalse(created, 'Price object created despite existing match')
+        self.assertEqual(existing_price, price, 'Price object returned is not the existing match')
 
 
     def test_adapt_new_invalid(self):
@@ -119,9 +120,9 @@ class PriceAdaptorTest(TestCase):
         occurrence_obj = Occurrence.objects.all()[0]
         expanded_price['occurrence'] = occurrence_obj.id
 
-        created, obj = self.adaptor.parse(expanded_price)
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        created, price = self.adaptor.parse(expanded_price)
+        self.assertFalse(created, 'Price object created despite invalid data')
+        self.assertIsNone(price, 'Price object returned despite invalid data')
 
 
 class PointAdaptorTest(TestCase):
@@ -133,17 +134,17 @@ class PointAdaptorTest(TestCase):
         self.adaptor = PointAdaptor()
 
     def test_adapt_new_valid(self):
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertTrue(created)
-        self.assertEqual(obj.latitude, 40.7601)
-        self.assertEqual(obj.longitude, -73.9925)
-        self.assertEqual(obj.zip, u'10036')
-        self.assertEqual(obj.address, u'349 W 46th Street between Eighth and Ninth Avenues')
+        created, point = self.adaptor.parse(self.event_response)
+        self.assertTrue(created, 'Point object was not newly created')
+        self.assertEqual(point.latitude, 40.7601, 'Unexpected latitude value')
+        self.assertEqual(point.longitude, -73.9925, 'Unexpected longitude value')
+        self.assertEqual(point.zip, u'10036', 'Unexpected zip value')
+        self.assertEqual(point.address, u'349 W 46th Street between Eighth and Ninth Avenues', 'Unexpected address value')
 
     def test_adapt_new_invalid(self):
-        created, obj = self.adaptor.parse(self.invalid_response)
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        created, point = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created, 'Point object created despite invalid data')
+        self.assertFalse(point, 'Point object created despite invalid data')
 
     def test_adapt_existing_valid(self):
         city_obj = City.objects.all()[0]
@@ -151,9 +152,9 @@ class PointAdaptorTest(TestCase):
                 address='349 W 46th Street between Eighth and Ninth Avenues', city=city_obj)
         existing_point.save()
 
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertFalse(created)
-        self.assertEqual(existing_point, obj)
+        created, point = self.adaptor.parse(self.event_response)
+        self.assertFalse(created, 'Point object created despite existing match')
+        self.assertEqual(existing_point, point, 'Point object returned is not the existing match')
 
 
 class PlaceAdaptorTest(TestCase):
@@ -167,24 +168,24 @@ class PlaceAdaptorTest(TestCase):
     def test_adapt_new_valid(self):
         event_response = TestResourceConsumer.consume_response()
         adaptor = PlaceAdaptor()
-        created, obj = adaptor.parse(event_response)
-        self.assertTrue(created)
-        self.assertEqual(obj.title, u'Swing 46 Jazz and Supper Club')
-        self.assertTrue(obj.point)
+        created, place = adaptor.parse(event_response)
+        self.assertTrue(created, 'Place object was not newly created')
+        self.assertEqual(u'Swing 46 Jazz and Supper Club', place.title, 'Unexpected place value')
+        self.assertIsInstance(Point, place.point, 'Unexpected point type')
 
     def test_adapt_new_invalid(self):
-        created, obj = self.adaptor.parse(self.invalid_response)
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        created, place = self.adaptor.parse(self.invalid_response)
+        self.assertFalse(created, 'Place object created despite invalid data')
+        self.assertFalse(place, 'Place object created despite invalid data')
 
     def test_adapt_existing_valid(self):
         point_obj = Point.objects.filter(address="349 W 46th Street between Eighth and Ninth Avenues")[0]
         existing_place = Place(title='Swing 46 Jazz and Supper Club', point=point_obj)
         existing_place.save()
 
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertFalse(created)
-        self.assertEqual(existing_place, obj)
+        created, place = self.adaptor.parse(self.event_response)
+        self.assertFalse(created, 'Place object created despite existing match')
+        self.assertEqual(existing_place, place, 'Place object returned is not the existing match')
 
 class CategoryAdaptorTest(TestCase):
     fixtures = ['categories', 'sources']
@@ -215,9 +216,9 @@ class CategoryAdaptorTest(TestCase):
         existing_category.save()
 
         category_data = self.event_response['categories']['category']
-        created, obj = self.adaptor.parse(category_data[0])
+        created, category = self.adaptor.parse(category_data[0])
         self.assertFalse(created)
-        self.assertEqual(existing_category, obj)
+        self.assertEqual(existing_category, category)
 
 class OccurrenceAdaptorTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories',
@@ -236,19 +237,20 @@ class OccurrenceAdaptorTest(TestCase):
 
         first_occ['event'] = event_obj.id
 
-        created, obj = self.adaptor.parse(first_occ)
-        self.assertTrue(obj.place)
-        self.assertTrue(obj.event)
-        self.assertEqual(obj.start_datetime, datetime.datetime(2011, 10, 26, 20, 30))
+        created, occurrence = self.adaptor.parse(first_occ)
+        self.assertIsInstance(occurrence.place, Place, 'Type of place object was unexpected')
+        self.assertTrue(occurrence.event, Event, 'Type of event object was unexpected')
+        self.assertEqual(occurrence.start_datetime, datetime.datetime(2011, 10,
+            26, 20, 30), 'Unexpected start_datetime value')
         for occ in occurrence_gen:
             occ['event'] = event_obj.id
-            created, obj = self.adaptor.parse(first_occ)
-            self.assertTrue(created)
+            created, occurrence = self.adaptor.parse(first_occ)
+            self.assertTrue(created, 'Occurrence object was not newly created')
 
     def test_adapt_new_invalid(self):
-        created, obj = self.adaptor.parse(self.invalid_response)
+        created, event = self.adaptor.parse(self.invalid_response)
         self.assertFalse(created)
-        self.assertFalse(obj)
+        self.assertFalse(event)
 
     def test_adapt_existing_valid(self):
         event_obj = Event.objects.filter(title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')[0]
@@ -263,9 +265,9 @@ class OccurrenceAdaptorTest(TestCase):
         first_occ['event'] = event_obj.id
         first_occ['place'] = place_obj.id
 
-        created, obj = self.adaptor.parse(first_occ)
-        self.assertFalse(created)
-        self.assertEqual(existing_occ, obj)
+        created, occurrence = self.adaptor.parse(first_occ)
+        self.assertFalse(created, 'Occurrence newly created despite existing match')
+        self.assertEqual(existing_occ, occurrence, 'Occurrence object returned is not the existing match')
 
 
 class EventAdaptorTest(TestCase):
@@ -280,15 +282,17 @@ class EventAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
 
-        created, obj = self.adaptor.parse(self.event_response)
+        created, occurrence = self.adaptor.parse(self.event_response)
 
-        self.assertEqual(obj.xid, u'E0-001-015489401-9@2011102620')
-        self.assertEqual(obj.title, u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')
-        self.assertEqual(obj.description,
-                         u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.')
-        self.assertEqual(obj.url,
-                         u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic')
-        self.assertEqual(obj.concrete_category.title, u'Concerts')
+        self.assertEqual(occurrence.xid, u'E0-001-015489401-9@2011102620', 'Unexpected xid value')
+        self.assertEqual(occurrence.title, u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', 'Unexpected title value')
+        self.assertEqual(occurrence.description,
+                         u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+                         'Unexpected description value')
+        self.assertEqual(occurrence.url,
+                         u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic',
+                         'Unexpected url value')
+        self.assertEqual(occurrence.concrete_category.title, u'Concerts', 'Unexpected concrete category title value')
 
     def test_adapt_new_invalid(self):
         # FIXME: rewrite base adaptor to swallow exceptions and return None if
@@ -304,9 +308,9 @@ class EventAdaptorTest(TestCase):
                 concrete_category=category_obj)
         existing_event.save()
 
-        created, obj = self.adaptor.parse(self.event_response)
-        self.assertFalse(created)
-        self.assertEqual(existing_event, obj)
+        created, occurrence = self.adaptor.parse(self.event_response)
+        self.assertFalse(created, 'Event newly created despite existing match')
+        self.assertEqual(existing_event, occurrence, 'Event object returned is not the existing match')
 
 class EventfulParserPriceParsingTest(TestCase):
     # Parsing prices with units -- may get false positives, for now
@@ -315,47 +319,48 @@ class EventfulParserPriceParsingTest(TestCase):
         price_data = {'free': None,
                       'price': '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'}
         parsed_prices = list(list(utils.expand_prices(price_data)))
-        self.assertEqual(parsed_prices,
-            [{'quantity': 52.24}, {'quantity': 77.87}, {'quantity': 99.0}, {'quantity': 125.0}, {'quantity': 199.0},
-                    {'quantity': 250.0}])
+        self.assertEqual([{'quantity': 52.24}, {'quantity': 77.87}, {'quantity': 99.0}, {'quantity': 125.0},
+                          {'quantity': 199.0}, {'quantity': 250.0}], parsed_prices, 'Unexpected prices value')
 
     def test_single_price_with_two_decimals(self):
         price_data = {'free': None, 'price': '   RSVP 11.24 <br><br>\n'}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 11.24}])
+        self.assertEqual([{'quantity': 11.24}], parsed_prices, 'Unexpected prices value')
 
     def test_single_price_with_commas_two_decimals_and_no_units(self):
         price_data = {"price": "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n",
                       "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 2195.0}, {'quantity': 2395.0}])
+        self.assertEqual([{'quantity': 2195.0}, {'quantity': 2395.0}],
+                parsed_prices, 'Unexpected prices value')
 
     def test_single_price_with_units_in_USD(self):
         price_data = {"price": "5 - 5 USD ", "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 5.0}])
+        self.assertEqual([{'quantity': 5.0}], parsed_prices, 'Unexpected prices value')
 
     def test_single_price_with_units_in_dollar_sign(self):
         price_data = {"price": "$35", "free": "0"}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 35.0}])
+        self.assertEqual([{'quantity': 35.0}], parsed_prices, 'Unexpected prices value')
 
     def test_single_price_with_decimals_and_units_in_dollar_sign(self):
         price_data = {"price": "$10.00", "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 10.0}])
+        self.assertEqual([{'quantity': 10.0}], parsed_prices, 'Unexpected prices value')
 
     def test_multiple_prices_with_some_units_and_some_decimals(self):
         price_data = {"price": "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n", "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [{'quantity': 195.0}, {'quantity': 300.0}])
+        self.assertEqual([{'quantity': 195.0}, {'quantity':300.0}],
+                        parsed_prices, 'Unexpected prices value')
 
     # If 'free' field is not set, do not try to guess (for now)
 
     def test_free_in_price_field_and_not_in_free_field(self):
         price_data = {"price": "FREE", "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [])
+        self.assertEqual(parsed_prices, [], 'Unexpected prices value')
 
 
 class EventfulParserDateParsingTest(TestCase):
