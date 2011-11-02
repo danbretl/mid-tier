@@ -1,52 +1,23 @@
 [
     {
-        "pk": 1, 
-        "model": "places.placetype", 
+        "pk": 2,
+        "model": "places.place",
         "fields": {
-            "slug": "jazz-club", 
-            "title": "Jazz Club"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "places.city", 
-        "fields": {
-            "city": "New York", 
-            "state": "NY", 
-            "slug": "new-york-new-york"
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "places.point", 
-        "fields": {
-            "city": 1, 
-            "zip": "10014", 
-            "country": "USA", 
-            "longitude": -74.001543999999996, 
-            "address": "178 7th Avenue South.", 
-            "latitude": 40.736438
-        }
-    }, 
-    {
-        "pk": 1, 
-        "model": "places.place", 
-        "fields": {
-            "status": 1, 
-            "description": "SHOW TIMES\r\nDoors open at 8:00pm (20:00). Sets begin at 9:00pm (21:00) and 11:00pm (23:00) nightly. From time to time, there is an additional 12:30am (00:30) set on Saturday. Call the club for confirmation of a third set.\r\n\r\nRESERVATIONS\r\nReservations are taken over the phone. Call the club at (212) 255-4037 and leave your name, the number of people in your party, the night you would like to come and which set you would like to attend. Reservations are held until 15 MINUTES before show time. No complaining if you're late. If you need to speak to us in person, call after 3:00pm Eastern time.\r\n\r\nAlternatively, you can purchase tickets to upcoming shows with your credit card. The process is secure and easy. Simply click on the link below to start. Generally shows are available for online purchase at least one month in advance.", 
-            "title": "Village Vanguard", 
-            "url": "http://villagevanguard.com/", 
-            "point": 1, 
-            "modified": "2011-01-14 10:18:02", 
-            "email": "email@villagevanguard.com", 
-            "phone": "212-255-4037", 
-            "prefix": "", 
-            "created": "2011-01-14 10:18:02", 
-            "place_types": [
-                1
-            ], 
-            "nickname": "the village", 
-            "slug": "village-vanguard", 
+            "status": 1,
+            "description": "",
+            "title": "Swing 46 Jazz and Supper Club",
+            "url": "http://eventful.com/newyork_ny/venues/swing-46-jazz-and-supper-club-/V0-001-001702960-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "",
+            "point": 1,
+            "place_types": [],
+            "modified": "2011-11-02 11:42:30",
+            "email": "",
+            "phone": "",
+            "prefix": "",
+            "created": "2011-11-02 11:42:30",
+            "image_url": "",
+            "nickname": "",
+            "slug": "swing-46-jazz-and-supper-club",
             "unit": ""
         }
     }

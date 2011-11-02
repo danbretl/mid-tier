@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil import parser
 import simplejson
 from django.test import TestCase
-from importer.models import ExternalCategory, Source
+from importer.models import Category, ExternalCategory, Source
 from prices.models import Price
 from places.models import City, Point, Place
 from events.models import Event, Occurrence
@@ -182,7 +182,7 @@ class PlaceAdaptorTest(TestCase):
         self.assertFalse(obj)
 
     def test_adapt_existing_valid(self):
-        point_obj = Point.objects.all()[0]
+        point_obj = Point.objects.filter(address="349 W 46th Street between Eighth and Ninth Avenues")[0]
         existing_place = Place(title='Swing 46 Jazz and Supper Club', point=point_obj)
         existing_place.save()
 
@@ -223,7 +223,7 @@ class CategoryAdaptorTest(TestCase):
 
 class OccurrenceAdaptorTest(TestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories',
-                'eventful_test_event']
+                'eventful_test_event', 'places', 'points']
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -253,10 +253,26 @@ class OccurrenceAdaptorTest(TestCase):
         self.assertFalse(obj)
 
     def test_adapt_existing_valid(self):
-        pass
+        event_obj = Event.objects.filter(title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')[0]
+        place_obj = Place.objects.filter(title='Swing 46 Jazz and Supper Club')[0]
+        existing_occ = Occurrence(start_time=datetime.time(20, 30),
+                start_date=datetime.date(2011, 10, 26), event=event_obj,
+                place=place_obj)
+        existing_occ.save()
+
+        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
+        first_occ = occurrence_gen.next()
+        first_occ['event'] = event_obj.id
+        first_occ['place'] = place_obj.id
+
+        created, obj = self.adaptor.parse(first_occ)
+        self.assertFalse(created)
+        self.assertEqual(existing_occ, obj)
+
 
 class EventAdaptorTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories']
+    fixtures = ['auth', 'categories', 'sources', 'external_categories',
+            'places', 'points', 'categories']
 
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
@@ -276,16 +292,23 @@ class EventAdaptorTest(TestCase):
                          u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic')
         self.assertEqual(obj.concrete_category.title, u'Concerts')
 
-        # check that we get multiple occurrences, check that they are being
-        # correctly capped
-
     def test_adapt_new_invalid(self):
-        created, obj = self.adaptor.parse(self.invalid_response)
-        self.assertFalse(created)
-        self.assertFalse(obj)
+        # FIXME: rewrite base adaptor to swallow exceptions and return None if
+        # fail_silent flag is set; then rewrite this test to reflect
+        # expectations for that behavior 
+        self.assertRaises(ValueError, self.adaptor.parse, self.invalid_response)
 
     def test_adapt_existing_valid(self):
-        pass
+        category_obj = Category.objects.filter(title='Concerts')[0]
+        place_obj = Place.objects.filter(title='Swing 46 Jazz and Supper Club')[0]
+        existing_event = Event(xid='E0-001-015489401-9@2011102620', title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
+                description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+                concrete_category=category_obj)
+        existing_event.save()
+
+        created, obj = self.adaptor.parse(self.event_response)
+        self.assertFalse(created)
+        self.assertEqual(existing_event, obj)
 
 class EventfulParserPriceParsingTest(TestCase):
     # Parsing prices with units -- may get false positives, for now
