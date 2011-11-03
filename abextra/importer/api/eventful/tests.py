@@ -1,19 +1,19 @@
-from django.contrib.gis import geos
 import os
 import datetime
+import simplejson
 from dateutil.relativedelta import relativedelta
 from dateutil import parser
-import simplejson
+from django.contrib.gis import geos
 from django.test import TestCase
-from importer.models import Category, ExternalCategory, Source
+from django_dynamic_fixture import get, DynamicFixture as F
+from events.models import Event, Occurrence
 from prices.models import Price
 from places.models import City, Point, Place
-from events.models import Event, Occurrence
+from importer.models import Category, ExternalCategory, Source
 from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
-from django_dynamic_fixture import get, DynamicFixture as F
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -66,8 +66,8 @@ class CityAdaptorTest(TestCase):
         created, city = self.adaptor.parse(self.event_response)
         self.assertTrue(created, 'City object was not newly created')
         self.assertIsInstance(city, City, 'City type was expected')
-        self.assertEqual(city.city, 'New York', 'Unexpected city value')
-        self.assertEqual(city.state, 'NY', 'Unexpected state value')
+        self.assertEqual('New York', city.city, 'Unexpected city value')
+        self.assertEqual('NY', city.state, 'Unexpected state value')
 
     def test_adapt_new_invalid(self):
         created, city = self.adaptor.parse(self.invalid_response)
@@ -75,15 +75,13 @@ class CityAdaptorTest(TestCase):
         self.assertIsNone(city, 'City object returned, despite invalid data')
 
     def test_adapt_existing_valid(self):
-        existing_city, _ = City.objects.get_or_create(city='New York', state='NY')
+        existing_city = get(City, city='New York', state='NY')
         created, city = self.adaptor.parse(self.event_response)
         self.assertFalse(created, 'City object created, despite existing match')
         self.assertEqual(existing_city, city, 'City object returned is not the existing match')
 
 
 class PriceAdaptorTest(TestCase):
-    fixtures = ('events',)
-
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -91,8 +89,10 @@ class PriceAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
         expanded_price = utils.expand_prices(self.event_response).next()
-        occurrence = Occurrence.objects.all()[0]
-        expanded_price['occurrence'] = occurrence.id
+        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
+                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
+                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
+        expanded_price['occurrence'] = occurrence_obj.id
 
         created, price = self.adaptor.parse(expanded_price)
         self.assertTrue(created, 'Price object was not newly created')
@@ -101,9 +101,10 @@ class PriceAdaptorTest(TestCase):
         self.assertEqual(u'dollars', price.units, 'Unexpected units value')
 
     def test_adapt_existing_valid(self):
-        occurrence_obj = Occurrence.objects.all()[0]
-        existing_price = Price(quantity=12.00, units='dollars', occurrence=occurrence_obj)
-        existing_price.save()
+        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
+                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
+                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
+        existing_price = get(Price, quantity=12.00, units='dollars', occurrence=occurrence_obj)
 
         expanded_price = utils.expand_prices(self.event_response).next()
         expanded_price['occurrence'] = occurrence_obj.id
@@ -115,9 +116,11 @@ class PriceAdaptorTest(TestCase):
 
     def test_adapt_new_invalid(self):
         expanded_price = list(utils.expand_prices(self.invalid_response)) or {}
-        self.assertFalse(expanded_price)
+        self.assertEqual({}, expanded_price, 'Price list parsed from price string despite invalid data') 
 
-        occurrence_obj = Occurrence.objects.all()[0]
+        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
+                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
+                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
         expanded_price['occurrence'] = occurrence_obj.id
 
         created, price = self.adaptor.parse(expanded_price)
@@ -135,15 +138,15 @@ class PointAdaptorTest(TestCase):
         created, point = self.adaptor.parse(self.event_response)
         self.assertTrue(created, 'Point object was not newly created')
         self.assertIsInstance(point, Point, 'Expected Point type')
-        self.assertEqual(point.geometry, geos.Point(-73.9925, 40.7601), 'Unexpected geometry value')
-        self.assertEqual(point.zip, u'10036', 'Unexpected zip value')
-        self.assertEqual(point.address, u'349 W 46th Street between Eighth and Ninth Avenues', 'Unexpected address value')
+        self.assertEqual(geos.Point(-73.9925, 40.7601), point.geometry, 'Unexpected geometry value')
+        self.assertEqual(u'10036', point.zip, 'Unexpected zip value')
+        self.assertEqual(u'349 W 46th Street between Eighth and Ninth Avenues', point.address, 'Unexpected address value')
         self.assertIsInstance(point.city, City, 'Expected City type')
 
     def test_adapt_new_invalid(self):
         created, point = self.adaptor.parse(self.invalid_response)
         self.assertFalse(created, 'Point object created despite invalid data')
-        self.assertFalse(point, 'Point object created despite invalid data')
+        self.assertIsNone(point, 'Point object created despite invalid data')
 
     def test_adapt_existing_valid(self):
         # point uniqueness: geometry, address
@@ -164,12 +167,13 @@ class PlaceAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
         event_response = TestResourceConsumer.consume_response()
-        adaptor = PlaceAdaptor()
-        created, place = adaptor.parse(event_response)
+        created, place = self.adaptor.parse(event_response)
+        # FIXME: type check assertion
+
         self.assertTrue(created, 'Place object was not newly created')
         self.assertIsInstance(place, Place, 'Expected Place type')
         self.assertEqual(u'Swing 46 Jazz and Supper Club', place.title, 'Unexpected place value')
-        self.assertIsInstance(place.point, Point, 'Unexpected point type')
+        self.assertIsInstance(place.point, Point, 'Expected Point type')
 
     def test_adapt_new_invalid(self):
         created, place = self.adaptor.parse(self.invalid_response)
@@ -198,7 +202,7 @@ class CategoryAdaptorTest(TestCase):
         category_data = self.event_response['categories']['category']
         created, category = self.adaptor.parse(category_data[0])
         self.assertTrue(created, 'Category was not newly created')
-        self.assertIsInstance(category, Category, 'Non Category object produced')
+        self.assertIsInstance(category, ExternalCategory, 'Non Category object produced')
         self.assertEqual(u'Concerts & Tour Dates', category.name, 'Unexpected category name')
         self.assertEqual(u'music', category.xid, 'Unexpected category xid')
 
@@ -210,18 +214,17 @@ class CategoryAdaptorTest(TestCase):
 
     def test_adapt_existing_valid(self):
         eventful_source = Source.objects.filter(name='eventful')[0]
-        existing_category = ExternalCategory(name='Concerts & Tour Dates',
+        existing_category = get(ExternalCategory, name='Concerts & Tour Dates',
                 xid='music', source=eventful_source)
-        existing_category.save()
 
         category_data = self.event_response['categories']['category']
         created, category = self.adaptor.parse(category_data[0])
-        self.assertFalse(created)
-        self.assertEqual(existing_category, category)
+        self.assertFalse(created, 'Category object created despite existing match')
+        self.assertEqual(existing_category, category, 'Category object returned is not the existing match')
 
 class OccurrenceAdaptorTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories',
-                'eventful_test_event', 'places', 'points']
+    fixtures = ['auth', 'categories', 'sources']
+
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -230,34 +233,42 @@ class OccurrenceAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
 
-        event_obj = Event.objects.all()[0]
+        event_obj = get(Event, xid='E0-001-042149604-1', title='Chromeo')
         occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
-        first_occ = occurrence_gen.next()
+        occurrence_data = occurrence_gen.next()
 
-        first_occ['event'] = event_obj.id
+        occurrence_data['event'] = event_obj.id
 
-        created, occurrence = self.adaptor.parse(first_occ)
-        self.assertIsInstance(occurrence.place, Place, 'Type of place object was unexpected')
-        self.assertTrue(occurrence.event, Event, 'Type of event object was unexpected')
-        self.assertEqual(occurrence.start_datetime, datetime.datetime(2011, 10,
-            26, 20, 30), 'Unexpected start_datetime value')
+        created, occurrence = self.adaptor.parse(occurrence_data)
+        self.assertTrue(created, 'Occurrence was not newly created')
+        self.assertIsInstance(occurrence, Occurrence, 'Expected Occurrence type')
+        self.assertIsInstance(occurrence.place, Place, 'Expected Place type')
+        self.assertIsInstance(occurrence.event, Event, 'Expected Event type')
+        self.assertEqual(datetime.date(2011, 10, 26), occurrence.start_date, 'Unexpected start_date value')
+        self.assertEqual(datetime.time(20, 30), occurrence.start_time, 'Unexpected start_time value')
         for occ in occurrence_gen:
             occ['event'] = event_obj.id
-            created, occurrence = self.adaptor.parse(first_occ)
-            self.assertTrue(created, 'Occurrence object was not newly created')
+            created, occurrence = self.adaptor.parse(occ)
+            self.assertTrue(created, 'Next occurrence object in set was not newly created')
+            self.assertIsInstance(occurrence, Occurrence, 'Expected Occurrence type')
 
     def test_adapt_new_invalid(self):
         created, event = self.adaptor.parse(self.invalid_response)
-        self.assertFalse(created)
-        self.assertFalse(event)
+        self.assertFalse(created, 'Event object created despite invalid data')
+        self.assertIsNone(event, 'Event object returned despite invalid data')
 
     def test_adapt_existing_valid(self):
-        event_obj = Event.objects.filter(title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!')[0]
-        place_obj = Place.objects.filter(title='Swing 46 Jazz and Supper Club')[0]
-        existing_occ = Occurrence(start_time=datetime.time(20, 30),
+        event_obj = get(Event, xid='E0-001-015489401-9@2011102620',
+                title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
+                description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+                concrete_category=get(Category, title='Concerts')) 
+        place_obj = get(Place, title='Swing 46 Jazz and Supper Club',
+                address='349 W 46th Street between Eighth and Ninth Avenues, New York, NY 10036',
+                point=F(geometry=geos.Point(y=40.7601, x=-73.9925),
+                    address='349 W 46th Street between Eighth and Ninth Avenues'))
+        existing_occ = get(Occurrence, start_time=datetime.time(20, 30),
                 start_date=datetime.date(2011, 10, 26), event=event_obj,
                 place=place_obj)
-        existing_occ.save()
 
         occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
         first_occ = occurrence_gen.next()
@@ -270,8 +281,7 @@ class OccurrenceAdaptorTest(TestCase):
 
 
 class EventAdaptorTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources', 'external_categories',
-            'places', 'points', 'categories']
+    fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
@@ -281,17 +291,18 @@ class EventAdaptorTest(TestCase):
 
     def test_adapt_new_valid(self):
 
-        created, occurrence = self.adaptor.parse(self.event_response)
+        created, event = self.adaptor.parse(self.event_response)
 
-        self.assertEqual(occurrence.xid, u'E0-001-015489401-9@2011102620', 'Unexpected xid value')
-        self.assertEqual(occurrence.title, u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', 'Unexpected title value')
-        self.assertEqual(occurrence.description,
-                         u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
-                         'Unexpected description value')
-        self.assertEqual(occurrence.url,
-                         u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic',
-                         'Unexpected url value')
-        self.assertEqual(occurrence.concrete_category.title, u'Concerts', 'Unexpected concrete category title value')
+        self.assertTrue(created, 'Event object not newly created')
+        self.assertIsInstance(event, Event, 'Event type unexpected')
+
+        self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')
+        self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title, 'Unexpected title value')
+        self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+                         event.description, 'Unexpected description value')
+        self.assertEqual(u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic',
+                         event.url, 'Unexpected url value')
+        self.assertEqual(u'Concerts', event.concrete_category.title, 'Unexpected concrete category title value')
 
     def test_adapt_new_invalid(self):
         # FIXME: rewrite base adaptor to swallow exceptions and return None if
@@ -300,16 +311,14 @@ class EventAdaptorTest(TestCase):
         self.assertRaises(ValueError, self.adaptor.parse, self.invalid_response)
 
     def test_adapt_existing_valid(self):
-        category_obj = Category.objects.filter(title='Concerts')[0]
-        place_obj = Place.objects.filter(title='Swing 46 Jazz and Supper Club')[0]
-        existing_event = Event(xid='E0-001-015489401-9@2011102620', title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
+        category_obj = get(Category, title='Concerts')
+        existing_event = get(Event, xid='E0-001-015489401-9@2011102620', title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
                 description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
                 concrete_category=category_obj)
-        existing_event.save()
 
-        created, occurrence = self.adaptor.parse(self.event_response)
+        created, event = self.adaptor.parse(self.event_response)
         self.assertFalse(created, 'Event newly created despite existing match')
-        self.assertEqual(existing_event, occurrence, 'Event object returned is not the existing match')
+        self.assertEqual(existing_event, event, 'Event object returned is not the existing match')
 
 class EventfulParserPriceParsingTest(TestCase):
     # Parsing prices with units -- may get false positives, for now
@@ -359,7 +368,7 @@ class EventfulParserPriceParsingTest(TestCase):
     def test_free_in_price_field_and_not_in_free_field(self):
         price_data = {"price": "FREE", "free": None}
         parsed_prices = list(utils.expand_prices(price_data))
-        self.assertEqual(parsed_prices, [], 'Unexpected prices value')
+        self.assertEqual([], parsed_prices, 'Unexpected prices value')
 
 
 class EventfulParserDateParsingTest(TestCase):
@@ -371,9 +380,11 @@ class EventfulParserDateParsingTest(TestCase):
 
         # test that event horizon clipping is working
 
-        self.assertEqual(is_all_day, False)
-        self.assertTrue(horizon_start < min(start_datetimes))
-        self.assertTrue(max(start_datetimes) < horizon_stop)
+        self.assertEqual(False, is_all_day, 'Unexpected is_all_day value')
+        self.assertTrue(horizon_start < min(start_datetimes),
+                'Datetime in occurrence set unexpectedly occurs before start of event horizon')
+        self.assertTrue(max(start_datetimes) < horizon_stop,
+                'Datetime in occurrence set unexpectedly occurs after end of event horizon')
 
         # now, test that distinct rrule and rdate parsing is working correctly:
         # try parsing from a year before creation date (set start_time and
@@ -390,10 +401,12 @@ class EventfulParserDateParsingTest(TestCase):
         # check that first recurrence instance (original start datetime for the
         # event) is in resultant datetime set
 
-        self.assertTrue(datetime.datetime(2011, 2, 19, 21, 0) in start_datetimes)
+        self.assertTrue(datetime.datetime(2011, 2, 19, 21, 0) in start_datetimes,
+                'First recurrence instance datetime is unexpectedly not a member of occurrence set')
 
         # check that rdates are in resultant datetime set (they start at 14:30
         # instead of 21:00 like the other rrule recurrences)
 
-        self.assertTrue(datetime.datetime(2011, 4, 10, 14, 30) in start_datetimes)
+        self.assertTrue(datetime.datetime(2011, 4, 10, 14, 30) in
+                start_datetimes, 'First datetime in rdate set is unexpectedly not a member of occurrence set')
 
