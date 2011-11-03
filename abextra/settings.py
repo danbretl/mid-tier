@@ -238,19 +238,19 @@ LOGGING = {
         },
         'importer.adaptor': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'importer.api.eventful.utils': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'importer.api.eventful.paginator': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'importer.api.eventful.consumer': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'importer.api.eventful.client': {
             'handlers': ['console', 'file'],
@@ -258,7 +258,7 @@ LOGGING = {
         },
         'importer.api.eventful.adaptor': {
             'handlers': ['console', 'file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
     }
 }
