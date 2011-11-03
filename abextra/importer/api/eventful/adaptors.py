@@ -31,7 +31,7 @@ class CityAdaptor(EventfulBaseAdaptor):
 
 class PointAdaptor(EventfulBaseAdaptor):
     model_form = PointImportForm
-    fields = ['latitude', 'longitude', 'address']
+    fields = ['geometry', 'address']
     slave_adaptors = {'city': CityAdaptor}
     form_data_map = {
         'address': 'address',

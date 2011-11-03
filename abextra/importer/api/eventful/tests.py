@@ -1,3 +1,4 @@
+from django.contrib.gis import geos
 import os
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -12,7 +13,7 @@ from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
-
+from django_dynamic_fixture import get
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -126,8 +127,6 @@ class PriceAdaptorTest(TestCase):
 
 
 class PointAdaptorTest(TestCase):
-    fixtures = ['cities']
-
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -136,10 +135,11 @@ class PointAdaptorTest(TestCase):
     def test_adapt_new_valid(self):
         created, point = self.adaptor.parse(self.event_response)
         self.assertTrue(created, 'Point object was not newly created')
-        self.assertEqual(point.latitude, 40.7601, 'Unexpected latitude value')
-        self.assertEqual(point.longitude, -73.9925, 'Unexpected longitude value')
+        self.assertIsInstance(point, Point, 'Expected Point type')
+        self.assertEqual(point.geometry, geos.Point(-73.9925, 40.7601), 'Unexpected geometry value')
         self.assertEqual(point.zip, u'10036', 'Unexpected zip value')
         self.assertEqual(point.address, u'349 W 46th Street between Eighth and Ninth Avenues', 'Unexpected address value')
+        self.assertIsInstance(point.city, City, 'Expected City type')
 
     def test_adapt_new_invalid(self):
         created, point = self.adaptor.parse(self.invalid_response)
@@ -147,11 +147,11 @@ class PointAdaptorTest(TestCase):
         self.assertFalse(point, 'Point object created despite invalid data')
 
     def test_adapt_existing_valid(self):
-        city_obj = City.objects.all()[0]
-        existing_point = Point(latitude=40.7601, longitude=-73.9925, zip='10036',
-                address='349 W 46th Street between Eighth and Ninth Avenues', city=city_obj)
-        existing_point.save()
-
+        # point uniqueness: geometry, address
+        existing_point = get(Point,
+            geometry=geos.Point(y=40.7601, x=-73.9925),
+            address='349 W 46th Street between Eighth and Ninth Avenues'
+        )
         created, point = self.adaptor.parse(self.event_response)
         self.assertFalse(created, 'Point object created despite existing match')
         self.assertEqual(existing_point, point, 'Point object returned is not the existing match')

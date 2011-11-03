@@ -1,30 +1,13 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
 from api.models import Consumer
-import urllib, urllib2
-from ipdb import set_trace 
+import urllib
 from django.test import TestCase
-from django.core.management import call_command
 from django.test.client import Client
 from events.models import Event
 from datetime import datetime
-import threading
 import random
 import json
 import logging
 import eventlet
-from eventlet.green import urllib2
-
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
 
 def test_concurrently(times):
     """ 
@@ -34,16 +17,19 @@ def test_concurrently(times):
     INSERT might fail when the INSERT assumes that the data has not changed
     since the SELECT.
     """
+
     def test_concurrently_decorator(test_func):
         def wrapper(*args, **kwargs):
             exceptions = []
             import threading
+
             def call_test_func():
                 try:
                     test_func(*args, **kwargs)
                 except Exception, e:
                     exceptions.append(e)
                     raise
+
             threads = []
             for i in range(times):
                 threads.append(threading.Thread())
@@ -53,9 +39,10 @@ def test_concurrently(times):
                 t.join()
             if exceptions:
                 raise Exception('test_concurrently intercepted %s exceptions: %s' % (len(exceptions), exceptions))
-        return wrapper
-    return test_concurrently_decorator
 
+        return wrapper
+
+    return test_concurrently_decorator
 
 
 TEST_LOGGER = logging.getLogger('api.test')
@@ -107,37 +94,38 @@ class StressTesting(TestCase):
     fixtures = ['auth', 'consumers', 'events', 'categories', 'places', 'user', 'eventsummary']
     consumer = Consumer.objects.get(id=1)
     encoded_params = '?'
-    encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
-                                        'consumer_secret' : consumer.secret,
-                                        'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
-                                        })
+    encoded_params += urllib.urlencode({'consumer_key': consumer.key,
+                                        'consumer_secret': consumer.secret,
+                                        'udid': '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3'
+    })
     events = [str(e.id) for e in Event.objects.all()]
     client = Client()
-    
+
     def x_simple_client_learn(self):
         clients = []
         num_clients = 100
         for num in range(num_clients):
             client = Client()
             clients.append(client)
-        #1) Create fixtures for each of these
-        apis_to_test = ['/api/v1/category/',
-                        '/api/v1/city/',
-                        '/api/v1/occurrence/',
-                        '/api/v1/occurrence_full/',
-                        '/api/v1/point/',
-                        '/api/v1/point_full/',
-                        '/api/v1/eventsummary/',
-                        '/api/v1/eventaction/',
-                        '/api/v1/event_full/',
-                        '/api/v1/price/',
-                        '/api/v1/eventrecommendation/',
-                        '/api/v1/place/',
-                        '/api/v1/place_full/',
-                        '/api/v1/user/1/',
-                        '/api/v1/event_featured/',
-                        '/api/v1/event/'
-                        ]
+            #1) Create fixtures for each of these
+        apis_to_test = (
+            '/api/v1/category/',
+            '/api/v1/city/',
+            '/api/v1/occurrence/',
+            '/api/v1/occurrence_full/',
+            '/api/v1/point/',
+            '/api/v1/point_full/',
+            '/api/v1/eventsummary/',
+            '/api/v1/eventaction/',
+            '/api/v1/event_full/',
+            '/api/v1/price/',
+            '/api/v1/eventrecommendation/',
+            '/api/v1/place/',
+            '/api/v1/place_full/',
+            '/api/v1/user/1/',
+            '/api/v1/event_featured/',
+            '/api/v1/event/'
+        )
         # Get these values instead from the fixtures.
         params = '/api/v1/?' + self.encoded_params
         response = client.get(params)
@@ -150,7 +138,7 @@ class StressTesting(TestCase):
             print "Content: ", api_response.content
             try:
                 print "JSON:    ", json.loads(api_response.content), "\n"
-            except:
+            except Exception:
                 pass
             print "Endpoint:", list_endpoint
             print "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -194,14 +182,14 @@ class StressTesting(TestCase):
         # Better than a hard-coded comparison to 10.
         all_objects = json.loads(response.content)
         self.assertEqual(len(Event.objects.all()),
-                             len(all_objects['objects']))
+                         len(all_objects['objects']))
 
         # Both of these have been handpicked to return only one result and in
         # particular, the first event. 
         for term in ['four', 'legend']:
             url = api + self.encoded_params + '&q=' + term
             response = self.assert200(url)
-            self.assertEqual(1,len(json.loads(response.content)['objects']))
+            self.assertEqual(1, len(json.loads(response.content)['objects']))
 
 
     #FAILING TEST - Investigate
@@ -213,10 +201,10 @@ class StressTesting(TestCase):
         # Testing event description endpoint.
         api = '/api/v1/event_full/'
         for eventstr in self.events[0:1]:
-            #TODO: Fix fixture of occurrence for event 2: missing place.
-						url = api + eventstr + "/" + self.encoded_params
-						resp = self.client.get(url)
-						self.assert200(url)
+        #TODO: Fix fixture of occurrence for event 2: missing place.
+            url = api + eventstr + "/" + self.encoded_params
+            resp = self.client.get(url)
+            self.assert200(resp)
             # check content of event
 
     #FAILING TEST - Investigate
@@ -228,7 +216,7 @@ class StressTesting(TestCase):
         loops = len(events) * len(events)
         for loop in range(loops):
             event = Event.objects.order_by('?')[0]
-            random_action = action[random.randrange(0,len(action))]
+            random_action = action[random.randrange(0, len(action))]
             post_data = u'{"action": "' + random_action
             post_data += '", "event": "/api/v1/event/' + str(event.id) + '/"}'
             resp = self.client.post(api + self.encoded_params,
@@ -237,14 +225,14 @@ class StressTesting(TestCase):
             self.assertEqual(resp.status_code, 201)
 
     def test_simple_event_action(self):
-				api = '/api/v1/eventaction/'
-				event = Event.objects.get(id=1)
-				action = 'g'
-				post_data = u'{"action": "%s", "event": "/api/v1/event/%i/"}' % (action, event.id)
-				resp = self.client.post(api + self.encoded_params,
-												data=post_data,
-												content_type='application/json')
-				self.assertEqual(resp.status_code, 201)
+        api = '/api/v1/eventaction/'
+        event = Event.objects.get(id=1)
+        action = 'g'
+        post_data = u'{"action": "%s", "event": "/api/v1/event/%i/"}' % (action, event.id)
+        resp = self.client.post(api + self.encoded_params,
+                                data=post_data,
+                                content_type='application/json')
+        self.assertEqual(resp.status_code, 201)
 
 
     def assert200(self, url):
@@ -261,13 +249,12 @@ class ConcurrencyTest(TestCase):
 
     def fetch(self, data):
         url = '/api/v1/registration/'
-        client = Client()
         consumer = Consumer.objects.get(id=1)
         encoded_params = '?'
-        encoded_params += urllib.urlencode({'consumer_key' : consumer.key,
-                                            'consumer_secret' : consumer.secret,
-                                            'udid' : '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF' + str(self.count)
-                                            })
+        encoded_params += urllib.urlencode({'consumer_key': consumer.key,
+                                            'consumer_secret': consumer.secret,
+                                            'udid': '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF' + str(self.count)
+        })
         client = Client()
         start = datetime.now()
         response = client.post(url + encoded_params, data=data, content_type='application/json')
@@ -278,18 +265,17 @@ class ConcurrencyTest(TestCase):
     def test_simple_concurrencytest(self):
         url = u'{"email": "some%s@example.com", "password1": "1234%s", "password2": "1234%s"}'
         pool = eventlet.GreenPool()
-        for response in pool.imap(self.fetch,[self.get_user_data(url,u) for u in self.users]):
+        for response in pool.imap(self.fetch, [self.get_user_data(url, u) for u in self.users]):
             self.assertEqual(201, response.status_code)
             self.count += 1
 
     def get_user_data(self, str, userid):
-        return str%(userid,userid,userid)
+        return str % (userid, userid, userid)
 
     def test_stress(self):
-        import datetime
         url = u'{"email": "some%s@example.com", "password1": "1234%s", "password2": "1234%s"}'
         pool = eventlet.GreenPool()
-        users = [self.get_user_data(url,u) for u in range(1000)]
+        users = [self.get_user_data(url, u) for u in range(1000)]
         start = datetime.datetime.now()
         responses = pool.imap(self.fetch, users)
         for response in responses:
@@ -297,5 +283,5 @@ class ConcurrencyTest(TestCase):
             self.count += 1
         print "Time taken: ", datetime.datetime.now() - start
 
-        average = sum([t.microseconds for t in self.times])/len(self.times)
-        print "Average: ", average*1.0/1000000
+        average = sum([t.microseconds for t in self.times]) / len(self.times)
+        print "Average: ", average * 1.0 / 1000000
