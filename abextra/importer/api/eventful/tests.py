@@ -13,7 +13,7 @@ from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
-from django_dynamic_fixture import get
+from django_dynamic_fixture import get, DynamicFixture as F
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -57,7 +57,6 @@ class TestResourceConsumer(object):
 
 
 class CityAdaptorTest(TestCase):
-
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -158,8 +157,6 @@ class PointAdaptorTest(TestCase):
 
 
 class PlaceAdaptorTest(TestCase):
-    fixtures = ['points']
-
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
@@ -170,19 +167,21 @@ class PlaceAdaptorTest(TestCase):
         adaptor = PlaceAdaptor()
         created, place = adaptor.parse(event_response)
         self.assertTrue(created, 'Place object was not newly created')
+        self.assertIsInstance(place, Place, 'Expected Place type')
         self.assertEqual(u'Swing 46 Jazz and Supper Club', place.title, 'Unexpected place value')
-        self.assertIsInstance(Point, place.point, 'Unexpected point type')
+        self.assertIsInstance(place.point, Point, 'Unexpected point type')
 
     def test_adapt_new_invalid(self):
         created, place = self.adaptor.parse(self.invalid_response)
         self.assertFalse(created, 'Place object created despite invalid data')
-        self.assertFalse(place, 'Place object created despite invalid data')
+        self.assertIsNone(place, 'Place object returned despite invalid data')
 
     def test_adapt_existing_valid(self):
-        point_obj = Point.objects.filter(address="349 W 46th Street between Eighth and Ninth Avenues")[0]
-        existing_place = Place(title='Swing 46 Jazz and Supper Club', point=point_obj)
-        existing_place.save()
-
+        # place uniqueness: point, title
+        existing_place = get(Place, title='Swing 46 Jazz and Supper Club', point=F(
+            geometry=geos.Point(y=40.7601, x=-73.9925),
+            address='349 W 46th Street between Eighth and Ninth Avenues'
+        ))
         created, place = self.adaptor.parse(self.event_response)
         self.assertFalse(created, 'Place object created despite existing match')
         self.assertEqual(existing_place, place, 'Place object returned is not the existing match')

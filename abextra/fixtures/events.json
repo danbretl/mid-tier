@@ -1,50 +1,5 @@
 [
     {
-        "pk": 9,
-        "model": "events.category",
-        "fields": {
-            "thumb": "category_thumbs/btn_cat_magenta.png",
-            "parent": 135,
-            "title": "Gatherings",
-            "color": "#d80b8c",
-            "image": "category_images/gatherings.png",
-            "is_associative": false,
-            "button_icon": "category_button_icons/btn_cat_magenta.png",
-            "category_type": "C",
-            "small_icon": "",
-            "association_coefficient": 0.0,
-            "slug": "gatherings",
-            "icon": "category_icons/gatherings.png"
-        }
-    },
-    {
-        "pk": 252,
-        "model": "places.city",
-        "fields": {
-            "city": "Jackson Heights",
-            "state": "NY",
-            "slug": "jackson-heights-ny"
-        }
-    },
-    {
-        "pk": 251,
-        "model": "places.city",
-        "fields": {
-            "city": "Union",
-            "state": "NJ",
-            "slug": "union-nj"
-        }
-    },
-    {
-        "pk": 250,
-        "model": "places.city",
-        "fields": {
-            "city": "New York",
-            "state": "NY",
-            "slug": "new-york-ny"
-        }
-    },
-    {
         "pk": 135,
         "model": "events.category",
         "fields": {
@@ -63,153 +18,143 @@
         }
     },
     {
-        "pk": 194,
+        "pk": 277,
+        "model": "places.city",
+        "fields": {
+            "city": "Newark",
+            "state": "NJ",
+            "slug": "newark-nj"
+        }
+    },
+    {
+        "pk": 275,
+        "model": "places.city",
+        "fields": {
+            "city": "New York",
+            "state": "NY",
+            "slug": "new-york-ny"
+        }
+    },
+    {
+        "pk": 276,
+        "model": "places.city",
+        "fields": {
+            "city": "East Rutherford",
+            "state": "NJ",
+            "slug": "east-rutherford-nj"
+        }
+    },
+    {
+        "pk": 137,
         "model": "events.category",
         "fields": {
-            "thumb": "",
-            "parent": 9,
-            "title": "Public Event",
-            "color": "",
-            "image": "",
-            "is_associative": false,
-            "button_icon": "",
-            "category_type": "C",
-            "small_icon": "",
-            "association_coefficient": 0.0,
-            "slug": "public-event",
-            "icon": ""
-        }
-    },
-    {
-        "pk": 1434,
-        "model": "places.point",
-        "fields": {
-            "city": 250,
-            "zip": "10038",
-            "country": "US",
-            "longitude": null,
-            "address": "One Pace Plaza",
-            "latitude": null
-        }
-    },
-    {
-        "pk": 200,
-        "model": "events.category",
-        "fields": {
-            "thumb": "",
-            "parent": 138,
-            "title": "Educational",
-            "color": "",
-            "image": "",
-            "is_associative": false,
-            "button_icon": "",
-            "category_type": "C",
-            "small_icon": "",
-            "association_coefficient": 0.0,
-            "slug": "educational",
-            "icon": ""
-        }
-    },
-    {
-        "pk": 1433,
-        "model": "places.point",
-        "fields": {
-            "city": 250,
-            "zip": "10007",
-            "country": "US",
-            "longitude": null,
-            "address": "280 Broadway",
-            "latitude": null
-        }
-    },
-    {
-        "pk": 1432,
-        "model": "places.point",
-        "fields": {
-            "city": 252,
-            "zip": "11372",
-            "country": "US",
-            "longitude": null,
-            "address": "34-47-34-49 87th St",
-            "latitude": null
-        }
-    },
-    {
-        "pk": 16,
-        "model": "events.category",
-        "fields": {
-            "thumb": "category_thumbs/btn_cat_purple.png",
+            "thumb": "category_thumbs/btn_cat_cyan.png",
             "parent": 135,
-            "title": "Nightlife",
-            "color": "#812991",
-            "image": "category_images/clubs.png",
-            "is_associative": false,
-            "button_icon": "category_button_icons/btn_cat_purple.png",
-            "category_type": "C",
-            "small_icon": "",
-            "association_coefficient": 0.0,
-            "slug": "nightlife",
-            "icon": "category_icons/club.png"
-        }
-    },
-    {
-        "pk": 1431,
-        "model": "places.point",
-        "fields": {
-            "city": 251,
-            "zip": "07083",
-            "country": "US",
-            "longitude": null,
-            "address": "",
-            "latitude": null
-        }
-    },
-    {
-        "pk": 1,
-        "model": "events.category",
-        "fields": {
-            "thumb": "category_thumbs/btn_cat_green.png",
-            "parent": 135,
-            "title": "Sports & Recreation",
-            "color": "#50b849",
-            "image": "category_images/sports_and_recreation.png",
-            "is_associative": false,
-            "button_icon": "category_button_icons/btn_cat_green.png",
-            "category_type": "C",
-            "small_icon": "",
-            "association_coefficient": 0.0,
-            "slug": "sports-recreation",
-            "icon": "category_icons/sports_and_recreation.png"
-        }
-    },
-    {
-        "pk": 1430,
-        "model": "places.point",
-        "fields": {
-            "city": 250,
-            "zip": "10007",
-            "country": "US",
-            "longitude": null,
-            "address": "21 Warren Street",
-            "latitude": null
-        }
-    },
-    {
-        "pk": 138,
-        "model": "events.category",
-        "fields": {
-            "thumb": "category_thumbs/btn_cat_salmon.png",
-            "parent": 135,
-            "title": "Hobbies & Interest",
-            "color": "#f15c72",
-            "image": "category_images/hobbies_and_interest.png",
+            "title": "Music",
+            "color": "#00aec6",
+            "image": "category_images/music.png",
             "is_associative": true,
-            "button_icon": "category_button_icons/btn_cat_salmon.png",
+            "button_icon": "category_button_icons/btn_cat_cyan.png",
             "category_type": "C",
             "small_icon": "",
             "association_coefficient": 0.0,
-            "slug": "hobbies-interest",
-            "icon": "category_icons/hobbies_and_interest.png"
+            "slug": "music",
+            "icon": "category_icons/music.png"
+        }
+    },
+    {
+        "pk": 1505,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-73.9943090000000012 40.7526640000000029)",
+            "city": 275,
+            "country": "US",
+            "zip": "10001",
+            "address": "311 West 34th Street"
+        }
+    },
+    {
+        "pk": 1503,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-73.9588669999999979 40.7829789999999974)",
+            "city": 275,
+            "country": "US",
+            "zip": "10128",
+            "address": "1071 Fifth Avenue"
+        }
+    },
+    {
+        "pk": 1502,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-73.9799000000000007 40.7650160000000028)",
+            "city": 275,
+            "country": "US",
+            "zip": "10019",
+            "address": "881 Seventh Avenue"
+        }
+    },
+    {
+        "pk": 1501,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-73.9927619999999990 40.7697080000000014)",
+            "city": 275,
+            "country": "US",
+            "zip": "10019",
+            "address": "610 West 56th Street"
+        }
+    },
+    {
+        "pk": 1500,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-74.1702679999999930 40.7337470000000010)",
+            "city": 277,
+            "country": "US",
+            "zip": "07102",
+            "address": "165 Mulberry Street"
+        }
+    },
+    {
+        "pk": 1498,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-73.9934054576720968 40.7504800000001026)",
+            "city": 275,
+            "country": "US",
+            "zip": "10001",
+            "address": "4 Penn Plaza"
+        }
+    },
+    {
+        "pk": 1499,
+        "model": "places.point",
+        "fields": {
+            "geometry": "POINT (-74.0701636999999948 40.8129964999999970)",
+            "city": 276,
+            "country": "US",
+            "zip": "07073",
+            "address": "50 State Route 120"
+        }
+    },
+    {
+        "pk": 30,
+        "model": "events.category",
+        "fields": {
+            "thumb": "",
+            "parent": 137,
+            "title": "Concerts",
+            "color": "",
+            "image": "",
+            "is_associative": false,
+            "button_icon": "",
+            "category_type": "C",
+            "small_icon": "",
+            "association_coefficient": 0.0,
+            "slug": "concerts",
+            "icon": ""
         }
     },
     {
@@ -231,843 +176,527 @@
         }
     },
     {
-        "pk": 5095,
+        "pk": 5210,
         "model": "events.event",
         "fields": {
             "submitted_by": 4,
             "popularity_score": 0,
-            "xid": "E0-001-041345503-0@2011103015",
-            "description": " Location: GRCTR GC306  Kaplan GMAT course",
+            "xid": "E0-001-042149604-1",
+            "description": "",
             "video_url": "",
-            "created": "2011-10-28 21:29:32",
-            "url": "http://eventful.com/newyork_ny/events/kaplan-wp-gmwr11508-91111-/E0-001-041345503-0@2011103015?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "title": "Kaplan WP GMWR11508 (9/11-11/20)",
+            "created": "2011-11-03 00:48:56",
+            "url": "http://eventful.com/newyork_ny/events/chromeo-/E0-001-042149604-1?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-042149604-1.jpeg",
+            "title": "Chromeo",
             "is_active": true,
-            "modified": "2011-10-28 21:32:39",
-            "concrete_category": 194,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
             "image_url": "",
-            "secret_key": "ccb16ebefd",
-            "slug": "kaplan-wp-gmwr11508-911-1120",
+            "secret_key": "8098c02325",
+            "slug": "chromeo",
             "categories": []
         }
     },
     {
-        "pk": 5094,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-038698318-7@2011111809",
-            "description": " Location: CIVIC MULTI  Lubin Faculty Council would like to host several meetings throughout the 2011-2012 Academic year. The second and third meeting would be in NYC. Preferably in the Multipurpose Room or in Student Union.",
-            "video_url": "",
-            "created": "2011-10-28 21:29:32",
-            "url": "http://eventful.com/newyork_ny/events/lubin-faculty-council-mee-/E0-001-038698318-7@2011111809?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "title": "Lubin Faculty Council Meeting",
-            "is_active": true,
-            "modified": "2011-10-28 21:32:39",
-            "concrete_category": 200,
-            "image_url": "",
-            "secret_key": "b82a6eed7b",
-            "slug": "lubin-faculty-council-meeting",
-            "categories": []
-        }
-    },
-    {
-        "pk": 1500,
+        "pk": 1571,
         "model": "places.place",
         "fields": {
             "status": 1,
-            "description": "<b>Pace University</b> is a private co-educational comprehensive\nuniversity with campuses located in New York City and throughout Westchester County and the Hudson\nValley in New York State. Pace was founded by two brothers, Homer S. Pace and Charles A. Pace, in 1906 primarily as a business school for men\nand women.<p></p>The current university consists of two colleges (the Dyson College of Arts and Sciences &amp; the\nPforzheimer Honors College), five schools (Lubin School of Business, the School of Computer Science and Information Systems, the School of Education, the\nSchool of Law, and the Lienhard School of\nNursing), and an institute (the World Trade Institute, formerly in the World Trade Center).<p></p>The Environmental Law program in the School of Law is very well-known and has received national accolades from the annual\nreport on law schools done by the magazine US News and\nWorld Report. Similarly, the accounting program for the Lubin School of Business (on both the Bachelor&#39;s Degree and MBA levels) is\nconsidered to be fairly prestigious and high caliber.<p></p>Pace is home to the National Actors Theatre founded by Tony\nRandall.",
-            "title": "Pace University",
-            "url": "http://eventful.com/newyork_ny/venues/pace-university-/V0-001-002232024-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "location_images/V0-001-002232024-2_2.jpeg",
-            "point": 1434,
+            "description": "<p>The Hammerstein Ballroom NYC is located within the famous Manhattan Center Studios - a space it shares with another famous event venue, The Grand.</p><p>The history of the Manhattan Center Studios and the Hammerstein Ballroom NYC started in 1906 when it was constructed by Oscar Hammerstein. It was originally called the Manhattan Opera House. After a few changes in ownership, the Grand Ballroom was added to the roof of the existing opera house. Today, the original part of the theatre is called the Hammerstein Ballroom. The Hammerstein Ballroom NYC is particularly unique because it is a two-tiered venue with an adjustable capacity that is dependent on the configuration of the production. The Hammerstein Ballroom NYC is additionally known for its elegance and impeccable acoustic design.</p><p>Due to the on-premise television & recording studios, post-production suites and optional production services, the popularity of the Hammerstein Ballroom NYC with the creme de la creme of the arts world, should come as no surprise.</p><p>\nIn addition to Grammy Award-winning recordings and Oscar-winning orchestral sets, the Hammerstein Ballroom schedule also includes industry events such as fashion shows, product launches and award shows to name but a few.</p><p>\nFor all the latest news and up-to-date information on what&#39;s on at the Hammerstein Ballroom NYC, make Eventful your source, and check out the Hammerstein Ballroom schedule above.</p>",
+            "title": "Hammerstein Ballroom",
+            "url": "http://eventful.com/newyork_ny/venues/hammerstein-ballroom-/V0-001-000389380-8?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000389380-8_1.jpeg",
+            "point": 1505,
             "place_types": [],
-            "modified": "2011-10-28 21:29:31",
+            "modified": "2011-11-03 00:48:56",
             "email": "",
             "phone": "",
             "prefix": "",
-            "created": "2011-10-28 21:29:31",
+            "created": "2011-11-03 00:48:56",
             "image_url": "",
             "nickname": "",
-            "slug": "pace-university",
+            "slug": "hammerstein-ballroom",
             "unit": ""
         }
     },
     {
-        "pk": 5093,
+        "pk": 5209,
         "model": "events.event",
         "fields": {
             "submitted_by": 4,
             "popularity_score": 0,
-            "xid": "E0-001-041987957-9@2011103118",
-            "description": " Location: KESSL CONFB  Kaplan ACWR11704 PV (Mon/Wed)",
+            "xid": "E0-001-040868616-8",
+            "description": "",
             "video_url": "",
-            "created": "2011-10-28 21:29:32",
-            "url": "http://eventful.com/newyork_ny/events/kaplan-pv-acwr11704-10261-/E0-001-041987957-9@2011103118?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "title": "Kaplan PV ACWR11704 (10/26-11/30)",
+            "created": "2011-11-03 00:48:56",
+            "url": "http://eventful.com/newyork_ny/events/3-doors-down-theory-deadman-pop-evil-/E0-001-040868616-8?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-040868616-8_1.png",
+            "title": "3 Doors Down with Theory of a Deadman, Pop Evil",
             "is_active": true,
-            "modified": "2011-10-28 21:32:39",
-            "concrete_category": 200,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
             "image_url": "",
-            "secret_key": "2c3e4fbffb",
-            "slug": "kaplan-pv-acwr11704-1026-1130",
+            "secret_key": "67c162cb45",
+            "slug": "3-doors-down-with-theory-of-a-deadman-pop-evil",
             "categories": []
         }
     },
     {
-        "pk": 5090,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-043220605-5",
-            "description": "Italy&#39;s many regions, from Tuscany to Sicily, are famous not only for their amazingly diverse selection of wines, but also for their equally diverse styles of cuisine. Regional Italian Cuisine and Wine introduces you to three traditional dishes from Northern, Middle, and Southern Italy, cooked fresh in our in-house kitchen, and paired with a tasting of five regional Italian wines.\n\nRegister at: http://www.newyorkvintners.com/p-7254-regional-italian-cuisine-and-wine-nov-5-1pm-c.aspx",
-            "video_url": "",
-            "created": "2011-10-28 21:18:44",
-            "url": "http://eventful.com/newyork_ny/events/regional-italian-cuisine-and-wine-/E0-001-043220605-5?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "event_images/E0-001-043220605-5.jpeg",
-            "title": "Regional Italian Cuisine and Wine",
-            "is_active": true,
-            "modified": "2011-10-28 21:18:44",
-            "concrete_category": 138,
-            "image_url": "",
-            "secret_key": "9f280a4c3f",
-            "slug": "regional-italian-cuisine-and-wine",
-            "categories": []
-        }
-    },
-    {
-        "pk": 5089,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-043220561-2",
-            "description": "While the Piemontese appellations of Barolo and Barbaresco have enjoyed numerous outstanding vintages in the past few decades, none surpass the 2001s in terms of overall quality. For us the 2001s have always been the real deal, a truly special benchmark vintage. For this special 10th anniversary retrospective blind tasting, we\u0092ll check in on the development of the most coveted 2001 Barolo and Barbaresco. Naturally, we\u0092ve selected 13 \u0093wine of the vintage\u0094 candidates for your tasting pleasure and intellectual scrutiny. Our lineup of 2001 Barolos and Barbarescos is filled with all killers and no fillers.\n\n* Barbaresco &quot;Asili&quot; (Bruno Giacosa) (95WA, 94IWC, 93WS)\n* Barbaresco &quot;Vigneto Vursu Valeirano&quot; (La Spinetta) (93IWC, 93WS)\n* Barolo &quot;San Rocco&quot; (Azelia) (93WA, 95WS)\n* Barolo &quot;Ginestra&quot; (Clerico) (95WA, 94IWC, 96WS)\n* Barolo &quot;Nei Cannubi&quot; (L. Einaudi) (91WA, 91IWC, 91WS \u0096 an EWS favorite)\n* Barolo &quot;Cicala&quot; (Aldo Conterno) (92WA, 95IWC, 94WS)\n* Barolo &quot;Cascina Francia&quot; (Giacomo Conterno) (96WA, 91IWC, 91WS)\n* Barolo &quot;Giachini&quot; (Giovanni Corino) (92WA, 93IWC, 92WS)\n* Barolo &quot;Le Rocche de Falletto&quot; (Bruno Giacosa) (97WA, 96IWC, 97WS)\n* Barolo &quot;Cannubi Boschis&quot; (Luciano Sandrone) (95+WA, 97IWC, 96WS)\n* Barolo &quot;Rocche dell\u0092Annunziata&quot; (Roberto Voerzio) (94WA, 95IWC, 95WS)\n* Lange &quot;Sori San Lorenzo&quot; (Gaja) (95WA, 95IWC, 96WS)\n* Lange &quot;Sori Tildin&quot; (Gaja) (95WA, 94IWC, 95WS)\n\nRegister at: http://www.newyorkvintners.com/p-7246-ews-2001-barolos-barbarescos-nov-7-630pm.aspx",
-            "video_url": "",
-            "created": "2011-10-28 21:18:44",
-            "url": "http://eventful.com/newyork_ny/events/executive-wine-seminar-2001-barolos-barbarescos-/E0-001-043220561-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "event_images/E0-001-043220561-2.jpeg",
-            "title": "Executive Wine Seminar: 2001 Barolos & Barbarescos",
-            "is_active": true,
-            "modified": "2011-10-28 21:18:44",
-            "concrete_category": 138,
-            "image_url": "",
-            "secret_key": "42a89ec8a8",
-            "slug": "executive-wine-seminar-2001-barolos-barbarescos",
-            "categories": []
-        }
-    },
-    {
-        "pk": 5088,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-043221029-8@2011102916",
-            "description": "Executive Chef Ryan Smith demonstrates how to make delicious, gourmet flat bread pizzas using quality ingredients for in-home eating. Pizza and the Wines That Love It features three courses of pizza paired with six food friendly wines that work great with this casual meal.  After leaving you will never make a frozen pizza again. Please be aware that vegetarian and other dietary restrictions may not be available. All classes are an hour and a half to two hours long.\n\nSlideshow: http://newyorkvintners.wordpress.com/2011/05/26/pizza-and-the-wines-that-love-it-class-slideshow/#slideshow_top\n\nRegister at: http://www.newyorkvintners.com/p-7278-pizza-and-the-wines-that-love-it-nov-26-4pm-c.aspx",
-            "video_url": "",
-            "created": "2011-10-28 21:18:44",
-            "url": "http://eventful.com/newyork_ny/events/pizza-and-wines-love-/E0-001-043221029-8@2011102916?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "event_images/E0-001-043221029-82011102916.jpeg",
-            "title": "Pizza and the Wines that Love It",
-            "is_active": true,
-            "modified": "2011-10-28 21:18:44",
-            "concrete_category": 138,
-            "image_url": "",
-            "secret_key": "02571670eb",
-            "slug": "pizza-and-the-wines-that-love-it",
-            "categories": []
-        }
-    },
-    {
-        "pk": 1499,
+        "pk": 1569,
         "model": "places.place",
         "fields": {
             "status": 1,
             "description": "",
-            "title": "HipHost Spot #320",
-            "url": "http://eventful.com/newyork_ny/venues/hiphost-spot-320-/V0-001-005741504-7?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "title": "Guggenheim Museum",
+            "url": "http://eventful.com/newyork_ny/venues/guggenheim-museum-/V0-001-000439048-7?utm_source=apis&utm_medium=apim&utm_campaign=apic",
             "image": "",
-            "point": 1433,
+            "point": 1503,
             "place_types": [],
-            "modified": "2011-10-28 21:18:44",
+            "modified": "2011-11-03 00:48:56",
             "email": "",
             "phone": "",
             "prefix": "",
-            "created": "2011-10-28 21:18:44",
+            "created": "2011-11-03 00:48:56",
             "image_url": "",
             "nickname": "",
-            "slug": "hiphost-spot-320",
+            "slug": "guggenheim-museum",
             "unit": ""
         }
     },
     {
-        "pk": 5087,
+        "pk": 5207,
         "model": "events.event",
         "fields": {
             "submitted_by": 4,
             "popularity_score": 0,
-            "xid": "E0-001-043147402-0@2011102819",
-            "description": " Come and join us on this fabolous walking tour that will take you through one of New York&#39;s most prized and memorable sights. Take a walk through the history of the area, from its humble beginnings sprung has such an amazing mecca of gigantic skyscrapers. On this tour we will be going through St. Pauls Chapel (oldest survivng church in New York City), City Hall Park. We will see incredible views of the Broooklyn Bridge, Statue of Liberty, Ellis Island, and most importantly the great World Trade Center memorial site which is sure to touch everyones hearts and souls.  About the Host:I am a fun loving, adventure thriving kind of guy. I love working with people, showing them around, and making sure everyone has a great time.",
-            "video_url": "",
-            "created": "2011-10-28 21:18:44",
-            "url": "http://eventful.com/newyork_ny/events/world-trade-center-legacy-/E0-001-043147402-0@2011102819?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "title": "World Trade Center Legacy",
-            "is_active": true,
-            "modified": "2011-10-28 21:18:44",
-            "concrete_category": 16,
-            "image_url": "",
-            "secret_key": "83877e5ae7",
-            "slug": "world-trade-center-legacy",
-            "categories": []
-        }
-    },
-    {
-        "pk": 1498,
-        "model": "places.place",
-        "fields": {
-            "status": 1,
+            "xid": "E0-001-042818288-2",
             "description": "",
-            "title": "HipHost Spot #327",
-            "url": "http://eventful.com/jacksonheights/venues/hiphost-spot-327-/V0-001-005741512-6?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "point": 1432,
-            "place_types": [],
-            "modified": "2011-10-28 21:18:43",
-            "email": "",
-            "phone": "",
-            "prefix": "",
-            "created": "2011-10-28 21:18:43",
-            "image_url": "",
-            "nickname": "",
-            "slug": "hiphost-spot-327",
-            "unit": ""
-        }
-    },
-    {
-        "pk": 5086,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-043146827-8@2011102819",
-            "description": " As Manhattan has gentrified, many immigrant populations have moved to the Outer Boroughs. Jackson Heights, Queens has become one of the the most ethnically diverse neighborhoods in New York City. Indian, Chinese, Korean, Ecuadorian and Afghan people call this area home. My tour will take you outside the guidebooks to Little India. You&#39;ll eat where the locals eat and shop where the locals shop. Bring spices home to your own kitchen and add some color to your wardrobe while enjoying a Bollywood soundtrack.  About the Host:I&#39;m a writer and life-long lover of all things New York. I&#39;ve lived abroad - France, Ghana, Ireland and Egypt - so I know what someone wants when they are looking for the local experience. I love telling people about my city and bringing the real New York alive for visitors. I&#39;m always up for an adventure so every tour is different.",
             "video_url": "",
-            "created": "2011-10-28 21:18:43",
-            "url": "http://eventful.com/jacksonheights/events/authentic-indian-food-/E0-001-043146827-8@2011102819?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "title": "Authentic Indian Food in Jackson Heights, Queens",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/mgmt-/E0-001-042818288-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-042818288-2.jpeg",
+            "title": "MGMT",
             "is_active": true,
-            "modified": "2011-10-28 21:29:44",
-            "concrete_category": 16,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
             "image_url": "",
-            "secret_key": "ec77ca6184",
-            "slug": "authentic-indian-food-in-jackson-heights-queens",
+            "secret_key": "c8029465c4",
+            "slug": "mgmt",
             "categories": []
         }
     },
     {
-        "pk": 1497,
+        "pk": 1568,
         "model": "places.place",
         "fields": {
             "status": 1,
+            "description": "<p>Located in New York City\u2019s Midtown Manhattan, Carnegie Hall stands as one of the nation\u2019s most famous concert venues. The iconic venue was built in the early 1890\u2019s by the well known philanthropist Andrew Carnegie, and despite its location in a city known for a plethora of entertainment venues, Carnegie Hall NYC has still managed to become one of the most legendary venues for both classical and popular music. </p><p>Carnegie Hall consists of three very separate and distinct performance spaces: The Main Hall, Zankel Hall and Weill Recital Hall. The Main Hall at </p><p>Carnegie Hall, also known as the Isaac Stern Auditorium, seats 2,804 guests and is the largest out of the three spaces. Zankel Hall is the mid-size venue of the three with a seating capacity of 599 and is known for hosting a variety of performing and educational functions. Last but not least, the Weill Recital Hall can be found on the third floor of Carnegie Hall and offers an intimate setting with 268 seats. </p><p>On average, the Carnegie Hall schedule features about 250 performances each year. Although it hasn\u2019t had a resident company since 1962, the Carnegie Hall schedule still hosts a number of events from renting performance organizations.</p><p>Why not plan your visit now? Make Eventful your source for all the latest news and events information from Carnegie Hall NYC, and check out the schedule right here!</p>",
+            "title": "Carnegie Hall",
+            "url": "http://eventful.com/newyork_ny/venues/carnegie-hall-/V0-001-000342003-7?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000342003-7_3.jpg",
+            "point": 1502,
+            "place_types": [],
+            "modified": "2011-11-03 00:48:55",
+            "email": "",
+            "phone": "",
+            "prefix": "",
+            "created": "2011-11-03 00:48:55",
+            "image_url": "",
+            "nickname": "",
+            "slug": "carnegie-hall",
+            "unit": ""
+        }
+    },
+    {
+        "pk": 5206,
+        "model": "events.event",
+        "fields": {
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-040510715-6",
             "description": "",
-            "title": "Put your location on our MAP Below",
-            "url": "http://eventful.com/union_nj/venues/put-your-location-on-our-map-below-/V0-001-005715724-0?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "point": 1431,
-            "place_types": [],
-            "modified": "2011-10-28 21:18:43",
-            "email": "",
-            "phone": "",
-            "prefix": "",
-            "created": "2011-10-28 21:18:43",
-            "image_url": "",
-            "nickname": "",
-            "slug": "put-your-location-on-our-map-below",
-            "unit": ""
-        }
-    },
-    {
-        "pk": 5085,
-        "model": "events.event",
-        "fields": {
-            "submitted_by": 4,
-            "popularity_score": 0,
-            "xid": "E0-001-040894219-8@2011110609",
-            "description": "\n\n",
             "video_url": "",
-            "created": "2011-10-28 21:18:43",
-            "url": "http://eventful.com/union_nj/events/world-run-day-2011-union-a-/E0-001-040894219-8@2011110609?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/jason-mraz-/E0-001-040510715-6?utm_source=apis&utm_medium=apim&utm_campaign=apic",
             "image": "",
-            "title": "World Run Day 2011 - Union and vicinity | Union, New Jersey ...",
+            "title": "Jason Mraz",
             "is_active": true,
-            "modified": "2011-10-28 21:18:43",
-            "concrete_category": 1,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
             "image_url": "",
-            "secret_key": "2661b03a9d",
-            "slug": "world-run-day-2011-union-and-vicinity-union-new-je",
+            "secret_key": "6e6d20769e",
+            "slug": "jason-mraz",
             "categories": []
         }
     },
     {
-        "pk": 1496,
+        "pk": 5205,
+        "model": "events.event",
+        "fields": {
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-042976292-2",
+            "description": "",
+            "video_url": "",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/jayz-kanye-west-watch-throne-/E0-001-042976292-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-042976292-2.jpeg",
+            "title": "Jay-Z with Kanye West, Watch The Throne",
+            "is_active": true,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "05d9ec8746",
+            "slug": "jay-z-with-kanye-west-watch-the-throne",
+            "categories": []
+        }
+    },
+    {
+        "pk": 1567,
         "model": "places.place",
         "fields": {
             "status": 1,
-            "description": "New York Vintners has both a conspicuous passion for the classic wines of Europe and a loyalty to quality wines from the world&#39;s other notable regions. Our own personal curiosity about wine keeps New York Vintners selection frequently changing, and our devotion to a wine&#39;s characteristics of terroir focuses our selection on producers that create a sense of place. No matter if you&#39;re looking for everyday drinking wines, undiscovered specialties, or rare trophy vintages, New York Vintners warm, enthusiastic approach to wine will suit your tastes.\n\nHours & Directions:\n\nMonday-Saturday, 11:00am to 8:00pm\nSunday, 12:00pm to 8:00pm.\n\nWe are located in Tribeca, at 21 Warren Street, between Broadway and Church Street. The closest parking garage is Central Parking System, 75 Park Place(corner of West Broadway), 212-812-3999.\n\nSubway options:\nR, W to City Hall\n6 to City Hall\nA, C to Chambers Street\n1, 2, 3 to Chambers Street",
-            "title": "New York Vintners",
-            "url": "http://eventful.com/newyork_ny/venues/new-york-vintners-/V0-001-000316630-6?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "",
-            "point": 1430,
+            "description": "<p>Terminal 5 NYC is the youngest live music venue in the &#39;Bowery Presents&#39; venue collection. Located in midtown Manhattan, Terminal 5 NYC is equipped with three bars, a wrap around mezzanine and boasts a seating capacity of 3,000. As well as being the most recently introduced, Terminal 5 NYC is also the largest of the Bowery Presents venue to date.</p><p>While music fans in the Big Apple have no shortage of options when it comes to live music venues, Terminal 5 NYC continues to draw crowds, as well as major acts. PJ Harvey, Scissor Sisters, Alice in Chains, Bravery, Passion Pit, Peaches and Deadmau5 are just a few of those featured on the Terminal 5 schedule in the past, with plenty more big names lined up for the future. And Terminal 5 NYC is not just limited to live music; the venue is also available for private parties and corporate or industry events.</p><p>For all the latest news and up-to-date information on what&#39;s on at Terminal 5 NYC, make Eventful your source, and check out the Terminal 5 schedule above.</p>",
+            "title": "Terminal 5",
+            "url": "http://eventful.com/newyork_ny/venues/terminal-5-/V0-001-000529171-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000529171-2_3.jpeg",
+            "point": 1501,
             "place_types": [],
-            "modified": "2011-10-28 21:18:43",
+            "modified": "2011-11-03 00:48:55",
             "email": "",
             "phone": "",
             "prefix": "",
-            "created": "2011-10-28 21:18:43",
+            "created": "2011-11-03 00:48:55",
             "image_url": "",
             "nickname": "",
-            "slug": "new-york-vintners",
+            "slug": "terminal-5",
             "unit": ""
         }
     },
     {
-        "pk": 5083,
+        "pk": 5204,
         "model": "events.event",
         "fields": {
             "submitted_by": 4,
             "popularity_score": 0,
-            "xid": "E0-001-043220613-4",
-            "description": "The perfect class for anyone who wants to learn the basics of wine and cheese and how the two are successfully paired together. Join us and taste through a flight of wines paired with a wide selection of gourmet cheeses provided by Artisanal, one of New York&#39;s premium suppliers of fine cheese. \n\nRegister at: http://www.newyorkvintners.com/p-7086-wine-101-wine-cheese-101-oct-30-4pm-c.aspx",
+            "xid": "E0-001-041671403-1",
+            "description": "",
             "video_url": "",
-            "created": "2011-10-28 21:18:43",
-            "url": "http://eventful.com/newyork_ny/events/wine-101-wine-cheese-101-/E0-001-043220613-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
-            "image": "event_images/E0-001-043220613-4.jpeg",
-            "title": "Wine 101: Wine & Cheese 101",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/chromeo-/E0-001-041671403-1?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-041671403-1.jpeg",
+            "title": "Chromeo",
             "is_active": true,
-            "modified": "2011-10-28 21:18:43",
-            "concrete_category": 138,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
             "image_url": "",
-            "secret_key": "2a3cd533c2",
-            "slug": "wine-101-wine-cheese-101",
+            "secret_key": "7b60b84410",
+            "slug": "chromeo",
             "categories": []
         }
     },
     {
-        "pk": 14574,
-        "model": "events.occurrence",
+        "pk": 5203,
+        "model": "events.event",
         "fields": {
-            "start_datetime": "2011-11-20 15:00:00",
-            "end_date": "2011-11-20",
-            "start_time": "15:00:00",
-            "start_date": "2011-11-20",
-            "place": 1500,
-            "end_time": "17:30:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5095
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-040867333-1",
+            "description": "",
+            "video_url": "",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/foo-fighters-madison-square-garden-/E0-001-040867333-1?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-040867333-1_1.png",
+            "title": "Foo Fighters",
+            "is_active": true,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "f74a9cef32",
+            "slug": "foo-fighters",
+            "categories": []
         }
     },
     {
-        "pk": 14573,
-        "model": "events.occurrence",
+        "pk": 1566,
+        "model": "places.place",
         "fields": {
-            "start_datetime": "2011-11-13 15:00:00",
-            "end_date": "2011-11-13",
-            "start_time": "15:00:00",
-            "start_date": "2011-11-13",
-            "place": 1500,
-            "end_time": "17:30:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5095
+            "status": 1,
+            "description": "<p>The Prudential Center is a multi-purpose indoor arena located in downtown Newark, New Jersey. The venue first opened its doors to the public on October 25, 2007 and boasts 750 flat screen television monitors, 76 luxury suites, an eight-sided high-definition video scoreboard, a 4,800 square foot LED screen and two large signature entrance cylinders. Although a relative newbie in the arena industry, the Prudential Center Newark has already become a popular New Jersey and New York metropolitan area venue for sports and live entertainment.\n</p><p>Currently home to the NHL&#39;s New Jersey Devils, the NBA&#39;s New Jersey Nets, and the Seaton Hall Men&#39;s Basketball team, the Prudential Center packs a busy schedule.</p><p>Concerts are another integral part of the Prudential Center schedule, and the Newark venue regularly plays host to many of the biggest names in music. Bon Jovi, Britney Spears, Taylor Swift, Nickelback, Alicia Keys, Foo Fighters, and Katy Perry are just a few of those featured on the schedule in the past.</p><p>The Prudential Center schedule also features a number of political rallies, family shows and special events. With such a wide variety of entertainment options on offer, it&#39;s easy to see why the Prudential Center currently stands among the best-loved venues on the East Coast.</p><p>There&#39;s no better time to experience this Newark landmark. Make Eventful your source for all the latest news and up-to-date event information from the Prudential Center Newark, and start planning your visit by checking out the schedule right here!</p>",
+            "title": "Prudential Center",
+            "url": "http://eventful.com/newark/venues/prudential-center-/V0-001-000989370-3?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000989370-3.jpeg",
+            "point": 1500,
+            "place_types": [],
+            "modified": "2011-11-03 00:48:55",
+            "email": "",
+            "phone": "",
+            "prefix": "",
+            "created": "2011-11-03 00:48:55",
+            "image_url": "",
+            "nickname": "",
+            "slug": "prudential-center",
+            "unit": ""
         }
     },
     {
-        "pk": 14572,
-        "model": "events.occurrence",
+        "pk": 5202,
+        "model": "events.event",
         "fields": {
-            "start_datetime": "2011-11-06 15:00:00",
-            "end_date": "2011-11-06",
-            "start_time": "15:00:00",
-            "start_date": "2011-11-06",
-            "place": 1500,
-            "end_time": "17:30:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5095
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-039696080-2",
+            "description": "",
+            "video_url": "",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newark/events/foo-fighters-prudential-center-/E0-001-039696080-2?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-039696080-2.png",
+            "title": "Foo Fighters with Cage the Elephant",
+            "is_active": true,
+            "modified": "2011-11-03 00:49:29",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "4a12136b58",
+            "slug": "foo-fighters-with-cage-the-elephant",
+            "categories": []
         }
     },
     {
-        "pk": 14571,
-        "model": "events.occurrence",
+        "pk": 1564,
+        "model": "places.place",
         "fields": {
-            "start_datetime": "2011-10-30 15:00:00",
-            "end_date": "2011-10-30",
-            "start_time": "15:00:00",
-            "start_date": "2011-10-30",
-            "place": 1500,
-            "end_time": "17:30:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5095
+            "status": 1,
+            "description": "<p>Madison Square Garden New York, also known as MSG or The Garden, hails itself as \u201cThe World\u2019s Most Famous Arena.\u201d Whether you&#39;re a sports star or musician, or simply a fan, Madison Square Garden New York is <i>the</i> ultimate entertainment venue, and a must-do on the list of things to see in the Big Apple.</p><p>The original Madison Square Garden New York opened its doors to the public in 1968. The venue which stands today at 8th Avenue between 31st and 33rd Streets, is actually the fourth version of The Garden, and what a venue it is. Madison Square Garden New York is home to the NBA\u2019s New York Knicks, the WNBA\u2019s New York Liberty and the NHL\u2019s New York Rangers.</p><p>Madison Square Garden concerts are a major deal on the music calendar, with only the biggest names in the industry making it onto the listings there. Previous performers have included the likes of John Lennon (his final appearance before his murder in 1980), Elton John, The Police, Michael Jackson, Billy Joel, The Rolling Stones, Taylor Swift, Dave Matthews Band, The Black Eyed Peas, Bon Jovi, Sir Paul McCartney, and many more. Accommodating all these major sporting and music dates, it comes as no surprise then that the Madison Square Garden events schedule is a packed one.</p><p>Check out the Madison Square Garden events listings for all the latest news and up-to-date information on what&#39;s on and coming up at the world-famous Madison Square Garden New York.</p>",
+            "title": "Madison Square Garden",
+            "url": "http://eventful.com/newyork_ny/venues/madison-square-garden-/V0-001-000790109-9?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000790109-9_3.jpeg",
+            "point": 1498,
+            "place_types": [],
+            "modified": "2011-11-03 00:48:55",
+            "email": "",
+            "phone": "",
+            "prefix": "",
+            "created": "2011-11-03 00:48:55",
+            "image_url": "",
+            "nickname": "",
+            "slug": "madison-square-garden",
+            "unit": ""
         }
     },
     {
-        "pk": 14570,
-        "model": "events.occurrence",
+        "pk": 5201,
+        "model": "events.event",
         "fields": {
-            "start_datetime": "2011-11-18 09:00:00",
-            "end_date": "2011-11-18",
-            "start_time": "09:00:00",
-            "start_date": "2011-11-18",
-            "place": 1500,
-            "end_time": "14:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5094
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-042389084-3",
+            "description": "",
+            "video_url": "",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/newyork_ny/events/enrique-iglesias-madison-square-garden-/E0-001-042389084-3?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "event_images/E0-001-042389084-3_3.jpeg",
+            "title": "Enrique Iglesias",
+            "is_active": true,
+            "modified": "2011-11-03 00:49:28",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "b9e18b7e39",
+            "slug": "enrique-iglesias",
+            "categories": []
         }
     },
     {
-        "pk": 14569,
-        "model": "events.occurrence",
+        "pk": 1565,
+        "model": "places.place",
         "fields": {
-            "start_datetime": "2011-11-28 18:00:00",
-            "end_date": "2011-11-28",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-28",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
+            "status": 1,
+            "description": "Though the Izod Center may no longer host the Nets or the Devils, it still has the biggest seating capacity of any arena in New Jersey and remains a favorite among musicians.  The Izod Center&#39;s concert schedule is constantly full of hit musicians -- especially Bruce Springsteen -- because the arena was built specifically to enhance the acoustics of performers; and because Izod doesn&#39;t charge nearly as much in facility fees.  This has led to infamous performances by The Boss, The Grateful Dead, Kiss, and Queen at this East Rutherford arena.\n\nAlso known as the Meadowlands Arena due to its location in the Meadowlands Sports Complex, the Izod Center was built in 1981 and sits just ten minutes from Teterboro Airport.  When the arena&#39;s schedule isn&#39;t full of superstar musicians, the Izod Center also hosts a variety of family and sporting events, including the NCAA Division 1 Fordham Rams.  The venue also offers a full list of amenities plus a Parents&#39; Waiting Room for concerts and a fine dining restaurant called the Winners Club, making it the premier entertainment destination in East Rutherford.  \n\nAudiences looking for a venue that hosts the biggest names in music need look no further than the Izod Center.  For the arena&#39;s full calendar of events, just check the schedule on Eventful.",
+            "title": "Izod Center",
+            "url": "http://eventful.com/eastrutherford/venues/izod-center-/V0-001-000104874-1?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "location_images/V0-001-000104874-1_2.jpeg",
+            "point": 1499,
+            "place_types": [],
+            "modified": "2011-11-03 00:48:55",
+            "email": "",
+            "phone": "",
+            "prefix": "",
+            "created": "2011-11-03 00:48:55",
+            "image_url": "",
+            "nickname": "",
+            "slug": "izod-center",
+            "unit": ""
         }
     },
     {
-        "pk": 14568,
-        "model": "events.occurrence",
+        "pk": 5200,
+        "model": "events.event",
         "fields": {
-            "start_datetime": "2011-11-21 18:00:00",
-            "end_date": "2011-11-21",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-21",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
+            "submitted_by": 4,
+            "popularity_score": 0,
+            "xid": "E0-001-042246454-4",
+            "description": " Watch The Throne Tour",
+            "video_url": "",
+            "created": "2011-11-03 00:48:55",
+            "url": "http://eventful.com/eastrutherford/events/jay-z-kanye-west-caddy-da-don-/E0-001-042246454-4?utm_source=apis&utm_medium=apim&utm_campaign=apic",
+            "image": "",
+            "title": "Jay- Z - Kanye West - Caddy Da Don",
+            "is_active": true,
+            "modified": "2011-11-03 00:49:28",
+            "concrete_category": 30,
+            "image_url": "",
+            "secret_key": "19e096fdc0",
+            "slug": "jay-z-kanye-west-caddy-da-don",
+            "categories": []
         }
     },
     {
-        "pk": 14567,
+        "pk": 14849,
         "model": "events.occurrence",
         "fields": {
-            "start_datetime": "2011-11-16 18:00:00",
-            "end_date": "2011-11-16",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-16",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14566,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-14 18:00:00",
-            "end_date": "2011-11-14",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-14",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14565,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-09 18:00:00",
-            "end_date": "2011-11-09",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-09",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14564,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-07 18:00:00",
-            "end_date": "2011-11-07",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-07",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14563,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-02 18:00:00",
-            "end_date": "2011-11-02",
-            "start_time": "18:00:00",
-            "start_date": "2011-11-02",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14562,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-31 18:00:00",
-            "end_date": "2011-10-31",
-            "start_time": "18:00:00",
-            "start_date": "2011-10-31",
-            "place": 1500,
-            "end_time": "22:05:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5093
-        }
-    },
-    {
-        "pk": 14558,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-05 13:00:00",
-            "end_date": "2011-11-05",
-            "start_time": "13:00:00",
-            "start_date": "2011-11-05",
-            "place": 1496,
-            "end_time": "15:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5090
-        }
-    },
-    {
-        "pk": 14557,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-07 18:30:00",
-            "end_date": "2011-11-07",
-            "start_time": "18:30:00",
-            "start_date": "2011-11-07",
-            "place": 1496,
-            "end_time": "20:30:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5089
-        }
-    },
-    {
-        "pk": 14556,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-26 16:00:00",
-            "end_date": "2011-11-26",
-            "start_time": "16:00:00",
-            "start_date": "2011-11-26",
-            "place": 1496,
-            "end_time": "18:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5088
-        }
-    },
-    {
-        "pk": 14555,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-19 16:00:00",
-            "end_date": "2011-11-19",
-            "start_time": "16:00:00",
-            "start_date": "2011-11-19",
-            "place": 1496,
-            "end_time": "18:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5088
-        }
-    },
-    {
-        "pk": 14554,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-12 16:00:00",
-            "end_date": "2011-11-12",
-            "start_time": "16:00:00",
-            "start_date": "2011-11-12",
-            "place": 1496,
-            "end_time": "18:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5088
-        }
-    },
-    {
-        "pk": 14553,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-05 16:00:00",
-            "end_date": "2011-11-05",
-            "start_time": "16:00:00",
-            "start_date": "2011-11-05",
-            "place": 1496,
-            "end_time": "18:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5088
-        }
-    },
-    {
-        "pk": 14552,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-29 16:00:00",
-            "end_date": "2011-10-29",
-            "start_time": "16:00:00",
-            "start_date": "2011-10-29",
-            "place": 1496,
-            "end_time": "18:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5088
-        }
-    },
-    {
-        "pk": 14551,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-07 19:00:00",
-            "end_date": "2011-11-07",
-            "start_time": "19:00:00",
-            "start_date": "2011-11-07",
-            "place": 1499,
-            "end_time": "21:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5087
-        }
-    },
-    {
-        "pk": 14550,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-31 19:00:00",
-            "end_date": "2011-10-31",
-            "start_time": "19:00:00",
-            "start_date": "2011-10-31",
-            "place": 1499,
-            "end_time": "21:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5087
-        }
-    },
-    {
-        "pk": 14549,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-30 13:00:00",
-            "end_date": "2011-10-30",
-            "start_time": "13:00:00",
-            "start_date": "2011-10-30",
-            "place": 1499,
-            "end_time": "15:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5087
-        }
-    },
-    {
-        "pk": 14548,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-29 13:00:00",
-            "end_date": "2011-10-29",
-            "start_time": "13:00:00",
-            "start_date": "2011-10-29",
-            "place": 1499,
-            "end_time": "15:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5087
-        }
-    },
-    {
-        "pk": 14547,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-28 19:00:00",
-            "end_date": "2011-10-28",
-            "start_time": "19:00:00",
-            "start_date": "2011-10-28",
-            "place": 1499,
-            "end_time": "21:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5087
-        }
-    },
-    {
-        "pk": 14546,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-21 19:00:00",
-            "end_date": "2011-11-21",
-            "start_time": "19:00:00",
-            "start_date": "2011-11-21",
-            "place": 1498,
-            "end_time": "23:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14545,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-20 13:00:00",
-            "end_date": "2011-11-20",
-            "start_time": "13:00:00",
-            "start_date": "2011-11-20",
-            "place": 1498,
-            "end_time": "17:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14544,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-19 13:00:00",
-            "end_date": "2011-11-19",
-            "start_time": "13:00:00",
-            "start_date": "2011-11-19",
-            "place": 1498,
-            "end_time": "17:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14543,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-31 19:00:00",
-            "end_date": "2011-10-31",
-            "start_time": "19:00:00",
-            "start_date": "2011-10-31",
-            "place": 1498,
-            "end_time": "23:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14542,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-30 13:00:00",
-            "end_date": "2011-10-30",
-            "start_time": "13:00:00",
-            "start_date": "2011-10-30",
-            "place": 1498,
-            "end_time": "17:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14541,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-29 13:00:00",
-            "end_date": "2011-10-29",
-            "start_time": "13:00:00",
-            "start_date": "2011-10-29",
-            "place": 1498,
-            "end_time": "17:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14540,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-10-28 19:00:00",
-            "end_date": "2011-10-28",
-            "start_time": "19:00:00",
-            "start_date": "2011-10-28",
-            "place": 1498,
-            "end_time": "23:00:00",
-            "is_all_day": false,
-            "one_off_place": "",
-            "event": 5086
-        }
-    },
-    {
-        "pk": 14539,
-        "model": "events.occurrence",
-        "fields": {
-            "start_datetime": "2011-11-06 09:00:00",
+            "start_datetime": "2011-11-05 19:00:00",
             "end_date": null,
-            "start_time": "09:00:00",
-            "start_date": "2011-11-06",
-            "place": 1497,
+            "start_time": "19:00:00",
+            "start_date": "2011-11-05",
+            "place": 1567,
             "end_time": null,
             "is_all_day": false,
             "one_off_place": "",
-            "event": 5085
+            "event": 5210
         }
     },
     {
-        "pk": 14537,
+        "pk": 14848,
         "model": "events.occurrence",
         "fields": {
-            "start_datetime": "2011-10-30 16:00:00",
-            "end_date": "2011-10-30",
-            "start_time": "16:00:00",
-            "start_date": "2011-10-30",
-            "place": 1496,
-            "end_time": "18:00:00",
+            "start_datetime": "2011-11-09 19:00:00",
+            "end_date": null,
+            "start_time": "19:00:00",
+            "start_date": "2011-11-09",
+            "place": 1571,
+            "end_time": null,
             "is_all_day": false,
             "one_off_place": "",
-            "event": 5083
+            "event": 5209
+        }
+    },
+    {
+        "pk": 14846,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-11 21:30:00",
+            "end_date": null,
+            "start_time": "21:30:00",
+            "start_date": "2011-11-11",
+            "place": 1569,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5207
+        }
+    },
+    {
+        "pk": 14845,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-23 20:00:00",
+            "end_date": null,
+            "start_time": "20:00:00",
+            "start_date": "2011-11-23",
+            "place": 1568,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5206
+        }
+    },
+    {
+        "pk": 14844,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-07 19:30:00",
+            "end_date": null,
+            "start_time": "19:30:00",
+            "start_date": "2011-11-07",
+            "place": 1564,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5205
+        }
+    },
+    {
+        "pk": 14843,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-04 19:00:00",
+            "end_date": null,
+            "start_time": "19:00:00",
+            "start_date": "2011-11-04",
+            "place": 1567,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5204
+        }
+    },
+    {
+        "pk": 14842,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-13 19:00:00",
+            "end_date": null,
+            "start_time": "19:00:00",
+            "start_date": "2011-11-13",
+            "place": 1564,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5203
+        }
+    },
+    {
+        "pk": 14841,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-14 19:00:00",
+            "end_date": null,
+            "start_time": "19:00:00",
+            "start_date": "2011-11-14",
+            "place": 1566,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5202
+        }
+    },
+    {
+        "pk": 14840,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-04 20:00:00",
+            "end_date": null,
+            "start_time": "20:00:00",
+            "start_date": "2011-11-04",
+            "place": 1564,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5201
+        }
+    },
+    {
+        "pk": 14839,
+        "model": "events.occurrence",
+        "fields": {
+            "start_datetime": "2011-11-05 19:30:00",
+            "end_date": null,
+            "start_time": "19:30:00",
+            "start_date": "2011-11-05",
+            "place": 1565,
+            "end_time": null,
+            "is_all_day": false,
+            "one_off_place": "",
+            "event": 5200
         }
     }
 ]
