@@ -11,6 +11,7 @@ class Migration(DataMigration):
 
     def backwards(self, orm):
         for point in orm.Point.objects.all():
+            point.latitude, point.longitude = point.geometry.y, point.geometry.x
             point.geometry = None
             point.save()
 
