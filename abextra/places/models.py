@@ -54,6 +54,7 @@ class Point(geo_models.Model):
     objects = geo_models.GeoManager()
 
     class Meta:
+        unique_together = (('geometry', 'address'))
         verbose_name = _('point')
         verbose_name_plural = _('points')
         ordering = ('address',)
