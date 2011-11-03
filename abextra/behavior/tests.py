@@ -2,24 +2,15 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from events.models import Category, Event
 from behavior.models import EventAction, EventActionAggregate
-from preprocess.utils import MockInitializer
+from django_dynamic_fixture import get
 
 
 class EventActionAggregateTest(TestCase):
-    fixtures = ['auth', 'categories']
-
     def setUp(self):
-        user = User.objects.get(username='tester_api')
-        category = Category.objects.get(id=1)
-
-        self.aggr = EventActionAggregate.objects.create(
-            user=user,
-            category=category
-        )
+        self.aggr = get(EventActionAggregate)
 
     def test_initialized_with_zero_counts(self):
-        action_counts = (getattr(self.aggr, a) for a in 'gvix')
-        self.assertTrue(all(map(lambda x: x == 0, action_counts)))
+        self.assertTupleEqual((0,0,0,0), self.aggr.as_tuple(), 'GVIX initialized with non-zero values')
 
     def test_update_action_count_in_mem(self):
         self.aggr.update_action_count('G')
@@ -30,35 +21,21 @@ class EventActionAggregateTest(TestCase):
         self.assertEqual(self.aggr.x, 2)
 
         reloded_aggr = EventActionAggregate.objects.get(id=self.aggr.id)
-        action_counts = (getattr(reloded_aggr, a) for a in 'gvix')
-        self.assertTrue(all(map(lambda x: x == 0, action_counts)))
+        self.assertTupleEqual((0,0,0,0), reloded_aggr.as_tuple(), 'GVIX update unexpected persist')
 
     def test_update_action_count_persist(self):
         self.aggr.update_action_count('G')
         self.aggr.update_action_count('x', -3, commit=True)
 
         reloaded_aggr = EventActionAggregate.objects.get(id=self.aggr.id)
-        action_counts = [getattr(reloaded_aggr, a) for a in 'gvix']
-        self.assertEqual(action_counts, [1, 0, 0, -3])
-
-    def tearDown(self):
-        self.aggr.delete()
+        self.assertTupleEqual((1,0,0,-3), reloaded_aggr.as_tuple(), 'Unexpected GVIX values')
 
 
 class UpdateAggregateBehaviorSignalTest(TestCase):
-    fixtures = ['auth', 'categories', 'places']
-
     def setUp(self):
-        MockInitializer(1).run()
-        user = User.objects.get(username='tester_api')
-        event = Event.objects.get(id=1)
-        # categorize events with with the first four cats
-        categories = Category.objects.filter(id__in=(1,2,3,4))
-        for category in categories:
-            event.categories.add(category)
-        self.user = user
-        self.categories = categories
-        self.event = event
+        self.categories = get(Category, n=4)
+        self.event = get(Event, categories=self.categories)
+        self.user = get(User)
 
     def test_update_with_existing(self):
         """
@@ -69,10 +46,10 @@ class UpdateAggregateBehaviorSignalTest(TestCase):
         """
         # setup some existing aggregates
         for category in self.categories[:2]:
-            EventActionAggregate(user=self.user, category=category, i=1).save()
+            EventActionAggregate.objects.create(user=self.user, category=category, i=1)
 
         # insert a new event action
-        EventAction(user=self.user, event=self.event, action='I').save()
+        EventAction.objects.create(user=self.user, event=self.event, action='I')
 
         # make some assertions
         user_agg_qs_base = EventActionAggregate.objects.filter(user=self.user)

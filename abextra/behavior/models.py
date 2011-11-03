@@ -4,13 +4,13 @@ from events.models import Event, Category
 
 class EventActionManager(models.Manager):
     def ignore_non_actioned_events(self, user, events):
-        actioned_event_ids = user.event_actions.filter(event__in=events) \
-            .values_list('event_id', flat=True)
+        actioned_event_ids = user.event_actions.filter(event__in=events).values_list('event_id', flat=True)
         # FIXME since events are passed in as ids it's a bit inefficient
         events = Event.objects.filter(id__in=events)
         non_actioned_events = events.exclude(id__in=actioned_event_ids)
         for event in non_actioned_events:
             self.model(event=event, user=user, action='I').save()
+
 
 class EventAction(models.Model):
     """Represents user's action on a particular event."""
@@ -33,6 +33,7 @@ class EventAction(models.Model):
 
     def __unicode__(self): return unicode(self.id or '?')
 
+
 class EventActionAggregate(models.Model):
     """Helps store/retrieve precomputed user_category_action aggregates."""
     user = models.ForeignKey(User)
@@ -46,6 +47,9 @@ class EventActionAggregate(models.Model):
         unique_together = (('user', 'category'),)
 
     def __unicode__(self): return unicode(self.id or '?')
+
+    def as_tuple(self):
+        return tuple(getattr(self, attr) for attr in 'gvix')
 
     def update_action_count(self, action, delta=1, commit=False):
         # using reflection, set appropriate aggregate attribute
