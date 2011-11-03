@@ -66,8 +66,10 @@ class CityAdaptorTest(TestCase):
         created, city = self.adaptor.parse(self.event_response)
         self.assertTrue(created, 'City object was not newly created')
         self.assertIsInstance(city, City, 'City type was expected')
+        # check all attributes
         self.assertEqual('New York', city.city, 'Unexpected city value')
         self.assertEqual('NY', city.state, 'Unexpected state value')
+        self.assertEqual('new-york-ny', city.slug, 'Unexpected slug value')
 
     def test_adapt_new_invalid(self):
         created, city = self.adaptor.parse(self.invalid_response)
@@ -168,8 +170,6 @@ class PlaceAdaptorTest(TestCase):
     def test_adapt_new_valid(self):
         event_response = TestResourceConsumer.consume_response()
         created, place = self.adaptor.parse(event_response)
-        # FIXME: type check assertion
-
         self.assertTrue(created, 'Place object was not newly created')
         self.assertIsInstance(place, Place, 'Expected Place type')
         self.assertEqual(u'Swing 46 Jazz and Supper Club', place.title, 'Unexpected place value')
@@ -232,10 +232,9 @@ class OccurrenceAdaptorTest(TestCase):
         self.event_adaptor = EventAdaptor()
 
     def test_adapt_new_valid(self):
-
         event_obj = get(Event, xid='E0-001-042149604-1', title='Chromeo')
-        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
-        occurrence_data = occurrence_gen.next()
+#        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
+#        occurrence_data = occurrence_gen.next()
 
         occurrence_data['event'] = event_obj.id
 
@@ -288,14 +287,10 @@ class EventAdaptorTest(TestCase):
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
         self.adaptor = EventAdaptor()
 
-
     def test_adapt_new_valid(self):
-
         created, event = self.adaptor.parse(self.event_response)
-
         self.assertTrue(created, 'Event object not newly created')
         self.assertIsInstance(event, Event, 'Event type unexpected')
-
         self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')
         self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title, 'Unexpected title value')
         self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
