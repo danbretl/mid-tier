@@ -34,8 +34,16 @@ class BaseAdaptor(object):
                 if producer_callable:
                     self._slave_adaptors_o2m[producer_callable] = adaptor_cls()
 
-    def parse(self, raw_data):
-        form_data = self._adapt_form_data(raw_data, {})
+    def adapt(self, raw_data):
+        form_data = self._adapt_form_data(raw_data)
+        return self._adapt_form(form_data)
+
+    def adapt_m2o(self, raw_data, **kwargs):
+        form_data_list = self._adapt_form_data_m2o(raw_data, **kwargs)
+        for form_data in form_data_list:
+            yield self._adapt_form(form_data)
+
+    def _adapt_form(self, form_data):
         # create cache key
         key = self._cache_key(form_data)
         # try to get from cache
@@ -46,7 +54,7 @@ class BaseAdaptor(object):
         # if cache miss, create or get from db
         if not instance:
             # try to create and validate form
-            file_data = self._adapt_file_data(raw_data, {})
+            file_data = self._adapt_file_data(raw_data)
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
                 # now that the form has been cleaned and the data in it has
@@ -94,14 +102,28 @@ class BaseAdaptor(object):
         self.logger.debug('field tuple %s' % str(tup))
         return hash(tup)
 
-    def _adapt_form_data(self, raw_data, form_data):
+    def _adapt_form_data(self, raw_data):
         # set the source
-        form_data['source'] = self.source_name
+        form_data = {'source': self.source_name}
         form_data = self._adapt_slaves(raw_data, form_data)
         form_data = self._adapt_form_data_mappings(raw_data, form_data)
         form_data = self.adapt_form_data(raw_data, form_data)
         return form_data
 
+    def adapt_form_data(self, raw_data, form_data):
+        """hook for overrides"""
+        return form_data
+
+    # many-to-one relationship handler
+    def _adapt_form_data_m2o(self, raw_data, **kwargs):
+        form_data_list = []
+        return self.adapt_form_data_m2o(raw_data, form_data_list, **kwargs)
+
+    def adapt_form_data_m2o(self, raw_data, related_id, form_data_list):
+        """hook for overrides"""
+        return form_data_list
+
+    # foreign relatives
     def _adapt_slaves(self, raw_data, form_data):
         for form_field, adaptor in self._slave_adaptors.items():
             created, obj = adaptor.parse(raw_data)
@@ -115,11 +137,6 @@ class BaseAdaptor(object):
             form_data[field] = core.utils.dict_path_get(raw_data, source_path)
         return form_data
 
-    # FIXME rename into adaptor_hook
-    def adapt_form_data(self, raw_data, form_data):
-        """hook for overrides"""
-        return form_data
-
     # FIXME should live form-level
     def _is_valid_image(self, file_path):
         """checks the minimum dimensions of an import image"""
@@ -128,7 +145,8 @@ class BaseAdaptor(object):
         min_dims = settings.IMPORT_IMAGE_MIN_DIMS
         return width >= min_dims['width'] and height >= min_dims['height']
 
-    def _adapt_file_data(self, raw_data, file_data):
+    def _adapt_file_data(self, raw_data):
+        file_data = {}
         for field, source_path in self.file_data_map.items():
             images = core.utils.dict_path_get(raw_data, source_path)
             if images:

@@ -1,4 +1,3 @@
-import datetime
 import HTMLParser
 from importer.adaptors import BaseAdaptor
 from importer.forms import ExternalCategoryImportForm
@@ -90,6 +89,18 @@ class OccurrenceAdaptor(EventfulBaseAdaptor):
     def o2m_prices(self, data):
         return utils.expand_prices(data)
 
+    def adapt_form_data_m2o(self, raw_data, related_id, form_data_list):
+        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
+        for start_datetime in start_datetimes:
+            form_data = {
+                'start_date': start_datetime.date(),
+                'start_time': start_datetime.time(),
+            }
+            if duration:
+                end_datetime = start_datetime + duration
+                form_data['end_date'] = end_datetime.date()
+                form_data['end_time'] = end_datetime.time()
+            form_data_list.append(form_data)
 
 class EventAdaptor(EventfulBaseAdaptor):
     model_form = EventImportForm
@@ -116,29 +127,14 @@ class EventAdaptor(EventfulBaseAdaptor):
         if categories:
             category_wrapper = categories.get('category')
             if category_wrapper:
-                if not isinstance(category_wrapper, (list, tuple)):
-                    categories = [category_wrapper]
-                else:
-                    categories = category_wrapper
-
-                for category_data in categories:
-                    created, external_category = self.external_category_adaptor.parse(category_data)
+                categories_raw = [category_wrapper] if not isinstance(category_wrapper, list) else category_wrapper
+                for raw_category in categories_raw:
+                    created, external_category = self.external_category_adaptor.adapt(raw_category)
                     if external_category:
                         external_category_ids.append(external_category.id)
 
         form_data['external_categories'] = external_category_ids
         return form_data
-
-    def o2m_occurrences(self, raw_data):
-        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
-        for start_datetime in start_datetimes:
-            raw_data['start_date'] = start_datetime.date()
-            raw_data['start_time'] = start_datetime.time()
-            if duration:
-                end_datetime = start_datetime + duration
-                raw_data['end_date'] = end_datetime.date()
-                raw_data['end_time'] = end_datetime.time()
-            yield raw_data
 
     def post_adapt(self, data, instance):
         event = instance
