@@ -73,7 +73,7 @@ class DeviceUdidManager(models.Manager):
             new_username = self.generate_username(prefix=prefix, rand_length=rand_length)
         return new_username
 
-    def create_anonymous_user(self):
+    def _create_anonymous_user(self):
         username_anonymous = self.generate_username_unique()
         user_anonymous = User.objects.create_user(
             username=username_anonymous, email=''
@@ -86,7 +86,7 @@ class DeviceUdidManager(models.Manager):
     def create_udid_and_user(self, raw_udid):
         re_result = self.udid_re.search(raw_udid)
         if re_result:
-            user_anonymous = self.create_anonymous_user()
+            user_anonymous = self._create_anonymous_user()
             udid = self.create(udid=re_result.group(), user_anonymous=user_anonymous)
             return udid
 
