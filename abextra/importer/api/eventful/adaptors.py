@@ -1,4 +1,5 @@
 import HTMLParser
+from core.parsers import price_parser
 from importer.adaptors import BaseAdaptor
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
@@ -6,22 +7,16 @@ from places.forms import PlaceImportForm, PointImportForm, CityImportForm
 from prices.forms import PriceImportForm
 import importer.api.eventful.utils as utils
 
+# ========
+# = Base =
+# ========
 class EventfulBaseAdaptor(BaseAdaptor):
     source_name = 'eventful'
 
 
-class PriceAdaptor(EventfulBaseAdaptor):
-    model_form = PriceImportForm
-    fields = ['occurrence', 'quantity']
-    form_data_map = {'occurrence': 'occurrence',
-                     'quantity': 'quantity'
-    }
-
-    def adapt_form_data(self, data, form_data):
-        form_data['units'] = 'dollars'
-        return form_data
-
-
+# ==========
+# = Places =
+# ==========
 class CityAdaptor(EventfulBaseAdaptor):
     model_form = CityImportForm
     fields = ['city', 'state']
@@ -43,14 +38,64 @@ class PointAdaptor(EventfulBaseAdaptor):
 
 class PlaceAdaptor(EventfulBaseAdaptor):
     model_form = PlaceImportForm
-    slave_adaptors = {'point': PointAdaptor}
     fields = ['title', 'point']
+    slave_adaptors = {'point': PointAdaptor}
     form_data_map = {
         'description': '__kwiqet/venue_details/description',
         'title': '__kwiqet/venue_details/name',
         'url': '__kwiqet/venue_details/url',
-        }
+    }
     file_data_map = {'image': '__kwiqet/venue_images'}
+
+
+# ==========
+# = Prices =
+#===========
+class PriceAdaptor(EventfulBaseAdaptor):
+    model_form = PriceImportForm
+    fields = ['occurrence', 'quantity']
+
+    def adapt_form_data(self, data, form_data):
+        form_data['units'] = 'dollars'
+        return form_data
+
+    def adapt_form_data_many(self, raw_data):
+        raw_free, raw_price = raw_data.get('free'), raw_data.get('price')
+        prices = set()
+        if raw_free and int(raw_free):
+            prices.add(0)
+        elif raw_price:
+            prices.update(price_parser.parse(raw_price))
+            prices.discard(0)
+        else:
+            self.logger.warn('Neither "Free" nor "Price" fields could be found.')
+        if not prices:
+            self.logger.warn('Unable to adapt prices from %s' % raw_price)
+        for price in sorted(prices):
+            form_data = {'quantity': price}
+            yield form_data
+
+# ==========
+# = Events =
+# ==========
+class OccurrenceAdaptor(EventfulBaseAdaptor):
+    model_form = OccurrenceImportForm
+    fields = ['event', 'start_date', 'place', 'start_time']
+    slave_adaptors = {'place': PlaceAdaptor}
+    slave_adaptors_to_many = [PriceAdaptor]
+
+    def adapt_form_data_many(self, raw_data):
+        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
+        for start_datetime in start_datetimes:
+            form_data = {
+                'start_date': start_datetime.date(),
+                'start_time': start_datetime.time(),
+                'is_all_day': is_all_day
+            }
+            if duration:
+                end_datetime = start_datetime + duration
+                form_data.update(end_date=end_datetime.date(), end_time=end_datetime.time())
+            yield form_data
 
 
 class CategoryAdaptor(EventfulBaseAdaptor):
@@ -69,44 +114,10 @@ class CategoryAdaptor(EventfulBaseAdaptor):
         return form_data
 
 
-class OccurrenceAdaptor(EventfulBaseAdaptor):
-    model_form = OccurrenceImportForm
-    fields = ['event', 'start_date', 'place', 'start_time']
-    slave_adaptors = {'place': PlaceAdaptor}
-    slave_adaptors_o2m = {'o2m_prices': PriceAdaptor}
-    form_data_map = {
-        'event': 'event',
-        'start_time': 'start_time',
-        'start_date': 'start_date',
-        'end_date': 'end_date',
-        'end_time': 'end_time',
-    }
-    o2m_default_field = 'occurrence'
-
-    def __init__(self):
-        super(OccurrenceAdaptor, self).__init__()
-
-    def o2m_prices(self, data):
-        return utils.expand_prices(data)
-
-    def adapt_form_data_m2o(self, raw_data, related_id, form_data_list):
-        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
-        for start_datetime in start_datetimes:
-            form_data = {
-                'start_date': start_datetime.date(),
-                'start_time': start_datetime.time(),
-            }
-            if duration:
-                end_datetime = start_datetime + duration
-                form_data['end_date'] = end_datetime.date()
-                form_data['end_time'] = end_datetime.time()
-            form_data_list.append(form_data)
-
 class EventAdaptor(EventfulBaseAdaptor):
     model_form = EventImportForm
     fields = ['xid', ]
-    img_dict_key = 'image_local'
-    slave_adaptors_o2m = {'o2m_occurrences': OccurrenceAdaptor}
+    slave_adaptors_to_many = [OccurrenceAdaptor]
     form_data_map = {
         'xid': 'id',
         'title': 'title',
@@ -115,7 +126,6 @@ class EventAdaptor(EventfulBaseAdaptor):
         'image_url': 'image/url'
     }
     file_data_map = {'image': '__kwiqet/event_images'}
-    o2m_default_field = 'event'
 
     def __init__(self):
         super(EventAdaptor, self).__init__()
@@ -135,11 +145,3 @@ class EventAdaptor(EventfulBaseAdaptor):
 
         form_data['external_categories'] = external_category_ids
         return form_data
-
-    def post_adapt(self, data, instance):
-        event = instance
-        # FIXME ugly sanity check
-        occurrence_count = event.occurrences.count()
-        if not occurrence_count:
-            self.logger.warn('Dropping Event: no parsable occurrences')
-            event.delete()
