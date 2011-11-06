@@ -3,7 +3,6 @@ import dateutil.rrule
 import dateutil.relativedelta
 import logging
 from core.parsers import datetime_parser
-from core.parsers import price_parser
 
 _LOGGER = logging.getLogger('importer.api.eventful.utils')
 
@@ -102,26 +101,3 @@ class temporal_parser():
         occurrences.add(start_datetime)
         occurrences.update(cls._recurrence_set(event_raw))
         return sorted(occurrences), duration, is_all_day
-
-
-def expand_prices(data):
-    raw_free = data.get('free')
-    raw_price = data.get('price')
-    prices = []
-    # strange int check cause '1' or '0' comes back as a string
-    if raw_free and int(raw_free):
-        prices = [0.00]
-    elif raw_price:
-        parsed_prices = price_parser.parse(raw_price)
-        # discard duplicates and instances of 0.00 if not set to free
-        if parsed_prices:
-            prices = set(parsed_prices)
-            prices.discard(0)
-        else:
-            _LOGGER.warn('Unable to parse prices from %s' % raw_price)
-    else:
-        _LOGGER.warn('"Free" nor "Price" fields could not be found.')
-    return (dict(quantity=price) for price in sorted(prices))
-
-
-
