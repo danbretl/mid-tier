@@ -21,30 +21,27 @@ class BaseAdaptor(object):
 
         # instantiate 'foreign relation' slaves
         self._slave_adaptors = {}
-        slave_adaptors = getattr(self, 'slave_adaptors', None)
-        if slave_adaptors:
-            for form_field, adaptor_cls in slave_adaptors.items():
-                self._slave_adaptors[form_field] = adaptor_cls()
+        for form_field, adaptor_cls in self.slave_adaptors.iteritems():
+            self._slave_adaptors[form_field] = adaptor_cls()
 
-        # reflect upon and process o2m slaves
-        self._slave_adaptors_o2m = {}
-        slave_adaptors_o2m = getattr(self, 'slave_adaptors_o2m', None)
-        if slave_adaptors_o2m:
-            for producer, adaptor_cls in slave_adaptors_o2m.items():
-                producer_callable = getattr(self, producer, None)
-                if producer_callable:
-                    self._slave_adaptors_o2m[producer_callable] = adaptor_cls()
+        # instantiate 'o2m and m2m' slaves
+        self._slave_adaptors_to_many = []
+        for adaptor_cls in self.slave_adaptors_to_many:
+            self._slave_adaptors_to_many.append(adaptor_cls())
 
     def adapt(self, raw_data):
-        form_data = self._adapt_form_data(raw_data)
-        return self._adapt_form(form_data)
+        form_data, file_data = self._adapt_form_data(raw_data), self._adapt_file_data(raw_data)
+        return self._adapt(raw_data, form_data, file_data)
 
     def adapt_m2o(self, raw_data, **kwargs):
-        form_data_list = self._adapt_form_data_m2o(raw_data, **kwargs)
-        for form_data in form_data_list:
-            yield self._adapt_form(form_data)
+        form_data_generator = self.adapt_form_data_many(raw_data)
+        for form_data in form_data_generator:
+            self._adapt_form_data(raw_data, form_data)
+            form_data.update(**kwargs)
+            # FIXME not handling any form media :: passing empty file_data
+            self._adapt(raw_data, form_data, {})
 
-    def _adapt_form(self, form_data):
+    def _adapt(self, raw_data, form_data, file_data):
         # create cache key
         key = self._cache_key(form_data)
         created, instance = False, self.cache.get(key)
@@ -52,7 +49,6 @@ class BaseAdaptor(object):
             self.logger.debug('%s matched from cache with pk: %i', self.model._meta.object_name, instance.pk)
         else:
             # try to create and validate form
-            file_data = self._adapt_file_data(raw_data)
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
                 # now that the form has been cleaned and the data in it has
@@ -99,9 +95,9 @@ class BaseAdaptor(object):
         self.logger.debug('field tuple %s' % str(tup))
         return hash(tup)
 
-    def _adapt_form_data(self, raw_data):
-        # set the source
-        form_data = {'source': self.source_name}
+    def _adapt_form_data(self, raw_data, form_data=None):
+        form_data = form_data or {}
+        form_data['source'] = self.source_name
         form_data = self._adapt_slaves(raw_data, form_data)
         form_data = self._adapt_form_data_mappings(raw_data, form_data)
         form_data = self.adapt_form_data(raw_data, form_data)
@@ -111,14 +107,9 @@ class BaseAdaptor(object):
         """hook for overrides"""
         return form_data
 
-    # many-to-one relationship handler
-    def _adapt_form_data_m2o(self, raw_data, **kwargs):
-        form_data_list = []
-        return self.adapt_form_data_m2o(raw_data, form_data_list, **kwargs)
-
-    def adapt_form_data_m2o(self, raw_data, related_id, form_data_list):
-        """hook for overrides"""
-        return form_data_list
+    def adapt_form_data_many(self, raw_data):
+        """abstract generator of form data(s)"""
+        raise NotImplementedError('Must be implemented on the specific adaptor')
 
     # foreign relatives
     def _adapt_slaves(self, raw_data, form_data):

@@ -114,39 +114,6 @@ class CategoryAdaptor(EventfulBaseAdaptor):
         return form_data
 
 
-class OccurrenceAdaptor(EventfulBaseAdaptor):
-    model_form = OccurrenceImportForm
-    fields = ['event', 'start_date', 'place', 'start_time']
-    slave_adaptors = {'place': PlaceAdaptor}
-    slave_adaptors_o2m = {'o2m_prices': PriceAdaptor}
-    form_data_map = {
-        'event': 'event',
-        'start_time': 'start_time',
-        'start_date': 'start_date',
-        'end_date': 'end_date',
-        'end_time': 'end_time',
-    }
-    o2m_default_field = 'occurrence'
-
-    def __init__(self):
-        super(OccurrenceAdaptor, self).__init__()
-
-    def o2m_prices(self, data):
-        return utils.expand_prices(data)
-
-    def adapt_form_data_m2o(self, raw_data, related_id, form_data_list):
-        start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(raw_data)
-        for start_datetime in start_datetimes:
-            form_data = {
-                'start_date': start_datetime.date(),
-                'start_time': start_datetime.time(),
-            }
-            if duration:
-                end_datetime = start_datetime + duration
-                form_data['end_date'] = end_datetime.date()
-                form_data['end_time'] = end_datetime.time()
-            form_data_list.append(form_data)
-
 class EventAdaptor(EventfulBaseAdaptor):
     model_form = EventImportForm
     fields = ['xid', ]
@@ -178,11 +145,3 @@ class EventAdaptor(EventfulBaseAdaptor):
 
         form_data['external_categories'] = external_category_ids
         return form_data
-
-    def post_adapt(self, data, instance):
-        event = instance
-        # FIXME ugly sanity check
-        occurrence_count = event.occurrences.count()
-        if not occurrence_count:
-            self.logger.warn('Dropping Event: no parsable occurrences')
-            event.delete()
