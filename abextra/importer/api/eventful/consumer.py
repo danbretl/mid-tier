@@ -84,13 +84,13 @@ class EventfulApiConsumer(object):
         response = self.search_events(meta_query_kwargs)
         raw_meta = dict((k, v) for k, v in response.iteritems() if not k in ('events',))
         raw_page_count = int(raw_meta['page_count'])
-        page_size = int(query_kwargs['page_size'])
-        corrected_page_count = (raw_page_count / page_size) + (1 if raw_page_count % page_size else 0)
+        meta_page_size = int(query_kwargs['page_size']) or 1
+        corrected_page_count = (raw_page_count / meta_page_size) + (1 if raw_page_count % meta_page_size else 0)
         return dict(page_count=corrected_page_count, total_items=int(raw_meta['total_items']))
 
     def consume(self, query_kwargs):
         response = self.search_events(query_kwargs)
-        raw_summaries = response['events']['event']
+        raw_summaries = (response.get('events') or {}).get('event')
         if not raw_summaries:
             return []
         self.process_event_summaries(raw_summaries)
