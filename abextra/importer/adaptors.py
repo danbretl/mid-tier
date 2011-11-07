@@ -42,15 +42,12 @@ class BaseAdaptor(object):
             self._adapt(raw_data, form_data, {})
 
     def _adapt(self, raw_data, form_data, file_data):
-        # create cache key
+        # try to get from cache, else create of get from db
         key = self._cache_key(form_data)
-        # try to get from cache
         created, instance = False, self.cache.get(key)
         if instance:
-            self.logger.debug('MATCHED from cache %s' % str(key))
-
-        # if cache miss, create or get from db
-        if not instance:
+            self.logger.debug('%s matched from cache with pk: %i', self.model._meta.object_name, instance.pk)
+        else:
             # try to create and validate form
             form = self.model_form(data=form_data, files=file_data)
             if form.is_valid():
@@ -60,7 +57,7 @@ class BaseAdaptor(object):
                 attrs = dict((f, getattr(form.instance, f)) for f in sig_fields)
                 try:
                     created, instance = False, self.model.objects.get(**attrs)
-                    self.logger.debug('MATCHED FROM DB' + str(attrs.keys()))
+                    self.logger.debug('%s matched from db with pk: %i', self.model._meta.object_name, instance.pk)
                 except self.model.DoesNotExist:
                     created, instance = False, None
 
@@ -76,11 +73,10 @@ class BaseAdaptor(object):
                     sig_fields = self.fields or form.fields.keys()
                     attrs = dict((f, getattr(form.instance, f)) for f in sig_fields)
                     created, instance = False, self.model.objects.get(**attrs)
-                    self.logger.debug('MATCHED FROM DB' + str(attrs.keys()))
-
+                    self.logger.debug('%s matched from db with pk: %i', self.model._meta.object_name, instance.pk)
                 # form is invalid due to bad data, create nothing
                 else:
-                    self.logger.error(form.errors)
+                    self.logger.error('%s form data invalid:\n%s', self.model._meta.object_name, form.errors.as_text())
                     created, instance = False, None
 
         # if we have an instance, do a post adapt
