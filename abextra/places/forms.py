@@ -50,34 +50,34 @@ class PointImportForm(PointForm):
     _ZIPCODE_CACHE = {}
 
     def clean(self):
-        lat, lon = map(self.cleaned_data.get, ('latitude', 'longitude'))
+        cleaned_data = super(PointImportForm, self).clean()
+        lat, lon = map(cleaned_data.get, ('latitude', 'longitude'))
 
         # point geometry
-        geometry = self.cleaned_data.get('geometry')
+        geometry = cleaned_data.get('geometry')
         if not geometry:
             geometry_field = self.fields['geometry']
             pnt = geos.Point(lon, lat, srid=geometry_field.srid)
-            self.cleaned_data['geometry'] = geometry_field.clean(pnt)
+            cleaned_data['geometry'] = geometry_field.clean(pnt)
 
         # zipcode geocode
-        zipcode = self.cleaned_data.get('zip')
+        zipcode = cleaned_data.get('zip')
         if not zipcode:
             key = (lat, lon)
             if not self._ZIPCODE_CACHE.has_key(key):
                 results = Geocoder.reverse_geocode(lat=lat, lng=lon)
                 self._ZIPCODE_CACHE[key] = results[0].postal_code
             zipcode = self._ZIPCODE_CACHE.get(key)
-            self.cleaned_data['zip'] = self.fields['zip'].clean(zipcode)
+            cleaned_data['zip'] = self.fields['zip'].clean(zipcode)
 
-        return self.cleaned_data
+        return cleaned_data
 
 
 class CityImportForm(CityForm):
-    slug = forms.SlugField(required=False)
+    slug = forms.SlugField(required=False, max_length=CityForm._meta.model._meta.get_field('slug').max_length)
 
-    def clean_slug(self):
-        city = self.cleaned_data.get('city')
-        state = self.cleaned_data.get('state')
-        if not all((city, state)):
-            raise forms.ValidationError('Both city and state are required for form')
-        return slugify(u'-'.join((city, state)))[:50]
+    def clean(self):
+        city_state = map(self.cleaned_data.get, ('city', 'state'))
+        slug_value = slugify(u'-'.join(city_state))[:50]
+        self.cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
+        return self.cleaned_data
