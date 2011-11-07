@@ -50,7 +50,7 @@ class PointImportForm(PointForm):
     _ZIPCODE_CACHE = {}
 
     def clean(self):
-        cleaned_data = super(self, PointImportForm).clean()
+        cleaned_data = super(PointImportForm, self).clean()
         lat, lon = map(cleaned_data.get, ('latitude', 'longitude'))
 
         # point geometry

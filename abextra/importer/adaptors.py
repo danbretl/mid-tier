@@ -42,7 +42,7 @@ class BaseAdaptor(object):
             self._adapt(raw_data, form_data, {})
 
     def _adapt(self, raw_data, form_data, file_data):
-        # create cache key
+        # try to get from cache, else create of get from db
         key = self._cache_key(form_data)
         created, instance = False, self.cache.get(key)
         if instance:
