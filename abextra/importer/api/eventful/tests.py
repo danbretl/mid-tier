@@ -291,8 +291,8 @@ class EventAdaptorTest(TestCase):
         created, event = self.adaptor.adapt(self.event_response)
         self.assertTrue(created, 'Event object not newly created')
         self.assertIsInstance(event, Event, 'Event type unexpected')
-        self.assertTrue(event.occurrences.count(), 'No occurrences adapted')
-        self.assertTrue(event.occurrences.all()[0].prices.count())
+        self.assertEqual(event.occurrences.count(), 5, 'No occurrences adapted')
+        self.assertEqual(event.occurrences.all()[0].prices.count(), 1, 'No prices adapted')
         self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')
         self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title, 'Unexpected title value')
         self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
