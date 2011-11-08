@@ -77,6 +77,7 @@ class CityImportForm(CityForm):
     slug = forms.SlugField(required=False, max_length=CityForm._meta.model._meta.get_field('slug').max_length)
 
     def clean(self):
+        cleaned_data = super(CityImportForm, self).clean()
         city_state = map(self.cleaned_data.get, ('city', 'state'))
         slug_value = slugify(u'-'.join(city_state))[:50]
         self.cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
