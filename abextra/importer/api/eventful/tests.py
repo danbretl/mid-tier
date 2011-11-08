@@ -228,55 +228,55 @@ class OccurrenceAdaptorTest(TestCase):
     def setUp(self):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = OccurrenceAdaptor()
         self.event_adaptor = EventAdaptor()
+        self.adaptor = OccurrenceAdaptor()
+        self.expected_start_dates = [datetime.date(2011, 10, 26), datetime.date(2011, 11, 2), datetime.date(2011, 11, 9), datetime.date(2011, 11, 16), datetime.date(2011, 11, 23)]
+        self.expected_start_times = [datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30)]
 
     def test_adapt_new_valid(self):
-        event_obj = get(Event, xid='E0-001-042149604-1', title='Chromeo')
-#        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
-#        occurrence_data = occurrence_gen.next()
 
-        occurrence_data['event'] = event_obj.id
+        event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
+        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response, event=event.id))
 
-        created, occurrence = self.adaptor.adapt(occurrence_data)
-        self.assertTrue(created, 'Occurrence was not newly created')
-        self.assertIsInstance(occurrence, Occurrence, 'Expected Occurrence type')
-        self.assertIsInstance(occurrence.place, Place, 'Expected Place type')
-        self.assertIsInstance(occurrence.event, Event, 'Expected Event type')
-        self.assertEqual(datetime.date(2011, 10, 26), occurrence.start_date, 'Unexpected start_date value')
-        self.assertEqual(datetime.time(20, 30), occurrence.start_time, 'Unexpected start_time value')
-        for occ in occurrence_gen:
-            occ['event'] = event_obj.id
-            created, occurrence = self.adaptor.adapt(occ)
-            self.assertTrue(created, 'Next occurrence object in set was not newly created')
-            self.assertIsInstance(occurrence, Occurrence, 'Expected Occurrence type')
+        self.assertEqual(len(created_occurrences), 5, 'Unexpected number of occurrences returned')
+        self.assertTrue(all(created for created, occurrences in created_occurrences),
+                'Not all occurrences were successfully created')
+        self.assertTrue(all(isinstance(occurrence, Occurrence) for created,
+            occurrence in created_occurrences), 'Not all occurrences are of expected type') 
+        self.assertTrue(all(isinstance(occurrence.place, Place) for created, occurrence in created_occurrences),
+            'Expected Place type')
+        self.assertTrue(all(isinstance(occurrence.event, Event) for created, occurrence in created_occurrences),
+            'Expected Event type')
+        self.assertEqual(self.expected_start_dates, [occurrence.start_date for created, occurrence in created_occurrences],
+            'Unexpected values in start dates for occurrences')
+        self.assertEqual(self.expected_start_times, [occurrence.start_time for created, occurrence in created_occurrences],
+            'Unexpected values in start times for occurrences')
 
     def test_adapt_new_invalid(self):
-        created, event = self.adaptor.adapt(self.invalid_response)
-        self.assertFalse(created, 'Event object created despite invalid data')
-        self.assertIsNone(event, 'Event object returned despite invalid data')
+        event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
+        created_occurrences = self.adaptor.adapt_m2o(self.invalid_response,
+                event=event.id)
+        self.assertRaises(ValueError, list, created_occurrences)
 
     def test_adapt_existing_valid(self):
-        event_obj = get(Event, xid='E0-001-015489401-9@2011102620',
+        event = get(Event, xid='E0-001-015489401-9@2011102620',
                 title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
                 description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
                 concrete_category=get(Category, title='Concerts')) 
-        place_obj = get(Place, title='Swing 46 Jazz and Supper Club',
+        place = get(Place, title='Swing 46 Jazz and Supper Club',
                 address='349 W 46th Street between Eighth and Ninth Avenues, New York, NY 10036',
                 point=F(geometry=geos.Point(y=40.7601, x=-73.9925),
                     address='349 W 46th Street between Eighth and Ninth Avenues'))
-        existing_occ = get(Occurrence, start_time=datetime.time(20, 30),
-                start_date=datetime.date(2011, 10, 26), event=event_obj,
-                place=place_obj)
+        existing_occs = [get(Occurrence, start_time=start_time,
+                start_date=start_date, event=event, place=place) for start_time, start_date in zip(self.expected_start_times, self.expected_start_dates)]
 
-        occurrence_gen = self.event_adaptor.o2m_occurrences(self.event_response)
-        first_occ = occurrence_gen.next()
-        first_occ['event'] = event_obj.id
-        first_occ['place'] = place_obj.id
+        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response,
+            event=event.id, place=place.id))
 
-        created, occurrence = self.adaptor.adapt(first_occ)
-        self.assertFalse(created, 'Occurrence newly created despite existing match')
-        self.assertEqual(existing_occ, occurrence, 'Occurrence object returned is not the existing match')
+        self.assertTrue(all(not created for created, occurrence in created_occurrences),
+                'Occurrence newly created despite existing match')
+        self.assertTrue(all(existing_occ==occurrence for existing_occ, (created, occurrence) in zip(existing_occs, created_occurrences)),
+                'Occurrence object returned is not the existing match')
 
 
 class EventAdaptorTest(TestCase):
@@ -291,6 +291,7 @@ class EventAdaptorTest(TestCase):
         created, event = self.adaptor.adapt(self.event_response)
         self.assertTrue(created, 'Event object not newly created')
         self.assertIsInstance(event, Event, 'Event type unexpected')
+        import ipdb; ipdb.set_trace()
         self.assertEqual(event.occurrences.count(), 5, 'No occurrences adapted')
         self.assertEqual(event.occurrences.all()[0].prices.count(), 1, 'No prices adapted')
         self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')

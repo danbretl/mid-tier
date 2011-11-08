@@ -35,11 +35,13 @@ class BaseAdaptor(object):
 
     def adapt_m2o(self, raw_data, **kwargs):
         form_data_generator = self.adapt_form_data_many(raw_data)
+        results = []
         for form_data in form_data_generator:
             self._adapt_form_data(raw_data, form_data)
             form_data.update(**kwargs)
             # FIXME not handling any form media :: passing empty file_data
-            self._adapt(raw_data, form_data, {})
+            results.append(self._adapt(raw_data, form_data, {}))
+        return results
 
     def _adapt(self, raw_data, form_data, file_data):
         # try to get from cache, else create of get from db
