@@ -54,6 +54,7 @@ class Point(geo_models.Model):
     objects = geo_models.GeoManager()
 
     class Meta:
+        unique_together = (('geometry', 'address'))
         verbose_name = _('point')
         verbose_name_plural = _('points')
         ordering = ('address',)
@@ -87,6 +88,7 @@ class Place(models.Model):
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
 
     class Meta:
+        unique_together = (('point', 'title'))
         verbose_name = _('place')
         verbose_name_plural = _('places')
         ordering = ('title',)
