@@ -32,13 +32,18 @@ class CityForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class PlaceImportForm(PlaceForm):
-    slug = forms.SlugField(required=False)
-    status = forms.TypedChoiceField(empty_value=1, coerce=int, required=False)
+    slug = forms.SlugField(required=False, max_length=PlaceForm._meta.model._meta.get_field('slug').max_length)
     phone = USPhoneNumberFieldSoftFail(required=False)
+    status = forms.TypedChoiceField(empty_value=1, coerce=int, required=False)
 
-    def clean_slug(self):
-        title = self.cleaned_data['title']
-        return slugify(title)[:50]
+    def clean(self):
+        cleaned_data = super(PlaceImportForm, self).clean()
+        title = cleaned_data.get('title')
+        if not title:
+            raise forms.ValidationError('Slug field requires title')
+        slug_value = slugify(title)[:50]
+        cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
+        return cleaned_data
 
 
 class PointImportForm(PointForm):
@@ -56,6 +61,8 @@ class PointImportForm(PointForm):
         # point geometry
         geometry = cleaned_data.get('geometry')
         if not geometry:
+            if not all((lat, lon)):
+                raise forms.ValidationError('Geometry fields require latitude and longitude')
             geometry_field = self.fields['geometry']
             pnt = geos.Point(lon, lat, srid=geometry_field.srid)
             cleaned_data['geometry'] = geometry_field.clean(pnt)
@@ -63,6 +70,8 @@ class PointImportForm(PointForm):
         # zipcode geocode
         zipcode = cleaned_data.get('zip')
         if not zipcode:
+            if not all((lat, lon)):
+                raise forms.ValidationError('Zipcode fields require latitude and longitude')
             key = (lat, lon)
             if not self._ZIPCODE_CACHE.has_key(key):
                 results = Geocoder.reverse_geocode(lat=lat, lng=lon)
@@ -78,7 +87,9 @@ class CityImportForm(CityForm):
 
     def clean(self):
         cleaned_data = super(CityImportForm, self).clean()
-        city_state = map(self.cleaned_data.get, ('city', 'state'))
+        city_state = map(cleaned_data.get, ('city', 'state'))
+        if not all(city_state):
+            raise forms.ValidationError('Slug field requires city and state')
         slug_value = slugify(u'-'.join(city_state))[:50]
-        self.cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
-        return self.cleaned_data
+        cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
+        return cleaned_data
