@@ -1,6 +1,7 @@
 from itertools import repeat
 import os
 import datetime
+import HTMLParser
 import simplejson
 from dateutil.relativedelta import relativedelta
 import dateutil.parser
@@ -12,13 +13,12 @@ from events.models import Event, Occurrence
 from prices.models import Price
 from places.models import City, Point, Place
 from importer.models import Category, ExternalCategory, Source
+from importer.api.eventful.client import API
 from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
 
-_parse_date = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date()
-_parse_time = lambda s: datetime.datetime.strptime(s, '%H:%M').time()
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -382,4 +382,48 @@ class EventfulDateParserTest(TestCase):
 
         self.assertTrue(datetime.datetime(2011, 4, 10, 14, 30) in
                 start_datetimes, 'First datetime in rdate set is unexpectedly not a member of occurrence set')
+
+class ExternalCategoryFixtureTest(TestCase):
+    fixtures = ['categories', 'sources', 'external_categories']
+
+    def setUp(self):
+        self.api = API()
+        self.html_parser = HTMLParser.HTMLParser()
+        self.eventful_sources = Source.objects.filter(name='eventful')
+
+    def test_all_external_categories_imported(self):
+        self.assertGreater(len(self.eventful_sources), 0, 'Unable to find Eventful source object')
+        eventful_source = self.eventful_sources[0]
+
+        resp = self.api.call('/categories/list')
+        self.assertTrue(resp.get('category'))
+        eventful_categories = resp.get('category')
+        mapped_categories = []
+        unmapped_categories = []
+
+        for eventful_category in eventful_categories:
+            xid, name = eventful_category['id'], self.html_parser.unescape(eventful_category['name'])
+            mapped_category = ExternalCategory.objects.filter(xid=xid, 
+                    source=eventful_source, name=name)
+            if len(mapped_category) > 0:
+                mapped_categories.extend(mapped_category)
+            else:
+                unmapped_categories.append(eventful_category)
+
+        self.assertEqual([], unmapped_categories,
+                'Unable to find external %s category mappings for: %s' %
+                (eventful_source, ', '.join(map(lambda x:x['name'],
+                    unmapped_categories))))
+
+    def test_all_external_categories_mapped(self):
+        self.assertGreater(len(self.eventful_sources), 0, 'Unable to find Eventful source object')
+        eventful_source = self.eventful_sources[0]
+        external_categories = ExternalCategory.objects.filter(source=eventful_source)
+
+        for external_category in external_categories:
+            self.assertTrue(external_category.concrete_category,
+                    'External category for %s not mapped: %s' %
+                    (eventful_source.name, external_category.name))
+            self.assertIsInstance(external_category.concrete_category,
+                    Category, 'Unexpected type of associated concrete category')
 
