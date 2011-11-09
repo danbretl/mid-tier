@@ -304,7 +304,7 @@ class EventAdaptorTest(TestCase):
         self.assertFalse(created, 'Event newly created despite existing match')
         self.assertEqual(existing_event, event, 'Event object returned is not the existing match')
 
-class EventfulParserPriceParsingTest(TestCase):
+class EventfulPriceParserTest(TestCase):
     # Parsing prices with units -- may get false positives, for now
 
     def test_multiple_prices_with_two_decimals_in_prose(self):
@@ -344,7 +344,7 @@ class EventfulParserPriceParsingTest(TestCase):
         adapted_prices = (price_parser.parse(price_data['price']))
         self.assertEqual([195.0, 300.0], sorted(set(adapted_prices)), 'Unexpected prices value')
     
-class EventfulParserDateParsingTest(TestCase):
+class EventfulDateParserTest(TestCase):
 
     def test_single_occurrence_with_start_datetime(self):
         response = TestResourceConsumer.consume_recurrence_response()
