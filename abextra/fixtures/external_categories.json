@@ -1342,6 +1342,17 @@
         }
     },
     {
+        "pk": 1293,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "animals",
+            "name": "Pets",
+            "abstract_categories": [],
+            "concrete_category": 138
+        }
+    },
+    {
         "pk": 1275,
         "model": "importer.externalcategory",
         "fields": {
@@ -2197,6 +2208,17 @@
             "name": "Adventure",
             "abstract_categories": [],
             "concrete_category": 137
+        }
+    },
+    {
+        "pk": 1294,
+        "model": "importer.externalcategory",
+        "fields": {
+            "source": 5,
+            "xid": "science",
+            "name": "Science",
+            "abstract_categories": [],
+            "concrete_category": 200
         }
     }
 ]
