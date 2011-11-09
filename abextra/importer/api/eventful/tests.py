@@ -6,6 +6,7 @@ import dateutil.parser
 from django.contrib.gis import geos
 from django.test import TestCase
 from django_dynamic_fixture import get, DynamicFixture as F
+from core.parsers import price_parser
 from events.models import Event, Occurrence
 from prices.models import Price
 from places.models import City, Point, Place
@@ -88,46 +89,34 @@ class PriceAdaptorTest(TestCase):
         self.event_response = TestResourceConsumer.consume_response()
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
         self.adaptor = PriceAdaptor()
+        self.expected_prices = [5.0, 12.0]
 
     def test_adapt_new_valid(self):
-        expanded_price = utils.expand_prices(self.event_response).next()
-        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
-                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
-                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
-        expanded_price['occurrence'] = occurrence_obj.id
+        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
 
-        created, price = self.adaptor.adapt(expanded_price)
-        self.assertTrue(created, 'Price object was not newly created')
-        self.assertIsInstance(price, Price, 'Unexpected type of price object')
-        self.assertEqual(12.00, price.quantity, 'Unexpected quantity value')
-        self.assertEqual(u'dollars', price.units, 'Unexpected units value')
+        created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
+        self.assertTrue(all(created for created, price in created_prices), 'Price object was not newly created')
+        self.assertTrue(all(isinstance(price, Price) for created, price in created_prices), 'Unexpected type of price object')
+        self.assertEqual(self.expected_prices, [price.quantity for created, price in created_prices], 'Unexpected quantity value')
+        self.assertTrue(all(u'dollars'==price.units for created, price in created_prices), 'Unexpected units value')
 
     def test_adapt_existing_valid(self):
-        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
-                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
-                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
-        existing_price = get(Price, quantity=12.00, units='dollars', occurrence=occurrence_obj)
+        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0,x=0))))
+        existing_prices = [get(Price, quantity=quantity, units='dollars', occurrence=occurrence) for quantity in self.expected_prices]
 
-        expanded_price = utils.expand_prices(self.event_response).next()
-        expanded_price['occurrence'] = occurrence_obj.id
+        created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
 
-        created, price = self.adaptor.adapt(expanded_price)
-        self.assertFalse(created, 'Price object created despite existing match')
-        self.assertEqual(existing_price, price, 'Price object returned is not the existing match')
+        self.assertTrue(all(not created for created, price in created_prices), 'Price object created despite existing match')
+        self.assertTrue(all(price==existing_price for existing_price, (created, price) in zip (existing_prices, created_prices)),
+            'Price object returned is not the existing match')
 
 
     def test_adapt_new_invalid(self):
-        expanded_price = list(utils.expand_prices(self.invalid_response)) or {}
-        self.assertEqual({}, expanded_price, 'Price list adaptd from price string despite invalid data')
+        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=40.7601, x=-73.9925))))
 
-        occurrence_obj = get(Occurrence, start_date=datetime.date(2011, 11, 5),
-                start_time=datetime.time(19, 0), place=F(title='Swing 46 Jazz and Supper Club',
-                    point=F(geometry=geos.Point(y=40.7601, x=-73.9925), address='349 W 46th Street between Eighth and Ninth Avenues')))
-        expanded_price['occurrence'] = occurrence_obj.id
-
-        created, price = self.adaptor.adapt(expanded_price)
-        self.assertFalse(created, 'Price object created despite invalid data')
-        self.assertIsNone(price, 'Price object returned despite invalid data')
+        created_prices = self.adaptor.adapt_m2o(self.invalid_response, occurrence=occurrence.id)
+        self.assertTrue(all(not created for created, price in created_prices), 'Price object created despite invalid data')
+        self.assertTrue(all(price==None for created, price in created_prices), 'Price object returned despite invalid data')
 
 
 class PointAdaptorTest(TestCase):
@@ -254,9 +243,7 @@ class OccurrenceAdaptorTest(TestCase):
 
     def test_adapt_new_invalid(self):
         event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
-        created_occurrences = self.adaptor.adapt_m2o(self.invalid_response,
-                event=event.id)
-        self.assertRaises(ValueError, list, created_occurrences)
+        self.assertRaises(ValueError, self.adaptor.adapt_m2o, self.invalid_response, event=event.id)
 
     def test_adapt_existing_valid(self):
         event = get(Event, xid='E0-001-015489401-9@2011102620',
@@ -291,9 +278,8 @@ class EventAdaptorTest(TestCase):
         created, event = self.adaptor.adapt(self.event_response)
         self.assertTrue(created, 'Event object not newly created')
         self.assertIsInstance(event, Event, 'Event type unexpected')
-        import ipdb; ipdb.set_trace()
         self.assertEqual(event.occurrences.count(), 5, 'No occurrences adapted')
-        self.assertEqual(event.occurrences.all()[0].prices.count(), 1, 'No prices adapted')
+        self.assertEqual(event.occurrences.all()[0].prices.count(), 2, 'No prices adapted')
         self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')
         self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title, 'Unexpected title value')
         self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
@@ -324,51 +310,40 @@ class EventfulParserPriceParsingTest(TestCase):
     def test_multiple_prices_with_two_decimals_in_prose(self):
         price_data = {'free': None,
                       'price': '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'}
-        adaptd_prices = list(list(utils.expand_prices(price_data)))
-        self.assertEqual([{'quantity': 52.24}, {'quantity': 77.87}, {'quantity': 99.0}, {'quantity': 125.0},
-                          {'quantity': 199.0}, {'quantity': 250.0}], adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([52.24, 77.87, 99.0, 125.0, 199.0, 250.0], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_single_price_with_two_decimals(self):
         price_data = {'free': None, 'price': '   RSVP 11.24 <br><br>\n'}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 11.24}], adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([11.24], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_single_price_with_commas_two_decimals_and_no_units(self):
         price_data = {"price": "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n",
                       "free": None}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 2195.0}, {'quantity': 2395.0}],
-                adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([2195.0, 2395.0], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_single_price_with_units_in_USD(self):
         price_data = {"price": "5 - 5 USD ", "free": None}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 5.0}], adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([5.0], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_single_price_with_units_in_dollar_sign(self):
         price_data = {"price": "$35", "free": "0"}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 35.0}], adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([35.0], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_single_price_with_decimals_and_units_in_dollar_sign(self):
         price_data = {"price": "$10.00", "free": None}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 10.0}], adaptd_prices, 'Unexpected prices value')
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([10.0], sorted(set(adapted_prices)), 'Unexpected prices value')
 
     def test_multiple_prices_with_some_units_and_some_decimals(self):
         price_data = {"price": "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n", "free": None}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([{'quantity': 195.0}, {'quantity':300.0}],
-                        adaptd_prices, 'Unexpected prices value')
-
-    # If 'free' field is not set, do not try to guess (for now)
-
-    def test_free_in_price_field_and_not_in_free_field(self):
-        price_data = {"price": "FREE", "free": None}
-        adaptd_prices = list(utils.expand_prices(price_data))
-        self.assertEqual([], adaptd_prices, 'Unexpected prices value')
-
-
+        adapted_prices = (price_parser.parse(price_data['price']))
+        self.assertEqual([195.0, 300.0], sorted(set(adapted_prices)), 'Unexpected prices value')
+    
 class EventfulParserDateParsingTest(TestCase):
 
     def test_single_occurrence_with_start_datetime(self):
