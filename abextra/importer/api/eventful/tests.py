@@ -1,3 +1,4 @@
+from itertools import repeat
 import os
 import datetime
 import HTMLParser
@@ -18,6 +19,8 @@ from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdapt
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
 
+_parse_date = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date()
+_parse_time = lambda s: datetime.datetime.strptime(s, '%H:%M').time()
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -222,8 +225,8 @@ class OccurrenceAdaptorTest(TestCase):
         self.invalid_response = TestResourceConsumer.consume_invalid_response()
         self.event_adaptor = EventAdaptor()
         self.adaptor = OccurrenceAdaptor()
-        self.expected_start_dates = [datetime.date(2011, 10, 26), datetime.date(2011, 11, 2), datetime.date(2011, 11, 9), datetime.date(2011, 11, 16), datetime.date(2011, 11, 23)]
-        self.expected_start_times = [datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30), datetime.time(20, 30)]
+        self.expected_start_dates = map(_parse_date, '2011-10-26 2011-11-2 2011-11-9 2011-11-16 2011-11-23'.split())
+        self.expected_start_times = [_parse_time('20:30')] * len(self.expected_start_dates)
 
     def test_adapt_new_valid(self):
 
@@ -249,20 +252,16 @@ class OccurrenceAdaptorTest(TestCase):
         self.assertRaises(ValueError, self.adaptor.adapt_m2o, self.invalid_response, event=event.id)
 
     def test_adapt_existing_valid(self):
-        event = get(Event, xid='E0-001-015489401-9@2011102620',
-                title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
-                description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
-                concrete_category=get(Category, title='Concerts')) 
-        place = get(Place, title='Swing 46 Jazz and Supper Club',
-                address='349 W 46th Street between Eighth and Ninth Avenues, New York, NY 10036',
-                point=F(geometry=geos.Point(y=40.7601, x=-73.9925),
-                    address='349 W 46th Street between Eighth and Ninth Avenues'))
-        existing_occs = [get(Occurrence, start_time=start_time,
-                start_date=start_date, event=event, place=place) for start_time, start_date in zip(self.expected_start_times, self.expected_start_dates)]
+        expected_start_date_iter = iter(self.expected_start_dates)
+        expected_start_dates = lambda _: expected_start_date_iter.next()
+        expected_start_time_iter = iter(self.expected_start_times)
+        expected_start_times = lambda _: expected_start_time_iter.next()
+        event, place = get(Event), get(Place, point=F(geometry=geos.Point(y=0, x=0)))
+        existing_occs = get(Occurrence, event=event, start_date=expected_start_dates, start_time=expected_start_times,
+            place=place, n=len(self.expected_start_dates)
+        )
 
-        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response,
-            event=event.id, place=place.id))
-
+        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response, event=event.id, place=place.id))
         self.assertTrue(all(not created for created, occurrence in created_occurrences),
                 'Occurrence newly created despite existing match')
         self.assertTrue(all(existing_occ==occurrence for existing_occ, (created, occurrence) in zip(existing_occs, created_occurrences)),
