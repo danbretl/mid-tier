@@ -254,9 +254,7 @@ class OccurrenceAdaptorTest(TestCase):
 
     def test_adapt_new_invalid(self):
         event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
-        created_occurrences = self.adaptor.adapt_m2o(self.invalid_response,
-                event=event.id)
-        self.assertRaises(ValueError, list, created_occurrences)
+        self.assertRaises(ValueError, self.adaptor.adapt_m2o, self.invalid_response, event=event.id)
 
     def test_adapt_existing_valid(self):
         event = get(Event, xid='E0-001-015489401-9@2011102620',
