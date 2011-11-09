@@ -359,6 +359,10 @@ class Occurrence(models.Model):
         verbose_name_plural = _('occurrences')
 
     def save(self, *args, **kwargs):
+        if isinstance(self.start_date, datetime.datetime):
+            self.start_date = self.start_date.date()
+        if isinstance(self.start_time, datetime.datetime):
+            self.start_time = self.start_time.time()
         self.start_datetime = datetime.datetime\
                 .combine(self.start_date, self.start_time or datetime.time())
         super(Occurrence, self).save(*args, **kwargs)
