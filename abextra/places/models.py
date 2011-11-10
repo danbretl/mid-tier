@@ -1,4 +1,5 @@
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
@@ -27,13 +28,20 @@ class City(models.Model):
     """City model."""
     city = models.CharField(_('city'), max_length=100)
     state = us_models.USStateField(_('state'))
-    slug = models.SlugField(_('slug'), unique=True)
+    slug = models.SlugField(_('slug'), editable=False)
 
     class Meta:
         verbose_name = _('city')
         verbose_name_plural = _('cities')
         unique_together = (('city', 'state',),)
         ordering = ('state', 'city',)
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            slug = slugify(u'-'.join((self.city, self.state)))
+            slug_length = self._meta.get_field('slug').max_length
+            self.slug = slug[:slug_length]
+        super(City, self).save(*args, **kwargs)
 
     def __unicode__(self):
         return u'%s, %s' % (self.city, self.state)
@@ -63,7 +71,7 @@ class Point(geo_models.Model):
         return u'%s' % self.address
 
 
-# TODO don't need:  prefix, nickname
+# TODO don't need: prefix, nickname
 class Place(models.Model):
     """Place model."""
     STATUS_CHOICES = (
