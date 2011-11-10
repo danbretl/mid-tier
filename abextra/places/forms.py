@@ -4,6 +4,7 @@ from django.contrib.gis.forms import GeometryField
 from django.contrib.localflavor.us import forms as us_forms
 from django.template.defaultfilters import slugify
 from pygeocoder import Geocoder
+from core.forms import ImportFormMux
 from places.models import Place, Point, City
 from core.fields import USPhoneNumberFieldSoftFail
 
@@ -82,7 +83,7 @@ class PointImportForm(PointForm):
         return cleaned_data
 
 
-class CityImportForm(CityForm):
+class CityImportForm(ImportFormMux, CityForm):
     slug = forms.SlugField(required=False, max_length=CityForm._meta.model._meta.get_field('slug').max_length)
 
     def clean(self):
