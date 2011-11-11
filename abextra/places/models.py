@@ -26,14 +26,13 @@ class PlaceType(models.Model):
 # FIXME two unique constraints impose two db checks for 'exists' validation
 class City(models.Model):
     """City model."""
-    city = models.CharField(_('city'), max_length=100)
+    city = models.CharField(_('city'), max_length=47)
     state = us_models.USStateField(_('state'))
     slug = models.SlugField(_('slug'), editable=False)
 
     class Meta:
         verbose_name = _('city')
         verbose_name_plural = _('cities')
-        unique_together = (('city', 'state',),)
         ordering = ('state', 'city',)
 
     def save(self, *args, **kwargs):
@@ -62,7 +61,7 @@ class Point(geo_models.Model):
     objects = geo_models.GeoManager()
 
     class Meta:
-#        unique_together = (('geometry', 'address'))
+        unique_together=(('address', 'city'))
         verbose_name = _('point')
         verbose_name_plural = _('points')
         ordering = ('address',)
