@@ -24,7 +24,7 @@ class temporal_parser():
     def _rrules(rules_raw, dtstart):
         rules_raw = rules_raw if isinstance(rules_raw, list) else [rules_raw]
         for rule_raw in rules_raw:
-            rule_raw = rule_raw.replace('BYDAY', 'BYWEEKDAY')
+            rule_raw = rule_raw.replace('BYDAY', 'BYWEEKDAY').strip(' ;')
             yield dateutil.rrule.rrulestr(rule_raw, dtstart=dtstart, cache=True, compatible=True)
 
     @classmethod
