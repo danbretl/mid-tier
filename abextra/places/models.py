@@ -1,5 +1,5 @@
+from autoslug.fields import AutoSlugField
 from django.db import models
-from django.template.defaultfilters import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import permalink
 from django.contrib.localflavor.us import models as us_models
@@ -25,22 +25,17 @@ class PlaceType(models.Model):
 
 # FIXME two unique constraints impose two db checks for 'exists' validation
 class City(models.Model):
-    """City model."""
+    """City model"""
     city = models.CharField(_('city'), max_length=47)
     state = us_models.USStateField(_('state'))
-    slug = models.SlugField(_('slug'), editable=False)
+    slug = AutoSlugField(_('slug'), editable=False,
+         populate_from=lambda instance: '-'.join((instance.city, instance.state))
+    )
 
     class Meta:
         verbose_name = _('city')
         verbose_name_plural = _('cities')
-        ordering = ('state', 'city',)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            slug = slugify(u'-'.join((self.city, self.state)))
-            slug_length = self._meta.get_field('slug').max_length
-            self.slug = slug[:slug_length]
-        super(City, self).save(*args, **kwargs)
+        unique_together = (('city', 'state'))
 
     def __unicode__(self):
         return u'%s, %s' % (self.city, self.state)
@@ -51,7 +46,7 @@ class City(models.Model):
 
 
 class Point(geo_models.Model):
-    """Point model."""
+    """Point model"""
     geometry = geo_models.PointField(srid=4326)
     address = geo_models.CharField(_('address'), max_length=200, blank=True)
     city = geo_models.ForeignKey(City)

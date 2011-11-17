@@ -28,6 +28,7 @@ class CityForm(forms.ModelForm):
 
     class Meta:
         model = City
+        exclude = ('slug')
 
 # ================
 # = Import Forms =
@@ -84,13 +85,4 @@ class PointImportForm(PointForm):
 
 
 class CityImportForm(ImportFormMux, CityForm):
-    slug = forms.SlugField(required=False, max_length=CityForm._meta.model._meta.get_field('slug').max_length)
-
-    def clean(self):
-        cleaned_data = super(CityImportForm, self).clean()
-        city_state = map(cleaned_data.get, ('city', 'state'))
-        if not all(city_state):
-            raise forms.ValidationError('Slug field requires city and state')
-        slug_value = slugify(u'-'.join(city_state))[:50]
-        cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
-        return cleaned_data
+    pass

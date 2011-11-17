@@ -8,9 +8,6 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Removing unique constraint on 'City', fields ['city', 'state']
-        db.delete_unique('places_city', ['city', 'state'])
-
         # Removing unique constraint on 'City', fields ['slug']
         db.delete_unique('places_city', ['slug'])
 
@@ -22,6 +19,9 @@ class Migration(SchemaMigration):
 
         # Changing field 'City.city'
         db.alter_column('places_city', 'city', self.gf('django.db.models.fields.CharField')(max_length=47))
+
+        # Changing field 'City.slug'
+        db.alter_column('places_city', 'slug', self.gf('autoslug.fields.AutoSlugField')(unique_with=(), max_length=50, populate_from=None))
 
 
     def backwards(self, orm):
@@ -35,19 +35,19 @@ class Migration(SchemaMigration):
         # Changing field 'City.city'
         db.alter_column('places_city', 'city', self.gf('django.db.models.fields.CharField')(max_length=100))
 
+        # Changing field 'City.slug'
+        db.alter_column('places_city', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=50, unique=True))
+
         # Adding unique constraint on 'City', fields ['slug']
         db.create_unique('places_city', ['slug'])
-
-        # Adding unique constraint on 'City', fields ['city', 'state']
-        db.create_unique('places_city', ['city', 'state'])
 
 
     models = {
         'places.city': {
-            'Meta': {'ordering': "('state', 'city')", 'object_name': 'City'},
+            'Meta': {'unique_together': "(('city', 'state'),)", 'object_name': 'City'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '47'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
+            'slug': ('autoslug.fields.AutoSlugField', [], {'unique_with': '()', 'max_length': '50', 'populate_from': 'None', 'db_index': 'True'}),
             'state': ('django.contrib.localflavor.us.models.USStateField', [], {'max_length': '2'})
         },
         'places.place': {
