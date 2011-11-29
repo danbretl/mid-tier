@@ -166,17 +166,17 @@ INSTALLED_APPS = (
     'gravatar',                     # django gravatar   | voice dep
     'djangovoice',                  # feedback and issue tracking
 
+    'core',                         # ABEX core
     'accounts',                     # ABEX user profile extensions
     'alphasignup',                  # ABEX simple web front for Alpha signup
-    'api',                          # ABEX API models, resources and utils
-    'behavior',                     # ABEX behavior | user actions
-    'core',                         # ABEX core
+    'places',                       # ABEX places | helps normalize places
     'events',                       # ABEX events
+    'prices',                       # ABEX prices
+    'behavior',                     # ABEX behavior | user actions
+    'api',                          # ABEX API models, resources and utils
     'importer',                     # ABEX part of the scrape pipeline
     'learning',                     # ABEX machine learning | recommendations
-    'places',                       # ABEX places | helps normalize places
     'preprocess',                   # ABEX data preprocessing | scrape->django
-    'prices',                       # ABEX prices
     'pundit',                       # ABEX categorization of events
 )
 
