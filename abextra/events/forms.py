@@ -144,11 +144,7 @@ class EventImportForm(EventForm):
         source, external_categories= map(cleaned_data.get, ('source', 'external_categories'))
         if not source:
             raise ValidationError("'source' is required.")
-        if not external_categories:
-            raise ValidationError("'external_categories' is required.")
         concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
-        if not isinstance(concrete_category, Category):
-            raise ValidationError("'concrete_category' could not be established.")
         cleaned_data['concrete_category'] = self.fields['concrete_category'].clean(concrete_category.id)
 
         # popularity score
