@@ -1,5 +1,4 @@
 from django import forms
-from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
@@ -81,27 +80,6 @@ class SourceAdminForm(forms.ModelForm):
 # ================
 class EventImportForm(EventForm):
     description = HtmlSanitizedCharField(required=False)
-    # FIXME needs to be lazy loaded - otherwise, shit happens at import time
-    # UPDATE: ugly fix
-    @property
-    def arbiter(self):
-        if not hasattr(EventImportForm, '_arbiter'):
-            setattr(EventImportForm, '_arbiter',
-                pundit.Arbiter((
-                        pundit.SourceCategoryRule(),
-                        pundit.SourceRule()
-                ))
-            )
-        return getattr(EventImportForm, '_arbiter')
-
-    @property
-    def importer_user(self):
-        if not hasattr(EventImportForm, '_importer_user'):
-            setattr(EventImportForm, '_importer_user',
-                User.objects.get(username='importer')
-            )
-        return getattr(EventImportForm, '_importer_user')
-
     slug = forms.SlugField(required=False)
     popularity_score = forms.IntegerField(required=False)
     concrete_category = forms.ModelChoiceField(
@@ -122,15 +100,31 @@ class EventImportForm(EventForm):
         to_field_name='name'
     )
 
+    _arbiter, _importer_user = None, None
+
+    @property
+    def arbiter(self):
+        """Lazy-initialized class attributes with local property interfaces"""
+        if not self._arbiter:
+            EventImportForm._arbiter = pundit.Arbiter((
+                pundit.SourceCategoryRule(), pundit.SourceRule()
+            ))
+        return self._arbiter
+
+    @property
+    def importer_user(self):
+        """Lazy-initialized class attributes with local property interfaces"""
+        if not self._importer_user:
+            EventImportForm._importer_user = User.objects.get(username='importer')
+        return self._importer_user
+
     def clean(self):
         cleaned_data = super(EventImportForm, self).clean()
 
         # slug
         title = cleaned_data.get('title')
-        if not title:
-            raise ValidationError("'title' is required.")
         cleaned_data['title'] = self.fields['title'].clean(title)
-        slug_value = slugify(title)[:50]
+        slug_value = slugify(cleaned_data['title'])[:50]
         cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
 
         # submitted_by
@@ -141,9 +135,7 @@ class EventImportForm(EventForm):
 
         # concrete category :: via pundit
         event = self.instance
-        source, external_categories= map(cleaned_data.get, ('source', 'external_categories'))
-        if not source:
-            raise ValidationError("'source' is required.")
+        source, external_categories = map(cleaned_data.get, ('source', 'external_categories'))
         concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
         cleaned_data['concrete_category'] = self.fields['concrete_category'].clean(concrete_category.id)
 
