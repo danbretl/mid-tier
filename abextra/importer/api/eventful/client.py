@@ -10,7 +10,7 @@ from importer.api.eventful import conf
 
 httplib2 = eventlet.import_patched('httplib2')
 from hashlib import md5
-import simplejson
+from django.utils import simplejson
 
 IMG_SIZE_RE = re.compile('(?<=/images/)\w+(?=/)', re.I)
 IMG_EXT_RE = re.compile('/(?P<name>\d+-\d+).(?P<ext>jpg|jpeg|tif|tiff|png|gif)$', re.I)
