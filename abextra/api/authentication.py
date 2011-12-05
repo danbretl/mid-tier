@@ -1,7 +1,8 @@
+import base64
 from tastypie.authentication import Authentication, BasicAuthentication, ApiKeyAuthentication
 from tastypie.http import HttpUnauthorized
 from tastypie.models import ApiKey
-
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, Group
 from django.forms import ValidationError
 
@@ -35,6 +36,7 @@ class ConsumerAuthentication(Authentication):
     def get_identifier(self, request):
         base = super(ConsumerAuthentication, self).get_identifier(request)
         return '_'.join((base, request.REQUEST.get('consumer_key', 'noconsumer')))
+
 
 class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
     udid_field = DeviceUdidForm.declared_fields['udid']
@@ -98,6 +100,7 @@ class BasicBackend:
         except User.DoesNotExist:
             return None
 
+
 class EmailBackend(BasicBackend):
     def authenticate(self, username=None, password=None):
         #If username is an email address, then try to pull it up
@@ -116,7 +119,59 @@ class EmailBackend(BasicBackend):
             return user
 
 
-class ConsumerBasicAuthentication(BasicAuthentication):
+class UglyFaceBasicAuthentication(BasicAuthentication):
+    def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
+        self.backend = backend
+        self.realm = realm
+
+    def _unauthorized(self, response_content=''):
+        response = HttpUnauthorized(response_content)
+        # FIXME: Sanitize realm.
+        response['WWW-Authenticate'] = 'Basic Realm="%s"' % self.realm
+        return response
+
+    def is_authenticated(self, request, **kwargs):
+        """
+        Checks a user's basic auth credentials against the current
+        Django auth backend.
+        
+        Should return either ``True`` if allowed, ``False`` if not or an
+        ``HttpResponse`` if you need something custom.
+        """
+        if not request.META.get('HTTP_AUTHORIZATION'):
+            return self._unauthorized()
+
+        try:
+            (auth_type, data) = request.META['HTTP_AUTHORIZATION'].split()
+            if auth_type != 'Basic':
+                return self._unauthorized()
+            user_pass = base64.b64decode(data)
+        except:
+            return self._unauthorized()
+
+        bits = user_pass.split(':')
+
+        if len(bits) != 2:
+            return self._unauthorized()
+
+        if self.backend:
+            user = self.backend.authenticate(username=bits[0], password=bits[1])
+        else:
+            user = authenticate(username=bits[0], password=bits[1])
+
+        if user is None:
+            user_exists = User.objects.filter(email=bits[0]).exists()
+            if user_exists:
+                # user exists but unsuccessful auth
+                return self._unauthorized()
+            else:
+                return self._unauthorized('NOT REGISTERED')
+
+        request.user = user
+        return True
+
+
+class ConsumerBasicAuthentication(UglyFaceBasicAuthentication):
     def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
         self.backend = backend
         self.realm = realm
@@ -138,3 +193,4 @@ class ConsumerBasicAuthentication(BasicAuthentication):
         # ancestor will always return True
         return super(ConsumerBasicAuthentication, self) \
             .is_authenticated(request, **kwargs)
+
