@@ -182,6 +182,9 @@ class ApiKeyResourceTest(APIResourceTestCase):
         TEST_LOGGER.debug('For testing login response where user does not exist:')
         TEST_LOGGER.debug('Response content: %s' % resp.content)
         TEST_LOGGER.debug('Response status code: %s' % resp.status_code)
+        self.assertResponseCode(resp, 401)
+        self.assertEquals('NOT REGISTERED', resp.content, '''Unexpected login response for when user
+                does not exist''')
 
     def test_login_response_user_exists_wrong_password(self):
         User.objects.create_user(self.username, self.email, self.password)
@@ -192,5 +195,8 @@ class ApiKeyResourceTest(APIResourceTestCase):
         TEST_LOGGER.debug('For testing login response where user exists, wrong password given:')
         TEST_LOGGER.debug('Response content: %s' % resp.content)
         TEST_LOGGER.debug('Response status code: %s' % resp.status_code)
+        self.assertResponseCode(resp, 401)
+        self.assertEquals('', resp.content, '''Unexpected login response for when user
+                exists but with wrong password''')
 
 
