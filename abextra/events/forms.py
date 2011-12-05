@@ -133,8 +133,8 @@ class EventImportForm(EventForm):
         slug_value = slugify(title)[:50]
         cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
 
-        # sumbmitted_by
-        cleaned_data['submitted_by'] = self.fields['submitted_by'].clean(self.importer_user)
+        # submitted_by
+        cleaned_data['submitted_by'] = self.fields['submitted_by'].clean(self.importer_user.id)
 
         # is_active
         cleaned_data['is_active'] = self.fields['is_active'].clean(True)
