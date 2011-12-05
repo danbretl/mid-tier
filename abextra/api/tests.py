@@ -25,7 +25,7 @@ API_VERSION = 'v1'
 API_BASE_URL = '/api'
 
 def build_url(endpoint):
-    return '/'.join((API_BASE_URL, API_VERSION, endpoint))
+    return '/'.join((API_BASE_URL, API_VERSION, endpoint, ''))
 
 TEST_LOGGER = logging.getLogger('api.test')
 
@@ -168,7 +168,7 @@ class ApiKeyResourceTest(APIResourceTestCase):
         resp = self.client.get(self.uri, data=self.auth_params,
                 HTTP_AUTHORIZATION=auth_header)
         self.assertResponseCode(resp, 200)
-        resp_dict = try_json_loads(resp.content)
+        resp_dict = json.loads(resp.content)
         self.assertIsNotNone(resp_dict, 'Malformed response')
         api_key_obj = resp_dict['objects'][0]
         self.assertEqual(new_user.api_key.key, api_key_obj['key'],
