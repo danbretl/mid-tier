@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 from django.contrib.admin.widgets import FilteredSelectMultiple
 
@@ -125,24 +126,34 @@ class EventImportForm(EventForm):
         cleaned_data = super(EventImportForm, self).clean()
 
         # slug
-        title = cleaned_data['title']
-        cleaned_data['slug'] = slugify(title)[:50]
+        title = cleaned_data.get('title')
+        if not title:
+            raise ValidationError("'title' is required.")
+        cleaned_data['title'] = self.fields['title'].clean(title)
+        slug_value = slugify(title)[:50]
+        cleaned_data['slug'] = self.fields['slug'].clean(slug_value)
 
         # sumbmitted_by
-        cleaned_data['submitted_by'] = self.importer_user
+        cleaned_data['submitted_by'] = self.fields['submitted_by'].clean(self.importer_user)
 
         # is_active
-        cleaned_data['is_active'] = True
+        cleaned_data['is_active'] = self.fields['is_active'].clean(True)
 
         # concrete category :: via pundit
         event = self.instance
-        source = cleaned_data['source']
-        external_categories = cleaned_data['external_categories']
-        pop_score = cleaned_data['popularity_score']
-        cleaned_data['popularity_score'] = pop_score and int(pop_score) or 0
-        concrete_category = self.arbiter.concrete_categories(event, source, external_categories)
-        cleaned_data['concrete_category'] = self.fields['concrete_category'] \
-            .clean(concrete_category.id)
+        source, external_categories= map(cleaned_data.get, ('source', 'external_categories'))
+        if not source:
+            raise ValidationError("'source' is required.")
+        if not external_categories:
+            raise ValidationError("'external_categories' is required.")
+        concrete_category_value = self.arbiter.concrete_categories(event, source, external_categories)
+        concrete_category_value_id = concrete_category_value and concrete_category_value.id or None
+        cleaned_data['concrete_category'] = self.fields['concrete_category'].clean(concrete_category_value_id)
+
+        # popularity score
+        popularity_score = cleaned_data.get('popularity_score')
+        popularity_score_value = popularity_score and int(popularity_score) or 0
+        cleaned_data['popularity_score'] = self.fields['popularity_score'].clean(popularity_score_value)
 
         return cleaned_data
 
