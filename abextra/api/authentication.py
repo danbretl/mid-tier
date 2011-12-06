@@ -120,9 +120,6 @@ class EmailBackend(BasicBackend):
 
 
 class UglyFaceBasicAuthentication(BasicAuthentication):
-    def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
-        self.backend = backend
-        self.realm = realm
 
     def _unauthorized(self, response_content=''):
         response = HttpUnauthorized(response_content)
@@ -172,9 +169,6 @@ class UglyFaceBasicAuthentication(BasicAuthentication):
 
 
 class ConsumerBasicAuthentication(UglyFaceBasicAuthentication):
-    def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
-        self.backend = backend
-        self.realm = realm
 
     def is_authenticated(self, request, **kwargs):
         consumer_key = request.REQUEST.get('consumer_key')
