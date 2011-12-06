@@ -3,7 +3,7 @@ from tastypie.authentication import Authentication, BasicAuthentication, ApiKeyA
 from tastypie.http import HttpUnauthorized
 from tastypie.models import ApiKey
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.forms import ValidationError
 
 from models import Consumer, DeviceUdid
@@ -14,24 +14,22 @@ class ConsumerAuthentication(Authentication):
         return HttpUnauthorized()
 
     def is_authenticated(self, request, **kwargs):
-        consumer_key = request.REQUEST.get('consumer_key')
-        consumer_secret = request.REQUEST.get('consumer_secret')
+        consumer_key, consumer_secret = map(request.REQUEST.get, ('consumer_key', 'consumer_secret'))
 
-        if not consumer_key or not consumer_secret:
+        if not all((consumer_key, consumer_secret)):
             return self._unauthorized()
 
         try:
             consumer = Consumer.objects.select_related('user').get(
                 key=consumer_key, secret=consumer_secret, is_active=True
-            )
-        except (Consumer.DoesNotExist, Consumer.MultipleObjectsReturned):
+            )[0]
+        except Consumer.DoesNotExist:
             return self._unauthorized()
         else:
             request.user = consumer.user
 
         # ancestor will always return True
-        return super(ConsumerAuthentication, self) \
-            .is_authenticated(request, **kwargs)
+        return super(ConsumerAuthentication, self).is_authenticated(request, **kwargs)
 
     def get_identifier(self, request):
         base = super(ConsumerAuthentication, self).get_identifier(request)
@@ -87,12 +85,10 @@ class ConsumerApiKeyAuthentication(ApiKeyAuthentication):
 
         return True
 
+
 # ========================
 # = Custom Auth Backends =
 # ========================
-from django.contrib.auth.models import User
-from django.core.validators import email_re
-
 class BasicBackend:
     def get_user(self, user_id):
         try:
@@ -110,20 +106,16 @@ class EmailBackend(BasicBackend):
         if user.check_password(password):
             return user
 
+    def user_exists(self, username):
+        return User.objects.filter(email=username).exists()
 
-class UglyFaceBasicAuthentication(BasicAuthentication):
 
-    def _unauthorized(self, response_content=''):
-        response = HttpUnauthorized(response_content)
-        # FIXME: Sanitize realm.
-        response['WWW-Authenticate'] = 'Basic Realm="%s"' % self.realm
-        return response
-
+class VerboseBasicAuthentication(BasicAuthentication):
     def is_authenticated(self, request, **kwargs):
         """
-        Checks a user's basic auth credentials against the current
-        Django auth backend.
-        
+        Taken directly from Tastypie, to add the differentiation between
+        unregistered emails and failed account/pass authentication.
+        ---
         Should return either ``True`` if allowed, ``False`` if not or an
         ``HttpResponse`` if you need something custom.
         """
@@ -135,7 +127,7 @@ class UglyFaceBasicAuthentication(BasicAuthentication):
             if auth_type != 'Basic':
                 return self._unauthorized()
             user_pass = base64.b64decode(data)
-        except:
+        except Exception:
             return self._unauthorized()
 
         bits = user_pass.split(':')
@@ -149,22 +141,22 @@ class UglyFaceBasicAuthentication(BasicAuthentication):
             user = authenticate(username=bits[0], password=bits[1])
 
         if user is None:
-            user_exists = User.objects.filter(email=bits[0]).exists()
-            if user_exists:
-                # user exists but unsuccessful auth
-                return self._unauthorized()
-            else:
-                return self._unauthorized('NOT REGISTERED')
+            if hasattr(self.backend, 'user_exists'):
+                user_exists = self.backend.user_exists(username=bits[0])
+                if user_exists:
+                    # user exists but unsuccessful auth
+                    return self._unauthorized()
+            response = self._unauthorized()
+            response.write('NOT REGISTERED')
+            return response
 
         request.user = user
         return True
 
 
-class ConsumerBasicAuthentication(UglyFaceBasicAuthentication):
-
+class ConsumerBasicAuthentication(VerboseBasicAuthentication):
     def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
-        self.backend = backend
-        self.realm = realm
+        super(ConsumerBasicAuthentication, self).__init__(backend, realm)
 
     def is_authenticated(self, request, **kwargs):
         consumer_key = request.REQUEST.get('consumer_key')
@@ -173,14 +165,11 @@ class ConsumerBasicAuthentication(UglyFaceBasicAuthentication):
         if not consumer_key or not consumer_secret:
             return self._unauthorized()
 
-        try:
-            consumer = Consumer.objects.select_related('user').get(
-                key=consumer_key, secret=consumer_secret, is_active=True
-            )
-        except (Consumer.DoesNotExist, Consumer.MultipleObjectsReturned):
+        consumer_exists = Consumer.objects.select_related('user').filter(
+            key=consumer_key, secret=consumer_secret, is_active=True
+        ).exists()
+        if not consumer_exists:
             return self._unauthorized()
 
         # ancestor will always return True
-        return super(ConsumerBasicAuthentication, self) \
-            .is_authenticated(request, **kwargs)
-
+        return super(ConsumerBasicAuthentication, self).is_authenticated(request, **kwargs)
