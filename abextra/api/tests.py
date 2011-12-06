@@ -163,7 +163,7 @@ class ApiKeyResourceTest(APIResourceTestCase):
 
     def test_list_get(self):
         new_user = User.objects.create_user(self.username, self.email, self.password)
-        auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.username,
+        auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.email,
             self.password))
         resp = self.client.get(self.uri, data=self.auth_params,
                 HTTP_AUTHORIZATION=auth_header)

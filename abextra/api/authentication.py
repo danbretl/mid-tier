@@ -162,6 +162,10 @@ class UglyFaceBasicAuthentication(BasicAuthentication):
 
 class ConsumerBasicAuthentication(UglyFaceBasicAuthentication):
 
+    def __init__(self, backend=EmailBackend(), realm='kwiqet-mobile'):
+        self.backend = backend
+        self.realm = realm
+
     def is_authenticated(self, request, **kwargs):
         consumer_key = request.REQUEST.get('consumer_key')
         consumer_secret = request.REQUEST.get('consumer_secret')
