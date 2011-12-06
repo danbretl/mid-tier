@@ -28,7 +28,7 @@ DATABASES = {
 #     DATABASE_ROUTERS = ['preprocess.routers.PreprocessRouter']
 
 # don't run south migrations to setup test dbs
-SOUTH_TESTS_MIGRATE = False
+SOUTH_TESTS_MIGRATE = True 
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
