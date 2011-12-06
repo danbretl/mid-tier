@@ -344,11 +344,7 @@ class DateFilterMixin:
 
 
 class DateFilterTest(DateFilterMixin, BaseEventSummaryTest):
-
-    def setUp(self):
-        super(DateFilterTest, self).setUp()
-        if not hasattr(self, 'filter_options'):
-            self.filter_options = DateFilterOptions()
+    filter_options_class = DateFilterOptions
 
 class TimeFilterMixin:
 
@@ -389,11 +385,7 @@ class TimeFilterMixin:
 
 
 class TimeFilterTest(TimeFilterMixin, BaseEventSummaryTest):
-
-    def setUp(self):
-        super(TimeFilterTest, self).setUp()
-        if not hasattr(self, 'filter_options'):
-            self.filter_options = TimeFilterOptions()
+    filter_options_class = TimeFilterOptions
 
 
 class PriceCategoryFilterMixin:
@@ -829,6 +821,7 @@ class UserResourceTest(APIResourceTestCase):
             self.password, 'password1': self.password, 'password2': self.password})
         resp = self.client.post(self.uri + encoded_auth_params, json_params, content_type='application/json')
         self.assertResponseCode(resp, 400)
+
 
 class ApiKeyResourceTest(APIResourceTestCase):
     resource = ApiKeyResource
