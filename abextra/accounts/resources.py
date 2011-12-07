@@ -2,6 +2,8 @@ from django.core.urlresolvers import resolve, Resolver404
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
 from django.conf import settings
+from django import forms
+from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
@@ -24,6 +26,14 @@ import random
 from django.utils.hashcompat import sha_constructor
 from userena.forms import SignupFormOnlyEmail
 class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
+
+    first_name = forms.CharField(label=_(u'First name'),
+                                 max_length=30,
+                                 required=True)
+    last_name = forms.CharField(label=_(u'Last name'),
+                                max_length=30,
+                                required=True)
+
     def save(self):
         """ Generate a random username before falling back to parent signup form """
         while True:
@@ -34,11 +44,16 @@ class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
 
         self.cleaned_data['username'] = username
 
-        username, email, password = (self.cleaned_data['username'],
+        username, email, password, first_name, last_name = (self.cleaned_data['username'],
                                      self.cleaned_data['email'],
-                                     self.cleaned_data['password1'])
+                                     self.cleaned_data['password1'],
+                                     self.cleaned_data['first_name'],
+                                     self.cleaned_data['last_name'])
 
         new_user = User.objects.create_user(username, email, password)
+        new_user.first_name = first_name
+        new_user.last_name = last_name
+        new_user.save()
         device_user_group = Group.objects.get(id=5)
         new_user.groups.add(device_user_group)
         return new_user
