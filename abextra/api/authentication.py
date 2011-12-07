@@ -22,8 +22,8 @@ class ConsumerAuthentication(Authentication):
         try:
             consumer = Consumer.objects.select_related('user').get(
                 key=consumer_key, secret=consumer_secret, is_active=True
-            )[0]
-        except Consumer.DoesNotExist:
+            )
+        except Consumer.DoesNotExist, Consumer.MultipleObjectsReturned:
             return self._unauthorized()
         else:
             request.user = consumer.user
