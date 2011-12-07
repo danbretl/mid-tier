@@ -55,4 +55,5 @@ class UserProfileResource(ModelResource):
             .select_related('user')
 
     def apply_authorization_limits(self, request, object_list):
+        """limits qs to only the request user's objects"""
         return object_list.filter(user=request.user)
