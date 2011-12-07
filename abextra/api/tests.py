@@ -16,6 +16,7 @@ from test_utils import CategoryFilterOptions, DateFilterOptions
 from test_utils import PriceFilterOptions, TimeFilterOptions
 from test_utils import BaseFilterOptions
 
+from accounts.models import UserProfile
 from api.models import Consumer
 from behavior.models import EventAction, EventActionAggregate
 from events.models import Category, Event, EventSummary, Occurrence
@@ -784,6 +785,7 @@ class UserProfileResourceTest(APIResourceTestCase):
         new_user = User.objects.create_user('username', self.email, self.password)
         new_user.first_name, new_user.last_name = self.first_name, self.last_name
         new_user.save()
+        UserProfile.objects.create(user=new_user)
         
         auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.email, self.password))
         resp = self.client.get(self.uri, data=self.auth_params,

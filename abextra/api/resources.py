@@ -4,7 +4,7 @@ from tastypie.authorization import DjangoAuthorization
 from api.authentication import ConsumerBasicAuthentication
 
 from tastypie.models import ApiKey
-from django.contrib.auth.models import User
+from accounts.resources import UserProfile
 
 # ===========================
 # = ApiKey Resource | Login =
@@ -31,11 +31,11 @@ class ApiKeyResource(ModelResource):
 
 
 class UserProfileResource(ModelResource):
-    first_name = fields.CharField(attribute='first_name')
-    last_name = fields.CharField(attribute='last_name')
+    first_name = fields.CharField(attribute='first_name', null=True)
+    last_name = fields.CharField(attribute='last_name', null=True)
 
     class Meta:
-        queryset = User.objects.all()
+        queryset = UserProfile.objects.all()
         list_allowed_methods = ('get')
         detail_allowed_methods = ()
         authentication = ConsumerBasicAuthentication()
@@ -43,10 +43,16 @@ class UserProfileResource(ModelResource):
         fields = ('first_name', 'last_name',)
         resource_name = 'userprofile'
 
+    def dehydrate_first_name(self, bundle):
+        return bundle.obj.user.first_name
+
+    def dehydrate_last_name(self, bundle):
+        return bundle.obj.user.last_name
+
     def get_object_list(self, request):
         """overridden to select relatives"""
         return super(UserProfileResource, self).get_object_list(request) \
-            .filter(email=request.user.email)
+            .select_related('user')
 
-    # def apply_authorization_limits(self, request, object_list):
-        # return object_list.filter(user=request.user)
+    def apply_authorization_limits(self, request, object_list):
+        return object_list.filter(user=request.user)

@@ -6,6 +6,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 from sorl.thumbnail import get_thumbnail
 
+from accounts.models import UserProfile
 from tastypie import fields
 from tastypie.authentication import Authentication
 from tastypie.authorization import DjangoAuthorization, Authorization
@@ -25,6 +26,7 @@ from api.authentication import ConsumerApiKeyAuthentication, ConsumerAuthenticat
 import random
 from django.utils.hashcompat import sha_constructor
 from userena.forms import SignupFormOnlyEmail
+
 class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
 
     first_name = forms.CharField(label=_(u'First name'),
@@ -54,6 +56,7 @@ class SignupFormOnlyEmailBastardized(SignupFormOnlyEmail):
         new_user.first_name = first_name
         new_user.last_name = last_name
         new_user.save()
+        UserProfile.objects.create(user=new_user)
         device_user_group = Group.objects.get(id=5)
         new_user.groups.add(device_user_group)
         return new_user
