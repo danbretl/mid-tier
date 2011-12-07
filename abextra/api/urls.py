@@ -2,7 +2,7 @@ from django.conf.urls.defaults import *
 from tastypie.api import Api
 
 from accounts.resources import UserResource, PasswordResetResource
-from api.resources import ApiKeyResource
+from api.resources import ApiKeyResource, UserProfileResource
 from behavior.resources import EventActionResource, EventActionAggregateResource
 from events.resources import CategoryResource
 from events.resources import EventResource, EventFullResource, FeaturedEventResource
@@ -23,6 +23,7 @@ api_v1 = Api(api_name='v1')
 api_v1.register(UserResource())
 api_v1.register(ApiKeyResource())
 api_v1.register(PasswordResetResource())
+api_v1.register(UserProfileResource())
 
 # ==========================
 # = Event / Recommendation =

@@ -28,3 +28,25 @@ class ApiKeyResource(ModelResource):
 
     def dehydrate_full_name(self, bundle):
         return bundle.obj.user.get_full_name()
+
+
+class UserProfileResource(ModelResource):
+    first_name = fields.CharField(attribute='first_name')
+    last_name = fields.CharField(attribute='last_name')
+
+    class Meta:
+        queryset = User.objects.all()
+        list_allowed_methods = ('get')
+        detail_allowed_methods = ()
+        authentication = ConsumerBasicAuthentication()
+        authorization = DjangoAuthorization()
+        fields = ('first_name', 'last_name',)
+        resource_name = 'userprofile'
+
+    def get_object_list(self, request):
+        """overridden to select relatives"""
+        return super(UserProfileResource, self).get_object_list(request) \
+            .filter(email=request.user.email)
+
+    # def apply_authorization_limits(self, request, object_list):
+        # return object_list.filter(user=request.user)

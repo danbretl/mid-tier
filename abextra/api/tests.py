@@ -1,5 +1,5 @@
 import datetime
-from itertools import product
+from django.conf import settings
 from dateutil.relativedelta import relativedelta
 from django.utils import simplejson as json
 import logging
@@ -25,7 +25,7 @@ from events.resources import EventRecommendationResource
 from events.resources import CategoryResource, FeaturedEventResource, EventSummaryResource
 from events.resources import OccurrenceResource, OccurrenceFullResource, EventResource, EventFullResource
 from accounts.resources import UserResource, PasswordResetResource
-from api.resources import ApiKeyResource
+from api.resources import ApiKeyResource, UserProfileResource
 import livesettings
 
 TEST_LOGGER = logging.getLogger('api.test')
@@ -774,6 +774,32 @@ class ApiKeyResourceTest(APIResourceTestCase):
         TEST_LOGGER.debug('For testing login response where user exists, wrong password given:')
         TEST_LOGGER.debug('Response content: %s' % resp.content)
         TEST_LOGGER.debug('Response status code: %s' % resp.status_code)
+
+class UserProfileResourceTest(APIResourceTestCase):
+    resource = UserProfileResource
+    email, password = 'user@name.com', 'password'
+    first_name, last_name = 'first', 'last'
+
+    def test_list_get(self):
+        new_user = User.objects.create_user('username', self.email, self.password)
+        new_user.first_name, new_user.last_name = self.first_name, self.last_name
+        new_user.save()
+        
+        auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.email, self.password))
+        resp = self.client.get(self.uri, data=self.auth_params,
+                HTTP_AUTHORIZATION=auth_header)
+        self.assertResponseCode(resp, 200)
+        self.assertResponseMetaList(resp, 1)
+        resp_dict = try_json_loads(resp.content)
+        user_dict = resp_dict['objects'][0]
+
+        user_uri = self.resource().get_resource_uri(new_user)
+        self.assertEquals(user_uri, user_dict['resource_uri'], '''Unexpected URI for
+                user''')
+        self.assertEquals(self.first_name, user_dict['first_name'], '''Unexpected
+                first name for user''')
+        self.assertEquals(self.last_name, user_dict['last_name'], '''Unexpected
+                last name for user''')
 
 
 class PasswordResetResourceTest(APIResourceTestCase):
