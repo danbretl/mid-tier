@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
@@ -13,6 +14,7 @@ class UserProfile(UserenaBaseProfile):
         ('D', 'Denied'),
     )
     alpha_status = models.CharField(max_length=1, choices=ALPHA_STATUS_CHOICES, null=True)
+    user = models.OneToOneField(User)
 
     def send_application_approved_email(self):
         context= {'user': self.user, 'protocol': get_protocol(), 'site': Site.objects.get_current()}
