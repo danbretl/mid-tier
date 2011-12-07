@@ -16,7 +16,6 @@ from test_utils import CategoryFilterOptions, DateFilterOptions
 from test_utils import PriceFilterOptions, TimeFilterOptions
 from test_utils import BaseFilterOptions
 
-import livesettings
 from api.models import Consumer
 from behavior.models import EventAction, EventActionAggregate
 from events.models import Category, Event, EventSummary, Occurrence
@@ -27,6 +26,7 @@ from events.resources import CategoryResource, FeaturedEventResource, EventSumma
 from events.resources import OccurrenceResource, OccurrenceFullResource, EventResource, EventFullResource
 from accounts.resources import UserResource, PasswordResetResource
 from api.resources import ApiKeyResource
+import livesettings
 
 TEST_LOGGER = logging.getLogger('api.test')
 
@@ -44,12 +44,11 @@ class APIResourceTestCase(TestCase):
         self.client = Client()
 
     def assertResponseCode(self, resp, expected_code):
-        """
-        Assert that a response has an expected status code
-        """
-        self.assertEqual(expected_code, resp.status_code,
-                'Expected HTTP %s to be allowed on %s, got code %s' %
-                (resp.request['REQUEST_METHOD'], resp.request['PATH_INFO'], resp.status_code))
+        """Assert that a response has an expected status code"""
+        self.assertEqual(expected_code, resp.status_code, 'Expected %s, received %s on a %s to %s' % (
+            expected_code, resp.status_code,
+            resp.request['REQUEST_METHOD'], resp.request['PATH_INFO']
+        ))
 
     def assertResponseMetaList(self, resp, expected_count):
         resp_dict = try_json_loads(resp.content)
@@ -506,91 +505,6 @@ class EventRecommendationDateCategoryFilterTest(DateCategoryFilterMixin, EventRe
             'date_filter_options': DateFilterOptions}
 
 
-class EventSummaryFilterTest(BaseEventSummaryTest):
-
-    def _test_multiple_filters(self):
-        price_filters = [('none', {})] + [kv for kv in PriceFilterTest.filter_options.iteritems()]
-        date_filters = [('none', {})] + [kv for kv in DateFilterTest.filter_options.iteritems()]
-        time_filters = [('none', {})] + [kv for kv in TimeFilterTest.filter_options.iteritems()]
-        filter_products = product(price_filters, date_filters, time_filters)
-        for filter_product in filter_products:
-            composite_filter = dict(filter_product)
-            if 'none' in composite_filter:
-                del(composite_filter['none'])
-
-            unfiltered_price_quantity, filtered_price_quantity = 0, 0
-            if 'free' in composite_filter:
-                unfiltered_price_quantity, filtered_price_quantity = 0, 10
-            elif 'under_twenty' in composite_filter:
-                unfiltered_price_quantity, filtered_price_quantity = 10, 30
-            elif 'under_fifty' in composite_filter:
-                unfiltered_price_quantity, filtered_price_quantity = 40, 60
-
-            unfiltered_date, filtered_date = datetime.datetime.now().date(), datetime.datetime.now().date()
-            if 'today' in composite_filter:
-                unfiltered_date, filtered_date = (datetime.datetime.now().date(),
-                        (datetime.datetime.now() + relativedelta(days=1)).date())
-            elif 'this_weekend' in composite_filter:
-                unfiltered_date, filtered_date = ((datetime.datetime.now() +
-                    relativedelta(weekday=5)).date(), (datetime.datetime.now() + relativedelta(days=1)).date())
-            elif 'next_seven_days' in composite_filter:
-                unfiltered_date, filtered_date = ((datetime.datetime.now() + relativedelta(days=1)).date(),
-                        (datetime.datetime.now() + relativedelta(days=10)).date())
-            elif 'next_thirty_days' in composite_filter:
-                unfiltered_date, filtered_date = ((datetime.datetime.now() + relativedelta(days=1)).date(),
-                        (datetime.datetime.now() + relativedelta(days=40)).date())
-
-            unfiltered_time, filtered_time = ((datetime.datetime.now() +
-                    relativedelta(hours=1)).time(), (datetime.datetime.now() +
-                    relativedelta(hours=1)).time())
-            if 'morning' in composite_filter:
-                unfiltered_time, filtered_time = datetime.time(10,0), datetime.time(13,0) 
-            elif 'afternoon' in composite_filter:
-                unfiltered_time, filtered_time = datetime.time(13,0), datetime.time(19,0) 
-            elif 'evening' in composite_filter:
-                unfiltered_time, filtered_time = datetime.time(19,0), datetime.time(22,0) 
-            elif 'late_night' in composite_filter:
-                unfiltered_time, filtered_time = datetime.time(22,0), datetime.time(10,0) 
-
-            filtered_event = get(Event, concrete_category=Category.objects.get(slug='music'))
-            occ = get(Occurrence, start_date=filtered_date,
-                    start_time=filtered_time, end_date=filtered_date,
-                    end_time=filtered_time,
-                    place=F(point=F(geometry=geos.Point(x=0,y=0))),
-                    event=filtered_event)
-            get(Price, occurrence=occ, quantity=filtered_price_quantity)
-            filtered_event.save()
-
-            unfiltered_event = get(Event, concrete_category=Category.objects.get(slug='music'))
-            occ = get(Occurrence, start_date=unfiltered_date,
-                    end_date=unfiltered_date, start_time=unfiltered_time,
-                    end_time=unfiltered_time,
-                    place=F(point=F(geometry=geos.Point(x=0,y=0))),
-                    event=unfiltered_event)
-            get(Price, occurrence=occ, quantity=unfiltered_price_quantity)
-            unfiltered_event.save()
-
-            query_params = dict(**self.auth_params)
-            for filter_params in composite_filter.values():
-                query_params.update(**filter_params)
-            resp = self.client.get(self.uri, data=query_params)
-
-            self.assertResponseCode(resp, 200)
-            expected_length = 1 if composite_filter else 2
-            self.assertResponseMetaList(resp, expected_length)
-
-            json_resp = try_json_loads(resp.content)
-            if composite_filter:
-                first_search_result_uri = json_resp['objects'][0]['resource_uri']
-                expected_first_uri = self.resource().get_resource_uri(unfiltered_event)
-                self.assertEqual(expected_first_uri, first_search_result_uri,
-                        'Unexpected event in results for filter combination %s' %
-                        composite_filter.keys())
-
-            filtered_event.delete()
-            unfiltered_event.delete()
-
-
 class FullTextSearchTest(BaseEventSummaryTest):
 
     def test_fts_title_simple(self):
@@ -875,5 +789,3 @@ class PasswordResetResourceTest(APIResourceTestCase):
         encoded_auth_params = '?' + urllib.urlencode(self.auth_params)
         resp = self.client.post(self.uri + encoded_auth_params, json_params, content_type='application/json')
         self.assertResponseCode(resp, 201)
-
-
