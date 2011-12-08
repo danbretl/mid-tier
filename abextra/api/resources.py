@@ -4,7 +4,7 @@ from tastypie.authorization import DjangoAuthorization
 from api.authentication import ConsumerBasicAuthentication
 
 from tastypie.models import ApiKey
-from accounts.resources import UserProfile
+from accounts.models import UserProfile
 
 # ===========================
 # = ApiKey Resource | Login =
