@@ -33,6 +33,7 @@ class ApiKeyResource(ModelResource):
 class UserProfileResource(ModelResource):
     first_name = fields.CharField(attribute='first_name', null=True)
     last_name = fields.CharField(attribute='last_name', null=True)
+    email = fields.CharField(attribute='email', null=True)
 
     class Meta:
         queryset = UserProfile.objects.all()
@@ -40,8 +41,11 @@ class UserProfileResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerBasicAuthentication()
         authorization = DjangoAuthorization()
-        fields = ('first_name', 'last_name',)
+        fields = ('first_name', 'last_name', 'email')
         resource_name = 'userprofile'
+
+    def dehydrate_email(self, bundle):
+        return bundle.obj.user.email
 
     def dehydrate_first_name(self, bundle):
         return bundle.obj.user.first_name
