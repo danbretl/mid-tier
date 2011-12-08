@@ -802,6 +802,8 @@ class UserProfileResourceTest(APIResourceTestCase):
                 first name for user''')
         self.assertEquals(user_profile.user.last_name, user_dict['last_name'], '''Unexpected
                 last name for user''')
+        self.assertEquals(user_profile.user.email, user_dict['email'],
+                'Unexpected email address for user')
 
 
 class PasswordResetResourceTest(APIResourceTestCase):
