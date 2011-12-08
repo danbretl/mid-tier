@@ -16,6 +16,7 @@ class UserProfile(UserenaBaseProfile):
     )
     alpha_status = models.CharField(max_length=1, choices=ALPHA_STATUS_CHOICES, null=True)
     user = models.OneToOneField(User, unique=True, verbose_name=_('user'), related_name='profile')
+    facebook_id = models.CharField(max_length=25, null=True)
 
     def send_application_approved_email(self):
         context = {'user': self.user, 'protocol': get_protocol(), 'site': Site.objects.get_current()}
