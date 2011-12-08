@@ -22,7 +22,7 @@ class PointTest(TestCase):
     def setUp(self):
         self.data = dict()
 
-    def test_uniqueness(self):
+#    def test_uniqueness(self):
 
 
 class PointImportFormTest(TestCase):

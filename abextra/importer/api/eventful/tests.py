@@ -1,4 +1,3 @@
-from itertools import repeat
 import os
 import datetime
 import HTMLParser
@@ -19,6 +18,8 @@ from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdapt
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
 
+_parse_date = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date()
+_parse_time = lambda s: datetime.datetime.strptime(s, '%H:%M').time()
 
 class TestResourceConsumer(object):
     _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
@@ -120,7 +121,7 @@ class PriceAdaptorTest(TestCase):
 
         created_prices = self.adaptor.adapt_m2o(self.invalid_response, occurrence=occurrence.id)
         self.assertTrue(all(not created for created, price in created_prices), 'Price object created despite invalid data')
-        self.assertTrue(all(price==None for created, price in created_prices), 'Price object returned despite invalid data')
+        self.assertTrue(all(price is None for created, price in created_prices), 'Price object returned despite invalid data')
 
 
 class PointAdaptorTest(TestCase):
@@ -426,4 +427,3 @@ class ExternalCategoryFixtureTest(TestCase):
                     (eventful_source.name, external_category.name))
             self.assertIsInstance(external_category.concrete_category,
                     Category, 'Unexpected type of associated concrete category')
-
