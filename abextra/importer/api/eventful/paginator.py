@@ -76,7 +76,7 @@ class EventfulPaginator(object):
                     import_this_page = cmd_str.lower().startswith('y')
             if import_this_page:
                 for event in events:
-                    created, event_obj = self.event_adaptor.parse(event)
+                    created, event_obj = self.event_adaptor.adapt(event)
                     results.append((created, event_obj.id))
             else:
                 self.logger.info('Did not import events from this page')
