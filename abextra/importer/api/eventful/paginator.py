@@ -19,16 +19,33 @@ class EventfulPaginator(object):
         self.query_kwargs = query_kwargs
         self.event_horizon = None
 
+    def _import_page_events(self, page_data, interactive):
+        # Is interactive mode set? If so, then ask whether to import the
+        # current page. This happens after the page is fetched.
+        results = []
+        import_this_page = True
+        if interactive:
+            self.logger.info('Import this page into database? \n (Y/n)')
+            cmd_str = raw_input()
+            if cmd_str:
+                import_this_page = cmd_str.lower().startswith('y')
+        if import_this_page:
+            for event in page_data:
+                created, event_obj = self.event_adaptor.adapt(event)
+                results.append((created, event_obj.id))
+        else:
+            self.logger.info('Did not import events from this page')
+        return results
 
     def import_events(self):
         self.logger.info('Beginning import of eventful events...')
 
-        results = []
-
         search_meta = self.consumer.consume_meta(self.query_kwargs)
 
         # if no amount of pages to fetch is given, default to all
+
         pages_available = search_meta['page_count']
+
         if not self.total_pages:
             self.total_pages = pages_available
         if self.start_page + self.total_pages - 1 > pages_available:
@@ -38,6 +55,7 @@ class EventfulPaginator(object):
         # estimated maximum number of calls: 2 per event (worst case scenario
         # needing to make call for event and venue details each time), 1 per
         # page
+
         estimated_calls = 2 * self.total_pages * self.query_kwargs['page_size'] + self.total_pages
 
         self.logger.info('Number of matching the search results: %s', search_meta['total_items'])
@@ -45,6 +63,8 @@ class EventfulPaginator(object):
                          self.total_pages, self.query_kwargs['page_size'])
         self.logger.info('Starting from page: %s (%s available)', self.start_page, pages_available)
         self.logger.info('Estimated maximum number of calls required for entire resultset: %s', estimated_calls)
+
+        results = []
 
         if estimated_calls > conf.SAFE_API_CALL_LIMIT:
             continue_fetch = False
@@ -65,20 +85,6 @@ class EventfulPaginator(object):
             except APIError as e:
                 self.logger.exception(e)
                 break
-
-            # Is interactive mode set? If so, then ask whether to import the
-            # current page. This happens after the page is fetched.
-            import_this_page = True
-            if self.interactive:
-                self.logger.info('Import this page into database? \n (Y/n)')
-                cmd_str = raw_input()
-                if cmd_str:
-                    import_this_page = cmd_str.lower().startswith('y')
-            if import_this_page:
-                for event in events:
-                    created, event_obj = self.event_adaptor.adapt(event)
-                    results.append((created, event_obj.id))
-            else:
-                self.logger.info('Did not import events from this page')
+            results.extend(self._import_page_events(events, self.interactive)) 
 
         return results
