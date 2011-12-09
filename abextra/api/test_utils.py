@@ -1,8 +1,11 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 from events.models import Category
+from places.models import Place
 from api.urls import api_v1
+from django.contrib.gis import geos
 from django.utils import simplejson as json
+from django_dynamic_fixture import get, F
 
 API_BASE_URL = '/api'
 
@@ -118,6 +121,17 @@ class TimeFilterOptions(SimpleFilterOptions):
     @property
     def evening(self): return self._param('evening')
 
+class PlaceFilterOptions(SimpleFilterOptions):
+
+    def __init__(self):
+        self.resource = api_v1._registry['place']
+
+    def _option(self, title):
+        place = self.places_by_title[title]
+        return self._uri_from_obj(place) 
+
+    def _uri_from_obj(self, place):
+        return self.resource.get_resource_uri(place)
 
 def build_uri(endpoint):
     return '/'.join((API_BASE_URL, api_v1.api_name, endpoint, ''))
