@@ -1,7 +1,7 @@
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.authorization import DjangoAuthorization
-from api.authentication import ConsumerBasicAuthentication
+from api.authentication import ConsumerBasicAuthentication, ConsumerApiKeyAuthentication
 
 from tastypie.models import ApiKey
 from accounts.models import UserProfile
@@ -39,7 +39,7 @@ class UserProfileResource(ModelResource):
         queryset = UserProfile.objects.all()
         list_allowed_methods = ('get')
         detail_allowed_methods = ()
-        authentication = ConsumerBasicAuthentication()
+        authentication = ConsumerApiKeyAuthentication()
         authorization = DjangoAuthorization()
         fields = ('first_name', 'last_name', 'email')
         resource_name = 'userprofile'

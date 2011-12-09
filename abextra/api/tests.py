@@ -784,11 +784,10 @@ class UserProfileResourceTest(APIResourceTestCase):
         user_profile = get(UserProfile)
         user_profile.user.set_password(self.password)
         user_profile.user.save()
-        
-        auth_header = 'Basic %s' % base64.b64encode('%s:%s' %
-                (user_profile.user.email, self.password))
-        resp = self.client.get(self.uri, data=self.auth_params,
-                HTTP_AUTHORIZATION=auth_header)
+       
+        api_auth_params = dict(api_key=user_profile.user.api_key.key,
+                **self.auth_params)
+        resp = self.client.get(self.uri, data=api_auth_params)
 
         self.assertResponseCode(resp, 200)
         self.assertResponseMetaList(resp, 1)
