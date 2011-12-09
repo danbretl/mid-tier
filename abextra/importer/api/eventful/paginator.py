@@ -4,11 +4,12 @@ from importer.api.eventful.adaptors import EventAdaptor
 from importer.api.eventful.client import APIError
 from importer.api.eventful.consumer import EventfulApiConsumer
 
+
 class EventfulPaginator(object):
     logger = logging.getLogger('importer.api.eventful.paginator')
 
     def __init__(self, interactive=False, total_pages=None, start_page=1,
-                 consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
+            silent_fail=False, consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
         # internal initializations
         self.consumer = EventfulApiConsumer(client_kwargs=client_kwargs, **(consumer_kwargs or {}))
         self.event_adaptor = EventAdaptor()
@@ -18,8 +19,9 @@ class EventfulPaginator(object):
         self.start_page = start_page
         self.query_kwargs = query_kwargs
         self.event_horizon = None
+        self.silent_fail = silent_fail
 
-    def _import_page_events(self, page_data, interactive):
+    def _import_page_events(self, page_data, interactive, silent_fail):
         # Is interactive mode set? If so, then ask whether to import the
         # current page. This happens after the page is fetched.
         results = []
@@ -31,8 +33,15 @@ class EventfulPaginator(object):
                 import_this_page = cmd_str.lower().startswith('y')
         if import_this_page:
             for event in page_data:
-                created, event_obj = self.event_adaptor.adapt(event)
-                results.append((created, event_obj.id))
+                if not silent_fail:
+                    created, event_obj = self.event_adaptor.parse(page_data)
+                    results.append((created, event_obj.id))
+                else:
+                    try:
+                        created, event_obj = self.event_adaptor.parse(page_data)
+                        results.append((created, event_obj.id))
+                    except Exception as e:
+                        self.logger.error(e)
         else:
             self.logger.info('Did not import events from this page')
         return results
@@ -85,6 +94,18 @@ class EventfulPaginator(object):
             except APIError as e:
                 self.logger.exception(e)
                 break
-            results.extend(self._import_page_events(events, self.interactive)) 
+
+            # Is interactive mode set? If so, then ask whether to import the
+            # current page. This happens after the page is fetched.
+            import_this_page = True
+            if self.interactive:
+                self.logger.info('Import this page into database? \n (Y/n)')
+                cmd_str = raw_input()
+                if cmd_str:
+                    import_this_page = cmd_str.lower().startswith('y')
+            if import_this_page:
+                results.extend(self._import_page_events(events, self.interactive)) 
+            else:
+                self.logger.info('Did not import events from this page')
 
         return results
