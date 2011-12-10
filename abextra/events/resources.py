@@ -182,17 +182,19 @@ class EventSummaryResource(ModelResource):
     class Meta:
         queryset = EventSummary.objects.all()
         list_allowed_methods = ('get',)
+        excludes = ('place',)
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         filtering = {
             'concrete_category': ('exact',),
-            'concrete_parent_category': ('exact',)
+            'concrete_parent_category': ('exact',),
         }
 
     def get_object_list(self, request):
         """overridden to select relatives"""
         return super(EventSummaryResource, self).get_object_list(request)\
-        .select_related('event', 'concrete_category', 'concrete_parent_category')
+        .select_related('event', 'concrete_category',
+                'concrete_parent_category')
 
     def build_filters(self, filters=None):
         filters = filters or dict()
@@ -207,6 +209,16 @@ class EventSummaryResource(ModelResource):
                 raise NotFound("The URL provided '%s' was not a link to a valid resource." % filter_uri)
             else:
                 orm_filters.update(concrete_parent_category__exact=kwargs['pk'])
+
+        # place filter
+        place_filter_uri = filters.get('place')
+        if place_filter_uri:
+            try:
+                view, args, kwargs = resolve(place_filter_uri)
+            except Resolver404:
+                raise NotFound("The URL provided '%s' was not a link to a valid resource." % place_filter_uri)
+            else:
+                orm_filters.update(event__occurrences__place__id=kwargs['pk'])
 
         # FIXME these really need to be rethought and come from precomputed columns
         # FIXME inefficient joins for true occurrence-based results

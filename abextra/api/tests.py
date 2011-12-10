@@ -1,5 +1,4 @@
 import datetime
-from django.conf import settings
 from dateutil.relativedelta import relativedelta
 from django.utils import simplejson as json
 import logging
@@ -14,7 +13,7 @@ from django_dynamic_fixture import get, DynamicFixture as F
 from test_utils import build_uri, try_json_loads
 from test_utils import CategoryFilterOptions, DateFilterOptions
 from test_utils import PriceFilterOptions, TimeFilterOptions
-from test_utils import BaseFilterOptions
+from test_utils import BaseFilterOptions, PlaceFilterOptions
 
 from accounts.models import UserProfile
 from api.models import Consumer
@@ -237,6 +236,31 @@ class EventSummaryCategoryFilterTest(BaseEventSummaryTest, CategoryFilterMixin):
 class EventRecommendationCategoryFilterTest(BaseEventRecommendationTest, CategoryFilterMixin):
     filter_options_class = CategoryFilterOptions
 
+class PlaceFilterMixin:
+
+    def test_place_filters_bam_cafe(self):
+        matched_event = BaseEventSummaryTest.make_event_fixture()
+        BaseEventSummaryTest.make_event_fixture()
+        matched_place = matched_event.occurrences.all()[0].place
+
+        query_params = dict(**self.auth_params)
+        query_params.update(**{'place': PlaceFilterOptions()._uri_from_obj(matched_place)})
+        resp = self.client.get(self.uri, data=query_params)
+
+        self.assertResponseCode(resp, 200)
+        self.assertResponseMetaList(resp, 1)
+
+        json_resp = try_json_loads(resp.content)
+        first_search_result_uri = json_resp['objects'][0]['resource_uri']
+        expected_first_uri = self.resource().get_resource_uri(matched_event)
+        self.assertEqual(expected_first_uri, first_search_result_uri,
+                'Unexpected event in results for category filter')
+
+class EventSummaryPlaceFilterTest(BaseEventSummaryTest, PlaceFilterMixin):
+    filter_options_class = PlaceFilterOptions 
+
+class EventRecommendationPlaceFilterTest(BaseEventRecommendationTest, PlaceFilterMixin):
+    filter_options_class = PlaceFilterOptions 
 
 class PriceFilterMixin:
 
