@@ -2,18 +2,13 @@ import os
 import datetime
 
 from django.core.urlresolvers import resolve, Resolver404, reverse
-from django.core.paginator import Paginator, InvalidPage
 from django.conf import settings
-from django.conf.urls.defaults import *
 from django.contrib.sites.models import Site
-from django.http import Http404
 from sorl.thumbnail import get_thumbnail
 
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.exceptions import ImmediateHttpResponse, NotFound
-from tastypie.http import  HttpBadRequest
-from tastypie.utils import trailing_slash
+from tastypie.exceptions import NotFound, BadRequest
 
 from api.authentication import ConsumerApiKeyAuthentication
 
@@ -36,8 +31,7 @@ class CategoryResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
         limit = 200
-        fields = ('title', 'color', 'button_icon', 'small_icon') +\
-                 ('thumb',) # FIXME remove deprecated graphic fields
+        fields = ('title', 'color', 'button_icon', 'small_icon')
 
     def dehydrate_button_icon(self, bundle):
         category, data = bundle.obj, bundle.data
@@ -49,10 +43,6 @@ class CategoryResource(ModelResource):
         if category.small_icon:
             return os.path.basename(category.small_icon.name)
 
-    # FIXME remove deprecated
-    def dehydrate_thumb(self, bundle):
-        category, data = bundle.obj, bundle.data
-        return category.thumb_path
 
 # =========
 # = Event =
@@ -115,9 +105,7 @@ class EventResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        joined_qs = super(EventResource, self).get_object_list(request)\
-        .select_related('concrete_category')
-        return joined_qs
+        return super(EventResource, self).get_object_list(request).select_related('concrete_category')
 
 
 class EventFullResource(EventResource):
@@ -182,10 +170,10 @@ class OccurrenceFullResource(OccurrenceResource):
         resource_name = 'occurrence_full'
         filtering = {'event': ('exact',)}
 
+
 # =================
 # = Event Summary =
 # =================
-
 class EventSummaryResource(ModelResource):
     event = fields.ToOneField(EventFullResource, 'event')
     concrete_category = fields.ToOneField(CategoryResource, 'concrete_category')
@@ -256,57 +244,36 @@ class EventSummaryResource(ModelResource):
 
         # Update with the provided kwargs.
         filters.update(kwargs)
+
+        # Drop request's user into filters
+        filters['_user'] = request.user
+
         applicable_filters = self.build_filters(filters=filters)
 
-        qs = self.get_object_list(request).filter(**applicable_filters)
-        q_filter = filters.get('q', None)
-        if q_filter:
-            qs = qs.ft_search(q_filter)
-
         try:
-            print qs.query
+            qs = self.get_object_list(request).filter(**applicable_filters)
+            q_filter = filters.get('q', None)
+            if q_filter:
+                qs = qs.ft_search(q_filter)
+            qs = self.apply_authorization_limits(request, qs)
+            # FIXME somehow, running __str__ on this query fixes it, otherwise broken
+            _ = str(qs.query)
             return qs
         except ValueError:
-            raise NotFound("Invalid resource lookup data provided (mismatched type).")
+            raise BadRequest("Invalid resource lookup data provided (mismatched type).")
 
-    # FIXME deprecated should be removed after 0.1
-    def override_urls(self):
-        return [
-            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
-        ]
-    def get_search(self, request, **kwargs):
-        self.method_check(request, allowed=['get'])
-        self.is_authenticated(request)
-        self.throttle_check(request)
-
-        # Do the query.
-        events = Event.objects.only('id').ft_search(request.GET.get('q', '')).select_related('summary')
-        paginator = Paginator(events, 20)
-
-        try:
-            page = paginator.page(int(request.GET.get('page', 1)))
-        except InvalidPage:
-            raise Http404("Sorry, no results on that page.")
-
-        objects = []
-
-        for result in page.object_list:
-            bundle = self.full_dehydrate(result.summary)
-            objects.append(bundle)
-
-        object_list = {'objects': objects}
-
-        self.log_throttled_access(request)
-        return self.create_response(request, object_list)
 
 # =========================
 # = Event Recommendations =
 # =========================
 class EventRecommendationResource(EventSummaryResource):
-    def build_filters(self, request, filters=None):
+    def build_filters(self, filters=None):
         if filters is None:
             filters = dict()
         orm_filters = super(EventRecommendationResource, self).build_filters(filters)
+
+        # user that was passed from the request
+        user = filters['_user']
 
         # pass-through of concrete_parent_category to summary
         cpc_filter = orm_filters.pop('concrete_parent_category__exact', None)
@@ -321,48 +288,19 @@ class EventRecommendationResource(EventSummaryResource):
 
         # declare Events queryset through active manager, with future filtering, orm_filters and action filters
         orm_filters.update(Event.objects._future_filter)
-        events_qs = Event.active.filter(**orm_filters).filter_user_actions(request.user, 'GX')
-        # print events_qs.query
-
-        # FIXME deprecated
-        # should be deprecated as soon as proper filtering is in place
-        view = filters.get('view')
-        if view:
-            if view == 'popular':
-                events_qs = events_qs.order_by('-popularity_score')[:100]
-            elif view == 'free':
-                ids = EventSummary.objects.filter(price_quantity_max=0).values_list('event',
-                                                                                    flat=True)
-                events_qs = events_qs.filter(id__in=ids)[:100]
-            else:
-                msg = "Invalid value for get parameter 'view'"
-                response = HttpBadRequest(content=msg)
-                raise ImmediateHttpResponse(response=response)
+        events_qs = Event.active.filter(**orm_filters).filter_user_actions(user, 'GX')
 
         # use machine learning
         # FIXME look into ml to make return consistent (either ids or objs)
-        recommended_events = ml.recommend_events(request.user, events_qs)
+        recommended_events = ml.recommend_events(user, events_qs)
 
         # FIXME ugly plug :: see above
         recommended_events = all(hasattr(e, 'pk') for e in recommended_events)\
                              and [e.pk for e in recommended_events] or recommended_events
 
         # preprocess ignores
-        EventAction.objects.ignore_non_actioned_events(request.user, recommended_events)
+        EventAction.objects.ignore_non_actioned_events(user, recommended_events)
 
         # orm filters are simple, when it comes down to it
         orm_filters = dict(event__in=recommended_events)
         return orm_filters
-
-    def obj_get_list(self, request=None, **kwargs):
-        """overridden just to pass the `request` as an arg to build_filters"""
-        filters = request.GET.copy() if hasattr(request, 'GET') else dict()
-
-        # Update with the provided kwargs.
-        filters.update(kwargs)
-        applicable_filters = self.build_filters(request, filters=filters)
-
-        try:
-            return self.get_object_list(request).filter(**applicable_filters)
-        except ValueError:
-            raise NotFound("Invalid resource lookup data provided (mismatched type).")
