@@ -8,62 +8,33 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'AlphaQuestionnaire'
-        db.create_table('alphasignup_alphaquestionnaire', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('device_platform', self.gf('django.db.models.fields.CharField')(max_length=1)),
-            ('zip', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
-            ('is_usage_info_ok', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_mobile_planner', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('is_app_dev', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('year_of_birth', self.gf('django.db.models.fields.IntegerField')()),
-            ('profile', self.gf('django.db.models.fields.related.OneToOneField')(related_name='alpha_questionnaire', unique=True, to=orm['accounts.UserProfile'])),
-        ))
-        db.send_create_signal('alphasignup', ['AlphaQuestionnaire'])
+        # Deleting field 'UserProfile.privacy'
+        db.delete_column('accounts_userprofile', 'privacy')
 
-        # Adding model 'AppDistribution'
-        db.create_table('alphasignup_appdistribution', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('version', self.gf('django.db.models.fields.CharField')(max_length=20)),
-            ('archive', self.gf('django.db.models.fields.files.FileField')(max_length=100)),
-        ))
-        db.send_create_signal('alphasignup', ['AppDistribution'])
+        # Deleting field 'UserProfile.mugshot'
+        db.delete_column('accounts_userprofile', 'mugshot')
+
+        # Deleting field 'UserProfile.alpha_status'
+        db.delete_column('accounts_userprofile', 'alpha_status')
 
 
     def backwards(self, orm):
         
-        # Deleting model 'AlphaQuestionnaire'
-        db.delete_table('alphasignup_alphaquestionnaire')
+        # Adding field 'UserProfile.privacy'
+        db.add_column('accounts_userprofile', 'privacy', self.gf('django.db.models.fields.CharField')(default='registered', max_length=15), keep_default=False)
 
-        # Deleting model 'AppDistribution'
-        db.delete_table('alphasignup_appdistribution')
+        # User chose to not deal with backwards NULL issues for 'UserProfile.mugshot'
+        raise RuntimeError("Cannot reverse this migration. 'UserProfile.mugshot' and its values cannot be restored.")
+
+        # Adding field 'UserProfile.alpha_status'
+        db.add_column('accounts_userprofile', 'alpha_status', self.gf('django.db.models.fields.CharField')(max_length=1, null=True), keep_default=False)
 
 
     models = {
         'accounts.userprofile': {
             'Meta': {'object_name': 'UserProfile'},
-            'alpha_status': ('django.db.models.fields.CharField', [], {'max_length': '1', 'null': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'mugshot': ('django.db.models.fields.files.ImageField', [], {'max_length': '100', 'blank': 'True'}),
-            'privacy': ('django.db.models.fields.CharField', [], {'default': "'closed'", 'max_length': '15'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
-        'alphasignup.alphaquestionnaire': {
-            'Meta': {'object_name': 'AlphaQuestionnaire'},
-            'device_platform': ('django.db.models.fields.CharField', [], {'max_length': '1'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_app_dev': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_mobile_planner': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_usage_info_ok': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'profile': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'alpha_questionnaire'", 'unique': 'True', 'to': "orm['accounts.UserProfile']"}),
-            'year_of_birth': ('django.db.models.fields.IntegerField', [], {}),
-            'zip': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'})
-        },
-        'alphasignup.appdistribution': {
-            'Meta': {'object_name': 'AppDistribution'},
-            'archive': ('django.db.models.fields.files.FileField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'version': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -103,4 +74,4 @@ class Migration(SchemaMigration):
         }
     }
 
-    complete_apps = ['alphasignup']
+    complete_apps = ['accounts']

@@ -1,9 +1,0 @@
-Howdy {{ user.profile.get_full_name_or_username }}
-
-Thank you for your interest in participating in the Kwiqet Alpha program.
-Unfortunately, at this time, we are all filled up, but you will receive priority as we roll out our Beta version this summer.
-We look forward to your thoughts and feedback at that time!
-
-Best,
-
-The Kwiqet Team

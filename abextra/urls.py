@@ -22,18 +22,22 @@ urlpatterns = patterns('',
     # ===============
     url(r'^api/', include('api.urls')),
 
-    # ============================
-    # = User Accounts via Userna =
-    # ============================
+    # =================
+    # = Alpha Website =
+    # =================
     url(r'^alpha/$',
-        TemplateView.as_view(template_name='alphasignup/index.html'),
+        TemplateView.as_view(template_name='alpha/index.html'),
         name='alpha_home'
     ),
-    url(r'^alpha/accounts/', include('alphasignup.urls')),
     url(r'^alpha/about/$',
-        TemplateView.as_view(template_name='alphasignup/about.html'),
+        TemplateView.as_view(template_name='alpha/about.html'),
         name='alpha_about_us'
     ),
+
+    # ========
+    # = Auth =
+    # ========
+    url(r'^reg/', include('django.contrib.auth.urls')),
 
     # ===========
     # = Landing =

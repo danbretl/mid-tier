@@ -43,15 +43,15 @@
       <p>the mobile-social tkts booth</p>
 
       <!-- start login -->
-      <div id="top_login">
-        <div class="welcome_text">
-          {% if user.is_authenticated %}
-            <span class='label'>Welcome Back, {{ user.first_name }} <span class='black'>|</span> <a href="{% url userena_signout %}">Logout</a></span>
-          {% else %}
-            <span><a href="{% url userena_signin %}">Login</a></span>
-          {% endif %}
-        </div>
-      </div>
+{#      <div id="top_login">#}
+{#        <div class="welcome_text">#}
+{#          {% if user.is_authenticated %}#}
+{#            <span class='label'>Welcome Back, {{ user.first_name }} <span class='black'>|</span> <a href="{% url signout %}">Logout</a></span>#}
+{#          {% else %}#}
+{#            <span><a href="{% url signin %}">Login</a></span>#}
+{#          {% endif %}#}
+{#        </div>#}
+{#      </div>#}
       <!-- end login -->
     </div>
 
@@ -64,7 +64,7 @@
         </li>
         {% if user.is_authenticated %}
           <li class={% if current_tab == 'account' %}current_page_item{% endif %}>
-            <a href="{% url userena_profile_detail user.username %}"><span>Account</span></a>
+            <a href="{% url profile_detail user.username %}"><span>Account</span></a>
           </li>
           {% if user.profile.alpha_status == 'A' %}
             <li class={% if current_tab == 'download' %}current_page_item{% endif %}>

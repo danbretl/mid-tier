@@ -106,8 +106,6 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'userena.backends.UserenaAuthenticationBackend',
-    'guardian.backends.ObjectPermissionBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -119,10 +117,6 @@ LOGIN_REDIRECT_URL = '/alpha/accounts/%(username)s/'
 LOGIN_URL = '/alpha/accounts/signin/'
 LOGOUT_URL = '/alpha/accounts/signout/'
 
-USERENA_SIGNIN_REDIRECT_URL = LOGIN_REDIRECT_URL
-USERENA_DEFAULT_PRIVACY = 'closed'
-USERENA_WITHOUT_USERNAMES = True
-USERENA_MUGSHOT_SIZE = 50
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
@@ -158,9 +152,6 @@ INSTALLED_APPS = (
     'sorl.thumbnail',               # thumbnails
     'south',                        # migrations managements
     'tastypie',                     # new api assistance
-    'userena',                      # accounts and registration
-    'guardian',                     # object level permissions  | userena dep
-    'easy_thumbnails',              # thumbnails                | userena dep
 
     'voting',                       # django voting     | voice dep
     'gravatar',                     # django gravatar   | voice dep
@@ -168,7 +159,6 @@ INSTALLED_APPS = (
 
     'core',                         # ABEX core
     'accounts',                     # ABEX user profile extensions
-    'alphasignup',                  # ABEX simple web front for Alpha signup
     'places',                       # ABEX places | helps normalize places
     'events',                       # ABEX events
     'prices',                       # ABEX prices
