@@ -99,6 +99,18 @@ TEMPLATE_LOADERS = (
     # ),
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.request',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.messages.context_processors.messages',
+    'allauth.context_processors.allauth',
+    'allauth.account.context_processors.account',
+)
+
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
     # Put strings here, like "/home/html/django_templates"
@@ -107,6 +119,7 @@ TEMPLATE_DIRS = (
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 )
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
@@ -144,6 +157,16 @@ INSTALLED_APPS = (
     'django.contrib.comments',      # comments
     'django.contrib.staticfiles',   # statics
     'django.contrib.gis',           # gis
+
+    'emailconfirmation',            # Allauth dep
+    'uni_form',                     # Allauth
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.twitter',
+    'allauth.openid',
+    'allauth.facebook',
 
     'fabtastic',                    # deployments
     'fixture_magic',                # additional fixture commands

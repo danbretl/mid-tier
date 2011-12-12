@@ -40,6 +40,11 @@ urlpatterns = patterns('',
     url(r'^reg/', include('django.contrib.auth.urls')),
 
     # ===========
+    # = Allauth =
+    # ===========
+    url(r'^accounts/', include('allauth.urls')),
+
+    # ===========
     # = Landing =
     # ===========
     url(r'^$', TemplateView.as_view(template_name='index.html'),
