@@ -487,9 +487,7 @@ class DateCategoryFilterMixin:
 
         query_params = dict(self.category_filter_options.music, **self.auth_params)
         query_params.update(self.date_filter_options.this_weekend)
-        from django.conf import settings; settings.DEBUG=True
         resp = self.client.get(self.uri, data=query_params)
-        import ipdb; ipdb.set_trace()
 
         self.assertResponseCode(resp, 200)
         self.assertResponseMetaList(resp, 1)
