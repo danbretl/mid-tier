@@ -485,7 +485,6 @@ class DateCategoryFilterMixin:
 
         query_params = dict(self.category_filter_options.music, **self.auth_params)
         query_params.update(self.date_filter_options.this_weekend)
-        import ipdb; ipdb.set_trace()
         resp = self.client.get(self.uri, data=query_params)
 
         self.assertResponseCode(resp, 200)
