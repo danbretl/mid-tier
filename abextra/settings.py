@@ -203,6 +203,7 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
         },
         'null': {
             'level': 'DEBUG',
@@ -216,17 +217,17 @@ LOGGING = {
     'loggers': {
         'django': {
              'handlers': ['console'],
-             # 'propagate': True,
              'level': 'INFO',
+             'propagate': True,
         },
-        # 'django.request': {
-        #     'handlers': ['console'],
-        #     'level': 'DEBUG',
-        #     'propagate': False,
-        # },
+        'django.request': {
+             'handlers': ['console'],
+             'level': 'DEBUG',
+             'propagate': True,
+        },
         'keyedcache': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'consumer.scrape': {
             'handlers': ['console'],
