@@ -55,10 +55,11 @@ class DateFilterOptions(SimpleFilterOptions):
     def __init__(self):
         super(DateFilterOptions, self).__init__()
         now = datetime.datetime.now()
+        start_date_weekend = now if now.weekday() == 6 else now + relativedelta(weekday=5)
         self.options_by_key.update({
             'today': (now.date(), now.date()),
             'this_weekend': (
-                (now + relativedelta(weekday=5)).date(),
+                start_date_weekend.date(),
                 (now + relativedelta(weekday=6)).date()
             ),
             'next_seven_days': (now.date(), (now +
