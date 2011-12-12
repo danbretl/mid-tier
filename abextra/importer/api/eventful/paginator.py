@@ -8,8 +8,8 @@ from importer.api.eventful.consumer import EventfulApiConsumer
 class EventfulPaginator(object):
     logger = logging.getLogger('importer.api.eventful.paginator')
 
-    def __init__(self, interactive=False, total_pages=None, start_page=1,
-            silent_fail=False, consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
+    def __init__(self, interactive=None, total_pages=None, start_page=1,
+            silent_fail=None, consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
         # internal initializations
         self.consumer = EventfulApiConsumer(client_kwargs=client_kwargs, **(consumer_kwargs or {}))
         self.event_adaptor = EventAdaptor()
@@ -34,11 +34,11 @@ class EventfulPaginator(object):
         if import_this_page:
             for event in page_data:
                 if not silent_fail:
-                    created, event_obj = self.event_adaptor.parse(page_data)
+                    created, event_obj = self.event_adaptor.adapt(event)
                     results.append((created, event_obj.id))
                 else:
                     try:
-                        created, event_obj = self.event_adaptor.parse(page_data)
+                        created, event_obj = self.event_adaptor.adapt(event)
                         results.append((created, event_obj.id))
                     except Exception as e:
                         self.logger.error(e)
@@ -104,7 +104,8 @@ class EventfulPaginator(object):
                 if cmd_str:
                     import_this_page = cmd_str.lower().startswith('y')
             if import_this_page:
-                results.extend(self._import_page_events(events, self.interactive)) 
+                results.extend(self._import_page_events(events,
+                    self.interactive, self.silent_fail))
             else:
                 self.logger.info('Did not import events from this page')
 
