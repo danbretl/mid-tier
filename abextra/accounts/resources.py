@@ -1,3 +1,4 @@
+from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User, Group
 from django import forms
 from django.utils.translation import ugettext_lazy as _
@@ -13,44 +14,27 @@ from tastypie.validation import FormValidation
 
 from api.authentication import ConsumerAuthentication
 
-# ===================================================
-# = FIXME bastardized to no end signup form =
-# ===================================================
-import random
-from django.utils.hashcompat import sha_constructor
-
-class SignupFormOnlyEmailBastardized(forms.Form):
-    first_name = forms.CharField(label=_(u'First name'), max_length=30, required=True)
-    last_name = forms.CharField(label=_(u'Last name'), max_length=30, required=True)
-
-    def save(self):
-        """ Generate a random username before falling back to parent signup form """
-        while True:
-            username = sha_constructor(str(random.random())).hexdigest()[:5]
-            try:
-                User.objects.get(username__iexact=username)
-            except User.DoesNotExist: break
-
-        self.cleaned_data['username'] = username
-
-        username, email, password, first_name, last_name = (self.cleaned_data['username'],
-                                                            self.cleaned_data['email'],
-                                                            self.cleaned_data['password1'],
-                                                            self.cleaned_data['first_name'],
-                                                            self.cleaned_data['last_name'])
-
-        new_user = User.objects.create_user(username, email, password)
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-        new_user.save()
-        UserProfile.objects.create(user=new_user)
-        device_user_group = Group.objects.get(id=5)
-        new_user.groups.add(device_user_group)
-        return new_user
-
 # ========
 # = User =
 # ========
+class SignupFormFirstLastName(SignupForm):
+    first_name = forms.CharField(label=_(u'First name'), max_length=30, required=True)
+    last_name = forms.CharField(label=_(u'Last name'), max_length=30, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(SignupFormFirstLastName, self).__init__(*args, **kwargs)
+        self.fields.keyOrder.extend(['first_name', 'last_name'])
+
+    def after_signup(self, user, **kwargs):
+        super(SignupFormFirstLastName, self).after_signup(user, **kwargs)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+        UserProfile.objects.create(user=new_user)
+        device_user_group = Group.objects.get(id=5)
+        new_user.groups.add(device_user_group)
+
+
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
@@ -58,7 +42,7 @@ class UserResource(ModelResource):
         detail_allowed_methods = ()
         authentication = ConsumerAuthentication()
         authorization = DjangoAuthorization()
-        validation = FormValidation(form_class=SignupFormOnlyEmailBastardized)
+        validation = FormValidation(form_class=SignupFormFirstLastName)
         resource_name = 'registration'
 
     def is_valid(self, bundle, request=None):

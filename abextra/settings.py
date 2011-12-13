@@ -122,6 +122,11 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_AUTHENTICATION = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 ANONYMOUS_USER_ID = -1
@@ -159,7 +164,8 @@ INSTALLED_APPS = (
     'django.contrib.gis',           # gis
 
     'emailconfirmation',            # Allauth dep
-    'uni_form',                     # Allauth
+    'uni_form',                     # Allauth dep
+    'avatar',                       # Allauth dep
 
     'allauth',
     'allauth.account',
