@@ -42,7 +42,7 @@ urlpatterns = patterns('',
     # ===========
     # = Allauth =
     # ===========
-    url(r'^accounts/', include('allauth.urls')),
+#    url(r'^accounts/', include('allauth.urls')),
 
     # ===========
     # = Landing =
