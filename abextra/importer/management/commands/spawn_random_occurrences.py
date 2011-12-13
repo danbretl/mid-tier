@@ -41,9 +41,9 @@ class Command(BaseCommand):
             self.stdout.write("There aren't that many places in the database!\n")
             return
 
-        now = datetime.datetime.now()
-        dtstart = datetime.datetime.combine(now.date(), datetime.time.min)
+        existing_occurrence = event.occurrences.all()[0]
         for ix in range(n_occs):
-            dtstart += datetime.timedelta(minutes=80000/n_occs)
-            occ = event.occurrences.create(start_date=dtstart, place=places[ix])
+            existing_occurrence.id = None
+            existing_occurrence.place = places[ix]
+            existing_occurrence.save()
             self.stdout.write('Created occurence: %s\n' % occ)
