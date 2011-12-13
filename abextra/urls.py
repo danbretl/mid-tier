@@ -43,6 +43,7 @@ urlpatterns = patterns('',
     # = Allauth =
     # ===========
 #    url(r'^accounts/', include('allauth.urls')),
+    url(r"^accounts/confirm_email/(\w+)/$", "emailconfirmation.views.confirm_email", name="account_confirm_email"),
 
     # ===========
     # = Landing =

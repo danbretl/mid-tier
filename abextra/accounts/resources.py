@@ -1,9 +1,5 @@
-from allauth.account.forms import SignupForm
-from django.contrib.auth.models import User, Group
-from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
-from accounts.models import UserProfile
 from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import ImmediateHttpResponse
 from tastypie.http import HttpBadRequest, HttpCreated
@@ -11,30 +7,13 @@ from tastypie.resources import ModelResource
 from tastypie.utils import dict_strip_unicode_keys
 from tastypie.utils.mime import build_content_type
 from tastypie.validation import FormValidation
+from accounts.forms import SignupFormFirstLastName
 
 from api.authentication import ConsumerAuthentication
 
 # ========
 # = User =
 # ========
-class SignupFormFirstLastName(SignupForm):
-    first_name = forms.CharField(label=_(u'First name'), max_length=30, required=True)
-    last_name = forms.CharField(label=_(u'Last name'), max_length=30, required=True)
-
-    def __init__(self, *args, **kwargs):
-        super(SignupFormFirstLastName, self).__init__(*args, **kwargs)
-        self.fields.keyOrder.extend(['first_name', 'last_name'])
-
-    def after_signup(self, user, **kwargs):
-        super(SignupFormFirstLastName, self).after_signup(user, **kwargs)
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
-        user.save()
-        UserProfile.objects.create(user=new_user)
-        device_user_group = Group.objects.get(id=5)
-        new_user.groups.add(device_user_group)
-
-
 class UserResource(ModelResource):
     class Meta:
         queryset = User.objects.all()
@@ -46,7 +25,7 @@ class UserResource(ModelResource):
         resource_name = 'registration'
 
     def is_valid(self, bundle, request=None):
-        """Overriden to perform validation and persistence in one step"""
+        """Overridden to perform validation and persistence in one step"""
         form = self._meta.validation.form_class(data=bundle.data)
 
         # validation

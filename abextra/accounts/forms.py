@@ -1,7 +1,7 @@
 from allauth.account.forms import SignupForm
 from django import forms
 from django.contrib.auth.models import Group
-from accounts.models import UserProfile
+from django.utils.translation import ugettext_lazy as _
 
 class SignupFormFirstLastName(SignupForm):
     first_name = forms.CharField(label=_(u'First name'), max_length=30, required=True)
@@ -16,6 +16,5 @@ class SignupFormFirstLastName(SignupForm):
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.save()
-        UserProfile.objects.create(user=user)
         device_user_group = Group.objects.get(id=5)
         user.groups.add(device_user_group)
