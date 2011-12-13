@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from optparse import make_option
 from events.models import Event
 from places.models import Place
-import datetime
+from itertools import cycle
 
 class Command(BaseCommand):
     help = '''Given an event ID, spawn random occurrences for it
@@ -36,14 +36,18 @@ class Command(BaseCommand):
             return
         event = events[0]
 
-        places = Place.objects.all()[:n_occs]
-        if Place.objects.count() < n_occs:
-            self.stdout.write("There aren't that many places in the database!\n")
-            return
+        place_count = Place.objects.count()
+        if place_count < n_occs:
+            self.stdout.write('Will cycle on %i places.' % place_count)
+        places = cycle(Place.objects.values_list('id', flat=True))
 
-        existing_occurrence = event.occurrences.all()[0]
+        future_occurrences = event.occurrences.future()
+        if not future_occurrences:
+            self.stdout.write('Event has no future occurrences.')
+            return
+        existing_occurrence = future_occurrences[0]
         for ix in range(n_occs):
             existing_occurrence.id = None
-            existing_occurrence.place = places[ix]
+            existing_occurrence.place_id = places.next()
             existing_occurrence.save()
-            self.stdout.write('Created occurence: %s\n' % occ)
+        self.stdout.write('Created occurrences')
