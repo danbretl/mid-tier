@@ -1,4 +1,7 @@
+import base64
+from avatar.models import Avatar
 from django.contrib.auth.models import User
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from tastypie.authorization import DjangoAuthorization
 from tastypie.exceptions import ImmediateHttpResponse
@@ -26,12 +29,26 @@ class UserResource(ModelResource):
 
     def is_valid(self, bundle, request=None):
         """Overridden to perform validation and persistence in one step"""
-        form = self._meta.validation.form_class(data=bundle.data)
+        files = {}
 
-        # validation
+        # FIXME avatar file translation and persistence
+        avatar_data = bundle.data.get('avatar')
+        if avatar_data:
+            try:
+                files['avatar'] = SimpleUploadedFile(
+                    avatar_data['name'], base64.b64decode(avatar_data['file']),
+                    avatar_data.get("content_type", "application/octet-stream")
+                )
+            except Exception:
+                raise ImmediateHttpResponse(HttpBadRequest(content='ERROR PROCESSING IMAGE'))
+
+        # instantiate and validate the form
+        form = self._meta.validation.form_class(data=bundle.data, files=files)
         if form.is_valid():
-            new_user = form.save()
-            request.user = new_user
+            user = form.save()
+
+            # update request with the new user
+            request.user = user
             request.user_created = True
 
         # error handling

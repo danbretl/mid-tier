@@ -1,3 +1,4 @@
+from avatar.models import Avatar
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.authorization import DjangoAuthorization
@@ -34,6 +35,7 @@ class UserProfileResource(ModelResource):
     first_name = fields.CharField(attribute='first_name', null=True)
     last_name = fields.CharField(attribute='last_name', null=True)
     email = fields.CharField(attribute='email', null=True)
+    avatar = fields.CharField(attribute='avatar', null=True)
 
     class Meta:
         queryset = UserProfile.objects.all()
@@ -52,6 +54,14 @@ class UserProfileResource(ModelResource):
 
     def dehydrate_last_name(self, bundle):
         return bundle.obj.user.last_name
+
+    def dehydrate_avatar(self, bundle):
+        try:
+            primary_avatar = Avatar.objects.get(user=bundle.obj.user, primary=True)
+        except Avatar.DoesNotExist, Avatar.MultipleObjectsReturned:
+            return None
+        else:
+            return primary_avatar.avatar.url
 
     def get_object_list(self, request):
         """overridden to select relatives"""

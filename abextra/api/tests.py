@@ -1,4 +1,7 @@
 import datetime
+import mimetypes
+from avatar.models import Avatar
+import os
 from dateutil.relativedelta import relativedelta
 from django.utils import simplejson as json
 import logging
@@ -725,11 +728,21 @@ class UserResourceTest(APIResourceTestCase):
     first_name, last_name = 'babygot', 'back'
     password = 'p0ssword'
 
-    def test_detail_post(self):
+    def test_detail_post_with_avatar(self):
         encoded_auth_params = '?' + urllib.urlencode(self.auth_params)
-        json_params = json.dumps({'email': self.valid_email,
-                                  'password1': self.password, 'password2': self.password,
-                                  'first_name': self.first_name, 'last_name': self.last_name})
+        f = open('api/test_pattern.png')
+        content_type, encoding = mimetypes.guess_type(f.name)
+        b64 = f.read().encode('base64')
+        json_params = json.dumps({
+            'email': self.valid_email,
+            'password1': self.password, 'password2': self.password,
+            'first_name': self.first_name, 'last_name': self.last_name,
+            'avatar': {
+                'name': os.path.basename(f.name),
+                'file': b64,
+                'content-type': content_type or "application/octet-stream"
+            },
+        })
         resp = self.client.post(self.uri + encoded_auth_params, json_params, content_type='application/json')
         self.assertResponseCode(resp, 201)
         users = User.objects.filter(email=self.valid_email)
@@ -799,19 +812,18 @@ class ApiKeyResourceTest(APIResourceTestCase):
         self.assertResponseCode(resp, 401)
         self.assertEquals('', resp.content, '''Unexpected response
                 for response to login attempt with existing user and wrong
-                password''') 
+                password''')
+
 
 class UserProfileResourceTest(APIResourceTestCase):
     resource = UserProfileResource
-    password = 'moo'
 
     def test_list_get(self):
-        user_profile = get(UserProfile)
-        user_profile.user.set_password(self.password)
-        user_profile.user.save()
+        user = get(User)
+        user_profile = user.get_profile()
+        avatar = get(Avatar, user=user, primary=True)
        
-        api_auth_params = dict(api_key=user_profile.user.api_key.key,
-                **self.auth_params)
+        api_auth_params = dict(api_key=user_profile.user.api_key.key, **self.auth_params)
         resp = self.client.get(self.uri, data=api_auth_params)
 
         self.assertResponseCode(resp, 200)
@@ -820,14 +832,11 @@ class UserProfileResourceTest(APIResourceTestCase):
         user_dict = resp_dict['objects'][0]
 
         user_uri = self.resource().get_resource_uri(user_profile)
-        self.assertEquals(user_uri, user_dict['resource_uri'], '''Unexpected URI for
-                user''')
-        self.assertEquals(user_profile.user.first_name, user_dict['first_name'], '''Unexpected
-                first name for user''')
-        self.assertEquals(user_profile.user.last_name, user_dict['last_name'], '''Unexpected
-                last name for user''')
-        self.assertEquals(user_profile.user.email, user_dict['email'],
-                'Unexpected email address for user')
+        self.assertEquals(user_uri, user_dict['resource_uri'], 'Unexpected URI for user')
+        self.assertEquals(user_profile.user.first_name, user_dict['first_name'], 'Unexpected first name for user')
+        self.assertEquals(user_profile.user.last_name, user_dict['last_name'], 'Unexpected last name for user')
+        self.assertEquals(user_profile.user.email, user_dict['email'], 'Unexpected email address for user')
+        self.assertEquals(avatar.avatar.url, user_dict['avatar'], 'Unexpected avatar url for user')
 
 
 class PasswordResetResourceTest(APIResourceTestCase):
