@@ -25,7 +25,7 @@ class Command(BaseCommand):
                     type='int',
                     help='Total pages of events to fetch'),
         make_option('--silent-fail',
-                    action='store',
+                    action='store_true',
                     dest='silent_fail',
                     default=False,
                     help='On failed import event, do not halt'),
