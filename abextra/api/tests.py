@@ -331,8 +331,9 @@ class DateFilterMixin:
 
     def test_date_filters_this_weekend(self):
         now = datetime.datetime.now()
+        start_date_weekend = now if now.weekday() == 6 else now + relativedelta(weekday=5)
         matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
-                (now + relativedelta(weekday=5)).date())
+                start_date_weekend.date())
         self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
             (now + datetime.timedelta(days=30)).date())
 
@@ -481,9 +482,10 @@ class DateCategoryFilterMixin:
 
     def test_date_this_weekend_category_filters(self):
         now = datetime.datetime.now()
+        start_date_weekend = now if now.weekday() == 6 else now + relativedelta(weekday=5)
         matched_event = CategoryFilterMixin.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
         unmatched_event = CategoryFilterMixin.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
-        DateFilterMixin.mutate_fixture_matched(matched_event, (now + relativedelta(weekday=5)).date())
+        DateFilterMixin.mutate_fixture_matched(matched_event, start_date_weekend.date())
         DateFilterMixin.mutate_fixture_unmatched(unmatched_event, (now + relativedelta(days=30)).date())
 
         query_params = dict(self.category_filter_options.music, **self.auth_params)
