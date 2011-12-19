@@ -63,6 +63,11 @@ class API(object):
         args = urllib.urlencode(args)
         return "http://%s/json/%s?%s" % (self.server, method, args)
 
+    def _build_dump_fn(self, method, **args):
+        excluded_fields = ('date',)
+        dump_args = dict((k,v,) for k,v in args.iteritems() if not k in excluded_fields)
+        return md5(self._build_url(method, **dump_args)).hexdigest()
+
     def call(self, method, **args):
         # Build the url
         url = self._build_url(method, format='json', **args)
@@ -80,7 +85,7 @@ class API(object):
                 json_content = simplejson.loads(content)
                 if self.make_dumps:
                     indented_content = simplejson.dumps(json_content, sort_keys=True, indent=4)
-                    filename = md5(url).hexdigest() + '.json'
+                    filename = self._build_dump_fn(method, format='json', **args)+ '.json'
                     with open(os.path.join(self.dump_dir, filename), 'w') as f:
                         f.write(indented_content)
                 return json_content
@@ -158,10 +163,8 @@ class MockAPI(API):
 
 
     def call(self, method, **args):
-        # Build the url
-        url = self._build_url(method, **args)
-
-        filename = md5(url).hexdigest() + '.json'
+        # Build the filename
+        filename = self._build_dump_fn(method, format='json', **args) + '.json'
         full_path = os.path.join(self.dump_dir, filename)
         if not os.path.isfile(full_path):
             raise APIError('Could not locate necessary mock response')
