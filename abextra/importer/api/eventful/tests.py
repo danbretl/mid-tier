@@ -4,6 +4,7 @@ import HTMLParser
 import simplejson
 from dateutil.relativedelta import relativedelta
 import dateutil.parser
+from django.conf import settings
 from django.contrib.gis import geos
 from django.test import TestCase
 from django_dynamic_fixture import get, DynamicFixture as F
@@ -17,6 +18,8 @@ from importer.api.eventful import conf, utils
 from importer.api.eventful.adaptors import CityAdaptor, PointAdaptor, PlaceAdaptor
 from importer.api.eventful.adaptors import OccurrenceAdaptor, EventAdaptor, CategoryAdaptor
 from importer.api.eventful.adaptors import PriceAdaptor
+from importer.api.eventful.paginator import EventfulPaginator
+from accounts.models import User
 
 _parse_date = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date()
 _parse_time = lambda s: datetime.datetime.strptime(s, '%H:%M').time()
@@ -427,3 +430,27 @@ class ExternalCategoryFixtureTest(TestCase):
                     (eventful_source.name, external_category.name))
             self.assertIsInstance(external_category.concrete_category,
                     Category, 'Unexpected type of associated concrete category')
+
+class EventfulPaginatorTest(TestCase):
+    fixtures = ['categories', 'sources', 'external_categories', 'users']
+    args = dict(interactive = False, total_pages = 1, start_page = 1,
+            silent_fail = False, consumer_kwargs = {'trust': False, 'mock_api': True},
+            client_kwargs = {'make_dumps': False},
+            query_kwargs = {'query': '', 'sort_order': 'popularity', 'location': 'NYC', 'page_size': 1})
+
+    def setUp(self):
+        User.objects.create(username='importer')
+        self.event_response = TestResourceConsumer.consume_response()
+        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+
+    def test_silent_fail_off(self):
+        with self.assertRaises(ValueError):
+            self.paginator = EventfulPaginator(**self.args)
+            self.paginator._import_page_events([self.invalid_response],
+                    self.args['interactive'], self.args['silent_fail'])
+
+    def test_silent_fail_on(self):
+        self.args['silent_fail'] = True
+        self.paginator = EventfulPaginator(**self.args)
+        self.paginator._import_page_events([self.invalid_response],
+                self.args['interactive'], self.args['silent_fail'])

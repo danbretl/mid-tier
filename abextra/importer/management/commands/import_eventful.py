@@ -24,6 +24,11 @@ class Command(BaseCommand):
                     dest='total_pages',
                     type='int',
                     help='Total pages of events to fetch'),
+        make_option('--silent-fail',
+                    action='store_true',
+                    dest='silent_fail',
+                    default=False,
+                    help='On failed import event, do not halt'),
 
         # consumer kwargs
         make_option('--mock-api',
@@ -65,7 +70,9 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         options = dict_from_values(options)
-        paginator_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('total_pages', 'start_page', 'interactive')))
+        paginator_kwargs = dict((key, options[key]) for key in
+                filter(options.has_key, ('total_pages', 'start_page',
+                    'interactive','silent_fail')))
         consumer_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('mock_api', 'trust')))
         client_kwargs = dict((key, options[key]) for key in filter(options.has_key, ('make_dumps',)))
 
