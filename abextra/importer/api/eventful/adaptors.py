@@ -71,12 +71,13 @@ class PriceAdaptor(EventfulBaseAdaptor):
         if raw_free and int(raw_free):
             prices.add(0)
         elif raw_price:
-            prices.update(self.get_price_parser().parse(raw_price))
+            parsed_prices = self.get_price_parser().parse(raw_price)
+            prices.update(parsed_prices)
             prices.discard(0)
         else:
             self.logger.warn('Neither "Free" nor "Price" fields could be found.')
         if not prices:
-            self.logger.warn('Unable to adapt prices from %s' % raw_price)
+            self.logger.info('Unable to adapt prices from %s' % raw_price)
         for price in sorted(prices):
             form_data = {'quantity': price}
             yield form_data

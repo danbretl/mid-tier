@@ -46,7 +46,6 @@ class PriceParser(object):
                 return None
 
     def _ctx_list(self, s):
-        s = self._condition_raw_string(s)
         real_partitions = self.real_partition.parse(s)
         for i, e in enumerate(real_partitions):
             if isinstance(e, basestring):
@@ -73,6 +72,9 @@ class PriceParser(object):
         return ret
 
     def parse(self, s):
+        # conditioning
+        s = self._condition_raw_string(s)
+
         # optimizations
         res = self._optimizations(s)
         if res is not None:
@@ -91,39 +93,6 @@ class PriceParser(object):
             ret.append(real)
         return ret
 
-
-#class price_parser():
-#    """Parses all numerics with left ctx of '$' and right ctx of 'dollar*'.
-#    Uses a very naive regex with one look-behind and one look-ahead.
-#    Numerics are of loose format.  Ex. 1, 2.2, 3.33, 4,444, 5,555,555.55
-#    """
-#    _PRICE_PATTERN = re.compile(
-#        r'(?P<lctx>[\$]|(coupon|redeem))?(?P<lws>\s+)?(?P<number>\d+(,\d+)*(\.\d{1,2})?)(?P<rws>\s+)?(?P<rctx>([\$]|dollar|usd|hours|am|pm))?',
-#        re.I)
-#
-#    @staticmethod
-#    def parse(raw_value):
-#        parsed_prices = list()
-#        sanitized_value = html_sanitize(raw_value)
-#        try:
-#            parsed_prices.append(float(raw_value))
-#        except Exception:
-#            groupings = price_parser._PRICE_PATTERN.findall(sanitized_value.lower())
-#            for grouping in groupings:
-#                do_parse_grouping = False
-#                if grouping[0] or grouping[7]:
-#                    do_parse_grouping = any(
-#                        ('$' in grouping[0], '$' in grouping[7], 'dollars' in grouping[7], 'usd' in grouping[7])
-#                    )
-#                elif grouping[5]:
-#                    do_parse_grouping = not any(
-#                        ('coupon' in grouping[0], 'redeem' in grouping[0],
-#                         'hours' in grouping[7], 'am' in grouping[7], 'pm' in grouping[7])
-#                    )
-#                if do_parse_grouping:
-#                    numeric = float(grouping[3].replace(',', ''))
-#                    parsed_prices.append(numeric)
-#        return parsed_prices
 
 class datetime_parser():
     """Opportunistic datetime parser."""
