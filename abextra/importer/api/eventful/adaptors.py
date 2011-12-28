@@ -1,5 +1,5 @@
 import HTMLParser
-from core.parsers import price_parser
+from core.parsers import PriceParser
 from importer.adaptors import BaseAdaptor
 from importer.forms import ExternalCategoryImportForm
 from events.forms import OccurrenceImportForm, EventImportForm
@@ -54,6 +54,12 @@ class PlaceAdaptor(EventfulBaseAdaptor):
 class PriceAdaptor(EventfulBaseAdaptor):
     model_form = PriceImportForm
     fields = ['occurrence', 'quantity']
+    price_parser = None
+
+    def get_price_parser(self):
+        if not PriceAdaptor.price_parser:
+            PriceAdaptor.price_parser = PriceParser()
+        return PriceAdaptor.price_parser
 
     def adapt_form_data(self, data, form_data):
         form_data['units'] = 'dollars'
@@ -65,7 +71,7 @@ class PriceAdaptor(EventfulBaseAdaptor):
         if raw_free and int(raw_free):
             prices.add(0)
         elif raw_price:
-            prices.update(price_parser.parse(raw_price))
+            prices.update(self.get_price_parser().parse(raw_price))
             prices.discard(0)
         else:
             self.logger.warn('Neither "Free" nor "Price" fields could be found.')
