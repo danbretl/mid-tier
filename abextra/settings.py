@@ -307,3 +307,10 @@ IMPORT_ROOT_DIR = '/tmp/kwiqet_import'
 IMPORT_IMAGE_DIR_DEFAULT = 'images'
 IMPORT_IMAGE_MIN_DIMS = {'width': 320, 'height': 180}
 
+# ==================
+# = Local Settings =
+# ==================
+try:
+    from settings_local import *
+except ImportError:
+    pass
