@@ -54,12 +54,13 @@ class PlaceAdaptor(EventfulBaseAdaptor):
 class PriceAdaptor(EventfulBaseAdaptor):
     model_form = PriceImportForm
     fields = ['occurrence', 'quantity']
-    price_parser = None
+    _price_parser = None
 
-    def get_price_parser(self):
-        if not PriceAdaptor.price_parser:
-            PriceAdaptor.price_parser = PriceParser()
-        return PriceAdaptor.price_parser
+    @classmethod
+    def get_price_parser(cls):
+        if not cls._price_parser:
+            cls._price_parser = PriceParser()
+        return cls._price_parser
 
     def adapt_form_data(self, data, form_data):
         form_data['units'] = 'dollars'
