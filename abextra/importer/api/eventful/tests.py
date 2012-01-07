@@ -1,13 +1,12 @@
 import os
 import datetime
 import HTMLParser
-import simplejson
-from dateutil.relativedelta import relativedelta
 import dateutil.parser
+from django.utils import simplejson as json
+from dateutil.relativedelta import relativedelta
 from django.contrib.gis import geos
 from django.test import TestCase
 from django_dynamic_fixture import get, DynamicFixture as F
-from core.parsers import PriceParser
 from events.models import Event, Occurrence
 from prices.models import Price
 from places.models import City, Point, Place
@@ -20,17 +19,41 @@ from importer.api.eventful.adaptors import PriceAdaptor
 from importer.api.eventful.paginator import EventfulPaginator
 from accounts.models import User
 
-_parse_date = lambda s: datetime.datetime.strptime(s, '%Y-%m-%d').date()
-_parse_time = lambda s: datetime.datetime.strptime(s, '%H:%M').time()
 
-class TestResourceConsumer(object):
-    _RESOURCE_DIR = os.path.join(os.path.dirname(__file__), 'test_resources')
+class ImporterTestCase(TestCase):
+    event_response, invalid_response = None, None
+
+    @staticmethod
+    def parse_date(date_string):
+        return datetime.datetime.strptime(date_string, '%Y-%m-%d').date()
+
+    @staticmethod
+    def parse_time(time_string):
+        return datetime.datetime.strptime(time_string, '%H:%M').time()
+
+    @staticmethod
+    def resource_path(filename):
+        resource_dir = os.path.join(os.path.dirname(__file__), 'test_resources')
+        return os.path.join(resource_dir, filename)
 
     @classmethod
-    def consume_response(cls):
-        event_filename, venue_filename = map(lambda f: os.path.join(cls._RESOURCE_DIR, f), 'event.json venue.json'.split())
-        event_response = simplejson.load(open(event_filename, 'rb'))
-        venue_response = simplejson.load(open(venue_filename, 'rb'))
+    def consume_response(cls, invalid=False):
+        # convert filenames into qualified paths
+        file_names = 'event', 'venue'
+        file_paths = []
+        for file_name in file_names:
+            file_name = '.'.join((file_name, 'json'))
+            if invalid:
+                file_name = '_'.join(('invalid', file_name))
+            file_paths.append(cls.resource_path(file_name))
+        event, venue = file_paths
+
+        # load up files and json load them
+        with open(cls.resource_path(event), 'r') as f:
+            event_response = json.load(f)
+        with open(cls.resource_path(venue), 'r') as f:
+            venue_response = json.load(f)
+
         horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
         event_response['__kwiqet'] = {
             'venue_details': venue_response,
@@ -41,34 +64,29 @@ class TestResourceConsumer(object):
 
     @classmethod
     def consume_recurrence_response(cls):
-        filename = os.path.join(cls._RESOURCE_DIR, 'recurrence_test_event.json')
+        with open(cls.resource_path('recurrence_test_event.json'), 'r') as f:
+            response = json.load(f)
         horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        response = simplejson.load(open(filename, 'rb'))
         response['__kwiqet'] = {
             'horizon_start': horizon_start,
             'horizon_stop': horizon_start + conf.IMPORT_EVENT_HORIZON,
-        }
+            }
         return response
 
     @classmethod
-    def consume_invalid_response(cls):
-        event_filename, venue_filename = map(lambda f: os.path.join(cls._RESOURCE_DIR, f), 'invalid_event.json invalid_venue.json'.split())
-        event_response = simplejson.load(open(event_filename, 'rb'))
-        venue_response = simplejson.load(open(venue_filename, 'rb'))
-        horizon_start = datetime.datetime(2011, 10, 26, 20, 16)
-        event_response['__kwiqet'] = {
-            'venue_details': venue_response,
-            'horizon_start': horizon_start,
-            'horizon_stop': horizon_start + conf.IMPORT_EVENT_HORIZON,
-        }
-        return event_response
+    def setUpClass(cls):
+        super(ImporterTestCase, cls).setUpClass()
+        if not cls.event_response:
+            cls.event_response = cls.consume_response()
+        if not cls.invalid_response:
+            cls.invalid_response = cls.consume_response(invalid=True)
 
 
-class CityAdaptorTest(TestCase):
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = CityAdaptor()
+class CityAdaptorTest(ImporterTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(CityAdaptorTest, cls).setUpClass()
+        cls.adaptor = CityAdaptor()
 
     def test_adapt_new_valid(self):
         created, city = self.adaptor.adapt(self.event_response)
@@ -91,30 +109,35 @@ class CityAdaptorTest(TestCase):
         self.assertEqual(existing_city, city, 'City object returned is not the existing match')
 
 
-class PriceAdaptorTest(TestCase):
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = PriceAdaptor()
-        self.expected_prices = [5.0, 12.0]
+class PriceAdaptorTest(ImporterTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(PriceAdaptorTest, cls).setUpClass()
+        cls.adaptor = PriceAdaptor()
+        cls.expected_prices = [5.0, 12.0]
 
     def test_adapt_new_valid(self):
         occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
 
         created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
         self.assertTrue(all(created for created, price in created_prices), 'Price object was not newly created')
-        self.assertTrue(all(isinstance(price, Price) for created, price in created_prices), 'Unexpected type of price object')
-        self.assertEqual(self.expected_prices, [price.quantity for created, price in created_prices], 'Unexpected quantity value')
-        self.assertTrue(all(u'dollars'==price.units for created, price in created_prices), 'Unexpected units value')
+        self.assertTrue(all(isinstance(price, Price) for created, price in created_prices),
+            'Unexpected type of price object')
+        self.assertEqual(self.expected_prices, [price.quantity for created, price in created_prices],
+            'Unexpected quantity value')
+        self.assertTrue(all(u'dollars' == price.units for created, price in created_prices), 'Unexpected units value')
 
     def test_adapt_existing_valid(self):
-        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0,x=0))))
-        existing_prices = [get(Price, quantity=quantity, units='dollars', occurrence=occurrence) for quantity in self.expected_prices]
+        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        existing_prices = [get(Price, quantity=quantity, units='dollars', occurrence=occurrence) for quantity in
+                           self.expected_prices]
 
         created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
 
-        self.assertTrue(all(not created for created, price in created_prices), 'Price object created despite existing match')
-        self.assertTrue(all(price==existing_price for existing_price, (created, price) in zip (existing_prices, created_prices)),
+        self.assertTrue(all(not created for created, price in created_prices),
+            'Price object created despite existing match')
+        self.assertTrue(
+            all(price == existing_price for existing_price, (created, price) in zip(existing_prices, created_prices)),
             'Price object returned is not the existing match')
 
 
@@ -122,15 +145,17 @@ class PriceAdaptorTest(TestCase):
         occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=40.7601, x=-73.9925))))
 
         created_prices = self.adaptor.adapt_m2o(self.invalid_response, occurrence=occurrence.id)
-        self.assertTrue(all(not created for created, price in created_prices), 'Price object created despite invalid data')
-        self.assertTrue(all(price is None for created, price in created_prices), 'Price object returned despite invalid data')
+        self.assertTrue(all(not created for created, price in created_prices),
+            'Price object created despite invalid data')
+        self.assertTrue(all(price is None for created, price in created_prices),
+            'Price object returned despite invalid data')
 
 
-class PointAdaptorTest(TestCase):
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = PointAdaptor()
+class PointAdaptorTest(ImporterTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(PointAdaptorTest, cls).setUpClass()
+        cls.adaptor = PointAdaptor()
 
     def test_adapt_new_valid(self):
         created, point = self.adaptor.adapt(self.event_response)
@@ -138,7 +163,8 @@ class PointAdaptorTest(TestCase):
         self.assertIsInstance(point, Point, 'Expected Point type')
         self.assertEqual(geos.Point(-73.9925, 40.7601), point.geometry, 'Unexpected geometry value')
         self.assertEqual(u'10036', point.zip, 'Unexpected zip value')
-        self.assertEqual(u'349 W 46th Street between Eighth and Ninth Avenues', point.address, 'Unexpected address value')
+        self.assertEqual(u'349 W 46th Street between Eighth and Ninth Avenues', point.address,
+            'Unexpected address value')
         self.assertIsInstance(point.city, City, 'Expected City type')
 
     def test_adapt_new_invalid(self):
@@ -157,15 +183,14 @@ class PointAdaptorTest(TestCase):
         self.assertEqual(existing_point, point, 'Point object returned is not the existing match')
 
 
-class PlaceAdaptorTest(TestCase):
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = PlaceAdaptor()
+class PlaceAdaptorTest(ImporterTestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(PlaceAdaptorTest, cls).setUpClass()
+        cls.adaptor = PlaceAdaptor()
 
     def test_adapt_new_valid(self):
-        event_response = TestResourceConsumer.consume_response()
-        created, place = self.adaptor.adapt(event_response)
+        created, place = self.adaptor.adapt(self.event_response)
         self.assertTrue(created, 'Place object was not newly created')
         self.assertIsInstance(place, Place, 'Expected Place type')
         self.assertEqual(u'Swing 46 Jazz and Supper Club', place.title, 'Unexpected place value')
@@ -186,13 +211,14 @@ class PlaceAdaptorTest(TestCase):
         self.assertFalse(created, 'Place object created despite existing match')
         self.assertEqual(existing_place, place, 'Place object returned is not the existing match')
 
-class CategoryAdaptorTest(TestCase):
+
+class CategoryAdaptorTest(ImporterTestCase):
     fixtures = ['categories', 'sources']
 
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = CategoryAdaptor()
+    @classmethod
+    def setUpClass(cls):
+        super(CategoryAdaptorTest, cls).setUpClass()
+        cls.adaptor = CategoryAdaptor()
 
     def test_adapt_new_valid(self):
         category_data = self.event_response['categories']['category']
@@ -211,71 +237,67 @@ class CategoryAdaptorTest(TestCase):
     def test_adapt_existing_valid(self):
         eventful_source = Source.objects.filter(name='eventful')[0]
         existing_category = get(ExternalCategory, name='Concerts & Tour Dates',
-                xid='music', source=eventful_source)
+            xid='music', source=eventful_source)
 
         category_data = self.event_response['categories']['category']
         created, category = self.adaptor.adapt(category_data[0])
         self.assertFalse(created, 'Category object created despite existing match')
         self.assertEqual(existing_category, category, 'Category object returned is not the existing match')
 
-class OccurrenceAdaptorTest(TestCase):
-    fixtures = ['auth', 'categories', 'sources']
 
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.event_adaptor = EventAdaptor()
-        self.adaptor = OccurrenceAdaptor()
-        self.expected_start_dates = map(_parse_date, '2011-10-26 2011-11-2 2011-11-9 2011-11-16 2011-11-23'.split())
-        self.expected_start_times = [_parse_time('20:30')] * len(self.expected_start_dates)
+class OccurrenceAdaptorTest(ImporterTestCase):
+    fixtures = ['categories', 'sources']
+
+    @classmethod
+    def setUpClass(cls):
+        super(OccurrenceAdaptorTest, cls).setUpClass()
+        cls.adaptor = OccurrenceAdaptor()
+        cls.expected_start_dates = map(cls.parse_date, '2011-10-26 2011-11-2 2011-11-9 2011-11-16 2011-11-23'.split())
+        cls.expected_start_times = [cls.parse_time('20:30')] * len(cls.expected_start_dates)
 
     def test_adapt_new_valid(self):
-
         event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
-        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response, event=event.id))
+        occurrences = self.adaptor.adapt_m2o(self.event_response, event=event.id)
 
-        self.assertEqual(len(created_occurrences), 5, 'Unexpected number of occurrences returned')
-        self.assertTrue(all(created for created, occurrences in created_occurrences),
-                'Not all occurrences were successfully created')
-        self.assertTrue(all(isinstance(occurrence, Occurrence) for created,
-            occurrence in created_occurrences), 'Not all occurrences are of expected type') 
-        self.assertTrue(all(isinstance(occurrence.place, Place) for created, occurrence in created_occurrences),
-            'Expected Place type')
-        self.assertTrue(all(isinstance(occurrence.event, Event) for created, occurrence in created_occurrences),
-            'Expected Event type')
-        self.assertEqual(self.expected_start_dates, [occurrence.start_date for created, occurrence in created_occurrences],
-            'Unexpected values in start dates for occurrences')
-        self.assertEqual(self.expected_start_times, [occurrence.start_time for created, occurrence in created_occurrences],
-            'Unexpected values in start times for occurrences')
+        self.assertEqual(len(occurrences), 5, 'Unexpected number of occurrences returned')
+        for created, occurrence in occurrences:
+            self.assertTrue(created, 'Not all occurrences were successfully created')
+            self.assertIsInstance(occurrence, Occurrence, 'Occurrence type expected')
+            self.assertIsInstance(occurrence.place, Place, 'Expected Place type')
+            self.assertIsInstance(occurrence.event, Event, 'Expected Event type')
+            self.assertIn(occurrence.start_date, self.expected_start_dates,
+                'Unexpected values in start dates for occurrences'
+            )
+            self.assertIn(occurrence.start_time, self.expected_start_times,
+                'Unexpected values in start times for occurrences'
+            )
 
     def test_adapt_new_invalid(self):
         event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
         self.assertRaises(ValueError, self.adaptor.adapt_m2o, self.invalid_response, event=event.id)
 
     def test_adapt_existing_valid(self):
-        expected_start_date_iter = iter(self.expected_start_dates)
-        expected_start_dates = lambda _: expected_start_date_iter.next()
-        expected_start_time_iter = iter(self.expected_start_times)
-        expected_start_times = lambda _: expected_start_time_iter.next()
         event, place = get(Event), get(Place, point=F(geometry=geos.Point(y=0, x=0)))
-        existing_occs = get(Occurrence, event=event, start_date=expected_start_dates, start_time=expected_start_times,
-            place=place, n=len(self.expected_start_dates)
-        )
+        existing_occurrences = []
+        for start_date, start_time in zip(self.expected_start_dates, self.expected_start_times):
+            existing_occurrences.append(
+                get(Occurrence, event=event, start_date=start_date, start_time=start_time, place=place)
+            )
 
-        created_occurrences = list(self.adaptor.adapt_m2o(self.event_response, event=event.id, place=place.id))
-        self.assertTrue(all(not created for created, occurrence in created_occurrences),
-                'Occurrence newly created despite existing match')
-        self.assertTrue(all(existing_occ==occurrence for existing_occ, (created, occurrence) in zip(existing_occs, created_occurrences)),
-                'Occurrence object returned is not the existing match')
+        occurrences = self.adaptor.adapt_m2o(self.event_response, event=event.id, place=place.id)
+        for created, occurrence in occurrences:
+            self.assertFalse(created, 'Occurrence created despite existing match')
+            self.assertIsInstance(occurrence, Occurrence, 'Occurrence type expected')
+            self.assertIn(occurrence, existing_occurrences, 'Occurrence object returned is not the existing match')
 
 
-class EventAdaptorTest(TestCase):
+class EventAdaptorTest(ImporterTestCase):
     fixtures = ['auth', 'categories', 'sources', 'external_categories']
 
-    def setUp(self):
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
-        self.adaptor = EventAdaptor()
+    @classmethod
+    def setUpClass(cls):
+        super(EventAdaptorTest, cls).setUpClass()
+        cls.adaptor = EventAdaptor()
 
     def test_adapt_new_valid(self):
         created, event = self.adaptor.adapt(self.event_response)
@@ -284,11 +306,14 @@ class EventAdaptorTest(TestCase):
         self.assertEqual(event.occurrences.count(), 5, 'No occurrences adapted')
         self.assertEqual(event.occurrences.all()[0].prices.count(), 2, 'No prices adapted')
         self.assertEqual(u'E0-001-015489401-9@2011102620', event.xid, 'Unexpected xid value')
-        self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title, 'Unexpected title value')
-        self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
-                         event.description, 'Unexpected description value')
-        self.assertEqual(u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic',
-                         event.url, 'Unexpected url value')
+        self.assertEqual(u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!', event.title,
+            'Unexpected title value')
+        self.assertEqual(u'The Stan Rubin Orchestra plays favorites from the Big Band era for your ' +
+                         u'dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+            event.description, 'Unexpected description value')
+        self.assertEqual(u'http://eventful.com/newyork_ny/events/stan-rubin-big-banddining-/' +
+                         u'E0-001-015489401-9@2011102620?utm_source=apis&utm_medium=apim&utm_campaign=apic',
+            event.url, 'Unexpected url value')
         self.assertEqual(u'Concerts', event.concrete_category.title, 'Unexpected concrete category title value')
 
     def test_adapt_new_invalid(self):
@@ -299,93 +324,30 @@ class EventAdaptorTest(TestCase):
 
     def test_adapt_existing_valid(self):
         category_obj = get(Category, title='Concerts')
-        existing_event = get(Event, xid='E0-001-015489401-9@2011102620', title='The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
-                description='The Stan Rubin Orchestra plays favorites from the Big Band era for your dining and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
-                concrete_category=category_obj)
+        existing_event = get(Event, xid='E0-001-015489401-9@2011102620',
+            title=u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
+            description=u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining ' +
+                        u'and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
+            concrete_category=category_obj)
 
         created, event = self.adaptor.adapt(self.event_response)
         self.assertFalse(created, 'Event newly created despite existing match')
         self.assertEqual(existing_event, event, 'Event object returned is not the existing match')
 
-class EventfulPriceParserTest(TestCase):
-    # Parsing prices with units -- may get false positives, for now
 
-    @classmethod
-    def setUpClass(cls):
-        super(EventfulPriceParserTest, cls).setUpClass()
-        cls.parser = PriceParser()
-
-    def test_multiple_prices_with_two_decimals_in_prose(self):
-        price = '  Sign up by May 9th for a special discount. Early Registration 99.00 <br><br>  \
-        Sign up for the Pedestrian Consulting Mailing list following purchase to receive a 10% discount \
-        on the regular price course fee. See details below. Reduced Student Price -10% 250.00 <br><br>   \
-        Regular Student PriceOLD 199.00 <br><br>  Attend a meetup to find out how to become a member. \
-        Email info@pedestrianconsulting.com to find out how to become a member. Member Price 99.00 <br><br>   \
-        Non-Member Price 125.00 <br><br>  This is a 2 hour group hands on session. \
-        It is only available on Sept 5th Tuesday Sept 13th at 7 - 9 pm. \
-        The August 24th date is for the 3 hour class Sept 13th Website Bootcamp Lab 52.24 <br><br>  \
-        This is only held on Wednesday 8/24 at 7 - 9 pm. The other dates listed are for the labs \
-        August 24th 3 hour Class 77.87 <br><br>   October 24th Class 77.87 <br><br>\n'
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual(
-            (99.0, 250.0, 199.0, 99.0, 125.0, 7.0, 52.24, 7.0, 77.87, 77.87),
-            tuple(parsed_prices), 'Unexpected prices value'
-        )
-
-    def test_single_price_with_two_decimals(self):
-        price = '   RSVP 11.24 <br><br>\n'
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((11.24,), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_single_price_with_commas_two_decimals_and_no_units(self):
-        price = "   General Registration 2,395.00 <br><br>   Early Bird 2,195.00 <br><br>\n"
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((2395.0, 2195.0), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_single_price_with_units_in_USD(self):
-        price = "5 - 5 USD "
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((5.0, 5.0), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_single_price_with_units_in_dollar_sign(self):
-        price = "$35"
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((35.0,), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_single_price_with_decimals_and_units_in_dollar_sign(self):
-        price = "$10.00"
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((10.0,), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_multiple_prices_with_some_units_and_some_decimals(self):
-        price = "  35% off reg $300 Saturdays 4:30-5:45 pm, 10/1-11/19 195.00 <br><br>\n"
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((300.0, 195.0), tuple(parsed_prices), 'Unexpected prices value')
-
-    def test_single_price_numeric_no_context(self):
-        price = '75'
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((75,), tuple(parsed_prices))
-
-    def test_two_prices_comma_separated(self):
-        price = '1,2'
-        parsed_prices = self.parser.parse(price)
-        self.assertTupleEqual((1, 2), tuple(parsed_prices), 'Unexpected prices value')
-
-class EventfulDateParserTest(TestCase):
-
+class EventfulDateParserTest(ImporterTestCase):
     def test_single_occurrence_with_start_datetime(self):
-        response = TestResourceConsumer.consume_recurrence_response()
-        horizon_start, horizon_stop = response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] 
+        response = self.consume_recurrence_response()
+        horizon_start, horizon_stop = response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop']
         start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(response)
 
         # test that event horizon clipping is working
 
         self.assertEqual(False, is_all_day, 'Unexpected is_all_day value')
         self.assertTrue(horizon_start < min(start_datetimes),
-                'Datetime in occurrence set unexpectedly occurs before start of event horizon')
+            'Datetime in occurrence set unexpectedly occurs before start of event horizon')
         self.assertTrue(max(start_datetimes) < horizon_stop,
-                'Datetime in occurrence set unexpectedly occurs after end of event horizon')
+            'Datetime in occurrence set unexpectedly occurs after end of event horizon')
 
         # now, test that distinct rrule and rdate parsing is working correctly:
         # try parsing from a year before creation date (set start_time and
@@ -395,7 +357,8 @@ class EventfulDateParserTest(TestCase):
 
         old_start_datetime = dateutil.parser.parse(response['start_time'])
         new_start_datetime = old_start_datetime - relativedelta(years=1)
-        response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] = horizon_start - relativedelta(years=1), horizon_stop + relativedelta(years=1)
+        response['__kwiqet']['horizon_start'], response['__kwiqet']['horizon_stop'] = horizon_start - relativedelta(
+            years=1), horizon_stop + relativedelta(years=1)
         response['start_time'] = new_start_datetime.isoformat()
         start_datetimes, duration, is_all_day = utils.temporal_parser.occurrences(response)
 
@@ -403,13 +366,14 @@ class EventfulDateParserTest(TestCase):
         # event) is in resultant datetime set
 
         self.assertTrue(datetime.datetime(2011, 2, 19, 21, 0) in start_datetimes,
-                'First recurrence instance datetime is unexpectedly not a member of occurrence set')
+            'First recurrence instance datetime is unexpectedly not a member of occurrence set')
 
         # check that rdates are in resultant datetime set (they start at 14:30
         # instead of 21:00 like the other rrule recurrences)
 
         self.assertTrue(datetime.datetime(2011, 4, 10, 14, 30) in
-                start_datetimes, 'First datetime in rdate set is unexpectedly not a member of occurrence set')
+                        start_datetimes, 'First datetime in rdate set is unexpectedly not a member of occurrence set')
+
 
 class ExternalCategoryFixtureTest(TestCase):
     fixtures = ['categories', 'sources', 'external_categories']
@@ -431,17 +395,17 @@ class ExternalCategoryFixtureTest(TestCase):
 
         for eventful_category in eventful_categories:
             xid, name = eventful_category['id'], self.html_parser.unescape(eventful_category['name'])
-            mapped_category = ExternalCategory.objects.filter(xid=xid, 
-                    source=eventful_source, name=name)
+            mapped_category = ExternalCategory.objects.filter(xid=xid,
+                source=eventful_source, name=name)
             if len(mapped_category) > 0:
                 mapped_categories.extend(mapped_category)
             else:
                 unmapped_categories.append(eventful_category)
 
         self.assertEqual([], unmapped_categories,
-                'Unable to find external %s category mappings for: %s' %
-                (eventful_source, ', '.join(map(lambda x:x['name'],
-                    unmapped_categories))))
+            'Unable to find external %s category mappings for: %s' %
+            (eventful_source, ', '.join(map(lambda x: x['name'],
+                unmapped_categories))))
 
     def test_all_external_categories_mapped(self):
         self.assertGreater(len(self.eventful_sources), 0, 'Unable to find Eventful source object')
@@ -450,31 +414,33 @@ class ExternalCategoryFixtureTest(TestCase):
 
         for external_category in external_categories:
             self.assertTrue(external_category.concrete_category,
-                    'External category for %s not mapped: %s' %
-                    (eventful_source.name, external_category.name))
+                'External category for %s not mapped: %s' %
+                (eventful_source.name, external_category.name))
             self.assertIsInstance(external_category.concrete_category,
-                    Category, 'Unexpected type of associated concrete category')
+                Category, 'Unexpected type of associated concrete category')
 
-class EventfulPaginatorTest(TestCase):
+
+class EventfulPaginatorTest(ImporterTestCase):
     fixtures = ['categories', 'sources', 'external_categories', 'users']
-    args = dict(interactive = False, total_pages = 1, start_page = 1,
-            silent_fail = False, consumer_kwargs = {'trust': False, 'mock_api': True},
-            client_kwargs = {'make_dumps': False},
-            query_kwargs = {'query': '', 'sort_order': 'popularity', 'location': 'NYC', 'page_size': 1})
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        super(EventfulPaginatorTest, cls).setUpClass()
         User.objects.create(username='importer')
-        self.event_response = TestResourceConsumer.consume_response()
-        self.invalid_response = TestResourceConsumer.consume_invalid_response()
+        cls.args = dict(interactive=False, total_pages=1, start_page=1,
+            silent_fail=False, consumer_kwargs={'trust': False, 'mock_api': True},
+            client_kwargs={'make_dumps': False},
+            query_kwargs={'query': '', 'sort_order': 'popularity', 'location': 'NYC', 'page_size': 1}
+        )
 
     def test_silent_fail_off(self):
         with self.assertRaises(ValueError):
             self.paginator = EventfulPaginator(**self.args)
             self.paginator._import_page_events([self.invalid_response],
-                    self.args['interactive'], self.args['silent_fail'])
+                self.args['interactive'], self.args['silent_fail'])
 
     def test_silent_fail_on(self):
         self.args['silent_fail'] = True
         self.paginator = EventfulPaginator(**self.args)
         self.paginator._import_page_events([self.invalid_response],
-                self.args['interactive'], self.args['silent_fail'])
+            self.args['interactive'], self.args['silent_fail'])

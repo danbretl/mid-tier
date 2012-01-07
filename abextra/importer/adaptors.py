@@ -45,8 +45,9 @@ class BaseAdaptor(object):
 
     def _adapt(self, raw_data, form_data, file_data):
         # try to get from cache, else create of get from db
-        key = self._cache_key(form_data)
-        created, instance = False, self.cache.get(key)
+#        key = self._cache_key(form_data)
+#        created, instance = False, self.cache.get(key)
+        created, instance = False, None    # caching is dangerous, if rollbacks possible via transactions or manually
         if instance:
             self.logger.debug('%s matched from cache with pk: %i', self.model._meta.object_name, instance.pk)
         else:
@@ -85,8 +86,8 @@ class BaseAdaptor(object):
         if instance:
             self._post_adapt(raw_data, instance)
             # if this is a fresh instance, cache it
-            if created:
-                self.cache[key] = instance
+#            if created:
+#                self.cache[key] = instance
 
         self.logger.debug((created, instance))
         return created, instance

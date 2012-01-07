@@ -9,7 +9,7 @@ class EventfulPaginator(object):
     logger = logging.getLogger('importer.api.eventful.paginator')
 
     def __init__(self, interactive=None, total_pages=None, start_page=1,
-            silent_fail=None, consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
+            silent_fail=False, consumer_kwargs=None, client_kwargs=None, query_kwargs=conf.IMPORT_PARAMETERS):
         # internal initializations
         self.consumer = EventfulApiConsumer(client_kwargs=client_kwargs, **(consumer_kwargs or {}))
         self.event_adaptor = EventAdaptor()
