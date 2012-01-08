@@ -285,6 +285,21 @@ LOGGING = {
     }
 }
 
+# =========
+# = Cache =
+# =========
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    },
+    'geocoder': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'geocoder-cache',
+        'TIMEOUT': 2629743, # one month
+        'OPTIONS': {'MAX_ENTRIES': 2000}
+    }
+}
+
 # ===============
 # = Keyed Cache =
 # ===============

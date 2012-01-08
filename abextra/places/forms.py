@@ -2,8 +2,9 @@ from django import forms
 from django.contrib.gis import geos
 from django.contrib.gis.forms import GeometryField
 from django.contrib.localflavor.us import forms as us_forms
+from django.core.cache import get_cache
 from django.template.defaultfilters import slugify
-from pygeocoder import Geocoder
+from pygeocoder import Geocoder, GeocoderResult
 from core.forms import ImportFormMux
 from places.models import Place, Point, City
 from core.fields import USPhoneNumberFieldSoftFail
@@ -53,12 +54,11 @@ class PointImportForm(PointForm):
     geometry = GeometryField(geom_type='POINT', srid=4326, required=False)
     latitude = forms.FloatField(min_value=-90, max_value=90)
     longitude = forms.FloatField(min_value=-180, max_value=180)
-
-    _ZIPCODE_CACHE = {}
+    _cache = get_cache('geocoder')
 
     def clean(self):
         cleaned_data = super(PointImportForm, self).clean()
-        lat, lon = map(cleaned_data.get, ('latitude', 'longitude'))
+        lat, lon = cleaned_data.get('latitude'), cleaned_data.get('longitude')
 
         # point geometry
         geometry = cleaned_data.get('geometry')
@@ -74,13 +74,17 @@ class PointImportForm(PointForm):
         if not zipcode:
             if not all((lat, lon)):
                 raise forms.ValidationError('Zipcode fields require latitude and longitude')
-            key = (lat, lon)
-            if not self._ZIPCODE_CACHE.has_key(key):
-                results = Geocoder.reverse_geocode(lat=lat, lng=lon)
-                self._ZIPCODE_CACHE[key] = results[0].postal_code
-            zipcode = self._ZIPCODE_CACHE.get(key)
-            cleaned_data['zip'] = self.fields['zip'].clean(zipcode)
 
+            key = hash((lat, lon))
+            result_data = self._cache.get(key)
+            if result_data:
+                result = GeocoderResult(result_data)
+            else:
+                result = Geocoder.reverse_geocode(lat=lat, lng=lon)
+                self._cache.set(key, result.data)
+
+            zipcode = result[0].postal_code
+            cleaned_data['zip'] = self.fields['zip'].clean(zipcode)
         return cleaned_data
 
 

@@ -65,7 +65,6 @@ class Point(geo_models.Model):
         return u'%s' % self.address
 
 
-# TODO don't need: prefix, nickname
 class Place(models.Model):
     """Place model."""
     STATUS_CHOICES = (
@@ -90,7 +89,7 @@ class Place(models.Model):
     image_url = models.URLField(_('image_url'), blank=True, verify_exists=False)
 
     class Meta:
-        unique_together = (('point', 'title'))
+        unique_together = (('title', 'point'))
         verbose_name = _('place')
         verbose_name_plural = _('places')
         ordering = ('title',)
@@ -112,11 +111,11 @@ class Place(models.Model):
 
     @property
     def longitude(self):
-        return self.point.longitude
+        return self.point.geometry.x
 
     @property
     def latitude(self):
-        return self.point.latitude
+        return self.point.geometry.y
 
     @property
     def address(self):

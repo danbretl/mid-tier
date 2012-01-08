@@ -1,9 +1,10 @@
 from django.contrib.gis import geos
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from places.models import City
+from places.models import City, Point, Place
 from places.forms import PointImportForm
 from django_dynamic_fixture import get, new
+
 
 class CityTest(TestCase):
     def setUp(self):
@@ -18,15 +19,24 @@ class CityTest(TestCase):
         city = City(**self.data)
         self.assertRaises(ValidationError, city.validate_unique)
 
-class PointTest(TestCase):
-    def setUp(self):
-        self.data = dict()
 
-#    def test_uniqueness(self):
+class PointTest(TestCase):
+    def test_uniqueness(self):
+        """unique together: address, city"""
+        kwargs = dict(geometry=geos.Point(0,0), address='40 Worth St.', city=get(City))
+        get(Point, **kwargs)
+        self.assertRaises(ValidationError, new(Point, **kwargs).validate_unique)
+
+
+class PlaceTest(TestCase):
+    def test_uniqueness(self):
+        """unique together: title, point"""
+        kwargs = dict(title='Psychocircus', point=get(Point, geometry=geos.Point(0,0)))
+        get(Place, **kwargs)
+        self.assertRaises(ValidationError, new(Place, **kwargs).validate_unique)
 
 
 class PointImportFormTest(TestCase):
-
     def setUp(self):
         city = get(City, city='Queens', state='NY')
         self.base_data = dict(
