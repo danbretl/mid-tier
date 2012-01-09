@@ -12,6 +12,7 @@ from sorl.thumbnail import ImageField
 from places.models import Place
 
 from livesettings import config_value
+from events import config
 
 # ============
 # = Category =
