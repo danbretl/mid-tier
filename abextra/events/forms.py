@@ -5,6 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.models import User
 from core.fields import HtmlSanitizedCharField
 from events.models import Event, Occurrence, Category, Source
+from importer import ImportFormMetaClass
 from importer.models import ExternalCategory
 from events.utils import CachedCategoryTree
 import pundit
@@ -79,6 +80,8 @@ class SourceAdminForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class EventImportForm(EventForm):
+    __metaclass__ = ImportFormMetaClass
+
     description = HtmlSanitizedCharField(required=False)
     slug = forms.SlugField(required=False)
     popularity_score = forms.IntegerField(required=False)
@@ -147,4 +150,4 @@ class EventImportForm(EventForm):
         return cleaned_data
 
 class OccurrenceImportForm(OccurrenceForm):
-    pass
+    __metaclass__ = ImportFormMetaClass

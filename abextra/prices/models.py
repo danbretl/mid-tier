@@ -7,3 +7,6 @@ class Price(models.Model):
     units = models.CharField(max_length=300, default='dollars')
     remark = models.CharField(max_length=300, blank=True)
     occurrence = models.ForeignKey(Occurrence, related_name='prices')
+
+    class Meta:
+        unique_together = (('occurrence', 'quantity'))

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from importer import ImportFormMetaClass
 from importer.models import ExternalCategory
 from events.models import Category, Source
 
@@ -20,6 +21,8 @@ class ExternalCategoryAdminForm(ExternalCategoryForm):
     )
 
 class ExternalCategoryImportForm(ExternalCategoryForm):
+    __metaclass__ = ImportFormMetaClass
+
     source = forms.ModelChoiceField(
         queryset=Source.objects.all(),
         cache_choices=True,

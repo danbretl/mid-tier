@@ -19,13 +19,11 @@ class EventfulBaseAdaptor(BaseAdaptor):
 # ==========
 class CityAdaptor(EventfulBaseAdaptor):
     model_form = CityImportForm
-    fields = ['city', 'state']
     form_data_map = {'city': 'city', 'state': 'region'}
 
 
 class PointAdaptor(EventfulBaseAdaptor):
     model_form = PointImportForm
-    fields = ['geometry', 'address']
     slave_adaptors = {'city': CityAdaptor}
     form_data_map = {
         'address': 'address',
@@ -38,7 +36,6 @@ class PointAdaptor(EventfulBaseAdaptor):
 
 class PlaceAdaptor(EventfulBaseAdaptor):
     model_form = PlaceImportForm
-    fields = ['title', 'point']
     slave_adaptors = {'point': PointAdaptor}
     form_data_map = {
         'description': '__kwiqet/venue_details/description',
@@ -53,7 +50,6 @@ class PlaceAdaptor(EventfulBaseAdaptor):
 #===========
 class PriceAdaptor(EventfulBaseAdaptor):
     model_form = PriceImportForm
-    fields = ['occurrence', 'quantity']
     _price_parser = None
 
     @classmethod
@@ -88,7 +84,6 @@ class PriceAdaptor(EventfulBaseAdaptor):
 # ==========
 class OccurrenceAdaptor(EventfulBaseAdaptor):
     model_form = OccurrenceImportForm
-    fields = ['event', 'start_date', 'place', 'start_time']
     slave_adaptors = {'place': PlaceAdaptor}
     slave_adaptors_to_many = [PriceAdaptor]
 
@@ -108,7 +103,6 @@ class OccurrenceAdaptor(EventfulBaseAdaptor):
 
 class CategoryAdaptor(EventfulBaseAdaptor):
     model_form = ExternalCategoryImportForm
-    fields = ['source', 'xid']
     form_data_map = {'xid': 'id'}
 
     def __init__(self):
@@ -124,7 +118,6 @@ class CategoryAdaptor(EventfulBaseAdaptor):
 
 class EventAdaptor(EventfulBaseAdaptor):
     model_form = EventImportForm
-    fields = ['xid', ]
     slave_adaptors_to_many = [OccurrenceAdaptor]
     form_data_map = {
         'xid': 'id',

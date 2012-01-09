@@ -5,7 +5,7 @@ from django.contrib.localflavor.us import forms as us_forms
 from django.core.cache import get_cache
 from django.template.defaultfilters import slugify
 from pygeocoder import Geocoder, GeocoderResult
-from core.forms import ImportFormMux
+from importer import ImportFormMetaClass
 from places.models import Place, Point, City
 from core.fields import USPhoneNumberFieldSoftFail
 
@@ -35,6 +35,8 @@ class CityForm(forms.ModelForm):
 # = Import Forms =
 # ================
 class PlaceImportForm(PlaceForm):
+    __metaclass__ = ImportFormMetaClass
+
     slug = forms.SlugField(required=False, max_length=PlaceForm._meta.model._meta.get_field('slug').max_length)
     phone = USPhoneNumberFieldSoftFail(required=False)
     status = forms.TypedChoiceField(empty_value=1, coerce=int, required=False)
@@ -50,6 +52,8 @@ class PlaceImportForm(PlaceForm):
 
 
 class PointImportForm(PointForm):
+    __metaclass__ = ImportFormMetaClass
+
     zip = us_forms.USZipCodeField(required=False)
     geometry = GeometryField(geom_type='POINT', srid=4326, required=False)
     latitude = forms.FloatField(min_value=-90, max_value=90)
@@ -88,5 +92,5 @@ class PointImportForm(PointForm):
         return cleaned_data
 
 
-class CityImportForm(ImportFormMux, CityForm):
-    pass
+class CityImportForm(CityForm):
+    __metaclass__ = ImportFormMetaClass

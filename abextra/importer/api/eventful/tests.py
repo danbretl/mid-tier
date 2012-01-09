@@ -6,7 +6,7 @@ from django.utils import simplejson as json
 from dateutil.relativedelta import relativedelta
 from django.contrib.gis import geos
 from django.test import TestCase
-from django_dynamic_fixture import get, DynamicFixture as F
+from django_dynamic_fixture import F, G
 from events.models import Event, Occurrence
 from prices.models import Price
 from places.models import City, Point, Place
@@ -22,6 +22,7 @@ from accounts.models import User
 
 class ImporterTestCase(TestCase):
     event_response, invalid_response = None, None
+    point_address = u'349 W 46th Street between Eighth and Ninth Avenues'
 
     @staticmethod
     def parse_date(date_string):
@@ -103,7 +104,7 @@ class CityAdaptorTest(ImporterTestCase):
         self.assertIsNone(city, 'City object returned, despite invalid data')
 
     def test_adapt_existing_valid(self):
-        existing_city = get(City, city='New York', state='NY')
+        existing_city = G(City, city='New York', state='NY')
         created, city = self.adaptor.adapt(self.event_response)
         self.assertFalse(created, 'City object created, despite existing match')
         self.assertEqual(existing_city, city, 'City object returned is not the existing match')
@@ -114,35 +115,28 @@ class PriceAdaptorTest(ImporterTestCase):
     def setUpClass(cls):
         super(PriceAdaptorTest, cls).setUpClass()
         cls.adaptor = PriceAdaptor()
-        cls.expected_prices = [5.0, 12.0]
+        cls.quantities = {5.0, 12.0}
 
     def test_adapt_new_valid(self):
-        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
-
-        created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
-        self.assertTrue(all(created for created, price in created_prices), 'Price object was not newly created')
-        self.assertTrue(all(isinstance(price, Price) for created, price in created_prices),
-            'Unexpected type of price object')
-        self.assertEqual(self.expected_prices, [price.quantity for created, price in created_prices],
-            'Unexpected quantity value')
-        self.assertTrue(all(u'dollars' == price.units for created, price in created_prices), 'Unexpected units value')
+        occurrence = G(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
+        for created, price in prices:
+            self.assertTrue(created, 'Price object was not newly created')
+            self.assertIsInstance(price, Price, 'Unexpected type of price object')
+            self.assertIn(price.quantity, self.quantities, 'Unexpected quantity value')
+            self.assertEqual(u'dollars', price.units, 'Unexpected units value')
 
     def test_adapt_existing_valid(self):
-        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
-        existing_prices = [get(Price, quantity=quantity, units='dollars', occurrence=occurrence) for quantity in
-                           self.expected_prices]
-
-        created_prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
-
-        self.assertTrue(all(not created for created, price in created_prices),
-            'Price object created despite existing match')
-        self.assertTrue(
-            all(price == existing_price for existing_price, (created, price) in zip(existing_prices, created_prices)),
-            'Price object returned is not the existing match')
+        occurrence = G(Occurrence, place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        existing_prices = {G(Price, occurrence=occurrence, quantity=quantity) for quantity in self.quantities}
+        prices = self.adaptor.adapt_m2o(self.event_response, occurrence=occurrence.id)
+        for created, price in prices:
+            self.assertFalse(created, 'Price object created despite existing match')
+            self.assertIn(price, existing_prices, 'Price object returned is not the existing match')
 
 
     def test_adapt_new_invalid(self):
-        occurrence = get(Occurrence, place=F(point=F(geometry=geos.Point(y=40.7601, x=-73.9925))))
+        occurrence = G(Occurrence, place=F(point=F(geometry=geos.Point(y=40.7601, x=-73.9925))))
 
         created_prices = self.adaptor.adapt_m2o(self.invalid_response, occurrence=occurrence.id)
         self.assertTrue(all(not created for created, price in created_prices),
@@ -163,8 +157,7 @@ class PointAdaptorTest(ImporterTestCase):
         self.assertIsInstance(point, Point, 'Expected Point type')
         self.assertEqual(geos.Point(-73.9925, 40.7601), point.geometry, 'Unexpected geometry value')
         self.assertEqual(u'10036', point.zip, 'Unexpected zip value')
-        self.assertEqual(u'349 W 46th Street between Eighth and Ninth Avenues', point.address,
-            'Unexpected address value')
+        self.assertEqual(self.point_address, point.address, 'Unexpected address value')
         self.assertIsInstance(point.city, City, 'Expected City type')
 
     def test_adapt_new_invalid(self):
@@ -173,10 +166,9 @@ class PointAdaptorTest(ImporterTestCase):
         self.assertIsNone(point, 'Point object created despite invalid data')
 
     def test_adapt_existing_valid(self):
-        # point uniqueness: geometry, address
-        existing_point = get(Point,
-            geometry=geos.Point(y=40.7601, x=-73.9925),
-            address='349 W 46th Street between Eighth and Ninth Avenues'
+        # point uniqueness: address, city
+        existing_point = G(Point, geometry=geos.Point(0, 0), address=self.point_address,
+            city=City.objects.create(city='New York', state='NY')
         )
         created, point = self.adaptor.adapt(self.event_response)
         self.assertFalse(created, 'Point object created despite existing match')
@@ -202,10 +194,9 @@ class PlaceAdaptorTest(ImporterTestCase):
         self.assertIsNone(place, 'Place object returned despite invalid data')
 
     def test_adapt_existing_valid(self):
-        # place uniqueness: point, title
-        existing_place = get(Place, title='Swing 46 Jazz and Supper Club', point=F(
-            geometry=geos.Point(y=40.7601, x=-73.9925),
-            address='349 W 46th Street between Eighth and Ninth Avenues'
+        # place uniqueness: title, point
+        existing_place = G(Place, title='Swing 46 Jazz and Supper Club', point=F(geometry=geos.Point(0, 0),
+            address=self.point_address, city=City.objects.create(city='New York', state='NY')
         ))
         created, place = self.adaptor.adapt(self.event_response)
         self.assertFalse(created, 'Place object created despite existing match')
@@ -236,7 +227,7 @@ class CategoryAdaptorTest(ImporterTestCase):
 
     def test_adapt_existing_valid(self):
         eventful_source = Source.objects.filter(name='eventful')[0]
-        existing_category = get(ExternalCategory, name='Concerts & Tour Dates',
+        existing_category = G(ExternalCategory, name='Concerts & Tour Dates',
             xid='music', source=eventful_source)
 
         category_data = self.event_response['categories']['category']
@@ -253,37 +244,29 @@ class OccurrenceAdaptorTest(ImporterTestCase):
         super(OccurrenceAdaptorTest, cls).setUpClass()
         cls.adaptor = OccurrenceAdaptor()
         cls.expected_start_dates = map(cls.parse_date, '2011-10-26 2011-11-2 2011-11-9 2011-11-16 2011-11-23'.split())
-        cls.expected_start_times = [cls.parse_time('20:30')] * len(cls.expected_start_dates)
+        cls.expected_start_time = cls.parse_time('20:30')
 
     def test_adapt_new_valid(self):
-        event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
+        event = G(Event, xid='E0-001-042149604-1', title='Chromeo')
         occurrences = self.adaptor.adapt_m2o(self.event_response, event=event.id)
-
         self.assertEqual(len(occurrences), 5, 'Unexpected number of occurrences returned')
         for created, occurrence in occurrences:
             self.assertTrue(created, 'Not all occurrences were successfully created')
             self.assertIsInstance(occurrence, Occurrence, 'Occurrence type expected')
             self.assertIsInstance(occurrence.place, Place, 'Expected Place type')
             self.assertIsInstance(occurrence.event, Event, 'Expected Event type')
-            self.assertIn(occurrence.start_date, self.expected_start_dates,
-                'Unexpected values in start dates for occurrences'
-            )
-            self.assertIn(occurrence.start_time, self.expected_start_times,
-                'Unexpected values in start times for occurrences'
-            )
+            self.assertIn(occurrence.start_date, self.expected_start_dates, 'Unexpected start date')
+            self.assertEquals(occurrence.start_time, self.expected_start_time, 'Unexpected start times')
 
     def test_adapt_new_invalid(self):
-        event = get(Event, xid='E0-001-042149604-1', title='Chromeo')
+        event = G(Event, xid='E0-001-042149604-1', title='Chromeo')
         self.assertRaises(ValueError, self.adaptor.adapt_m2o, self.invalid_response, event=event.id)
 
     def test_adapt_existing_valid(self):
-        event, place = get(Event), get(Place, point=F(geometry=geos.Point(y=0, x=0)))
-        existing_occurrences = []
-        for start_date, start_time in zip(self.expected_start_dates, self.expected_start_times):
-            existing_occurrences.append(
-                get(Occurrence, event=event, start_date=start_date, start_time=start_time, place=place)
-            )
-
+        event, place = G(Event), G(Place, point=F(geometry=geos.Point(y=0, x=0)))
+        existing_occurrences = {G(Occurrence, event=event, start_date=start_date,
+            start_time=self.expected_start_time, place=place) for start_date in self.expected_start_dates
+        }
         occurrences = self.adaptor.adapt_m2o(self.event_response, event=event.id, place=place.id)
         for created, occurrence in occurrences:
             self.assertFalse(created, 'Occurrence created despite existing match')
@@ -323,13 +306,7 @@ class EventAdaptorTest(ImporterTestCase):
         self.assertRaises(ValueError, self.adaptor.adapt, self.invalid_response)
 
     def test_adapt_existing_valid(self):
-        category_obj = get(Category, title='Concerts')
-        existing_event = get(Event, xid='E0-001-015489401-9@2011102620',
-            title=u'The Stan Rubin Big Band--Dining and Swing Dancing in NYC!',
-            description=u'The Stan Rubin Orchestra plays favorites from the Big Band era for your dining ' +
-                        u'and dancing pleasure!   Dance floor, full bar, Zagat-rated menu.',
-            concrete_category=category_obj)
-
+        existing_event = G(Event, xid='E0-001-015489401-9@2011102620')
         created, event = self.adaptor.adapt(self.event_response)
         self.assertFalse(created, 'Event newly created despite existing match')
         self.assertEqual(existing_event, event, 'Event object returned is not the existing match')

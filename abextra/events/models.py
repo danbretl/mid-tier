@@ -11,7 +11,6 @@ from core.fields import VectorField
 from sorl.thumbnail import ImageField
 from places.models import Place
 
-import events.config
 from livesettings import config_value
 
 # ============
@@ -34,15 +33,18 @@ class CategoryManager(models.Manager):
             category_ids_by_event_id[event_id].append(category_id)
         return category_ids_by_event_id
 
+
 class CategoryConcreteManager(models.Manager):
     def get_query_set(self):
-       return super(CategoryConcreteManager, self).get_query_set() \
-           .filter(category_type__exact='C')
+        return super(CategoryConcreteManager, self).get_query_set()\
+        .filter(category_type__exact='C')
+
 
 class CategoryAbstractManager(models.Manager):
     def get_query_set(self):
-       return super(CategoryAbstractManager, self).get_query_set() \
-           .filter(category_type__exact='A')
+        return super(CategoryAbstractManager, self).get_query_set()\
+        .filter(category_type__exact='A')
+
 
 class Category(models.Model):
     """Category model"""
@@ -75,6 +77,7 @@ class Category(models.Model):
 
     def parent_title(self):
         return self.parent.title
+
     parent_title.admin_order_field = 'parent__title'
 
     class Meta:
@@ -90,6 +93,7 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
+
     @property
     def _future_filter(self):
         return dict(occurrences__start_datetime__gte=datetime.datetime.now())
@@ -100,8 +104,8 @@ class EventMixin(object):
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
-        exclusions = user.event_actions.filter(action__in=actions) \
-            .values_list('event_id', flat=True)
+        exclusions = user.event_actions.filter(action__in=actions)\
+        .values_list('event_id', flat=True)
         return self.exclude(id__in=exclusions)
 
     def featured(self):
@@ -119,12 +123,15 @@ class EventMixin(object):
             order_by=('-rank',)
         )
 
+
 class EventQuerySet(models.query.QuerySet, EventMixin):
     pass
+
 
 class EventManager(models.Manager, EventMixin):
     def get_query_set(self):
         return EventQuerySet(self.model)
+
 
 class EventActiveManager(EventManager):
     def get_query_set(self):
@@ -133,7 +140,7 @@ class EventActiveManager(EventManager):
 
 class Event(models.Model):
     """Event model"""
-    xid = models.CharField(_('external id'), max_length=200, blank=True)
+    xid = models.CharField(_('external id'), max_length=200, blank=True, unique=True)
     title = models.CharField(max_length=200)
     slug = models.SlugField()
     description = models.TextField(blank=True)
@@ -165,6 +172,7 @@ class Event(models.Model):
         # FIXME haxord summarization
         if self.pk and self.occurrences.count():
             from events.utils import CachedCategoryTree
+
             ctree = CachedCategoryTree()
             EventSummary.objects.for_event(self, ctree).save()
 
@@ -177,6 +185,7 @@ class Event(models.Model):
     def _concrete_category(self):
         """Used only by the admin site"""
         return self.concrete_category.title
+
     _concrete_category.admin_order_field = 'concrete_category__title'
 
     def _abstract_categories(self):
@@ -188,8 +197,9 @@ class Event(models.Model):
         if self.image:
             return self.image
 
-        occurrences_with_place_image = list(self.occurrences.select_related('place') \
-            .only('place__image').exclude(place__image__isnull=True).exclude(place__image__iexact='')[:1])
+        occurrences_with_place_image = list(self.occurrences.select_related('place')\
+                                            .only('place__image').exclude(place__image__isnull=True).exclude(
+            place__image__iexact='')[:1])
         if occurrences_with_place_image:
             return occurrences_with_place_image[0].place.image
 
@@ -206,8 +216,9 @@ class Event(models.Model):
         if self.image:
             return self.image
 
-        occurrences_with_place_image = list(self.occurrences.select_related('place') \
-            .only('place__image').exclude(place__image__isnull=True).exclude(place__image__iexact='')[:1])
+        occurrences_with_place_image = list(self.occurrences.select_related('place')\
+                                            .only('place__image').exclude(place__image__isnull=True).exclude(
+            place__image__iexact='')[:1])
         if occurrences_with_place_image:
             return occurrences_with_place_image[0].place.image
 
@@ -222,31 +233,32 @@ class Event(models.Model):
     def date_range(self):
         """Min and max of event dates and distinct count"""
         return self.occurrences\
-                .aggregate(min=Min('start_date'), max=Max('start_date'), count=Count('pk'))
+        .aggregate(min=Min('start_date'), max=Max('start_date'), count=Count('pk'))
 
     @property
     def time_range(self):
         """Min and max of event times and distinct count"""
         return self.occurrences\
-                .aggregate(min=Min('start_time'), max=Max('start_time'), count=Count('pk'))
+        .aggregate(min=Min('start_time'), max=Max('start_time'), count=Count('pk'))
 
     @property
     def price_range(self):
         """Min and max of event prices"""
         return self.occurrences\
-                .aggregate(min=Min('prices__quantity'), max=Max('prices__quantity'), count=Count('prices'))
+        .aggregate(min=Min('prices__quantity'), max=Max('prices__quantity'), count=Count('prices'))
 
     @property
     def place(self):
         """Title and address of the most common place and distinct count"""
-        place_counts = self.occurrences.values('place') \
-            .annotate(place_count=models.Count('place')).order_by('-place_count')
+        place_counts = self.occurrences.values('place')\
+        .annotate(place_count=models.Count('place')).order_by('-place_count')
         place_id = place_counts[0]['place']
         place = Place.objects.select_related('point__city').get(id=place_id)
         return place.title, place.address, len(place_counts)
 
     def __unicode__(self):
         return self.title
+
 
 class EventSummaryMixin(object):
     def ft_search(self, terms):
@@ -260,8 +272,10 @@ class EventSummaryMixin(object):
             order_by=('-rank',)
         )
 
+
 class EventSummaryQuerySet(models.query.QuerySet, EventSummaryMixin):
     pass
+
 
 class EventSummaryManager(models.Manager, EventSummaryMixin):
     def get_query_set(self):
@@ -286,25 +300,26 @@ class EventSummaryManager(models.Manager, EventSummaryMixin):
         summary.occurrence_count = occurrence_count
 
         summary.concrete_category_id = event.concrete_category_id
-        summary.concrete_parent_category_id = ctree \
-            .surface_parent(ctree.get(id=event.concrete_category_id)).id
+        summary.concrete_parent_category_id = ctree\
+        .surface_parent(ctree.get(id=event.concrete_category_id)).id
 
         min_max_count = ('min', 'max', 'count')
-        summary.start_date_earliest, summary.start_date_latest, \
-            summary.start_date_distinct_count = map(event.date_range.get, min_max_count)
+        summary.start_date_earliest, summary.start_date_latest,\
+        summary.start_date_distinct_count = map(event.date_range.get, min_max_count)
 
-        summary.start_time_earliest, summary.start_time_latest, \
-            summary.start_time_distinct_count = map(event.time_range.get, min_max_count)
+        summary.start_time_earliest, summary.start_time_latest,\
+        summary.start_time_distinct_count = map(event.time_range.get, min_max_count)
 
-        summary.price_quantity_min, summary.price_quantity_max, _ = \
-                map(event.price_range.get, min_max_count)
+        summary.price_quantity_min, summary.price_quantity_max, _ =\
+        map(event.price_range.get, min_max_count)
 
-        summary.place_title, summary.place_address, \
-            summary.place_distinct_count = event.place
+        summary.place_title, summary.place_address,\
+        summary.place_distinct_count = event.place
 
         if commit:
             summary.save()
         return summary
+
 
 class EventSummary(models.Model):
     """Everything is a text, string or URL (for front end use)"""
@@ -327,6 +342,7 @@ class EventSummary(models.Model):
 
     objects = EventSummaryManager()
 
+
 class OccurrenceMixin(object):
     def future(self):
         """filter starting today after this instant, unless all day"""
@@ -334,12 +350,15 @@ class OccurrenceMixin(object):
         start_datetime_q = models.Q(start_datetime__gte=now)
         return self.filter(start_datetime_q)
 
+
 class OccurrenceQuerySet(models.query.QuerySet, OccurrenceMixin):
     pass
+
 
 class OccurrenceManager(models.Manager, OccurrenceMixin):
     def get_query_set(self):
         return OccurrenceQuerySet(self.model)
+
 
 class Occurrence(models.Model):
     """Models a particular occurrence of an event"""
@@ -357,35 +376,33 @@ class Occurrence(models.Model):
 
     class Meta:
         verbose_name_plural = _('occurrences')
+        unique_together = (('event', 'place', 'start_date', 'start_time'))
 
     def save(self, *args, **kwargs):
         if isinstance(self.start_date, datetime.datetime):
             self.start_date = self.start_date.date()
         if isinstance(self.start_time, datetime.datetime):
             self.start_time = self.start_time.time()
-        self.start_datetime = datetime.datetime\
-                .combine(self.start_date, self.start_time or datetime.time())
+        self.start_datetime = datetime.datetime.combine(self.start_date, self.start_time or datetime.time())
         super(Occurrence, self).save(*args, **kwargs)
 
 
 # ==========
 # = Source =
 # ==========
-SOURCE_CACHE = {}
-
 class SourceManager(models.Manager):
+    _cache = {}
 
     def by_name(self, name):
         try:
-            source = SOURCE_CACHE[name]
+            source = self._cache[name]
         except KeyError:
             source = self.get(name=name)
-            SOURCE_CACHE[name] = source
+            self._cache[name] = source
         return source
 
     def clear_cache(self):
-        global SOURCE_CACHE
-        SOURCE_CACHE = {}
+        self._cache = {}
 
     @property
     def villagevoice(self):
@@ -394,6 +411,7 @@ class SourceManager(models.Manager):
     @property
     def eventful(self):
         return self.by_name('eventful')
+
 
 class Source(models.Model):
     """By convention, the source and spider name(s) will be correlated"""
