@@ -94,7 +94,6 @@ class EventMixin(object):
     """
     see http://www.cupcakewithsprinkles.com/django-custom-model-manager-chaining/
     """
-
     @property
     def _future_filter(self):
         return dict(occurrences__start_datetime__gte=datetime.datetime.now())
@@ -105,8 +104,7 @@ class EventMixin(object):
 
     def filter_user_actions(self, user, actions='GX'):
         # FIXME hackish
-        exclusions = user.event_actions.filter(action__in=actions)\
-        .values_list('event_id', flat=True)
+        exclusions = user.event_actions.filter(action__in=actions).values_list('event_id', flat=True)
         return self.exclude(id__in=exclusions)
 
     def featured(self):
@@ -116,8 +114,8 @@ class EventMixin(object):
     def ft_search(self, terms):
         keywords = '|'.join(terms.split())
         return self.extra(
-            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\", \
-                to_tsquery('pg_catalog.english', %s))"},
+            select={'rank': "ts_rank_cd('{0,0,0.2,0.8}',\"events_event\".\"search_vector\","
+                            "to_tsquery('pg_catalog.english', %s))"},
             where=("\"events_event\".\"search_vector\" @@ to_tsquery('pg_catalog.english', %s)",),
             params=(keywords,),
             select_params=(keywords,),
@@ -323,7 +321,7 @@ class EventSummaryManager(models.Manager, EventSummaryMixin):
 
 
 class EventSummary(models.Model):
-    """Everything is a text, string or URL (for front end use)"""
+    """Everything is a text, string or URL (for frontend use)"""
     event = models.OneToOneField(Event, related_name='summary', primary_key=True)
     title = models.CharField(max_length=200)
     concrete_category = models.ForeignKey(Category, related_name='event_summaries')

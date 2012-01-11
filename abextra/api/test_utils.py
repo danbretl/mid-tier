@@ -1,11 +1,8 @@
 import datetime
 from dateutil.relativedelta import relativedelta
 from events.models import Category
-from places.models import Place
 from api.urls import api_v1
-from django.contrib.gis import geos
 from django.utils import simplejson as json
-from django_dynamic_fixture import get, F
 
 API_BASE_URL = '/api'
 

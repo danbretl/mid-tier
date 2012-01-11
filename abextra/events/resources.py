@@ -192,9 +192,8 @@ class EventSummaryResource(ModelResource):
 
     def get_object_list(self, request):
         """overridden to select relatives"""
-        return super(EventSummaryResource, self).get_object_list(request)\
-        .select_related('event', 'concrete_category',
-                'concrete_parent_category')
+        return super(EventSummaryResource, self).get_object_list(request).select_related('event', 'concrete_category',
+            'concrete_parent_category')
 
     def build_filters(self, filters=None):
         filters = filters or dict()
@@ -219,6 +218,7 @@ class EventSummaryResource(ModelResource):
                 raise NotFound("The URL provided '%s' was not a link to a valid resource." % place_filter_uri)
             else:
                 orm_filters.update(event__occurrences__place__id=kwargs['pk'])
+                orm_filters.update(event__occurrences__start_datetime__gte=datetime.datetime.now())
 
         # FIXME these really need to be rethought and come from precomputed columns
         # FIXME inefficient joins for true occurrence-based results
@@ -251,7 +251,7 @@ class EventSummaryResource(ModelResource):
         return orm_filters
 
     def obj_get_list(self, request=None, **kwargs):
-        """overridden just to pass the `request` as an arg to build_filters"""
+        """overridden just to pass the `request` to build_filters"""
         filters = request.GET.copy() if hasattr(request, 'GET') else dict()
 
         # Update with the provided kwargs.
@@ -263,10 +263,12 @@ class EventSummaryResource(ModelResource):
         applicable_filters = self.build_filters(filters=filters)
 
         try:
-            qs = self.get_object_list(request).filter(**applicable_filters)
+            qs = self.get_object_list(request).filter(**applicable_filters).distinct()
             q_filter = filters.get('q', None)
             if q_filter:
                 qs = qs.ft_search(q_filter)
+            if filters.get('place'):
+                qs = qs.order_by('event__occurrences__start_datetime')
             qs = self.apply_authorization_limits(request, qs)
             # FIXME somehow, running __str__ on this query fixes it, otherwise broken
             _ = str(qs.query)

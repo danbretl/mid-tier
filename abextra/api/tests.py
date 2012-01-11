@@ -13,12 +13,13 @@ from django.contrib.gis import geos
 from django.test import TestCase
 from django.test.client import Client
 from django_dynamic_fixture import get, DynamicFixture as F
+from api.urls import api_v1
+from places.models import Place
 from test_utils import build_uri, try_json_loads
 from test_utils import CategoryFilterOptions, DateFilterOptions
 from test_utils import PriceFilterOptions, TimeFilterOptions
 from test_utils import BaseFilterOptions, PlaceFilterOptions
 
-from accounts.models import UserProfile
 from api.models import Consumer
 from behavior.models import EventAction, EventActionAggregate
 from events.models import Category, Event, EventSummary, Occurrence
@@ -41,17 +42,15 @@ class APIResourceTestCase(TestCase):
         self.uri = build_uri(self.resource._meta.resource_name)
         consumer = Consumer.objects.get(id=1)
         self.auth_params = {'consumer_key': consumer.key,
-                                            'consumer_secret': consumer.secret,
-                                            'udid': '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3',
-        }
+                            'consumer_secret': consumer.secret,
+                            'udid': '6AAD4638-7E07-5A5C-A676-3D16E4AFFAF3',
+                            }
         self.client = Client()
 
     def assertResponseCode(self, resp, expected_code):
         """Assert that a response has an expected status code"""
         self.assertEqual(expected_code, resp.status_code, 'Expected %s, received %s on a %s to %s' % (
-            expected_code, resp.status_code,
-            resp.request['REQUEST_METHOD'], resp.request['PATH_INFO']
-        ))
+            expected_code, resp.status_code, resp.request['REQUEST_METHOD'], resp.request['PATH_INFO']))
 
     def assertResponseMetaList(self, resp, expected_count):
         resp_dict = try_json_loads(resp.content)
@@ -60,9 +59,9 @@ class APIResourceTestCase(TestCase):
         self.assertIsNotNone(resp_dict.get('meta'), 'Malformed meta field from response')
         meta_field = resp_dict['meta']
         self.assertEqual(expected_count, meta_field['total_count'],
-                'Incorrect count of objects in meta field of response')
+            'Incorrect count of objects in meta field of response')
         self.assertEqual(expected_count, len(resp_dict.get('objects')),
-                'Incorrect count of objects in response')
+            'Incorrect count of objects in response')
 
 
 class CategoryResourceTest(APIResourceTestCase):
@@ -87,8 +86,8 @@ class OccurrenceResourceTest(APIResourceTestCase):
         self.assertResponseMetaList(resp, 0)
 
     def test_list_get_future(self):
-        get(Occurrence, start_date = datetime.datetime.now().date() + datetime.timedelta(days=10),
-                place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        get(Occurrence, start_date=datetime.datetime.now().date() + datetime.timedelta(days=10),
+            place=F(point=F(geometry=geos.Point(y=0, x=0))))
         resp = self.client.get(self.uri, data=self.auth_params)
         self.assertResponseCode(resp, 200)
         self.assertResponseMetaList(resp, 1)
@@ -102,36 +101,36 @@ class OccurrenceResourceTest(APIResourceTestCase):
         self.assertResponseCode(resp, 410)
 
     def test_detail_get_future(self):
-        occ = get(Occurrence, start_date = datetime.datetime.now().date() + datetime.timedelta(days=30),
-                place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        occ = get(Occurrence, start_date=datetime.datetime.now().date() + datetime.timedelta(days=30),
+            place=F(point=F(geometry=geos.Point(y=0, x=0))))
         uri = self.resource().get_resource_uri(occ)
         resp = self.client.get(uri, data=self.auth_params)
         resp_dict = try_json_loads(resp.content)
         self.assertIsNotNone(resp_dict, 'Malformed response')
         self.assertResponseCode(resp, 200)
         self.assertEqual(uri, resp_dict['resource_uri'],
-                'Unexpected resource uri in response')
+            'Unexpected resource uri in response')
         event_field = resp_dict.get('event')
         self.assertIsInstance(event_field, basestring,
-                'Did not find expected reference to associated event URI in event field')
+            'Did not find expected reference to associated event URI in event field')
         place_field = resp_dict.get('place')
         self.assertIsInstance(place_field, basestring,
-                'Did not find expected reference to associated place URI in place field')
+            'Did not find expected reference to associated place URI in place field')
 
 
 class OccurrenceFullResourceTest(OccurrenceResourceTest):
     resource = OccurrenceFullResource
 
     def test_detail_get_future(self):
-        occ = get(Occurrence, start_date = datetime.datetime.now().date() + datetime.timedelta(days=30),
-                place=F(point=F(geometry=geos.Point(y=0, x=0))))
+        occ = get(Occurrence, start_date=datetime.datetime.now().date() + datetime.timedelta(days=30),
+            place=F(point=F(geometry=geos.Point(y=0, x=0))))
         uri = self.resource().get_resource_uri(occ)
         resp = self.client.get(uri, data=self.auth_params)
         resp_dict = try_json_loads(resp.content)
         self.assertIsNotNone(resp_dict, 'Malformed response')
         self.assertResponseCode(resp, 200)
         self.assertEqual(uri, resp_dict['resource_uri'],
-                'Unexpected resource uri in response')
+            'Unexpected resource uri in response')
 
         event_field = resp_dict.get('event')
         self.assertIsInstance(event_field, basestring, 'Did not find expected reference to associated event URI')
@@ -161,12 +160,11 @@ class BaseEventResourceTest(APIResourceTestCase):
         super(BaseEventResourceTest, self).setUp()
 
     @staticmethod
-    def make_event_fixture():
-        event = get(Event, concrete_category=Category.objects.get(slug='music'),
-                secret_key='f'*10)
-        occurrence = get(Occurrence, start_date=datetime.date(2063, 1, 1),
-            place=F(point=F(geometry=geos.Point(x=0,y=0))),
-            event=event)
+    def make_event_fixture(concrete_category=Category.objects.get(slug='music'), start_date=datetime.date(2063, 1, 1),
+                           start_time=datetime.time(), place=None):
+        event = get(Event, concrete_category=concrete_category, secret_key='f' * 10)
+        place = place or F(point=F(geometry=geos.Point(x=0, y=0)))
+        occurrence = get(Occurrence, event=event, place=place, start_date=start_date, start_time=start_time)
         get(Price, occurrence=occurrence)
         event.save()
         return event
@@ -181,6 +179,7 @@ class BaseEventSummaryTest(BaseEventResourceTest):
         if not hasattr(self, 'filter_options'):
             self.filter_options = self.filter_options_class()
 
+
 class EventSummaryCompositeFilterTest(BaseEventSummaryTest):
     filter_options_class_mappings = {'filter_options': BaseFilterOptions}
 
@@ -194,11 +193,12 @@ class EventSummaryCompositeFilterTest(BaseEventSummaryTest):
 class BaseEventRecommendationTest(BaseEventSummaryTest):
     resource = EventRecommendationResource
 
+
 class EventRecommendationCompositeFilterTest(EventSummaryCompositeFilterTest):
     resource = EventRecommendationResource
 
-class CategoryFilterMixin:
 
+class CategoryFilterMixin:
     @staticmethod
     def _set_event_category(event, category_slug):
         filter_options = CategoryFilterOptions()
@@ -215,8 +215,8 @@ class CategoryFilterMixin:
         return cls._set_event_category(event, category_slug)
 
     def test_category_filters_music(self):
-        matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
-        self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
+        matched_event = self.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
+        self.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
 
         query_params = dict(**self.auth_params)
         query_params.update(**self.filter_options.music)
@@ -229,7 +229,7 @@ class CategoryFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for category filter')
+            'Unexpected event in results for category filter')
 
 
 class EventSummaryCategoryFilterTest(BaseEventSummaryTest, CategoryFilterMixin):
@@ -240,33 +240,39 @@ class EventRecommendationCategoryFilterTest(BaseEventRecommendationTest, Categor
     filter_options_class = CategoryFilterOptions
 
 class PlaceFilterMixin:
-
-    def test_place_filters_bam_cafe(self):
-        matched_event = BaseEventSummaryTest.make_event_fixture()
-        BaseEventSummaryTest.make_event_fixture()
-        matched_place = matched_event.occurrences.all()[0].place
+    def test_place_filters(self):
+        datetimes = (datetime.datetime(*d) for d in ((2100, 1, 2, 0, 0), (2100, 1, 1, 12, 00), (2100, 1, 1, 23, 00)))
+        place = get(Place, point=F(geometry=geos.Point(x=0, y=0)))
+        matched_events = {self.make_event_fixture(start_date=dt.date(), start_time=dt.time(), place=place)
+                          for dt in datetimes}
+        self.make_event_fixture()   # throw in a non-match
 
         query_params = dict(**self.auth_params)
-        query_params.update(**{'place': PlaceFilterOptions()._uri_from_obj(matched_place)})
+        query_params.update(**{'place': PlaceFilterOptions()._uri_from_obj(place)})
         resp = self.client.get(self.uri, data=query_params)
 
         self.assertResponseCode(resp, 200)
-        self.assertResponseMetaList(resp, 1)
+        self.assertResponseMetaList(resp, len(matched_events))
 
         json_resp = try_json_loads(resp.content)
-        first_search_result_uri = json_resp['objects'][0]['resource_uri']
-        expected_first_uri = self.resource().get_resource_uri(matched_event)
-        self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for category filter')
+        resource = api_v1._registry['eventsummary']
+
+        matched_events_sorted = sorted(matched_events, key=lambda e: e.occurrences.all()[0].start_datetime)
+        for matched_event, event_summary_json in zip(matched_events_sorted, json_resp['objects']):
+            event_summary = resource.get_via_uri(event_summary_json['resource_uri'])
+            self.assertIn(event_summary.event, matched_events, 'Should not be part of search results')
+            self.assertEqual(matched_event, event_summary.event, 'Unexpected order')
+
 
 class EventSummaryPlaceFilterTest(BaseEventSummaryTest, PlaceFilterMixin):
-    filter_options_class = PlaceFilterOptions 
+    filter_options_class = PlaceFilterOptions
+
 
 class EventRecommendationPlaceFilterTest(BaseEventRecommendationTest, PlaceFilterMixin):
-    filter_options_class = PlaceFilterOptions 
+    filter_options_class = PlaceFilterOptions
+
 
 class PriceFilterMixin:
-
     @staticmethod
     def _set_event_price(event, quantity):
         occurrence = event.occurrences.all()[0]
@@ -286,8 +292,8 @@ class PriceFilterMixin:
         return cls._set_event_price(event, quantity)
 
     def test_price_filters_under_twenty(self):
-        matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
-        self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
+        matched_event = self.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
+        self.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
 
         query_params = dict(**self.auth_params)
         query_params.update(**self.filter_options.under_twenty)
@@ -300,7 +306,7 @@ class PriceFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for under price filter')
+            'Unexpected event in results for under price filter')
 
 
 class EventSummaryPriceFilterTest(BaseEventSummaryTest, PriceFilterMixin):
@@ -312,7 +318,6 @@ class EventRecommendationPriceFilterTest(BaseEventRecommendationTest, PriceFilte
 
 
 class DateFilterMixin:
-
     @staticmethod
     def _set_event_date(event, start_date):
         occurrence = event.occurrences.all()[0]
@@ -332,9 +337,9 @@ class DateFilterMixin:
     def test_date_filters_this_weekend(self):
         now = datetime.datetime.now()
         start_date_weekend = now if now.weekday() == 6 else now + relativedelta(weekday=5)
-        matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
-                start_date_weekend.date())
-        self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
+        matched_event = self.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
+            start_date_weekend.date())
+        self.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
             (now + datetime.timedelta(days=30)).date())
 
         query_params = dict(**self.auth_params)
@@ -348,13 +353,13 @@ class DateFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for this weekend date filter')
+            'Unexpected event in results for this weekend date filter')
 
     def test_date_filters_next_seven_days(self):
         now = datetime.datetime.now()
-        matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
-                (now + relativedelta(days=4)).date())
-        self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
+        matched_event = self.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
+            (now + relativedelta(days=4)).date())
+        self.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
             (now + datetime.timedelta(days=10)).date())
 
         query_params = dict(**self.auth_params)
@@ -368,14 +373,14 @@ class DateFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for next 7 days date filter')
+            'Unexpected event in results for next 7 days date filter')
 
 
 class DateFilterTest(DateFilterMixin, BaseEventSummaryTest):
     filter_options_class = DateFilterOptions
 
-class TimeFilterMixin:
 
+class TimeFilterMixin:
     @staticmethod
     def _set_event_time(event, start_time):
         occurrence = event.occurrences.all()[0]
@@ -393,9 +398,9 @@ class TimeFilterMixin:
         return cls._set_event_time(event, time)
 
     def test_time_filters_morning(self):
-        matched_event = self.__class__.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
-                datetime.time(10, 0))
-        self.__class__.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
+        matched_event = self.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture(),
+            datetime.time(10, 0))
+        self.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture(),
             datetime.time(20, 0))
 
         query_params = dict(**self.auth_params)
@@ -409,7 +414,7 @@ class TimeFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for morning time filter')
+            'Unexpected event in results for morning time filter')
 
 
 class TimeFilterTest(TimeFilterMixin, BaseEventSummaryTest):
@@ -417,7 +422,6 @@ class TimeFilterTest(TimeFilterMixin, BaseEventSummaryTest):
 
 
 class PriceCategoryFilterMixin:
-
     def test_price_category_filters(self):
         matched_event = CategoryFilterMixin.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
         unmatched_event = CategoryFilterMixin.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
@@ -435,24 +439,25 @@ class PriceCategoryFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for price and category filter combination')
+            'Unexpected event in results for price and category filter combination')
 
 
 class EventSummaryPriceCategoryFilterTest(PriceCategoryFilterMixin, EventSummaryCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'price_filter_options': PriceFilterOptions}
+                                     'price_filter_options': PriceFilterOptions}
+
 
 class EventRecommendationPriceCategoryFilterTest(PriceCategoryFilterMixin, EventRecommendationCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'price_filter_options': PriceFilterOptions}
+                                     'price_filter_options': PriceFilterOptions}
+
 
 class TimeCategoryFilterMixin:
-
     def test_time_category_filters(self):
         matched_event = CategoryFilterMixin.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
         unmatched_event = CategoryFilterMixin.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
-        TimeFilterMixin.mutate_fixture_matched(matched_event, datetime.time(19,0))
-        TimeFilterMixin.mutate_fixture_unmatched(unmatched_event, datetime.time(22,0))
+        TimeFilterMixin.mutate_fixture_matched(matched_event, datetime.time(19, 0))
+        TimeFilterMixin.mutate_fixture_unmatched(unmatched_event, datetime.time(22, 0))
 
         query_params = dict(self.category_filter_options.music, **self.auth_params)
         query_params.update(self.time_filter_options.evening)
@@ -465,21 +470,20 @@ class TimeCategoryFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for time and category filter combination')
+            'Unexpected event in results for time and category filter combination')
 
 
 class EventSummaryTimeCategoryFilterTest(TimeCategoryFilterMixin, EventSummaryCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'time_filter_options': TimeFilterOptions}
+                                     'time_filter_options': TimeFilterOptions}
 
 
 class EventRecommendationTimeCategoryFilterTest(TimeCategoryFilterMixin, EventRecommendationCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'time_filter_options': TimeFilterOptions}
+                                     'time_filter_options': TimeFilterOptions}
 
 
 class DateCategoryFilterMixin:
-
     def test_date_this_weekend_category_filters(self):
         now = datetime.datetime.now()
         start_date_weekend = now if now.weekday() == 6 else now + relativedelta(weekday=5)
@@ -499,17 +503,15 @@ class DateCategoryFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for date (next weekend) and category filter combination')
+            'Unexpected event in results for date (next weekend) and category filter combination')
 
 
     def test_date_next_seven_days_category_filters(self):
-
         now = datetime.datetime.now()
         matched_event = CategoryFilterMixin.mutate_fixture_matched(BaseEventSummaryTest.make_event_fixture())
         unmatched_event = CategoryFilterMixin.mutate_fixture_unmatched(BaseEventSummaryTest.make_event_fixture())
         DateFilterMixin.mutate_fixture_matched(matched_event, (now + relativedelta(days=4)).date())
         DateFilterMixin.mutate_fixture_unmatched(unmatched_event, (now + datetime.timedelta(days=10)).date())
-
 
         query_params = dict(self.category_filter_options.music, **self.auth_params)
         query_params.update(self.date_filter_options.next_seven_days)
@@ -522,27 +524,26 @@ class DateCategoryFilterMixin:
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected event in results for date (next 7 days) and category filter combination')
+            'Unexpected event in results for date (next 7 days) and category filter combination')
 
 
 class EventSummaryDateCategoryFilterTest(DateCategoryFilterMixin, EventSummaryCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'date_filter_options': DateFilterOptions}
+                                     'date_filter_options': DateFilterOptions}
 
 
 class EventRecommendationDateCategoryFilterTest(DateCategoryFilterMixin, EventRecommendationCompositeFilterTest):
     filter_options_class_mappings = {'category_filter_options': CategoryFilterOptions,
-            'date_filter_options': DateFilterOptions}
+                                     'date_filter_options': DateFilterOptions}
 
 
 class FullTextSearchTest(BaseEventSummaryTest):
-
     def test_fts_title_simple(self):
         keyword = 'guitar'
         title_with_kw = 'Title including %s' % keyword
 
         matched_event = BaseEventSummaryTest.make_event_fixture()
-        matched_event.title=title_with_kw
+        matched_event.title = title_with_kw
         matched_event.save()
 
         BaseEventSummaryTest.make_event_fixture()
@@ -558,7 +559,7 @@ class FullTextSearchTest(BaseEventSummaryTest):
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected search result')
+            'Unexpected search result')
 
     def test_fts_description_simple(self):
         keyword = 'guitar'
@@ -580,7 +581,7 @@ class FullTextSearchTest(BaseEventSummaryTest):
         first_search_result_uri = json_resp['objects'][0]['resource_uri']
         expected_first_uri = self.resource().get_resource_uri(matched_event)
         self.assertEqual(expected_first_uri, first_search_result_uri,
-                'Unexpected search result')
+            'Unexpected search result')
 
     def test_fts_title_description_ranking(self):
         keyword = 'guitar'
@@ -589,7 +590,8 @@ class FullTextSearchTest(BaseEventSummaryTest):
 
         events = []
         # create & save events in reverse order to expected search order
-        for title, description in reversed(((title_with_kw, description_with_kw,), (title_with_kw, ''), ('', description_with_kw),)):
+        for title, description in reversed(
+            ((title_with_kw, description_with_kw,), (title_with_kw, ''), ('', description_with_kw),)):
             event = (BaseEventSummaryTest.make_event_fixture())
             event.title = title
             event.description = description
@@ -609,12 +611,11 @@ class FullTextSearchTest(BaseEventSummaryTest):
             search_result_uri = search_result['resource_uri']
             expected_uri = self.resource().get_resource_uri(events[ix])
             self.assertEqual(expected_uri, search_result_uri,
-            '''Unexpected search ranking for summary with title %s and
-            description %s''' % (events[ix].title, events[ix].description))
+                '''Unexpected search ranking for summary with title %s and
+               description %s''' % (events[ix].title, events[ix].description))
 
 
 class EventResourceTest(BaseEventResourceTest):
-
     def test_detail_get(self):
         event = BaseEventSummaryTest.make_event_fixture()
 
@@ -624,11 +625,11 @@ class EventResourceTest(BaseEventResourceTest):
         self.assertIsNotNone(resp_dict, 'Malformed response')
         self.assertResponseCode(resp, 200)
         self.assertEqual(uri, resp_dict['resource_uri'],
-                'Unexpected resource uri in response')
+            'Unexpected resource uri in response')
 
         occurrences_field = resp_dict.get('occurrences')
         self.assertIsInstance(occurrences_field[0], basestring,
-                'Did not find expected reference to occurrence URI')
+            'Did not find expected reference to occurrence URI')
 
 
 class EventFullResourceTest(BaseEventResourceTest):
@@ -643,15 +644,14 @@ class EventFullResourceTest(BaseEventResourceTest):
         self.assertIsNotNone(resp_dict, 'Malformed response')
         self.assertResponseCode(resp, 200)
         self.assertEqual(uri, resp_dict['resource_uri'],
-                'Unexpected resource uri in response')
+            'Unexpected resource uri in response')
 
         occurrences_field = resp_dict.get('occurrences')
         self.assertIsInstance(occurrences_field[0], dict,
-                'Did not find expected occurrence child dictionary')
+            'Did not find expected occurrence child dictionary')
 
 
 class EventRecommendationResourceTest(BaseEventRecommendationTest):
-
     def test_list_get(self):
         events = []
         for ix in range(2):
@@ -667,7 +667,7 @@ class EventRecommendationResourceTest(BaseEventRecommendationTest):
         produced_event_titles = set(e['title'] for e in resp_dict['objects'])
 
         self.assertEqual(event_titles, produced_event_titles,
-                'Unexpected initial recommended events set')
+            'Unexpected initial recommended events set')
 
 
 class FeaturedEventResourceTest(BaseEventResourceTest):
@@ -677,7 +677,7 @@ class FeaturedEventResourceTest(BaseEventResourceTest):
         events = []
         for ix in range(2):
             events.append(BaseEventResourceTest.make_event_fixture())
-        featured_event = livesettings.config_get('EVENTS','FEATURED_EVENT_ID')
+        featured_event = livesettings.config_get('EVENTS', 'FEATURED_EVENT_ID')
 
         events[0].id = featured_event.value
         events[0].save()
@@ -687,6 +687,7 @@ class FeaturedEventResourceTest(BaseEventResourceTest):
         self.assertResponseCode(resp, 200)
         self.assertResponseMetaList(resp, 1)
 
+
 class EventActionAggregateResourceTest(APIResourceTestCase):
     resource = EventActionAggregateResource
 
@@ -695,28 +696,29 @@ class EventActionAggregateResourceTest(APIResourceTestCase):
         resp = self.client.delete(self.uri, data=self.auth_params)
         self.assertResponseCode(resp, 204)
 
+
 class EventActionResourceTest(APIResourceTestCase):
     resource = EventActionResource
 
     def test_event_actions_persisted(self):
-        events = get(Event,n=2)
+        events = get(Event, n=2)
         event_uri = self.resource().get_resource_uri(events[0])
         encoded_auth_params = '?' + urllib.urlencode(self.auth_params)
         actions = ('g', 'v', 'i', 'x')
         for action in actions:
             json_params = json.dumps(dict(action=action, event=event_uri))
             action_resp = self.client.post(self.uri + encoded_auth_params,
-                    json_params, content_type='application/json')
+                json_params, content_type='application/json')
             self.assertEqual(201, action_resp.status_code,
-                    'Unexpected HTTP status code %s for event action' % action_resp.status_code)
+                'Unexpected HTTP status code %s for event action' % action_resp.status_code)
             event_action_aggregate = EventActionAggregate.objects.all()[0]
             action_count = EventAction.objects.filter(action=action.upper()).count()
             self.assertEqual(action_count, getattr(event_action_aggregate, action),
-                    'Incorrect aggregate count of %s actions' % action.upper())
+                'Incorrect aggregate count of %s actions' % action.upper())
             for other_action in (oa for oa in actions if not oa == action):
                 self.assertEqual(0, getattr(event_action_aggregate, other_action),
-                        'Unexpected nonzero count of %s actions given that %s was chosen' %
-                        (other_action.upper(), action.upper()))
+                    'Unexpected nonzero count of %s actions given that %s was chosen' %
+                    (other_action.upper(), action.upper()))
 
     def test_list_delete(self):
         get(Event)
@@ -744,7 +746,7 @@ class UserResourceTest(APIResourceTestCase):
                 'file': b64,
                 'content-type': content_type or "application/octet-stream"
             },
-        })
+            })
         resp = self.client.post(self.uri + encoded_auth_params, json_params, content_type='application/json')
         self.assertResponseCode(resp, 201)
         users = User.objects.filter(email=self.valid_email)
@@ -786,21 +788,21 @@ class ApiKeyResourceTest(APIResourceTestCase):
     def test_list_get(self):
         new_user = User.objects.create_user(self.username, self.email, self.password)
         auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.email,
-            self.password))
+                                                               self.password))
         resp = self.client.get(self.uri, data=self.auth_params,
-                HTTP_AUTHORIZATION=auth_header)
+            HTTP_AUTHORIZATION=auth_header)
         self.assertResponseCode(resp, 200)
         resp_dict = try_json_loads(resp.content)
         self.assertIsNotNone(resp_dict, 'Malformed response')
         api_key_obj = resp_dict['objects'][0]
         self.assertEqual(new_user.api_key.key, api_key_obj['key'],
-                'Unexpected key %s returned for user %s in response, expecting %s' %
-                (api_key_obj['key'], new_user.username, new_user.api_key.key))
+            'Unexpected key %s returned for user %s in response, expecting %s' %
+            (api_key_obj['key'], new_user.username, new_user.api_key.key))
 
     def test_login_response_user_does_not_exist(self):
         auth_header = 'Basic %s' % base64.b64encode('%s:%s' % ('a', 'a'))
         resp = self.client.get(self.uri, data=self.auth_params,
-                HTTP_AUTHORIZATION=auth_header)
+            HTTP_AUTHORIZATION=auth_header)
         self.assertResponseCode(resp, 401)
         self.assertEquals('NOT REGISTERED', resp.content, '''Unexpected response
                 for response to attempt to login with unregistered user''')
@@ -810,7 +812,7 @@ class ApiKeyResourceTest(APIResourceTestCase):
 
         auth_header = 'Basic %s' % base64.b64encode('%s:%s' % (self.email, 'a'))
         resp = self.client.get(self.uri, data=self.auth_params,
-                HTTP_AUTHORIZATION=auth_header)
+            HTTP_AUTHORIZATION=auth_header)
         self.assertResponseCode(resp, 401)
         self.assertEquals('', resp.content, '''Unexpected response
                 for response to login attempt with existing user and wrong
@@ -824,7 +826,7 @@ class UserProfileResourceTest(APIResourceTestCase):
         user = get(User)
         user_profile = user.get_profile()
         avatar = get(Avatar, user=user, primary=True)
-       
+
         api_auth_params = dict(api_key=user_profile.user.api_key.key, **self.auth_params)
         resp = self.client.get(self.uri, data=api_auth_params)
 
@@ -850,7 +852,7 @@ class PasswordResetResourceTest(APIResourceTestCase):
         email = 'user@name.com'
         User.objects.create_user(username, email, password)
         json_params = json.dumps({"email": email, "username": username,
-            "password": password})
+                                  "password": password})
         encoded_auth_params = '?' + urllib.urlencode(self.auth_params)
         resp = self.client.post(self.uri + encoded_auth_params, json_params, content_type='application/json')
         self.assertResponseCode(resp, 201)
