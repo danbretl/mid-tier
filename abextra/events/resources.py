@@ -1,23 +1,18 @@
+from collections import OrderedDict
 import os
 import datetime
-
 from django.core.urlresolvers import resolve, Resolver404, reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
 from sorl.thumbnail import get_thumbnail
-
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import NotFound, BadRequest
-
 from api.authentication import ConsumerApiKeyAuthentication
-
 from places.resources import PlaceResource, PlaceFullResource
 from prices.resources import PriceResource
-
 from events.models import Event, Occurrence, Category, EventSummary
 from events.utils import CachedCategoryTree
-
 from behavior.models import EventAction
 from learning import ml
 
@@ -58,25 +53,20 @@ class EventResource(ModelResource):
         detail_allowed_methods = ('get',)
         authentication = ConsumerApiKeyAuthentication()
         fields = ('concrete_category', 'abstract_categories', 'occurrences',
-                  'title', 'description', 'image', 'video_url', 'url'
-            )
+                  'title', 'description', 'image', 'video_url', 'url')
 
     def dehydrate_url(self, bundle):
         event, data = bundle.obj, bundle.data
         kwargs = dict(slug=event.slug, secret_key=event.secret_key)
-        return '%(protocol)s://%(domain)s%(uri)s' % {
-            'protocol': 'http',
-            'domain': Site.objects.get_current().domain,
-            'uri': reverse('event_detail', kwargs=kwargs),
-            }
+        return '%(protocol)s://%(domain)s%(uri)s' % {'protocol': 'http',
+                                                     'domain': Site.objects.get_current().domain,
+                                                     'uri': reverse('event_detail', kwargs=kwargs)}
 
     # TODO refactor into separate fields / hydration methods when ctree becomes thread-local
     def dehydrate(self, bundle):
         """inject extra info"""
         event, data = bundle.obj, bundle.data
-        category_resource = self.concrete_category.get_related_resource(
-            bundle.obj.concrete_category
-        )
+        category_resource = self.concrete_category.get_related_resource(bundle.obj.concrete_category)
         ctree = CachedCategoryTree()
 
         # concrete parent category
@@ -87,9 +77,7 @@ class EventResource(ModelResource):
         # concrete breadcrumbs :)
         concrete_category_breadcrumb_uris = []
         for category in ctree.parents(event.concrete_category_id):
-            concrete_category_breadcrumb_uris.append(
-                category_resource.get_resource_uri(category)
-            )
+            concrete_category_breadcrumb_uris.append(category_resource.get_resource_uri(category))
         data.update(concrete_category_breadcrumbs=concrete_category_breadcrumb_uris)
 
         # detail image thumbnail
@@ -185,10 +173,8 @@ class EventSummaryResource(ModelResource):
         excludes = ('place',)
         detail_allowed_methods = ()
         authentication = ConsumerApiKeyAuthentication()
-        filtering = {
-            'concrete_category': ('exact',),
-            'concrete_parent_category': ('exact',),
-        }
+        filtering = {'concrete_category': ('exact',),
+                     'concrete_parent_category': ('exact',),}
 
     def get_object_list(self, request):
         """overridden to select relatives"""
@@ -217,8 +203,8 @@ class EventSummaryResource(ModelResource):
             except Resolver404:
                 raise NotFound("The URL provided '%s' was not a link to a valid resource." % place_filter_uri)
             else:
-                orm_filters.update(event__occurrences__place__id=kwargs['pk'])
-                orm_filters.update(event__occurrences__start_datetime__gte=datetime.datetime.now())
+                orm_filters.update(event__occurrences__place__id=kwargs['pk'],
+                    event__occurrences__start_datetime__gte=datetime.datetime.now())
 
         # FIXME these really need to be rethought and come from precomputed columns
         # FIXME inefficient joins for true occurrence-based results
@@ -263,7 +249,7 @@ class EventSummaryResource(ModelResource):
         applicable_filters = self.build_filters(filters=filters)
 
         try:
-            qs = self.get_object_list(request).filter(**applicable_filters).distinct()
+            qs = self.get_object_list(request).filter(**applicable_filters)
             q_filter = filters.get('q', None)
             if q_filter:
                 qs = qs.ft_search(q_filter)
@@ -272,7 +258,7 @@ class EventSummaryResource(ModelResource):
             qs = self.apply_authorization_limits(request, qs)
             # FIXME somehow, running __str__ on this query fixes it, otherwise broken
             _ = str(qs.query)
-            return qs
+            return OrderedDict((event_summary, None) for event_summary in qs).keys()
         except ValueError:
             raise BadRequest("Invalid resource lookup data provided (mismatched type).")
 
